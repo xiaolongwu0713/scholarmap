@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     
     # Phase 2: PubMed ingestion
     pubmed_api_key: str = ""
+    
+    # Database configuration
+    database_url: str = ""  # PostgreSQL connection URL
 
 
 settings = Settings()

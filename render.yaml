@@ -1,0 +1,52 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: scholarmap-db
+    plan: starter
+    region: virginia
+    databaseName: scholarmap_db
+    databaseUser: scholarmap_db_user
+
+  # Backend API
+  - type: web
+    name: scholarmap-backend
+    runtime: python
+    region: virginia
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: scholarmap-db
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PUBMED_API_KEY
+        sync: false
+      - key: SEMANTIC_SCHOLAR_API_KEY
+        sync: false
+      - key: OPENALEX_MAILTO
+        sync: false
+      - key: SCHOLARMAP_ENABLED_SOURCES
+        value: pubmed
+      - key: OPENAI_MODEL
+        value: gpt-4
+      - key: OPENAI_API_BASE
+        value: https://api.openai.com
+
+  # Frontend
+  - type: web
+    name: scholarmap-frontend
+    runtime: node
+    region: virginia
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://scholarmap-backend.onrender.com
+      - key: NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+        sync: false
+      - key: NODE_ENV
+        value: production
+

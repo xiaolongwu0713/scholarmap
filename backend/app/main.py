@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -8,7 +10,8 @@ import httpx
 
 from app.core.config import settings
 from app.core.paths import get_data_dir
-from app.core.storage import FileStore
+from app.db.connection import db_manager
+from app.db.service import DatabaseStore
 from app.phase1.models import Slots
 from app.phase1.steps import step_parse, step_query_build, step_retrieve, step_synonyms
 from app.phase2.aggregations import MapAggregator
@@ -16,7 +19,24 @@ from app.phase2.database import Database
 from app.phase2.ingest import IngestionPipeline
 
 
-app = FastAPI(title="ScholarMap API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan: startup and shutdown."""
+    # Startup: initialize database
+    if settings.database_url:
+        db_manager.initialize(settings.database_url)
+        print("✅ Database connection initialized")
+    else:
+        print("⚠️  DATABASE_URL not configured, some features may not work")
+    
+    yield
+    
+    # Shutdown: close database connection
+    await db_manager.close()
+    print("✅ Database connection closed")
+
+
+app = FastAPI(title="ScholarMap API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,7 +46,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-store = FileStore(settings.scholarmap_data_dir)
+# Use database store instead of file store
+store = DatabaseStore()
 
 
 class CreateProjectRequest(BaseModel):
@@ -65,48 +86,48 @@ def healthz() -> dict[str, str]:
 
 
 @app.get("/api/projects")
-def list_projects() -> dict:
-    projects = store.list_projects()
+async def list_projects() -> dict:
+    projects = await store.list_projects()
     return {"projects": [p.__dict__ for p in projects]}
 
 
 @app.post("/api/projects")
-def create_project(req: CreateProjectRequest) -> dict:
-    project = store.create_project(req.name)
+async def create_project(req: CreateProjectRequest) -> dict:
+    project = await store.create_project(req.name)
     return {"project": project.__dict__}
 
 
 @app.get("/api/projects/{project_id}")
-def get_project(project_id: str) -> dict:
-    project = store.get_project(project_id)
+async def get_project(project_id: str) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
-    runs = store.list_runs(project_id)
+    runs = await store.list_runs(project_id)
     return {"project": project.__dict__, "runs": [r.__dict__ for r in runs]}
 
 
 @app.post("/api/projects/{project_id}/runs")
-def create_run(project_id: str, req: CreateRunRequest) -> dict:
-    project = store.get_project(project_id)
+async def create_run(project_id: str, req: CreateRunRequest) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
-    run = store.create_run(project_id, req.research_description)
+    run = await store.create_run(project_id, req.research_description)
     return {"run": run.__dict__}
 
 
 @app.get("/api/projects/{project_id}/runs")
-def list_runs(project_id: str) -> dict:
-    project = store.get_project(project_id)
+async def list_runs(project_id: str) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
-    runs = store.list_runs(project_id)
+    runs = await store.list_runs(project_id)
     return {"runs": [r.__dict__ for r in runs]}
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/files/{filename}")
-def get_run_file(project_id: str, run_id: str, filename: str) -> dict:
+async def get_run_file(project_id: str, run_id: str, filename: str) -> dict:
     try:
-        data = store.read_run_file(project_id, run_id, filename)
+        data = await store.read_run_file(project_id, run_id, filename)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="File not found")
     except ValueError as e:
@@ -115,9 +136,9 @@ def get_run_file(project_id: str, run_id: str, filename: str) -> dict:
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/files")
-def list_run_files(project_id: str, run_id: str) -> dict:
+async def list_run_files(project_id: str, run_id: str) -> dict:
     try:
-        files = store.list_run_files(project_id, run_id)
+        files = await store.list_run_files(project_id, run_id)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     except ValueError as e:
@@ -142,14 +163,14 @@ async def phase1_query(project_id: str, run_id: str) -> dict:
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/research-description")
-def update_research_description(project_id: str, run_id: str, req: UpdateResearchDescriptionRequest) -> dict:
-    project = store.get_project(project_id)
+async def update_research_description(project_id: str, run_id: str, req: UpdateResearchDescriptionRequest) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
-        understanding = store.read_run_file(project_id, run_id, "understanding.json")
+        understanding = await store.read_run_file(project_id, run_id, "understanding.json")
         understanding["research_description"] = req.research_description
-        store.write_run_file(project_id, run_id, "understanding.json", understanding)
+        await store.write_run_file(project_id, run_id, "understanding.json", understanding)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True}
@@ -170,14 +191,14 @@ async def phase1_parse(project_id: str, run_id: str, req: UpdateResearchDescript
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/slots")
-def phase1_update_slots(project_id: str, run_id: str, req: UpdateSlotsRequest) -> dict:
-    project = store.get_project(project_id)
+async def phase1_update_slots(project_id: str, run_id: str, req: UpdateSlotsRequest) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
-        understanding = store.read_run_file(project_id, run_id, "understanding.json")
+        understanding = await store.read_run_file(project_id, run_id, "understanding.json")
         understanding["slots_normalized"] = req.slots_normalized.model_dump()
-        store.write_run_file(project_id, run_id, "understanding.json", understanding)
+        await store.write_run_file(project_id, run_id, "understanding.json", understanding)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True}
@@ -198,15 +219,15 @@ async def phase1_synonyms(project_id: str, run_id: str) -> dict:
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/keywords")
-def phase1_update_keywords(project_id: str, run_id: str, req: UpdateKeywordsRequest) -> dict:
-    project = store.get_project(project_id)
+async def phase1_update_keywords(project_id: str, run_id: str, req: UpdateKeywordsRequest) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
-        keywords = store.read_run_file(project_id, run_id, "keywords.json")
+        keywords = await store.read_run_file(project_id, run_id, "keywords.json")
         keywords["canonical_terms"] = req.canonical_terms
         keywords["synonyms"] = req.synonyms
-        store.write_run_file(project_id, run_id, "keywords.json", keywords)
+        await store.write_run_file(project_id, run_id, "keywords.json", keywords)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True}
@@ -227,26 +248,26 @@ async def phase1_query_build(project_id: str, run_id: str) -> dict:
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/queries")
-def phase1_update_queries(project_id: str, run_id: str, req: UpdateQueriesRequest) -> dict:
-    project = store.get_project(project_id)
+async def phase1_update_queries(project_id: str, run_id: str, req: UpdateQueriesRequest) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
-        store.write_run_file(project_id, run_id, "queries.json", req.model_dump())
+        await store.write_run_file(project_id, run_id, "queries.json", req.model_dump())
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True}
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/retrieval-framework")
-def phase1_update_retrieval_framework(project_id: str, run_id: str, req: UpdateRetrievalFrameworkRequest) -> dict:
-    project = store.get_project(project_id)
+async def phase1_update_retrieval_framework(project_id: str, run_id: str, req: UpdateRetrievalFrameworkRequest) -> dict:
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
-        understanding = store.read_run_file(project_id, run_id, "understanding.json")
+        understanding = await store.read_run_file(project_id, run_id, "understanding.json")
         understanding["retrieval_framework"] = req.retrieval_framework
-        store.write_run_file(project_id, run_id, "understanding.json", understanding)
+        await store.write_run_file(project_id, run_id, "understanding.json", understanding)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True}
