@@ -1,7 +1,7 @@
 export type Project = { project_id: string; name: string; created_at: string };
 export type Run = { run_id: string; created_at: string; description: string };
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
 async function readErrorDetail(res: Response): Promise<string> {
   const contentType = res.headers.get("content-type") || "";
