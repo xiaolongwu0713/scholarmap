@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   getRunFile,
@@ -51,8 +52,10 @@ function extractFinalPubMedQuery(text: string): string {
   return text.trim();
 }
 
-export default function RunPage({ params }: { params: { projectId: string; runId: string } }) {
-  const { projectId, runId } = params;
+export default function RunPage() {
+  const params = useParams();
+  const projectId = params.projectId as string;
+  const runId = params.runId as string;
 
   const [busy, setBusy] = useState<null | "parse" | "queryBuild" | "query" | "ingest">(null);
   const [error, setError] = useState<string | null>(null);

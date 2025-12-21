@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createRun } from "@/lib/api";
 
-export default function NewRunPage({ params }: { params: { projectId: string } }) {
-  const projectId = params.projectId;
+export default function NewRunPage() {
+  const params = useParams();
+  const projectId = params.projectId as string;
   const router = useRouter();
   const [desc, setDesc] = useState("");
   const [busy, setBusy] = useState(false);

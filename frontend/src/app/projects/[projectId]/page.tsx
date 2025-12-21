@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { getProject, type Run } from "@/lib/api";
 
-export default function ProjectPage({ params }: { params: { projectId: string } }) {
-  const projectId = params.projectId;
+export default function ProjectPage() {
+  const params = useParams();
+  const projectId = params.projectId as string;
   const [runs, setRuns] = useState<Run[]>([]);
   const [projectName, setProjectName] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
