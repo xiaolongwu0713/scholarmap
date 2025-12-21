@@ -24,7 +24,7 @@ def _utc_now_iso() -> str:
 
 
 def _enabled_sources() -> list[str]:
-    raw = (settings.scholarnet_enabled_sources or "").strip()
+    raw = (settings.scholarmap_enabled_sources or "").strip()
     if not raw:
         return ["pubmed"]
     items = [p.strip().lower() for p in raw.split(",") if p.strip()]
@@ -302,7 +302,7 @@ async def step_query_build(store: FileStore, project_id: str, run_id: str) -> Qu
 
 
 async def step_retrieve(store: FileStore, project_id: str, run_id: str) -> dict:
-    max_results = settings.scholarnet_max_results_per_source
+    max_results = settings.scholarmap_max_results_per_source
     queries_json = store.read_run_file(project_id, run_id, "queries.json")
     queries = QueryOutputs.model_validate(queries_json)
 

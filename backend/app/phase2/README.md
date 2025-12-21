@@ -45,7 +45,7 @@ This module implements the ingestion pipeline for Phase 2, which converts Phase 
          ▼
 ┌─────────────────┐
 │  SQLite DB      │  Tables: papers, authorship, run_papers
-│  (per-project)  │  Location: data/projects/{project_id}/scholarnet.db
+│  (per-project)  │  Location: data/projects/{project_id}/scholarmap.db
 └─────────────────┘
 ```
 
@@ -114,7 +114,7 @@ LLM extraction cache:
 - Easier backup/export
 - Clear data ownership
 
-**Location**: `data/projects/{project_id}/scholarnet.db`
+**Location**: `data/projects/{project_id}/scholarmap.db`
 
 ### 4. Rate Limiting
 
@@ -300,4 +300,3 @@ python -m mypy app/phase2
 # Integration test
 python test_phase2_ingestion.py ad280effc0b8 run_7b1d4766fd27
 ```
-

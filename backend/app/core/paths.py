@@ -22,5 +22,4 @@ def log_file_path() -> Path:
 def get_data_dir() -> Path:
     """Get data directory from config."""
     from app.core.config import settings
-    return Path(settings.scholarnet_data_dir).resolve()
-
+    return Path(settings.scholarmap_data_dir).resolve()

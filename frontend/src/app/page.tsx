@@ -31,7 +31,7 @@ export default function HomePage() {
   return (
     <div className="stack">
       <div className="card">
-        <h1>ScholarNet</h1>
+        <h1>ScholarMap</h1>
         <p className="muted">Create a project, then run searches from a research description.</p>
       </div>
 
@@ -65,4 +65,3 @@ export default function HomePage() {
     </div>
   );
 }
-

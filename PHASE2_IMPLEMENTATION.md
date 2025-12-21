@@ -118,7 +118,7 @@ POST /api/projects/{project_id}/runs/{run_id}/ingest
 
 ### ✅ Per-Project SQLite Database
 
-**Location:** `data/projects/{project_id}/scholarnet.db`
+**Location:** `data/projects/{project_id}/scholarmap.db`
 
 **Why:**
 - Simpler isolation & data ownership
@@ -165,7 +165,7 @@ OPENAI_API_KEY=sk-...
 PUBMED_API_KEY=your_key_here
 
 # Existing config
-SCHOLARNET_DATA_DIR=./data
+SCHOLARMAP_DATA_DIR=./data
 ```
 
 ## How to Use
@@ -469,7 +469,7 @@ Current implementation:
 
 2. **Inspect database:**
    ```bash
-   sqlite3 data/projects/ad280effc0b8/scholarnet.db
+   sqlite3 data/projects/ad280effc0b8/scholarmap.db
    SELECT country, COUNT(*) FROM authorship GROUP BY country;
    ```
 
@@ -484,4 +484,3 @@ See `backend/app/phase2/README.md` for detailed documentation.
 **Implementation by:** AI Assistant  
 **Date:** Dec 15, 2025  
 **Status:** ✅ Complete & Validated
-

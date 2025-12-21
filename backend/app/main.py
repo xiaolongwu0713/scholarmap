@@ -16,7 +16,7 @@ from app.phase2.database import Database
 from app.phase2.ingest import IngestionPipeline
 
 
-app = FastAPI(title="ScholarNet API")
+app = FastAPI(title="ScholarMap API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,7 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-store = FileStore(settings.scholarnet_data_dir)
+store = FileStore(settings.scholarmap_data_dir)
 
 
 class CreateProjectRequest(BaseModel):

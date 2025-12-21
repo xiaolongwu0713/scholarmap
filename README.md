@@ -1,4 +1,4 @@
-# ScholarNet
+# ScholarMap
 
 Monorepo:
 - `backend/`: FastAPI API server

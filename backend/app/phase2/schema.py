@@ -12,7 +12,7 @@ SCHEMA_VERSION = 1
 
 def get_db_path(project_id: str, data_dir: Path) -> Path:
     """Get database path for a project."""
-    return data_dir / "projects" / project_id / "scholarnet.db"
+    return data_dir / "projects" / project_id / "scholarmap.db"
 
 
 def init_database(db_path: Path) -> None:
@@ -157,4 +157,3 @@ def get_connection(db_path: Path) -> sqlite3.Connection:
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
-

@@ -23,7 +23,7 @@ class Geocoder:
     """
     
     NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
-    USER_AGENT = "ScholarNet/1.0"
+    USER_AGENT = "ScholarMap/1.0"
     RATE_LIMIT_DELAY = 1.0  # Nominatim requires 1 request per second
     
     def __init__(self, db_conn: sqlite3.Connection) -> None:
@@ -259,4 +259,3 @@ class Geocoder:
         except Exception as e:
             logger.error(f"Geocoding failed for institution '{query}': {e}")
             return None
-

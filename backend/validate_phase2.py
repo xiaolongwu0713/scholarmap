@@ -219,7 +219,7 @@ try:
     from app.core.storage import FileStore
     from app.core.config import settings
     
-    store = FileStore(settings.scholarnet_data_dir)
+    store = FileStore(settings.scholarmap_data_dir)
     
     # Check example project
     project = store.get_project("ad280effc0b8")
@@ -264,4 +264,3 @@ print("1. Install lxml: pip install lxml")
 print("2. Set OPENAI_API_KEY in .env")
 print("3. Run test script: python test_phase2_ingestion.py ad280effc0b8 run_7b1d4766fd27")
 print()
-

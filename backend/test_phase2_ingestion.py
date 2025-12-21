@@ -33,7 +33,7 @@ async def test_ingestion(project_id: str, run_id: str, force_refresh: bool = Fal
     print(f"Project ID: {project_id}")
     print(f"Run ID: {run_id}")
     print(f"Force refresh: {force_refresh}")
-    print(f"Data dir: {settings.scholarnet_data_dir}")
+    print(f"Data dir: {settings.scholarmap_data_dir}")
     print(f"PubMed API key: {'Yes' if settings.pubmed_api_key else 'No (rate limited to 3 rps)'}")
     print(f"OpenAI API key: {'Yes' if settings.openai_api_key else 'No (required!)'}")
     print("=" * 60)
@@ -46,7 +46,7 @@ async def test_ingestion(project_id: str, run_id: str, force_refresh: bool = Fal
     
     # Initialize
     data_dir = get_data_dir()
-    store = FileStore(settings.scholarnet_data_dir)
+    store = FileStore(settings.scholarmap_data_dir)
     
     # Check project/run exists
     project = store.get_project(project_id)
@@ -117,7 +117,7 @@ async def test_ingestion(project_id: str, run_id: str, force_refresh: bool = Fal
         
         print()
         print(f"Database location:")
-        print(f"  {data_dir / 'projects' / project_id / 'scholarnet.db'}")
+        print(f"  {data_dir / 'projects' / project_id / 'scholarmap.db'}")
         print()
         
         # Show some sample data
@@ -168,4 +168,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

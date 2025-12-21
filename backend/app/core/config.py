@@ -15,9 +15,9 @@ class Settings(BaseSettings):
     openai_reasoning_effort: str = "high"
     openai_api_base: str = "https://api.openai.com"
 
-    scholarnet_data_dir: str = "./data"
-    scholarnet_max_results_per_source: int = 500
-    scholarnet_enabled_sources: str = "pubmed"
+    scholarmap_data_dir: str = "./data"
+    scholarmap_max_results_per_source: int = 500
+    scholarmap_enabled_sources: str = "pubmed"
     semantic_scholar_api_key: str = ""
     openalex_mailto: str = ""
     

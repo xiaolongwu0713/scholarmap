@@ -1,0 +1,9 @@
+postgreSQL:
+hostname: dpg-d5408om3jp1c738ud660-a
+database name: scholarmap_db
+port:5432
+internal database URL: postgresql://scholarmap_db_user:eA7MfK5KbhHmwORToRe27Xa1ZHkXGRDM@dpg-d5408om3jp1c738ud660-a/scholarmap_db
+external database URL: postgresql://scholarmap_db_user:eA7MfK5KbhHmwORToRe27Xa1ZHkXGRDM@dpg-d5408om3jp1c738ud660-a.virginia-postgres.render.com/scholarmap_db
+Username: scholarmap_db_user
+password: eA7MfK5KbhHmwORToRe27Xa1ZHkXGRDM
+

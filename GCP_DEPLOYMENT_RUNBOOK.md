@@ -1,6 +1,6 @@
-# ScholarNet 上线操作手册（GCP 单机版）
+# ScholarMap 上线操作手册（GCP 单机版）
 
-目标：按最简路线把 ScholarNet 发布到公网：`Docker 化 → 云服务器部署 → 域名绑定 → HTTPS（Let’s Encrypt） → 对外开放`。  
+目标：按最简路线把 ScholarMap 发布到公网：`Docker 化 → 云服务器部署 → 域名绑定 → HTTPS（Let’s Encrypt） → 对外开放`。  
 默认：**不使用负载均衡**、**单台 VM**、**前后端同域名**（`/api` 反代到后端）。
 
 ---
@@ -32,7 +32,7 @@
 1) 打开 Artifact Registry → Create repository
 - Format：Docker
 - Location：选择一个 region（例如 `us-central1`）
-- Repository name：例如 `scholarnet`
+- Repository name：例如 `scholarmap`
 
 2) 本地登录并配置 Docker：
 - `gcloud auth login`
@@ -101,7 +101,7 @@ sudo usermod -aG docker $USER
 
 ### 6.2 生产环境变量（不要提交到 Git）
 
-建议在服务器放一个文件：`/opt/scholarnet/.env.prod`，内容类似：
+建议在服务器放一个文件：`/opt/scholarmap/.env.prod`，内容类似：
 
 ```bash
 # Backend
@@ -109,7 +109,7 @@ OPENAI_API_KEY=sk-...
 PUBMED_API_KEY=
 SEMANTIC_SCHOLAR_API_KEY=
 OPENALEX_MAILTO=
-SCHOLARNET_DATA_DIR=/app/data
+SCHOLARMAP_DATA_DIR=/app/data
 
 # Frontend
 NEXT_PUBLIC_API_BASE_URL=https://example.com
@@ -128,7 +128,7 @@ NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk-...
 ```bash
 PROJECT_ID=你的GCP项目ID
 REGION=us-central1
-REPO=scholarnet
+REPO=scholarmap
 ```
 
 再设置本次发布版本号（示例）：
@@ -163,37 +163,37 @@ docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/frontend:prod
 1) 在 VM 创建目录与数据目录（持久化）：
 
 ```bash
-sudo mkdir -p /opt/scholarnet
-sudo mkdir -p /var/lib/scholarnet/data
+sudo mkdir -p /opt/scholarmap
+sudo mkdir -p /var/lib/scholarmap/data
 ```
 
-2) 在 VM 写 `/opt/scholarnet/docker-compose.yml`（把 `PROJECT_ID/REGION` 换成你的）：
+2) 在 VM 写 `/opt/scholarmap/docker-compose.yml`（把 `PROJECT_ID/REGION` 换成你的）：
 
 ```yaml
 services:
   backend:
-    image: us-central1-docker.pkg.dev/PROJECT_ID/scholarnet/backend:prod-20251221-<gitsha>
+    image: us-central1-docker.pkg.dev/PROJECT_ID/scholarmap/backend:prod-20251221-<gitsha>
     env_file: .env.prod
     volumes:
-      - /var/lib/scholarnet/data:/app/data
+      - /var/lib/scholarmap/data:/app/data
     ports:
       - "127.0.0.1:8000:8000"
     restart: unless-stopped
 
   frontend:
-    image: us-central1-docker.pkg.dev/PROJECT_ID/scholarnet/frontend:prod-20251221-<gitsha>
+    image: us-central1-docker.pkg.dev/PROJECT_ID/scholarmap/frontend:prod-20251221-<gitsha>
     env_file: .env.prod
     ports:
       - "127.0.0.1:3000:3000"
     restart: unless-stopped
 ```
 
-3) 把你的环境变量文件放到 `/opt/scholarnet/.env.prod`（见第 6 步）
+3) 把你的环境变量文件放到 `/opt/scholarmap/.env.prod`（见第 6 步）
 
 4) 启动：
 
 ```bash
-cd /opt/scholarnet
+cd /opt/scholarmap
 docker compose pull
 docker compose up -d
 ```
@@ -213,12 +213,12 @@ curl -I http://127.0.0.1:3000
 
 1) 本地按第 7 步构建并 push 一个新版本 tag（例如 `VERSION=prod-20251221-<gitsha>`）
 
-2) 在 VM 上更新 `/opt/scholarnet/docker-compose.yml` 里的镜像 tag（backend/frontend 都改成新 `:$VERSION`）
+2) 在 VM 上更新 `/opt/scholarmap/docker-compose.yml` 里的镜像 tag（backend/frontend 都改成新 `:$VERSION`）
 
 3) 在 VM 执行发布：
 
 ```bash
-cd /opt/scholarnet
+cd /opt/scholarmap
 docker compose pull
 docker compose up -d
 ```
@@ -233,19 +233,19 @@ curl https://example.com/api/healthz
 ```
 
 建议把“当前线上版本号”记录在：
-- `/opt/scholarnet/docker-compose.yml`（镜像 tag 本身就是记录）
-- 或额外写一个 `/opt/scholarnet/VERSION` 文件（人工记录也行）
+- `/opt/scholarmap/docker-compose.yml`（镜像 tag 本身就是记录）
+- 或额外写一个 `/opt/scholarmap/VERSION` 文件（人工记录也行）
 
 ### 回滚（Rollback 到旧版本）
 
 回滚原则：**改回旧 tag + `up -d`**（数据卷不动，回滚只影响代码）。
 
-1) 在 VM 上把 `/opt/scholarnet/docker-compose.yml` 的镜像 tag 改回上一个稳定版本（例如从 `prod-20251221-abc123` 改回 `prod-20251215-def456`）
+1) 在 VM 上把 `/opt/scholarmap/docker-compose.yml` 的镜像 tag 改回上一个稳定版本（例如从 `prod-20251221-abc123` 改回 `prod-20251215-def456`）
 
 2) 执行回滚：
 
 ```bash
-cd /opt/scholarnet
+cd /opt/scholarmap
 docker compose pull
 docker compose up -d
 ```
@@ -277,7 +277,7 @@ curl https://example.com/api/healthz
 sudo apt-get install -y nginx
 ```
 
-写配置 `/etc/nginx/sites-available/scholarnet`（把 `example.com` 改成你的域名）：
+写配置 `/etc/nginx/sites-available/scholarmap`（把 `example.com` 改成你的域名）：
 
 ```nginx
 server {
@@ -303,7 +303,7 @@ server {
 启用并重载：
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/scholarnet /etc/nginx/sites-enabled/scholarnet
+sudo ln -s /etc/nginx/sites-available/scholarmap /etc/nginx/sites-enabled/scholarmap
 sudo nginx -t
 sudo systemctl reload nginx
 ```
@@ -341,7 +341,7 @@ sudo certbot renew --dry-run
 ## 第 12 步：上线后最小检查清单
 
 - GCP 防火墙：只开 `80/443`（`22` 建议限制到你的固定 IP）
-- 数据持久化：确认 `/var/lib/scholarnet/data` 持续增长且容器重启后数据仍在
+- 数据持久化：确认 `/var/lib/scholarmap/data` 持续增长且容器重启后数据仍在
 - 前端调用后端：确认 `NEXT_PUBLIC_API_BASE_URL=https://example.com` 已生效（前端需要重建镜像或重新启动容器后才会生效）
 
 ---
