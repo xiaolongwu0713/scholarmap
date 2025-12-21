@@ -11,12 +11,12 @@ import httpx
 from app.core.config import settings
 from app.core.paths import get_data_dir
 from app.db.connection import db_manager
+from app.db.repository import AuthorshipRepository, RunPaperRepository
 from app.db.service import DatabaseStore
 from app.phase1.models import Slots
 from app.phase1.steps import step_parse, step_query_build, step_retrieve, step_synonyms
-from app.phase2.aggregations import MapAggregator
-from app.phase2.database import Database
-from app.phase2.ingest import IngestionPipeline
+from app.phase2.pg_aggregations import PostgresMapAggregator
+from app.phase2.pg_ingest import PostgresIngestionPipeline
 
 
 @asynccontextmanager
@@ -282,44 +282,45 @@ class IngestRequest(BaseModel):
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/authorship/stats")
-def phase2_authorship_stats(project_id: str, run_id: str) -> dict:
+async def phase2_authorship_stats(project_id: str, run_id: str) -> dict:
     """
     Get authorship statistics for a run (check if data exists).
     
     Returns summary stats from existing authorship data in database,
     or null if no data exists yet.
     """
-    project = store.get_project(project_id)
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
     try:
-        data_dir = get_data_dir()
-        db = Database(project_id, data_dir)
-        conn = db.get_conn()
-        
-        try:
+        async with db_manager.session() as session:
+            run_paper_repo = RunPaperRepository(session)
+            auth_repo = AuthorshipRepository(session)
+            
             # Get PMIDs for this run
-            pmids = db.get_run_pmids(run_id)
+            pmids = await run_paper_repo.get_run_pmids(run_id)
             
             if not pmids:
-                # No data for this run yet
                 return {"stats": None}
             
-            pmid_filter = ",".join(f"'{p}'" for p in pmids)
-            
             # Get stats from database
-            stats = conn.execute(f"""
-                SELECT 
-                    COUNT(DISTINCT pmid) as papers_parsed,
-                    COUNT(*) as authorships_created,
-                    COUNT(DISTINCT affiliation_raw_joined) as unique_affiliations,
-                    SUM(CASE WHEN country IS NOT NULL THEN 1 ELSE 0 END) as affiliations_with_country
-                FROM authorship
-                WHERE pmid IN ({pmid_filter})
-            """).fetchone()
+            from sqlalchemy import and_, func, select
+            from app.db.models import Authorship
             
-            if not stats or stats["papers_parsed"] == 0:
+            query = select(
+                func.count(func.distinct(Authorship.pmid)).label('papers_parsed'),
+                func.count().label('authorships_created'),
+                func.count(func.distinct(Authorship.affiliation_raw_joined)).label('unique_affiliations'),
+                func.sum(func.case((Authorship.country.isnot(None), 1), else_=0)).label('affiliations_with_country')
+            ).where(
+                Authorship.pmid.in_(pmids)
+            )
+            
+            result = await session.execute(query)
+            stats = result.one()
+            
+            if not stats or stats.papers_parsed == 0:
                 return {"stats": None}
             
             # Build response matching IngestStats format
@@ -329,17 +330,14 @@ def phase2_authorship_stats(project_id: str, run_id: str) -> dict:
                     "total_pmids": len(pmids),
                     "pmids_cached": len(pmids),
                     "pmids_fetched": 0,
-                    "papers_parsed": stats["papers_parsed"],
-                    "authorships_created": stats["authorships_created"],
-                    "unique_affiliations": stats["unique_affiliations"],
-                    "affiliations_with_country": stats["affiliations_with_country"],
+                    "papers_parsed": stats.papers_parsed,
+                    "authorships_created": stats.authorships_created,
+                    "unique_affiliations": stats.unique_affiliations,
+                    "affiliations_with_country": stats.affiliations_with_country or 0,
                     "llm_calls_made": 0,
                     "errors": []
                 }
             }
-            
-        finally:
-            conn.close()
             
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get stats: {str(e)}")
@@ -351,21 +349,19 @@ async def phase2_ingest(project_id: str, run_id: str, req: IngestRequest = Inges
     Ingest papers from Phase 1 into authorship database.
     
     This endpoint:
-    1. Loads PMIDs from results_aggregated.json
+    1. Loads PMIDs from Phase 1 results
     2. Fetches PubMed XML (with caching)
     3. Parses authors and affiliations
     4. Extracts geographic data via LLM
-    5. Stores in SQLite database
+    5. Stores in PostgreSQL database
     """
-    project = store.get_project(project_id)
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
     try:
-        data_dir = get_data_dir()
-        pipeline = IngestionPipeline(
+        pipeline = PostgresIngestionPipeline(
             project_id=project_id,
-            data_dir=data_dir,
             api_key=settings.pubmed_api_key or None
         )
         
@@ -405,20 +401,19 @@ async def phase2_map_world(
         "country": "United States",
         "scholar_count": 123,
         "paper_count": 88,
-        "institution_count": 40
+        "institution_count": 40,
+        "latitude": 37.0,
+        "longitude": -95.7
       },
       ...
     ]
     """
-    project = store.get_project(project_id)
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
     try:
-        data_dir = get_data_dir()
-        db = Database(project_id, data_dir)
-        aggregator = MapAggregator(db)
-        
+        aggregator = PostgresMapAggregator()
         data = await aggregator.get_world_map(run_id, min_confidence)
         return {"data": data}
         
@@ -445,23 +440,21 @@ async def phase2_map_country(
     Returns:
     [
       {
-        "country": "United States",
         "city": "Boston",
         "scholar_count": 30,
-        "institution_count": 12
+        "institution_count": 12,
+        "latitude": 42.3,
+        "longitude": -71.0
       },
       ...
     ]
     """
-    project = store.get_project(project_id)
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
     try:
-        data_dir = get_data_dir()
-        db = Database(project_id, data_dir)
-        aggregator = MapAggregator(db)
-        
+        aggregator = PostgresMapAggregator()
         data = await aggregator.get_country_map(run_id, country, min_confidence)
         return {"data": data}
         
@@ -470,7 +463,7 @@ async def phase2_map_country(
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/map/city/{country}/{city}")
-def phase2_map_city(
+async def phase2_map_city(
     project_id: str,
     run_id: str,
     country: str,
@@ -490,24 +483,19 @@ def phase2_map_city(
     Returns:
     [
       {
-        "country": "United States",
-        "city": "Boston",
         "institution": "Harvard Medical School",
         "scholar_count": 12
       },
       ...
     ]
     """
-    project = store.get_project(project_id)
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
     try:
-        data_dir = get_data_dir()
-        db = Database(project_id, data_dir)
-        aggregator = MapAggregator(db)
-        
-        data = aggregator.get_city_map(run_id, country, city, min_confidence)
+        aggregator = PostgresMapAggregator()
+        data = await aggregator.get_city_map(run_id, country, city, min_confidence)
         return {"data": data}
         
     except Exception as e:
@@ -515,63 +503,51 @@ def phase2_map_city(
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/map/institution")
-def phase2_map_institution(
+async def phase2_map_institution(
     project_id: str,
     run_id: str,
     institution: str,
     country: str | None = None,
     city: str | None = None,
-    min_confidence: str = "low",
-    limit: int = 100,
-    offset: int = 0
+    min_confidence: str = "low"
 ) -> dict:
     """
-    Get scholar list for an institution with career metrics.
+    Get scholar list for an institution.
     
     Query params:
     - institution: Institution name (required)
-    - country: Country filter (optional)
-    - city: City filter (optional)
+    - country: Country filter (required)
+    - city: City filter (required)
     - min_confidence: Minimum confidence level (high/medium/low/none), default "low"
-    - limit: Max results per page, default 100
-    - offset: Pagination offset, default 0
     
     Returns:
     {
       "scholars": [
         {
-          "name": "Smith, John",
-          "paper_count": 5,
-          "career_start_year": 2018,
-          "career_end_year": 2024,
-          "is_likely_pi": true
+          "scholar_name": "Smith, John",
+          "paper_count": 5
         },
         ...
-      ],
-      "total_count": 45,
-      "limit": 100,
-      "offset": 0
+      ]
     }
     """
-    project = store.get_project(project_id)
+    project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
+    if not country or not city:
+        raise HTTPException(status_code=400, detail="country and city are required")
+    
     try:
-        data_dir = get_data_dir()
-        db = Database(project_id, data_dir)
-        aggregator = MapAggregator(db)
-        
-        data = aggregator.get_institution_scholars(
+        aggregator = PostgresMapAggregator()
+        data = await aggregator.get_institution_scholars(
             run_id=run_id,
-            institution=institution,
             country=country,
             city=city,
-            min_confidence=min_confidence,
-            limit=limit,
-            offset=offset
+            institution=institution,
+            min_confidence=min_confidence
         )
-        return data
+        return {"scholars": data}
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Aggregation failed: {str(e)}")
