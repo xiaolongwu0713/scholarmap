@@ -114,6 +114,19 @@ class DatabaseStore:
                 return run.results or {}
             elif filename == "retrieval_framework.json":
                 return {"retrieval_framework": run.retrieval_framework or ""}
+            # Support result files stored in results JSON
+            elif filename == "results_pubmed.json":
+                results = run.results or {}
+                return results.get("pubmed", {"items": [], "count": 0})
+            elif filename == "results_semantic_scholar.json":
+                results = run.results or {}
+                return results.get("semantic_scholar", {"items": [], "count": 0})
+            elif filename == "results_openalex.json":
+                results = run.results or {}
+                return results.get("openalex", {"items": [], "count": 0})
+            elif filename == "results_aggregated.json":
+                results = run.results or {}
+                return results.get("aggregated", {"items": [], "count": 0})
             else:
                 raise FileNotFoundError(f"File {filename} not found")
     
@@ -142,6 +155,35 @@ class DatabaseStore:
                     run_id,
                     data.get("retrieval_framework", "")
                 )
+            # Support result files - merge into results JSON
+            elif filename == "results_pubmed.json":
+                run = await repo.get_run(run_id)
+                if not run:
+                    raise FileNotFoundError(f"Run {run_id} not found")
+                results = run.results or {}
+                results["pubmed"] = data
+                await repo.update_results(run_id, results)
+            elif filename == "results_semantic_scholar.json":
+                run = await repo.get_run(run_id)
+                if not run:
+                    raise FileNotFoundError(f"Run {run_id} not found")
+                results = run.results or {}
+                results["semantic_scholar"] = data
+                await repo.update_results(run_id, results)
+            elif filename == "results_openalex.json":
+                run = await repo.get_run(run_id)
+                if not run:
+                    raise FileNotFoundError(f"Run {run_id} not found")
+                results = run.results or {}
+                results["openalex"] = data
+                await repo.update_results(run_id, results)
+            elif filename == "results_aggregated.json":
+                run = await repo.get_run(run_id)
+                if not run:
+                    raise FileNotFoundError(f"Run {run_id} not found")
+                results = run.results or {}
+                results["aggregated"] = data
+                await repo.update_results(run_id, results)
             else:
                 raise ValueError(f"Invalid filename: {filename}")
     
@@ -163,6 +205,16 @@ class DatabaseStore:
                 files.append("queries.json")
             if run.results:
                 files.append("results.json")
+                # Add individual result files if they exist
+                results = run.results or {}
+                if "pubmed" in results:
+                    files.append("results_pubmed.json")
+                if "semantic_scholar" in results:
+                    files.append("results_semantic_scholar.json")
+                if "openalex" in results:
+                    files.append("results_openalex.json")
+                if "aggregated" in results:
+                    files.append("results_aggregated.json")
             if run.retrieval_framework:
                 files.append("retrieval_framework.json")
             
