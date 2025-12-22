@@ -183,6 +183,7 @@ class DatabaseStore:
                     raise FileNotFoundError(f"Run {run_id} not found")
                 results = run.results or {}
                 results["aggregated"] = data
+                # Ensure we preserve other result sources
                 await repo.update_results(run_id, results)
             else:
                 raise ValueError(f"Invalid filename: {filename}")
