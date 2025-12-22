@@ -191,13 +191,13 @@ async def step_parse(store: FileStore, project_id: str, run_id: str, research_de
         {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": framework},
     )
 
-    understanding = store.read_run_file(project_id, run_id, "understanding.json")
+    understanding = await store.read_run_file(project_id, run_id, "understanding.json")
     understanding["research_description"] = research_description
     understanding["retrieval_framework"] = framework
     understanding["parse_updated_at"] = _utc_now_iso()
     understanding["clarification_questions"] = []
-    store.write_run_file(project_id, run_id, "understanding.json", understanding)
-    store.write_run_file(
+    await store.write_run_file(project_id, run_id, "understanding.json", understanding)
+    await store.write_run_file(
         project_id,
         run_id,
         "retrieval_framework.json",
@@ -209,7 +209,7 @@ async def step_parse(store: FileStore, project_id: str, run_id: str, research_de
 
 async def step_synonyms(store: FileStore, project_id: str, run_id: str, slots_normalized: Slots | None = None) -> dict:
     if slots_normalized is None:
-        understanding = store.read_run_file(project_id, run_id, "understanding.json")
+        understanding = await store.read_run_file(project_id, run_id, "understanding.json")
         slots_normalized = Slots.model_validate(understanding.get("slots_normalized") or {})
 
     canonical_terms = _canonical_terms_from_slots(slots_normalized)
@@ -243,16 +243,16 @@ async def step_synonyms(store: FileStore, project_id: str, run_id: str, slots_no
             merged.append(ss)
         synonyms[term] = merged[:20]
 
-    keywords = store.read_run_file(project_id, run_id, "keywords.json")
+    keywords = await store.read_run_file(project_id, run_id, "keywords.json")
     keywords["canonical_terms"] = canonical_terms
     keywords["synonyms"] = synonyms
     keywords["updated_at"] = _utc_now_iso()
-    store.write_run_file(project_id, run_id, "keywords.json", keywords)
+    await store.write_run_file(project_id, run_id, "keywords.json", keywords)
     return {"canonical_terms": canonical_terms, "synonyms": synonyms}
 
 
 async def step_query_build(store: FileStore, project_id: str, run_id: str) -> QueryOutputs:
-    understanding = store.read_run_file(project_id, run_id, "understanding.json")
+    understanding = await store.read_run_file(project_id, run_id, "understanding.json")
     framework = (understanding.get("retrieval_framework") or "").strip()
     if not framework:
         raise RuntimeError("Retrieval framework is empty. Run 'Parse' first.")
@@ -297,13 +297,13 @@ async def step_query_build(store: FileStore, project_id: str, run_id: str) -> Qu
         openalex=openalex_query,
     )
 
-    store.write_run_file(project_id, run_id, "queries.json", {**queries.model_dump(), "updated_at": _utc_now_iso()})
+    await store.write_run_file(project_id, run_id, "queries.json", {**queries.model_dump(), "updated_at": _utc_now_iso()})
     return queries
 
 
 async def step_retrieve(store: FileStore, project_id: str, run_id: str) -> dict:
     max_results = settings.scholarmap_max_results_per_source
-    queries_json = store.read_run_file(project_id, run_id, "queries.json")
+    queries_json = await store.read_run_file(project_id, run_id, "queries.json")
     queries = QueryOutputs.model_validate(queries_json)
 
     if not (queries.pubmed or queries.semantic_scholar or queries.openalex):
@@ -321,9 +321,9 @@ async def step_retrieve(store: FileStore, project_id: str, run_id: str) -> dict:
     if "openalex" in enabled:
         oa = await search_openalex(queries.openalex, max_results=max_results)
 
-    store.write_run_file(project_id, run_id, "results_pubmed.json", {"items": serialize_papers(pubmed), "count": len(pubmed)})
-    store.write_run_file(project_id, run_id, "results_semantic_scholar.json", {"items": serialize_papers(s2), "count": len(s2)})
-    store.write_run_file(project_id, run_id, "results_openalex.json", {"items": serialize_papers(oa), "count": len(oa)})
+    await store.write_run_file(project_id, run_id, "results_pubmed.json", {"items": serialize_papers(pubmed), "count": len(pubmed)})
+    await store.write_run_file(project_id, run_id, "results_semantic_scholar.json", {"items": serialize_papers(s2), "count": len(s2)})
+    await store.write_run_file(project_id, run_id, "results_openalex.json", {"items": serialize_papers(oa), "count": len(oa)})
 
     papers_by_source = {"pubmed": pubmed, "semantic_scholar": s2, "openalex": oa}
     counts = {k: len(v) for k, v in papers_by_source.items()}
@@ -331,7 +331,7 @@ async def step_retrieve(store: FileStore, project_id: str, run_id: str) -> dict:
     if enabled == ["pubmed"]:
         pubmed_serialized = serialize_papers(pubmed)
         aggregated = _aggregate_single_source(pubmed_serialized, "pubmed")
-        store.write_run_file(
+        await store.write_run_file(
             project_id,
             run_id,
             "results_aggregated.json",
@@ -340,6 +340,6 @@ async def step_retrieve(store: FileStore, project_id: str, run_id: str) -> dict:
         return {"counts": counts, "aggregated_count": len(aggregated), "max_results_per_source": max_results, "enabled_sources": enabled}
 
     aggregated, _ = aggregate_by_doi(papers_by_source)
-    store.write_run_file(project_id, run_id, "results_aggregated.json", {"items": aggregated, "count": len(aggregated), "dedupe_key": "doi"})
+    await store.write_run_file(project_id, run_id, "results_aggregated.json", {"items": aggregated, "count": len(aggregated), "dedupe_key": "doi"})
 
     return {"counts": counts, "aggregated_count": len(aggregated), "max_results_per_source": max_results, "enabled_sources": enabled}
