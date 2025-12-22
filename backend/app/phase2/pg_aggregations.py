@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from sqlalchemy import and_, func, select, text
+from sqlalchemy import and_, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.connection import db_manager
@@ -285,8 +285,8 @@ class PostgresMapAggregator:
         levels_map = {
             "high": ["high"],
             "medium": ["high", "medium"],
-            "low": ["high", "medium", "low"],
+            "low": ["high", "medium", "low", "none"],  # Include "none" for "low" to show fallback data
             "none": ["high", "medium", "low", "none"]
         }
-        return levels_map.get(min_confidence, ["high", "medium", "low"])
+        return levels_map.get(min_confidence, ["high", "medium", "low", "none"])
 

@@ -178,12 +178,20 @@ class DatabaseStore:
                 results["openalex"] = data
                 await repo.update_results(run_id, results)
             elif filename == "results_aggregated.json":
+                # CRITICAL: Re-read the run to get the latest results data
+                # This ensures we have the most up-to-date data including pubmed, etc.
+                # that may have been written in previous write_run_file calls
                 run = await repo.get_run(run_id)
                 if not run:
                     raise FileNotFoundError(f"Run {run_id} not found")
-                results = run.results or {}
+                # Refresh the object from database to ensure we have latest data
+                await session.refresh(run)
+                # Get existing results and merge aggregated data
+                # IMPORTANT: Create a new dict to avoid mutating the original
+                # This ensures we preserve all existing result sources (pubmed, semantic_scholar, openalex)
+                results = dict(run.results) if run.results else {}
                 results["aggregated"] = data
-                # Ensure we preserve other result sources
+                # Update results - this will merge with existing data
                 await repo.update_results(run_id, results)
             else:
                 raise ValueError(f"Invalid filename: {filename}")

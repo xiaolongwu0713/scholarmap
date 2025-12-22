@@ -139,4 +139,45 @@ class PubMedFetcher:
         
         logger.info(f"Fetched {len(xml_results)}/{len(batches)} batches successfully")
         return xml_results
+    
+    async def fetch_batch(self, pmids: list[str]) -> dict[str, str]:
+        """
+        Fetch multiple PMIDs and return as a dictionary mapping PMID to XML.
+        
+        Args:
+            pmids: List of PubMed IDs to fetch
+        
+        Returns:
+            Dictionary mapping PMID to XML string (each XML contains one article)
+        """
+        if not pmids:
+            return {}
+        
+        # Fetch XML batches (each batch contains multiple articles)
+        xml_batches = await self.fetch_pmids(pmids)
+        
+        # Parse each batch and extract individual articles
+        result: dict[str, str] = {}
+        
+        for xml_text in xml_batches:
+            try:
+                import xml.etree.ElementTree as ET
+                root = ET.fromstring(xml_text)
+                
+                # Extract each article from the batch
+                for article_elem in root.findall(".//PubmedArticle"):
+                    # Extract PMID
+                    pmid_elem = article_elem.find(".//MedlineCitation/PMID")
+                    if pmid_elem is not None and pmid_elem.text:
+                        pmid = pmid_elem.text.strip()
+                        # Wrap article in a minimal XML structure for parsing
+                        # The parser expects PubmedArticleSet > PubmedArticle
+                        article_xml = f'<?xml version="1.0"?><PubmedArticleSet>{ET.tostring(article_elem, encoding="unicode")}</PubmedArticleSet>'
+                        result[pmid] = article_xml
+            except Exception as e:
+                logger.error(f"Failed to parse XML batch: {e}")
+                continue
+        
+        logger.info(f"Extracted {len(result)} PMIDs from {len(xml_batches)} batches")
+        return result
 

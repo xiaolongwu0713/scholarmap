@@ -310,14 +310,14 @@ async def phase2_authorship_stats(project_id: str, run_id: str) -> dict:
                 return {"stats": None}
             
             # Get stats from database
-            from sqlalchemy import and_, func, select
+            from sqlalchemy import case, func, select
             from app.db.models import Authorship
             
             query = select(
                 func.count(func.distinct(Authorship.pmid)).label('papers_parsed'),
                 func.count().label('authorships_created'),
                 func.count(func.distinct(Authorship.affiliation_raw_joined)).label('unique_affiliations'),
-                func.sum(func.case((Authorship.country.isnot(None), 1), else_=0)).label('affiliations_with_country')
+                func.sum(case((Authorship.country.isnot(None), 1), else_=0)).label('affiliations_with_country')
             ).where(
                 Authorship.pmid.in_(pmids)
             )
@@ -364,7 +364,11 @@ async def phase2_ingest(project_id: str, run_id: str, req: IngestRequest = Inges
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
+    import logging
+    logger = logging.getLogger(__name__)
+    
     try:
+        logger.info(f"Starting ingestion for project {project_id}, run {run_id}")
         pipeline = PostgresIngestionPipeline(
             project_id=project_id,
             api_key=settings.pubmed_api_key or None
@@ -376,11 +380,14 @@ async def phase2_ingest(project_id: str, run_id: str, req: IngestRequest = Inges
             force_refresh=req.force_refresh
         )
         
+        logger.info(f"Ingestion completed: {stats.model_dump()}")
         return {"stats": stats.model_dump()}
         
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        logger.error(f"File not found: {e}")
         raise HTTPException(status_code=404, detail="Run not found")
     except Exception as e:
+        logger.error(f"Ingestion failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
 
 

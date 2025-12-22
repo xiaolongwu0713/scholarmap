@@ -81,7 +81,7 @@ class AffiliationExtractor:
             return results
             
         except Exception as e:
-            logger.error(f"LLM extraction failed: {e}")
+            logger.error(f"LLM extraction failed: {e}", exc_info=True)
             return self._fallback_results(affiliations)
     
     def _parse_llm_response(

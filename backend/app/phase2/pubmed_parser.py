@@ -48,6 +48,20 @@ class PubMedXMLParser:
         logger.info(f"Parsed {len(papers)} papers from XML batch")
         return papers
     
+    def parse_articles(self, xml_text: str) -> list[ParsedPaper]:
+        """
+        Parse XML (can be a single article or a batch).
+        
+        This is an alias for parse_xml_batch for compatibility.
+        
+        Args:
+            xml_text: XML string (single article or batch)
+        
+        Returns:
+            List of ParsedPaper objects
+        """
+        return self.parse_xml_batch(xml_text)
+    
     def _parse_article(self, article_elem: ET.Element) -> ParsedPaper | None:
         """Parse a single PubmedArticle element."""
         citation = article_elem.find(".//MedlineCitation")

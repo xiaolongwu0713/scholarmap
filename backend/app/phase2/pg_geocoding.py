@@ -1,4 +1,4 @@
-"""PostgreSQL-based geocoding with caching."""
+"""PostgreSQL-based geocoding (simplified, no cache)."""
 from __future__ import annotations
 
 import asyncio
@@ -8,14 +8,11 @@ from typing import Tuple
 from geopy.adapters import AioHTTPAdapter
 from geopy.geocoders import Nominatim
 
-from app.db.connection import db_manager
-from app.db.repository import GeocodingCacheRepository
-
 logger = logging.getLogger(__name__)
 
 
 class PostgresGeocoder:
-    """Async geocoder with PostgreSQL caching."""
+    """Async geocoder (no cache, always fresh)."""
     
     def __init__(self) -> None:
         self._geocoder: Nominatim | None = None
@@ -38,7 +35,7 @@ class PostgresGeocoder:
         city: str | None = None
     ) -> Tuple[float, float] | None:
         """
-        Get latitude/longitude for a location.
+        Get latitude/longitude for a location (no cache).
         
         Args:
             country: Country name
@@ -47,21 +44,6 @@ class PostgresGeocoder:
         Returns:
             Tuple of (latitude, longitude) or None if not found
         """
-        location_key = f"{country}|{city or ''}"
-        
-        # Check cache first
-        async with db_manager.session() as session:
-            cache_repo = GeocodingCacheRepository(session)
-            cached = await cache_repo.get_cached(location_key)
-            
-            if cached:
-                if cached.latitude and cached.longitude:
-                    return (cached.latitude, cached.longitude)
-                else:
-                    # Cached as "not found"
-                    return None
-        
-        # Geocode
         try:
             query = f"{city}, {country}" if city else country
             geocoder = await self._get_geocoder()
@@ -74,32 +56,11 @@ class PostgresGeocoder:
             if location:
                 coords = (location.latitude, location.longitude)
                 logger.info(f"Geocoded '{query}' -> {coords}")
+                return coords
             else:
-                coords = None
                 logger.warning(f"Could not geocode '{query}'")
-            
-            # Cache result
-            async with db_manager.session() as session:
-                cache_repo = GeocodingCacheRepository(session)
-                await cache_repo.cache_location(
-                    location_key=location_key,
-                    latitude=coords[0] if coords else None,
-                    longitude=coords[1] if coords else None
-                )
-            
-            return coords
+                return None
             
         except Exception as e:
-            logger.error(f"Geocoding failed for '{location_key}': {e}")
-            
-            # Cache as failed
-            async with db_manager.session() as session:
-                cache_repo = GeocodingCacheRepository(session)
-                await cache_repo.cache_location(
-                    location_key=location_key,
-                    latitude=None,
-                    longitude=None
-                )
-            
+            logger.error(f"Geocoding failed for '{country}, {city}': {e}")
             return None
-

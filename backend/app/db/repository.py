@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import (
@@ -238,6 +238,23 @@ class AuthorshipRepository:
             affiliation_confidence=affiliation_confidence
         )
         self.session.add(authorship)
+    
+    async def get_authorships_by_pmids(self, pmids: list[str]) -> list[Authorship]:
+        """Get authorships for given PMIDs."""
+        if not pmids:
+            return []
+        result = await self.session.execute(
+            select(Authorship).where(Authorship.pmid.in_(pmids))
+        )
+        return list(result.scalars().all())
+    
+    async def delete_authorships_by_pmids(self, pmids: list[str]) -> None:
+        """Delete all authorships for given PMIDs."""
+        if not pmids:
+            return
+        await self.session.execute(
+            delete(Authorship).where(Authorship.pmid.in_(pmids))
+        )
 
 
 class RunPaperRepository:
@@ -248,9 +265,15 @@ class RunPaperRepository:
     
     async def link_run_to_papers(self, run_id: str, pmids: list[str]) -> None:
         """Link a run to multiple papers."""
+        # First, delete existing links for this run
+        await self.session.execute(
+            delete(RunPaper).where(RunPaper.run_id == run_id)
+        )
+        
+        # Then insert new links
         for pmid in pmids:
             run_paper = RunPaper(run_id=run_id, pmid=pmid)
-            await self.session.merge(run_paper)
+            self.session.add(run_paper)
     
     async def get_run_pmids(self, run_id: str) -> list[str]:
         """Get all PMIDs for a run."""
