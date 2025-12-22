@@ -174,6 +174,8 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     setError(null);
     try {
       const data = await getWorldMap(projectId, runId);
+      console.log("World map data loaded:", data);
+      console.log("Countries with coordinates:", data.filter(c => c.latitude !== null && c.longitude !== null).length);
       setWorldData(data);
     } catch (e) {
       setError(String(e));
@@ -285,8 +287,8 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
             </tr>
           </thead>
           <tbody>
-            {worldData.slice(0, 20).map((c) => (
-              <tr key={c.country}>
+            {worldData.slice(0, 20).map((c, index) => (
+              <tr key={`${c.country}-${index}`}>
                 <td>{c.country}</td>
                 <td>{c.scholar_count}</td>
                 <td>{c.paper_count}</td>
@@ -319,8 +321,8 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
             </tr>
           </thead>
           <tbody>
-            {countryData.slice(0, 20).map((c) => (
-              <tr key={c.city}>
+            {countryData.slice(0, 20).map((c, index) => (
+              <tr key={`${c.city}-${index}`}>
                 <td>{c.city}</td>
                 <td>{c.scholar_count}</td>
                 <td>{c.institution_count}</td>
@@ -422,63 +424,60 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
   function renderMarkers() {
     if (level === "world") {
       // Show country markers
-      return worldData.map((country) => {
-        // Use coordinates from API response
-        if (country.latitude === null || country.longitude === null) {
-          return null;
-        }
+      const validCountries = worldData.filter((country) => country.latitude !== null && country.longitude !== null);
+      console.log("Rendering markers for", validCountries.length, "countries");
+      
+      return validCountries.map((country, index) => {
+          const size = getMarkerSize(country.scholar_count);
+          const { bg, shadow } = getMarkerColor(country.scholar_count);
+          const fontSize = Math.max(12, size / 4);
 
-        const size = getMarkerSize(country.scholar_count);
-        const { bg, shadow } = getMarkerColor(country.scholar_count);
-        const fontSize = Math.max(12, size / 4);
-
-        return (
-          <Marker
-            key={country.country}
-            longitude={country.longitude}
-            latitude={country.latitude}
-            anchor="center"
-          >
-            <div
-              className="map-marker"
-              style={{
-                background: bg,
-                color: "white",
-                width: `${size}px`,
-                height: `${size}px`,
-                fontSize: `${fontSize}px`,
-                boxShadow: shadow
-              }}
-              onClick={() => drillToCountry(country.country)}
-              onMouseEnter={() =>
-                setPopupInfo({
-                  longitude: country.longitude!,
-                  latitude: country.latitude!,
-                  name: country.country,
-                  count: country.scholar_count
-                })
-              }
-              onMouseLeave={() => setPopupInfo(null)}
+          return (
+            <Marker
+              key={`${country.country}-${index}-${country.longitude}-${country.latitude}`}
+              longitude={country.longitude!}
+              latitude={country.latitude!}
+              anchor="center"
             >
-              {country.scholar_count}
-            </div>
-          </Marker>
-        );
-      });
+              <div
+                className="map-marker"
+                style={{
+                  background: bg,
+                  color: "white",
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  fontSize: `${fontSize}px`,
+                  boxShadow: shadow,
+                  lineHeight: `${size}px`,
+                  textAlign: "center"
+                }}
+                onClick={() => drillToCountry(country.country)}
+                onMouseEnter={() =>
+                  setPopupInfo({
+                    longitude: country.longitude!,
+                    latitude: country.latitude!,
+                    name: country.country,
+                    count: country.scholar_count
+                  })
+                }
+                onMouseLeave={() => setPopupInfo(null)}
+              >
+                {country.scholar_count}
+              </div>
+            </Marker>
+          );
+        });
     } else if (level === "country" && selectedCountry) {
       // Show city markers
-      return countryData.map((city) => {
-        // Use coordinates from API response
-        if (city.latitude === null || city.longitude === null) {
-          return null;
-        }
+      return countryData
+        .filter((city) => city.latitude !== null && city.longitude !== null)
+        .map((city, index) => {
+          const size = getMarkerSize(city.scholar_count);
+          const { bg, shadow } = getMarkerColor(city.scholar_count);
+          const fontSize = Math.max(12, size / 4);
 
-        const size = getMarkerSize(city.scholar_count);
-        const { bg, shadow } = getMarkerColor(city.scholar_count);
-        const fontSize = Math.max(12, size / 4);
-
-        return (
-          <Marker key={city.city} longitude={city.longitude} latitude={city.latitude} anchor="center">
+          return (
+            <Marker key={`${city.city}-${index}-${city.longitude}-${city.latitude}`} longitude={city.longitude!} latitude={city.latitude!} anchor="center">
             <div
               className="map-marker"
               style={{
@@ -487,7 +486,9 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                 width: `${size}px`,
                 height: `${size}px`,
                 fontSize: `${fontSize}px`,
-                boxShadow: shadow
+                boxShadow: shadow,
+                lineHeight: `${size}px`,
+                textAlign: "center"
               }}
               onClick={() => drillToCity(selectedCountry, city.city)}
               onMouseEnter={() =>

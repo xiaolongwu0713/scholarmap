@@ -93,21 +93,36 @@ class PostgresMapAggregator:
             result = await session.execute(query)
             rows = result.all()
             
-            # Add geocoding
+            # Add geocoding and merge normalized countries
             geocoder = self._get_geocoder()
-            items = []
+            country_map: dict[str, dict[str, Any]] = {}
+            
             for row in rows:
                 country = normalize_country(row.country)
-                if country:
+                if not country:
+                    continue
+                
+                # Merge countries with same normalized name
+                if country in country_map:
+                    # Aggregate counts
+                    country_map[country]["scholar_count"] += row.scholar_count
+                    country_map[country]["paper_count"] += row.paper_count
+                    country_map[country]["institution_count"] += row.institution_count
+                else:
+                    # First occurrence, get coordinates
                     coords = await geocoder.get_coordinates(country, None)
-                    items.append({
+                    country_map[country] = {
                         "country": country,
                         "scholar_count": row.scholar_count,
                         "paper_count": row.paper_count,
                         "institution_count": row.institution_count,
                         "latitude": coords[0] if coords else None,
                         "longitude": coords[1] if coords else None
-                    })
+                    }
+            
+            # Convert to list and sort by scholar_count
+            items = list(country_map.values())
+            items.sort(key=lambda x: x["scholar_count"], reverse=True)
             
             return items
     

@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from typing import Tuple
 
-from geopy.adapters import AioHTTPAdapter
 from geopy.geocoders import Nominatim
 
 logger = logging.getLogger(__name__)
@@ -17,16 +17,15 @@ class PostgresGeocoder:
     def __init__(self) -> None:
         self._geocoder: Nominatim | None = None
         self._rate_limit_delay = 1.0  # Nominatim requires 1 second between requests
+        self._executor = ThreadPoolExecutor(max_workers=1)  # Single worker for rate limiting
     
-    async def _get_geocoder(self) -> Nominatim:
-        """Lazy initialize geocoder."""
+    def _get_geocoder(self) -> Nominatim:
+        """Lazy initialize geocoder (synchronous)."""
         if self._geocoder is None:
-            async with AioHTTPAdapter() as adapter:
-                self._geocoder = Nominatim(
-                    user_agent="ScholarMap/1.0",
-                    adapter_factory=lambda: adapter,
-                    timeout=10
-                )
+            self._geocoder = Nominatim(
+                user_agent="ScholarMap/1.0",
+                timeout=10
+            )
         return self._geocoder
     
     async def get_coordinates(
@@ -46,12 +45,17 @@ class PostgresGeocoder:
         """
         try:
             query = f"{city}, {country}" if city else country
-            geocoder = await self._get_geocoder()
             
             # Rate limiting
             await asyncio.sleep(self._rate_limit_delay)
             
-            location = await geocoder.geocode(query)
+            # Run synchronous geocoding in thread pool
+            loop = asyncio.get_event_loop()
+            geocoder = self._get_geocoder()
+            location = await loop.run_in_executor(
+                self._executor,
+                lambda: geocoder.geocode(query)
+            )
             
             if location:
                 coords = (location.latitude, location.longitude)
