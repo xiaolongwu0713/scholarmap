@@ -331,6 +331,22 @@ class GeocodingCacheRepository:
         )
         return result.scalar_one_or_none()
     
+    async def get_batch_cached(self, location_keys: list[str]) -> dict[str, GeocodingCache]:
+        """Batch fetch cached geocoding data for multiple location keys.
+        
+        Returns a dict mapping location_key -> GeocodingCache (only for keys that exist in cache).
+        """
+        if not location_keys:
+            return {}
+        
+        result = await self.session.execute(
+            select(GeocodingCache).where(
+                GeocodingCache.location_key.in_(location_keys)
+            )
+        )
+        cached_items = result.scalars().all()
+        return {item.location_key: item for item in cached_items}
+    
     async def cache_location(
         self,
         location_key: str,
@@ -344,4 +360,21 @@ class GeocodingCacheRepository:
             longitude=longitude
         )
         await self.session.merge(cache)
+    
+    async def cache_locations_batch(
+        self,
+        locations: dict[str, tuple[float | None, float | None]]
+    ) -> None:
+        """Batch cache multiple locations.
+        
+        Args:
+            locations: Dict mapping location_key -> (latitude, longitude)
+        """
+        for location_key, (latitude, longitude) in locations.items():
+            cache = GeocodingCache(
+                location_key=location_key,
+                latitude=latitude,
+                longitude=longitude
+            )
+            await self.session.merge(cache)
 

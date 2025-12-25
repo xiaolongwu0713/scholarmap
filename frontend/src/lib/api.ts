@@ -200,11 +200,14 @@ export type CityMapData = {
 };
 
 export type Scholar = {
-  name: string;
+  scholar_name: string;
   paper_count: number;
-  career_start_year: number | null;
-  career_end_year: number | null;
-  is_likely_pi: boolean;
+  papers: Array<{
+    pmid: string;
+    title: string;
+    year: number | null;
+    doi: string | null;
+  }>;
 };
 
 export async function getAuthorshipStats(

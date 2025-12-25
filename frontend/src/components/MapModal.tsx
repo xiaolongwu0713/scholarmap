@@ -14,7 +14,7 @@ import {
   type Scholar
 } from "@/lib/api";
 
-type MapLevel = "world" | "country" | "city" | "institution";
+type MapLevel = "world" | "country" | "city";
 
 type Props = {
   projectId: string;
@@ -141,11 +141,13 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
   const [countryData, setCountryData] = useState<CountryMapData[]>([]);
   const [cityData, setCityData] = useState<CityMapData[]>([]);
   const [scholars, setScholars] = useState<Scholar[]>([]);
+  const [showScholarModal, setShowScholarModal] = useState(false);
+  const [selectedInstitutionName, setSelectedInstitutionName] = useState<string | null>(null);
+  const [expandedPapers, setExpandedPapers] = useState<Set<string>>(new Set());
 
   // Navigation state
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [selectedInstitution, setSelectedInstitution] = useState<string | null>(null);
 
   // Map state
   const [viewState, setViewState] = useState({
@@ -193,14 +195,52 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
       setSelectedCountry(country);
       setLevel("country");
 
-      // Zoom to country
-      const coords = COUNTRY_COORDS[country];
-      if (coords) {
+      // Calculate bounds from city coordinates to show entire country
+      const citiesWithCoords = data.filter(c => c.latitude !== null && c.longitude !== null);
+      if (citiesWithCoords.length > 0) {
+        const longitudes = citiesWithCoords.map(c => c.longitude!);
+        const latitudes = citiesWithCoords.map(c => c.latitude!);
+        
+        const minLon = Math.min(...longitudes);
+        const maxLon = Math.max(...longitudes);
+        const minLat = Math.min(...latitudes);
+        const maxLat = Math.max(...latitudes);
+        
+        // Calculate center
+        const centerLon = (minLon + maxLon) / 2;
+        const centerLat = (minLat + maxLat) / 2;
+        
+        // Calculate zoom level based on bounding box
+        // Approximate formula: larger bounding box = lower zoom
+        const lonDiff = maxLon - minLon;
+        const latDiff = maxLat - minLat;
+        const maxDiff = Math.max(lonDiff, latDiff);
+        
+        // Zoom levels: larger countries get lower zoom (more zoomed out)
+        // Rough mapping: 0.1 degrees ≈ zoom 7, 1 degree ≈ zoom 5, 10 degrees ≈ zoom 3
+        let zoom = 5;
+        if (maxDiff > 20) zoom = 3;
+        else if (maxDiff > 10) zoom = 4;
+        else if (maxDiff > 5) zoom = 5;
+        else if (maxDiff > 2) zoom = 6;
+        else if (maxDiff > 1) zoom = 7;
+        else zoom = 8;
+        
         setViewState({
-          longitude: coords[0],
-          latitude: coords[1],
-          zoom: 5
+          longitude: centerLon,
+          latitude: centerLat,
+          zoom: zoom
         });
+      } else {
+        // Fallback to country center if no city coordinates
+        const coords = COUNTRY_COORDS[country];
+        if (coords) {
+          setViewState({
+            longitude: coords[0],
+            latitude: coords[1],
+            zoom: 5
+          });
+        }
       }
     } catch (e) {
       setError(String(e));
@@ -217,6 +257,26 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
       setCityData(data);
       setSelectedCity(city);
       setLevel("city");
+      
+      // Find city coordinates from countryData to zoom to city
+      const cityInfo = countryData.find(c => c.city === city && c.latitude !== null && c.longitude !== null);
+      if (cityInfo) {
+        setViewState({
+          longitude: cityInfo.longitude!,
+          latitude: cityInfo.latitude!,
+          zoom: 10 // Zoom in closer for city view
+        });
+      } else {
+        // Fallback to CITY_COORDS if not found in countryData
+        const coords = CITY_COORDS[city];
+        if (coords) {
+          setViewState({
+            longitude: coords[0],
+            latitude: coords[1],
+            zoom: 10
+          });
+        }
+      }
     } catch (e) {
       setError(String(e));
     } finally {
@@ -230,8 +290,9 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     try {
       const data = await getInstitutionScholars(projectId, runId, institution, country, city);
       setScholars(data.scholars);
-      setSelectedInstitution(institution);
-      setLevel("institution");
+      setSelectedInstitutionName(institution);
+      setShowScholarModal(true);
+      setExpandedPapers(new Set()); // Reset expanded papers when opening modal
     } catch (e) {
       setError(String(e));
     } finally {
@@ -240,12 +301,56 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
   }
 
   function goBack() {
-    if (level === "institution") {
-      setLevel("city");
-      setSelectedInstitution(null);
-    } else if (level === "city") {
+    if (level === "city") {
       setLevel("country");
       setSelectedCity(null);
+      
+      // Zoom back to show entire country
+      if (selectedCountry && countryData.length > 0) {
+        const citiesWithCoords = countryData.filter(c => c.latitude !== null && c.longitude !== null);
+        if (citiesWithCoords.length > 0) {
+          const longitudes = citiesWithCoords.map(c => c.longitude!);
+          const latitudes = citiesWithCoords.map(c => c.latitude!);
+          
+          const minLon = Math.min(...longitudes);
+          const maxLon = Math.max(...longitudes);
+          const minLat = Math.min(...latitudes);
+          const maxLat = Math.max(...latitudes);
+          
+          // Calculate center
+          const centerLon = (minLon + maxLon) / 2;
+          const centerLat = (minLat + maxLat) / 2;
+          
+          // Calculate zoom level based on bounding box
+          const lonDiff = maxLon - minLon;
+          const latDiff = maxLat - minLat;
+          const maxDiff = Math.max(lonDiff, latDiff);
+          
+          let zoom = 5;
+          if (maxDiff > 20) zoom = 3;
+          else if (maxDiff > 10) zoom = 4;
+          else if (maxDiff > 5) zoom = 5;
+          else if (maxDiff > 2) zoom = 6;
+          else if (maxDiff > 1) zoom = 7;
+          else zoom = 8;
+          
+          setViewState({
+            longitude: centerLon,
+            latitude: centerLat,
+            zoom: zoom
+          });
+        } else {
+          // Fallback to country center if no city coordinates
+          const coords = COUNTRY_COORDS[selectedCountry];
+          if (coords) {
+            setViewState({
+              longitude: coords[0],
+              latitude: coords[1],
+              zoom: 5
+            });
+          }
+        }
+      }
     } else if (level === "country") {
       setLevel("world");
       setSelectedCountry(null);
@@ -257,7 +362,6 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     const crumbs = ["World"];
     if (selectedCountry) crumbs.push(selectedCountry);
     if (selectedCity) crumbs.push(selectedCity);
-    if (selectedInstitution) crumbs.push(selectedInstitution);
 
     return (
       <div style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14 }}>
@@ -283,7 +387,6 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
               <th>Scholars</th>
               <th>Papers</th>
               <th>Institutions</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -293,11 +396,6 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                 <td>{c.scholar_count}</td>
                 <td>{c.paper_count}</td>
                 <td>{c.institution_count}</td>
-                <td>
-                  <button className="secondary" onClick={() => drillToCountry(c.country)}>
-                    Drill →
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -317,7 +415,6 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
               <th>City</th>
               <th>Scholars</th>
               <th>Institutions</th>
-              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -326,11 +423,6 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                 <td>{c.city}</td>
                 <td>{c.scholar_count}</td>
                 <td>{c.institution_count}</td>
-                <td>
-                  <button className="secondary" onClick={() => drillToCity(c.country, c.city)}>
-                    Drill →
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
@@ -373,33 +465,157 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     );
   }
 
-  function renderScholarList() {
-    if (!scholars.length) return <div className="muted">No scholars found</div>;
-
+  
+  const togglePaper = (pmid: string) => {
+    const newExpanded = new Set(expandedPapers);
+    if (newExpanded.has(pmid)) {
+      newExpanded.delete(pmid);
+    } else {
+      newExpanded.add(pmid);
+    }
+    setExpandedPapers(newExpanded);
+  };
+  
+  function renderScholarModal() {
+    if (!showScholarModal || !scholars.length || !selectedInstitutionName) return null;
+    
     return (
-      <div style={{ maxHeight: 400, overflow: "auto" }}>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Papers</th>
-              <th>Career</th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          <tbody>
-            {scholars.map((s, idx) => (
-              <tr key={idx}>
-                <td>{s.name}</td>
-                <td>{s.paper_count}</td>
-                <td>
-                  {s.career_start_year || "?"} - {s.career_end_year || "?"}
-                </td>
-                <td>{s.is_likely_pi ? "👑 PI" : ""}</td>
-              </tr>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 2000,
+          padding: 20
+        }}
+        onClick={() => setShowScholarModal(false)}
+      >
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: 8,
+            width: "90%",
+            maxWidth: 1000,
+            maxHeight: "90%",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden"
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div
+            style={{
+              padding: "20px 24px",
+              borderBottom: "2px solid #e5e7eb",
+              background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
+          >
+            <div>
+              <h2 style={{ margin: 0, marginBottom: "8px" }}>📚 {selectedInstitutionName}</h2>
+              <div style={{ color: "#6b7280", fontSize: 14 }}>
+                {scholars.length} scholar{scholars.length !== 1 ? 's' : ''}
+              </div>
+            </div>
+            <button className="secondary" onClick={() => setShowScholarModal(false)} style={{ fontSize: "15px" }}>
+              ✕ Close
+            </button>
+          </div>
+          
+          {/* Scholars and Papers List */}
+          <div style={{ flex: 1, overflow: "auto", padding: 20 }}>
+            {scholars.map((scholar, scholarIdx) => (
+              <div
+                key={scholar.scholar_name}
+                style={{
+                  marginBottom: 32,
+                  padding: 20,
+                  border: "2px solid #e5e7eb",
+                  borderRadius: 12,
+                  backgroundColor: "#ffffff"
+                }}
+              >
+                {/* Scholar Header */}
+                <div style={{ marginBottom: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb" }}>
+                  <h3 style={{ margin: 0, marginBottom: 4, color: "#111827", fontSize: 18, fontWeight: 600 }}>
+                    {scholar.scholar_name}
+                  </h3>
+                  <div style={{ color: "#6b7280", fontSize: 14 }}>
+                    {scholar.paper_count} paper{scholar.paper_count !== 1 ? 's' : ''}
+                  </div>
+                </div>
+                
+                {/* Papers List */}
+                <div>
+                  {scholar.papers.map((paper, paperIdx) => (
+                    <div
+                      key={paper.pmid}
+                      style={{
+                        marginBottom: 12,
+                        padding: 12,
+                        border: "1px solid #e5e7eb",
+                        borderRadius: 8,
+                        backgroundColor: "#fafafa"
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          cursor: "pointer"
+                        }}
+                        onClick={() => togglePaper(paper.pmid)}
+                      >
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: 600, marginBottom: 6, color: "#111827", fontSize: 14 }}>
+                            {paper.title || `Paper ${paperIdx + 1}`}
+                          </div>
+                          <div style={{ fontSize: 12, color: "#6b7280" }}>
+                            {paper.year && <span>Year: {paper.year}</span>}
+                            {paper.doi && (
+                              <span style={{ marginLeft: 12 }}>
+                                DOI: <a href={`https://doi.org/${paper.doi}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+                                  {paper.doi}
+                                </a>
+                              </span>
+                            )}
+                            {paper.pmid && (
+                              <span style={{ marginLeft: 12 }}>
+                                PMID: <a href={`https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+                                  {paper.pmid}
+                                </a>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div style={{ marginLeft: 12, color: "#6b7280", fontSize: 16, minWidth: 24, textAlign: "center" }}>
+                          {expandedPapers.has(paper.pmid) ? "▼" : "▶"}
+                        </div>
+                      </div>
+                      {expandedPapers.has(paper.pmid) && (
+                        <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #e5e7eb" }}>
+                          <div style={{ color: "#6b7280", fontSize: 13, fontStyle: "italic" }}>
+                            Abstract not available in database
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
     );
   }
@@ -468,7 +684,7 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
           );
         });
     } else if (level === "country" && selectedCountry) {
-      // Show city markers
+      // Show city markers (no popup for country level)
       return countryData
         .filter((city) => city.latitude !== null && city.longitude !== null)
         .map((city, index) => {
@@ -491,15 +707,6 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                 textAlign: "center"
               }}
               onClick={() => drillToCity(selectedCountry, city.city)}
-              onMouseEnter={() =>
-                setPopupInfo({
-                  longitude: city.longitude!,
-                  latitude: city.latitude!,
-                  name: city.city,
-                  count: city.scholar_count
-                })
-              }
-              onMouseLeave={() => setPopupInfo(null)}
             >
               {city.scholar_count}
             </div>
@@ -512,22 +719,23 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.7)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1000,
-        padding: 20
-      }}
-      onClick={onClose}
-    >
+    <div>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000,
+          padding: 20
+        }}
+        onClick={onClose}
+      >
       <div
         style={{
           backgroundColor: "white",
@@ -574,6 +782,31 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
         <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
           {/* Map (left side) */}
           <div style={{ flex: 1, position: "relative" }}>
+            {/* Fixed country info box (only visible in country view) */}
+            {level === "country" && selectedCountry && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 20,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  zIndex: 10,
+                  backgroundColor: "white",
+                  padding: "16px 20px",
+                  borderRadius: "12px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                  border: "2px solid #e5e7eb",
+                  pointerEvents: "none"
+                }}
+              >
+                <div style={{ fontSize: "20px", fontWeight: 700, color: "#111827", marginBottom: "4px" }}>
+                  {selectedCountry}
+                </div>
+                <div style={{ fontSize: "14px", color: "#6b7280" }}>
+                  👥 {countryData.reduce((sum, city) => sum + city.scholar_count, 0)} scholars
+                </div>
+              </div>
+            )}
             {mapboxToken ? (
               <Map
                 {...viewState}
@@ -584,7 +817,7 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
               >
                 {renderMarkers()}
 
-                {popupInfo && (
+                {popupInfo && level !== "country" && (
                   <Popup
                     longitude={popupInfo.longitude}
                     latitude={popupInfo.latitude}
@@ -650,7 +883,7 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
             <div style={{ padding: 20, borderBottom: "2px solid #e5e7eb", background: "white" }}>
               {level !== "world" && (
                 <button className="secondary" onClick={goBack} style={{ marginBottom: 12, width: "100%" }}>
-                  ← Back to {level === "institution" ? "Cities" : level === "city" ? "Cities" : "World"}
+                  ← Back to {level === "city" ? "Country" : "World"}
                 </button>
               )}
               {loading && (
@@ -682,11 +915,14 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
               {level === "world" && renderWorldList()}
               {level === "country" && renderCountryList()}
               {level === "city" && renderCityList()}
-              {level === "institution" && renderScholarList()}
             </div>
           </div>
         </div>
       </div>
+      </div>
+      
+      {/* Scholar Details Modal */}
+      {renderScholarModal()}
     </div>
   );
 }

@@ -4,6 +4,16 @@ Monorepo:
 - `backend/`: FastAPI API server
 - `frontend/`: Next.js web app
 
+## Standard Directory Structure
+
+For consistency across different machines, the project should be located at:
+
+```bash
+~/mydrive/code/maker/ScholarMap/
+```
+
+All paths in the codebase use relative paths from the repository root to ensure portability.
+
 ## Local dev
 
 1) Create `.env` from `.env.example` and fill keys.

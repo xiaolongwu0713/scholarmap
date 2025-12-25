@@ -20,6 +20,14 @@ def log_file_path() -> Path:
 
 
 def get_data_dir() -> Path:
-    """Get data directory from config."""
+    """Get data directory from config.
+    
+    If the path is relative, it's resolved relative to the repository root.
+    If absolute, it's used as-is.
+    """
     from app.core.config import settings
-    return Path(settings.scholarmap_data_dir).resolve()
+    data_dir = Path(settings.scholarmap_data_dir)
+    if data_dir.is_absolute():
+        return data_dir
+    # Resolve relative paths from repo root
+    return (find_repo_root() / data_dir).resolve()
