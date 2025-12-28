@@ -10,7 +10,7 @@ const distDir = isLongsMac
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  distDir: distDir,
+
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,

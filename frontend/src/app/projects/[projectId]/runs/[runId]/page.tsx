@@ -44,12 +44,77 @@ type AggregatedItem = {
   sources?: string[];
 };
 
+type ChatMessage = {
+  role: "user" | "system";
+  content: string;
+};
+
 function extractFinalPubMedQuery(text: string): string {
   const m = text.match(/##\s*Final Combined PubMed Query[\s\S]*?```text\s*([\s\S]*?)\s*```/i);
   if (m?.[1]) return m[1].trim();
   const m2 = text.match(/```text\s*([\s\S]*?)\s*```/i);
   if (m2?.[1]) return m2[1].trim();
   return text.trim();
+}
+
+function validateQC1(text: string): { ok: boolean; reason?: string } {
+  const s = text.trim();
+  if (!s) return { ok: false, reason: "Input is empty." };
+
+  if (s.length < 50 || s.length > 200) {
+    return { ok: false, reason: "Length must be 50–200 characters." };
+  }
+
+  const newlineCount = (s.match(/\n/g) || []).length;
+  if (newlineCount > 5) {
+    return { ok: false, reason: "Too many line breaks (max 5)." };
+  }
+
+  if (/[^\x00-\x7F]/.test(s)) {
+    return { ok: false, reason: "Must be English only (ASCII characters)." };
+  }
+
+  if (/<[^>]+>/.test(s)) {
+    return { ok: false, reason: "HTML / rich-text tags are not allowed." };
+  }
+
+  if (/\[[^\]]+\]\([^)]+\)/.test(s)) {
+    return { ok: false, reason: "Markdown links are not allowed." };
+  }
+
+  if (/(https?:\/\/|www\.)\S+/i.test(s)) {
+    return { ok: false, reason: "URLs are not allowed." };
+  }
+
+  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(s)) {
+    return { ok: false, reason: "Email addresses are not allowed." };
+  }
+
+  if (/\b(?:\+?\d[\d\s().-]{7,}\d)\b/.test(s)) {
+    return { ok: false, reason: "Phone numbers are not allowed." };
+  }
+
+  if (/\b(wechat|weixin|wxid|vx)\b/i.test(s)) {
+    return { ok: false, reason: "WeChat IDs are not allowed." };
+  }
+
+  if (!/[A-Za-z]/.test(s)) {
+    return { ok: false, reason: "Must contain English words (letters A–Z)." };
+  }
+
+  if (/\d{6,}/.test(s)) {
+    return { ok: false, reason: "Long consecutive numbers are not allowed." };
+  }
+
+  if (/(.)\1{5,}/i.test(s)) {
+    return { ok: false, reason: "Repeated characters are not allowed." };
+  }
+
+  if (/[A-Za-z]{25,}/.test(s)) {
+    return { ok: false, reason: "Long consecutive letters are not allowed." };
+  }
+
+  return { ok: true };
 }
 
 export default function RunPage() {
@@ -65,6 +130,13 @@ export default function RunPage() {
   const [showMap, setShowMap] = useState(false);
 
   const [researchDescription, setResearchDescription] = useState("");
+  const [qc1Mode, setQc1Mode] = useState(false);
+  const [qc1Draft, setQc1Draft] = useState("");
+  const [qc1Latest, setQc1Latest] = useState("");
+  const [qc1Attempts, setQc1Attempts] = useState(0);
+  const [qc1Locked, setQc1Locked] = useState(false);
+  const [qc1Reason, setQc1Reason] = useState<string | null>(null);
+  const [qc1Messages, setQc1Messages] = useState<ChatMessage[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
   const [frameworkText, setFrameworkText] = useState<string>("");
   const [pubmedQueryText, setPubmedQueryText] = useState<string>("");
@@ -151,10 +223,47 @@ export default function RunPage() {
   }, [projectId, runId, rawSelected]);
 
   async function onParse() {
-    setBusy("parse");
     setError(null);
+    setQc1Mode(true);
+
+    const maxAttempts = 3;
+    const source = qc1Mode ? qc1Draft : researchDescription;
+    const input = source.trim();
+
+    setQc1Latest(input);
+    setQc1Draft(input);
+
+    const result = validateQC1(input);
+    const nextAttempts = qc1Attempts + 1;
+    setQc1Attempts(nextAttempts);
+    setQc1Reason(result.ok ? null : result.reason || "Invalid input.");
+
+    setQc1Messages((prev) => [
+      ...prev,
+      { role: "user", content: input },
+      {
+        role: "system",
+        content: result.ok ? "QC1 passed." : `QC1 failed: ${result.reason || "Invalid input."}`
+      }
+    ]);
+
+    if (!result.ok) {
+      if (nextAttempts >= maxAttempts) {
+        setQc1Locked(true);
+        setQc1Messages((prev) => [
+          ...prev,
+          { role: "system", content: "Too many invalid attempts. Input has been disabled." }
+        ]);
+      }
+      return;
+    }
+
+    setQc1Locked(false);
+    setResearchDescription(input);
+
+    setBusy("parse");
     try {
-      const res = await parseRun(projectId, runId, researchDescription.trim());
+      const res = await parseRun(projectId, runId, input);
       const d = res.data;
       setQuestions([]);
       setFrameworkText(String(d.retrieval_framework || ""));
@@ -423,26 +532,124 @@ export default function RunPage() {
             <h2 style={{ margin: 0 }}>🔍 Research Description</h2>
             <div className="muted">Define your research question in natural language</div>
           </div>
-          {researchDescription && (
-            <span className="badge">{researchDescription.length} chars</span>
+          {(qc1Mode ? qc1Latest : researchDescription) && (
+            <span className="badge">{(qc1Mode ? qc1Latest : researchDescription).length} chars</span>
           )}
         </div>
-        <textarea
-          rows={5}
-          value={researchDescription}
-          onChange={(e) => setResearchDescription(e.target.value)}
-          placeholder="Example: I am working on invasive speech brain-computer interface decoding using ECoG and sEEG..."
-          style={{ fontSize: "15px" }}
-        />
-        <div className="row" style={{ justifyContent: "center" }}>
-          <button
-            onClick={onParse}
-            disabled={busy !== null || !researchDescription.trim()}
-            className="gradient-blue"
-          >
-            {busy === "parse" ? "🔄 Parsing…" : "✨ Parse & Generate Framework"}
-          </button>
-        </div>
+        {!qc1Mode ? (
+          <>
+            <textarea
+              rows={5}
+              value={researchDescription}
+              onChange={(e) => setResearchDescription(e.target.value)}
+              placeholder="Example: I am working on invasive speech brain-computer interface decoding using ECoG and sEEG..."
+              style={{ fontSize: "15px" }}
+            />
+            <div className="row" style={{ justifyContent: "center" }}>
+              <button
+                onClick={() => {
+                  setQc1Draft(researchDescription);
+                  onParse();
+                }}
+                disabled={busy !== null || !researchDescription.trim()}
+                className="gradient-blue"
+              >
+                {busy === "parse" ? "🔄 Parsing…" : "parse"}
+              </button>
+            </div>
+          </>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="stack" style={{ gap: 10 }}>
+              <div className="row" style={{ justifyContent: "space-between" }}>
+                <div className="muted">Dialogue (QC1)</div>
+                <div className="muted" style={{ fontSize: 12 }}>
+                  Attempts: {qc1Attempts}/3
+                </div>
+              </div>
+
+              {qc1Reason ? (
+                <div
+                  style={{
+                    padding: "10px 12px",
+                    background: "#fee2e2",
+                    border: "1px solid #fecaca",
+                    borderRadius: "10px",
+                    color: "#dc2626",
+                    fontSize: "13px"
+                  }}
+                >
+                  ⚠️ {qc1Reason}
+                </div>
+              ) : null}
+
+              <div
+                style={{
+                  border: "1px solid rgba(0,0,0,0.08)",
+                  borderRadius: 12,
+                  padding: 12,
+                  background: "rgba(255,255,255,0.6)",
+                  maxHeight: 220,
+                  overflow: "auto"
+                }}
+              >
+                {qc1Messages.length ? (
+                  <div className="stack" style={{ gap: 8 }}>
+                    {qc1Messages.map((m, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          padding: "10px 12px",
+                          borderRadius: 12,
+                          whiteSpace: "pre-wrap",
+                          background: m.role === "user" ? "#e0f2fe" : "#f1f5f9",
+                          border: "1px solid rgba(0,0,0,0.06)"
+                        }}
+                      >
+                        <div className="muted" style={{ fontSize: 11, marginBottom: 4 }}>
+                          {m.role === "user" ? "You" : "System"}
+                        </div>
+                        <div style={{ fontSize: 13 }}>{m.content || "(empty)"}</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="muted">No messages yet.</div>
+                )}
+              </div>
+
+              <div className="stack" style={{ gap: 8 }}>
+                <textarea
+                  rows={4}
+                  value={qc1Draft}
+                  onChange={(e) => setQc1Draft(e.target.value)}
+                  disabled={qc1Locked || busy !== null}
+                  placeholder={qc1Locked ? "Input disabled after 3 invalid attempts." : "Revise and click parse again..."}
+                  style={{ fontSize: "14px" }}
+                />
+                <div className="row" style={{ justifyContent: "center" }}>
+                  <button
+                    onClick={onParse}
+                    disabled={qc1Locked || busy !== null || !qc1Draft.trim()}
+                    className="gradient-blue"
+                  >
+                    {busy === "parse" ? "🔄 Parsing…" : "parse"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="stack" style={{ gap: 10 }}>
+              <div className="muted">Latest research description</div>
+              <textarea
+                readOnly
+                rows={12}
+                value={qc1Latest}
+                style={{ fontSize: "14px", whiteSpace: "pre-wrap", opacity: 0.95 }}
+              />
+            </div>
+          </div>
+        )}
         {questions.length ? (
           <div className="stack">
             <div className="muted">Clarification questions (if any):</div>

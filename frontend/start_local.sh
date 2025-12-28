@@ -16,6 +16,13 @@ EOF
     echo "✅ Created .env.local"
 fi
 
+# Check if node_modules exists, if not install dependencies
+if [ ! -d "node_modules" ]; then
+    echo "📦 Installing dependencies..."
+    npm install
+    echo "✅ Dependencies installed"
+fi
+
 # Start Next.js development server
 echo "🚀 Starting Frontend server on http://localhost:3000"
 echo ""
