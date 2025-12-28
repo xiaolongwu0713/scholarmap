@@ -1,4 +1,4 @@
-# 产品需求文档（PRD）：基于研究描述的自动文献检索系统
+# 产品需求文档（PRD）：基于研究描述的自动文献检索系统 (Actual product is different from this document.)
 
 ## 1. 产品概述
 
