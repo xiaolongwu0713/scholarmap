@@ -7,6 +7,9 @@ import {
   getRunFile,
   listRunFiles,
   parseRun,
+  textValidate,
+  parseStage1,
+  parseStage2,
   runQuery,
   runQueryBuild,
   updateQueries,
@@ -49,6 +52,44 @@ type ChatMessage = {
   content: string;
 };
 
+type ParseResult = {
+  plausibility_level: "A_impossible" | "B_plausible";
+  is_research_description: boolean;
+  is_clear_for_search: boolean;
+  normalized_understanding: string;
+  structured_summary: {
+    domain: string | null;
+    task: string | null;
+    subject_system: string | null;
+    methods: string | null;
+    scope: string | null;
+    intent: string | null;
+    exclusions: string | null;
+  };
+  uncertainties: string[];
+  missing_fields: string[];
+  suggested_questions: Array<{
+    field: string;
+    question: string;
+  }>;
+  guidance_to_user: string;
+};
+
+function validateClientInput(text: string): string[] {
+  const s = text ?? "";
+  const trimmed = s.trim();
+  const issues: string[] = [];
+
+  if (trimmed.length < 50 || trimmed.length > 300) issues.push("50–300 chars");
+  if ((s.match(/\n/g) || []).length >= 3) issues.push("max 2 newlines");
+  if (/<[^>]+>/.test(s)) issues.push("no HTML");
+  if (/\[[^\]]+\]\([^)]+\)/.test(s)) issues.push("no links");
+  if (/(https?:\/\/|www\.)\S+/i.test(s)) issues.push("no URL");
+  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(s)) issues.push("no email");
+
+  return issues;
+}
+
 function extractFinalPubMedQuery(text: string): string {
   const m = text.match(/##\s*Final Combined PubMed Query[\s\S]*?```text\s*([\s\S]*?)\s*```/i);
   if (m?.[1]) return m[1].trim();
@@ -57,72 +98,14 @@ function extractFinalPubMedQuery(text: string): string {
   return text.trim();
 }
 
-function validateQC1(text: string): { ok: boolean; reason?: string } {
-  const s = text.trim();
-  if (!s) return { ok: false, reason: "Input is empty." };
-
-  if (s.length < 50 || s.length > 200) {
-    return { ok: false, reason: "Length must be 50–200 characters." };
-  }
-
-  const newlineCount = (s.match(/\n/g) || []).length;
-  if (newlineCount > 5) {
-    return { ok: false, reason: "Too many line breaks (max 5)." };
-  }
-
-  if (/[^\x00-\x7F]/.test(s)) {
-    return { ok: false, reason: "Must be English only (ASCII characters)." };
-  }
-
-  if (/<[^>]+>/.test(s)) {
-    return { ok: false, reason: "HTML / rich-text tags are not allowed." };
-  }
-
-  if (/\[[^\]]+\]\([^)]+\)/.test(s)) {
-    return { ok: false, reason: "Markdown links are not allowed." };
-  }
-
-  if (/(https?:\/\/|www\.)\S+/i.test(s)) {
-    return { ok: false, reason: "URLs are not allowed." };
-  }
-
-  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(s)) {
-    return { ok: false, reason: "Email addresses are not allowed." };
-  }
-
-  if (/\b(?:\+?\d[\d\s().-]{7,}\d)\b/.test(s)) {
-    return { ok: false, reason: "Phone numbers are not allowed." };
-  }
-
-  if (/\b(wechat|weixin|wxid|vx)\b/i.test(s)) {
-    return { ok: false, reason: "WeChat IDs are not allowed." };
-  }
-
-  if (!/[A-Za-z]/.test(s)) {
-    return { ok: false, reason: "Must contain English words (letters A–Z)." };
-  }
-
-  if (/\d{6,}/.test(s)) {
-    return { ok: false, reason: "Long consecutive numbers are not allowed." };
-  }
-
-  if (/(.)\1{5,}/i.test(s)) {
-    return { ok: false, reason: "Repeated characters are not allowed." };
-  }
-
-  if (/[A-Za-z]{25,}/.test(s)) {
-    return { ok: false, reason: "Long consecutive letters are not allowed." };
-  }
-
-  return { ok: true };
-}
-
 export default function RunPage() {
   const params = useParams();
   const projectId = params.projectId as string;
   const runId = params.runId as string;
 
-  const [busy, setBusy] = useState<null | "parse" | "queryBuild" | "query" | "ingest">(null);
+  const [busy, setBusy] = useState<
+    null | "textValidate" | "parse" | "buildFramework" | "queryBuild" | "query" | "ingest"
+  >(null);
   const [error, setError] = useState<string | null>(null);
   
   // Phase 2 state
@@ -130,13 +113,20 @@ export default function RunPage() {
   const [showMap, setShowMap] = useState(false);
 
   const [researchDescription, setResearchDescription] = useState("");
-  const [qc1Mode, setQc1Mode] = useState(false);
-  const [qc1Draft, setQc1Draft] = useState("");
-  const [qc1Latest, setQc1Latest] = useState("");
-  const [qc1Attempts, setQc1Attempts] = useState(0);
-  const [qc1Locked, setQc1Locked] = useState(false);
-  const [qc1Reason, setQc1Reason] = useState<string | null>(null);
-  const [qc1Messages, setQc1Messages] = useState<ChatMessage[]>([]);
+  const [textValidateMode, setTextValidateMode] = useState(false);
+  const [textValidateDraft, setTextValidateDraft] = useState("");
+  const [textValidateLatest, setTextValidateLatest] = useState("");
+  const [textValidateAttempts, setTextValidateAttempts] = useState(0);
+  const [textValidateLocked, setTextValidateLocked] = useState(false);
+  const [textValidateReason, setTextValidateReason] = useState<string | null>(null);
+  const [textValidateMessages, setTextValidateMessages] = useState<ChatMessage[]>([]);
+  const [parseStage1Attempts, setParseStage1Attempts] = useState(0);
+  const [parseStage2Attempts, setParseStage2Attempts] = useState(0);
+  const [parseStage1Locked, setParseStage1Locked] = useState(false);
+  const [parseStage2Locked, setParseStage2Locked] = useState(false);
+  const [parseResult, setParseResult] = useState<ParseResult | null>(null);
+  const [parseAdditionalInfo, setParseAdditionalInfo] = useState("");
+  const [parseCurrentDescription, setParseCurrentDescription] = useState("");
   const [questions, setQuestions] = useState<string[]>([]);
   const [frameworkText, setFrameworkText] = useState<string>("");
   const [pubmedQueryText, setPubmedQueryText] = useState<string>("");
@@ -159,6 +149,10 @@ export default function RunPage() {
   const resultTabs = ["PubMed", "Semantic Scholar", "OpenAlex", "Aggregated"] as const;
   const [activeResultTab, setActiveResultTab] =
     useState<(typeof resultTabs)[number]>("Aggregated");
+
+  const researchClientIssues = validateClientInput(researchDescription);
+  const textValidateDraftClientIssues = validateClientInput(textValidateDraft);
+  const parseAdditionalClientIssues = validateClientInput(parseAdditionalInfo);
 
   async function refreshFiles() {
     try {
@@ -222,47 +216,120 @@ export default function RunPage() {
     getRunFile(projectId, runId, rawSelected).then(setRawData).catch(() => setRawData(null));
   }, [projectId, runId, rawSelected]);
 
-  async function onParse() {
-    setError(null);
-    setQc1Mode(true);
-
+  async function onParseStage1(candidate: string) {
     const maxAttempts = 3;
-    const source = qc1Mode ? qc1Draft : researchDescription;
-    const input = source.trim();
-
-    setQc1Latest(input);
-    setQc1Draft(input);
-
-    const result = validateQC1(input);
-    const nextAttempts = qc1Attempts + 1;
-    setQc1Attempts(nextAttempts);
-    setQc1Reason(result.ok ? null : result.reason || "Invalid input.");
-
-    setQc1Messages((prev) => [
-      ...prev,
-      { role: "user", content: input },
-      {
-        role: "system",
-        content: result.ok ? "QC1 passed." : `QC1 failed: ${result.reason || "Invalid input."}`
-      }
-    ]);
-
-    if (!result.ok) {
-      if (nextAttempts >= maxAttempts) {
-        setQc1Locked(true);
-        setQc1Messages((prev) => [
-          ...prev,
-          { role: "system", content: "Too many invalid attempts. Input has been disabled." }
-        ]);
-      }
+    if (parseStage1Attempts >= maxAttempts) {
+      setParseStage1Locked(true);
+      setTextValidateMessages((prev) => [
+        ...prev,
+        { role: "system", content: "Parse stage1: Too many attempts (3/3). Service refused." }
+      ]);
       return;
     }
 
-    setQc1Locked(false);
-    setResearchDescription(input);
+    setBusy("parse");
+    setError(null);
+    try {
+      const res = await parseStage1(projectId, runId, candidate);
+      const d = res.data as ParseResult;
+
+      setParseResult(d);
+      setParseStage1Attempts((n) => n + 1);
+      setParseCurrentDescription(candidate);
+
+      const stage1Failed = !d.is_research_description || d.plausibility_level === "A_impossible";
+      setTextValidateMessages((prev) => [
+        ...prev,
+        {
+          role: "system",
+          content: stage1Failed
+            ? "Parse stage1 failed. Please revise your research description."
+            : d.is_clear_for_search
+              ? "Parse passed: clear for search. You can build the retrieval framework."
+              : "Parse passed: plausible but unclear. Please answer the questions."
+        }
+      ]);
+
+      if (stage1Failed && parseStage1Attempts + 1 >= maxAttempts) {
+        setParseStage1Locked(true);
+        setTextValidateMessages((prev) => [
+          ...prev,
+          { role: "system", content: "Parse stage1: Too many failed attempts (3/3). Service refused." }
+        ]);
+      }
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function onParseStage2Submit(additionalInfo: string) {
+    const maxAttempts = 3;
+    if (parseStage2Attempts >= maxAttempts) {
+      setParseStage2Locked(true);
+      setTextValidateMessages((prev) => [
+        ...prev,
+        { role: "system", content: "Parse stage2: Too many attempts (3/3). Service refused." }
+      ]);
+      return;
+    }
 
     setBusy("parse");
+    setError(null);
     try {
+      const res = await parseStage2(projectId, runId, parseCurrentDescription, additionalInfo);
+      const d = res.data as ParseResult;
+
+      setParseResult(d);
+      setParseStage2Attempts((n) => n + 1);
+
+      const merged = `${parseCurrentDescription}\n\nAdditional info:\n${additionalInfo}`.trim();
+      setParseCurrentDescription(merged);
+      setParseAdditionalInfo("");
+
+      setTextValidateMessages((prev) => [
+        ...prev,
+        { role: "user", content: additionalInfo },
+        {
+          role: "system",
+          content:
+            d.plausibility_level === "A_impossible"
+              ? "Parse: impossible research description."
+              : d.is_clear_for_search
+                ? "Parse converged: clear for search. You can build the retrieval framework."
+                : "Parse: still unclear. Please provide more details."
+        }
+      ]);
+
+      if (d.plausibility_level === "A_impossible" || !d.is_research_description) {
+        setParseStage2Locked(true);
+        setTextValidateMessages((prev) => [
+          ...prev,
+          { role: "system", content: "Parse: Service refused due to impossible/non-research input." }
+        ]);
+        return;
+      }
+
+      if (!d.is_clear_for_search && parseStage2Attempts + 1 >= maxAttempts) {
+        setParseStage2Locked(true);
+        setTextValidateMessages((prev) => [
+          ...prev,
+          { role: "system", content: "Parse stage2: Too many attempts (3/3). Service refused." }
+        ]);
+      }
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function onBuildFramework() {
+    setBusy("buildFramework");
+    setError(null);
+    try {
+      const input = parseCurrentDescription.trim();
       const res = await parseRun(projectId, runId, input);
       const d = res.data;
       setQuestions([]);
@@ -276,12 +343,84 @@ export default function RunPage() {
     }
   }
 
+  async function onParse() {
+    setError(null);
+    setTextValidateMode(true);
+
+    const maxAttempts = 3;
+    const source = textValidateMode ? textValidateDraft : researchDescription;
+    const input = source.trim();
+
+    setTextValidateLatest(input);
+    setTextValidateDraft(input);
+
+    const nextAttempts = textValidateAttempts + 1;
+    setTextValidateAttempts(nextAttempts);
+    setTextValidateReason(null);
+    setTextValidateMessages((prev) => [...prev, { role: "user", content: input }]);
+
+    // Starting a new candidate invalidates any previously generated downstream artifacts.
+    setQuestions([]);
+    setFrameworkText("");
+    setPubmedQueryText("");
+    setQueriesObj(null);
+    setPubmed(null);
+    setS2(null);
+    setOa(null);
+    setAgg(null);
+    setParseResult(null);
+    setParseAdditionalInfo("");
+    setParseCurrentDescription(input);
+    setParseStage2Attempts(0);
+    setParseStage2Locked(false);
+    setParseStage1Locked(false);
+
+    // Unified text validate (base rules + word quality), server-side, no LLM.
+    setBusy("textValidate");
+    try {
+      const res = await textValidate(input);
+      const d = res.data as { ok: boolean; reason: string | null };
+      if (!d.ok) {
+        const reason = d.reason || "Invalid input.";
+        setTextValidateReason(reason);
+        setTextValidateMessages((prev) => [
+          ...prev,
+          { role: "system", content: `text validation failed: ${reason}` }
+        ]);
+        if (nextAttempts >= maxAttempts) {
+          setTextValidateLocked(true);
+          setTextValidateMessages((prev) => [
+            ...prev,
+            { role: "system", content: "Too many invalid attempts. Input has been disabled." }
+          ]);
+        }
+        return;
+      }
+    } catch (e) {
+      setError(String(e));
+      setTextValidateReason("Text validate service unavailable.");
+      setTextValidateMessages((prev) => [
+        ...prev,
+        { role: "system", content: "text validation failed: validation service unavailable." }
+      ]);
+      return;
+    } finally {
+      setBusy(null);
+    }
+
+    setTextValidateLocked(false);
+    setResearchDescription(input);
+    setTextValidateMessages((prev) => [...prev, { role: "system", content: "text validation passed." }]);
+
+    await onParseStage1(input);
+  }
+
   async function onQueryBuild() {
     setBusy("queryBuild");
     setError(null);
     try {
       const fw = frameworkText.trim();
-      if (!fw) throw new Error("Retrieval framework is empty. Click Parse first.");
+      if (!fw) throw new Error("Retrieval framework is empty. Click 'Build Retrieval Framework' first.");
       await updateRetrievalFramework(projectId, runId, fw);
       const res = await runQueryBuild(projectId, runId);
       const obj = {
@@ -532,29 +671,52 @@ export default function RunPage() {
             <h2 style={{ margin: 0 }}>🔍 Research Description</h2>
             <div className="muted">Define your research question in natural language</div>
           </div>
-          {(qc1Mode ? qc1Latest : researchDescription) && (
-            <span className="badge">{(qc1Mode ? qc1Latest : researchDescription).length} chars</span>
+          {(textValidateMode ? parseCurrentDescription || textValidateLatest : researchDescription) && (
+            <span className="badge">
+              {(textValidateMode ? parseCurrentDescription || textValidateLatest : researchDescription).length} chars
+            </span>
           )}
         </div>
-        {!qc1Mode ? (
+        {!textValidateMode ? (
           <>
-            <textarea
-              rows={5}
-              value={researchDescription}
-              onChange={(e) => setResearchDescription(e.target.value)}
-              placeholder="Example: I am working on invasive speech brain-computer interface decoding using ECoG and sEEG..."
-              style={{ fontSize: "15px" }}
-            />
+            <div style={{ position: "relative" }}>
+              {researchClientIssues.length ? (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    right: 10,
+                    zIndex: 1,
+                    fontSize: 12,
+                    color: "#b91c1c",
+                    background: "#fee2e2",
+                    border: "1px solid #fecaca",
+                    borderRadius: 999,
+                    padding: "2px 8px"
+                  }}
+                >
+                  {researchClientIssues.join(" · ")}
+                </div>
+              ) : null}
+              <textarea
+                rows={5}
+                value={researchDescription}
+                onChange={(e) => setResearchDescription(e.target.value)}
+                placeholder="Example: I am working on invasive speech brain-computer interface decoding using ECoG and sEEG..."
+                style={{ fontSize: "15px" }}
+                maxLength={300}
+              />
+            </div>
             <div className="row" style={{ justifyContent: "center" }}>
               <button
                 onClick={() => {
-                  setQc1Draft(researchDescription);
+                  setTextValidateDraft(researchDescription);
                   onParse();
                 }}
-                disabled={busy !== null || !researchDescription.trim()}
+                disabled={busy !== null || !researchDescription.trim() || researchClientIssues.length > 0}
                 className="gradient-blue"
               >
-                {busy === "parse" ? "🔄 Parsing…" : "parse"}
+                {busy === "textValidate" ? "🔄 Checking…" : busy === "parse" ? "🔄 Parsing…" : "parse"}
               </button>
             </div>
           </>
@@ -562,13 +724,13 @@ export default function RunPage() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div className="stack" style={{ gap: 10 }}>
               <div className="row" style={{ justifyContent: "space-between" }}>
-                <div className="muted">Dialogue (QC1)</div>
+                <div className="muted">Dialogue</div>
                 <div className="muted" style={{ fontSize: 12 }}>
-                  Attempts: {qc1Attempts}/3
+                  Parse-1: {parseStage1Attempts}/3 · Parse-2: {parseStage2Attempts}/3
                 </div>
               </div>
 
-              {qc1Reason ? (
+              {textValidateReason ? (
                 <div
                   style={{
                     padding: "10px 12px",
@@ -579,7 +741,7 @@ export default function RunPage() {
                     fontSize: "13px"
                   }}
                 >
-                  ⚠️ {qc1Reason}
+                  ⚠️ {textValidateReason}
                 </div>
               ) : null}
 
@@ -593,9 +755,9 @@ export default function RunPage() {
                   overflow: "auto"
                 }}
               >
-                {qc1Messages.length ? (
+                {textValidateMessages.length ? (
                   <div className="stack" style={{ gap: 8 }}>
-                    {qc1Messages.map((m, idx) => (
+                    {textValidateMessages.map((m, idx) => (
                       <div
                         key={idx}
                         style={{
@@ -618,24 +780,174 @@ export default function RunPage() {
                 )}
               </div>
 
-              <div className="stack" style={{ gap: 8 }}>
-                <textarea
-                  rows={4}
-                  value={qc1Draft}
-                  onChange={(e) => setQc1Draft(e.target.value)}
-                  disabled={qc1Locked || busy !== null}
-                  placeholder={qc1Locked ? "Input disabled after 3 invalid attempts." : "Revise and click parse again..."}
-                  style={{ fontSize: "14px" }}
-                />
-                <div className="row" style={{ justifyContent: "center" }}>
-                  <button
-                    onClick={onParse}
-                    disabled={qc1Locked || busy !== null || !qc1Draft.trim()}
-                    className="gradient-blue"
-                  >
-                    {busy === "parse" ? "🔄 Parsing…" : "parse"}
-                  </button>
+              {parseResult ? (
+                <div
+                  style={{
+                    border: "1px solid rgba(0,0,0,0.08)",
+                    borderRadius: 12,
+                    padding: 12,
+                    background: "rgba(255,255,255,0.7)"
+                  }}
+                >
+                  <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>
+                    Parse result
+                  </div>
+                  <div style={{ fontSize: 13, whiteSpace: "pre-wrap" }}>
+                    {parseResult.normalized_understanding}
+                  </div>
+                  {parseResult.plausibility_level === "A_impossible" ? (
+                    <div className="muted" style={{ fontSize: 12, marginTop: 8, whiteSpace: "pre-wrap" }}>
+                      {parseResult.guidance_to_user}
+                    </div>
+                  ) : !parseResult.is_clear_for_search ? (
+                    <div className="stack" style={{ gap: 8, marginTop: 10 }}>
+                      {parseResult.uncertainties?.length ? (
+                        <div>
+                          <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>
+                            Uncertainties
+                          </div>
+                          <ul style={{ margin: 0, paddingLeft: 18 }}>
+                            {parseResult.uncertainties.map((u) => (
+                              <li key={u} className="muted" style={{ fontSize: 12 }}>
+                                {u}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+                      {parseResult.suggested_questions?.length ? (
+                        <div>
+                          <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>
+                            Questions
+                          </div>
+                          <ul style={{ margin: 0, paddingLeft: 18 }}>
+                            {parseResult.suggested_questions.map((q, idx) => (
+                              <li key={`${q.field}-${idx}`} className="muted" style={{ fontSize: 12 }}>
+                                {q.question}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+                      {parseResult.guidance_to_user ? (
+                        <div className="muted" style={{ fontSize: 12, whiteSpace: "pre-wrap" }}>
+                          {parseResult.guidance_to_user}
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </div>
+              ) : null}
+
+              <div className="stack" style={{ gap: 8 }}>
+                {parseResult?.plausibility_level === "B_plausible" && parseResult.is_clear_for_search ? (
+                  <div className="row" style={{ justifyContent: "center" }}>
+                    <button onClick={onBuildFramework} disabled={busy !== null} className="gradient-green">
+                      {busy === "buildFramework" ? "🔄 Building…" : "Build Retrieval Framework"}
+                    </button>
+                  </div>
+                ) : parseResult?.plausibility_level === "B_plausible" &&
+                  parseResult.is_research_description &&
+                  !parseResult.is_clear_for_search ? (
+                  <>
+                    <div style={{ position: "relative" }}>
+                      {parseAdditionalClientIssues.length ? (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 8,
+                            right: 10,
+                            zIndex: 1,
+                            fontSize: 12,
+                            color: "#b91c1c",
+                            background: "#fee2e2",
+                            border: "1px solid #fecaca",
+                            borderRadius: 999,
+                            padding: "2px 8px"
+                          }}
+                        >
+                          {parseAdditionalClientIssues.join(" · ")}
+                        </div>
+                      ) : null}
+                      <textarea
+                        rows={4}
+                        value={parseAdditionalInfo}
+                        onChange={(e) => setParseAdditionalInfo(e.target.value)}
+                        disabled={parseStage2Locked || busy !== null}
+                        placeholder={parseStage2Locked ? "Parse stage2 locked after 3 attempts." : "Add details to answer the questions..."}
+                        style={{ fontSize: "14px" }}
+                        maxLength={300}
+                      />
+                    </div>
+                    <div className="row" style={{ justifyContent: "center" }}>
+                      <button
+                        onClick={() => onParseStage2Submit(parseAdditionalInfo.trim())}
+                        disabled={
+                          parseStage2Locked ||
+                          busy !== null ||
+                          !parseAdditionalInfo.trim() ||
+                          parseAdditionalClientIssues.length > 0
+                        }
+                        className="gradient-blue"
+                      >
+                        {busy === "parse" ? "🔄 Parsing…" : "submit"}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ position: "relative" }}>
+                      {textValidateDraftClientIssues.length ? (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 8,
+                            right: 10,
+                            zIndex: 1,
+                            fontSize: 12,
+                            color: "#b91c1c",
+                            background: "#fee2e2",
+                            border: "1px solid #fecaca",
+                            borderRadius: 999,
+                            padding: "2px 8px"
+                          }}
+                        >
+                          {textValidateDraftClientIssues.join(" · ")}
+                        </div>
+                      ) : null}
+                      <textarea
+                        rows={4}
+                        value={textValidateDraft}
+                        onChange={(e) => setTextValidateDraft(e.target.value)}
+                        disabled={textValidateLocked || parseStage1Locked || busy !== null}
+                        placeholder={
+                          textValidateLocked
+                            ? "Input disabled after 3 invalid attempts."
+                            : parseStage1Locked
+                              ? "Parse stage1 locked after 3 failed attempts."
+                              : "Revise and click parse again..."
+                        }
+                        style={{ fontSize: "14px" }}
+                        maxLength={300}
+                      />
+                    </div>
+                    <div className="row" style={{ justifyContent: "center" }}>
+                      <button
+                        onClick={onParse}
+                        disabled={
+                          textValidateLocked ||
+                          parseStage1Locked ||
+                          busy !== null ||
+                          !textValidateDraft.trim() ||
+                          textValidateDraftClientIssues.length > 0
+                        }
+                        className="gradient-blue"
+                      >
+                        {busy === "textValidate" ? "🔄 Checking…" : busy === "parse" ? "🔄 Parsing…" : "parse"}
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 
@@ -644,7 +956,7 @@ export default function RunPage() {
               <textarea
                 readOnly
                 rows={12}
-                value={qc1Latest}
+                value={parseCurrentDescription || textValidateLatest}
                 style={{ fontSize: "14px", whiteSpace: "pre-wrap", opacity: 0.95 }}
               />
             </div>
@@ -679,7 +991,7 @@ export default function RunPage() {
           value={frameworkText}
           onChange={(e) => setFrameworkText(e.target.value)}
           spellCheck={false}
-          placeholder="Click 'Parse' above to generate a retrieval framework automatically..."
+          placeholder="Click 'Build Retrieval Framework' above to generate a retrieval framework automatically..."
           style={{ fontFamily: "inherit", fontSize: "14px", lineHeight: "1.6" }}
         />
         <div className="row" style={{ justifyContent: "center" }}>

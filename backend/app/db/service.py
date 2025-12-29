@@ -114,6 +114,12 @@ class DatabaseStore:
                 return run.results or {}
             elif filename == "retrieval_framework.json":
                 return {"retrieval_framework": run.retrieval_framework or ""}
+            elif filename == "parse_stage1.json":
+                understanding = run.understanding or {}
+                return understanding.get("parse_stage1") or {}
+            elif filename == "parse_stage2.json":
+                understanding = run.understanding or {}
+                return understanding.get("parse_stage2") or {}
             # Support result files stored in results JSON
             elif filename == "results_pubmed.json":
                 results = run.results or {}
@@ -155,6 +161,20 @@ class DatabaseStore:
                     run_id,
                     data.get("retrieval_framework", "")
                 )
+            elif filename == "parse_stage1.json":
+                run = await repo.get_run(run_id)
+                if not run:
+                    raise FileNotFoundError(f"Run {run_id} not found")
+                current = run.understanding or {}
+                current["parse_stage1"] = data
+                await repo.update_understanding(run_id, current)
+            elif filename == "parse_stage2.json":
+                run = await repo.get_run(run_id)
+                if not run:
+                    raise FileNotFoundError(f"Run {run_id} not found")
+                current = run.understanding or {}
+                current["parse_stage2"] = data
+                await repo.update_understanding(run_id, current)
             # Support result files - merge into results JSON
             elif filename == "results_pubmed.json":
                 run = await repo.get_run(run_id)
@@ -208,6 +228,11 @@ class DatabaseStore:
             files = []
             if run.understanding:
                 files.append("understanding.json")
+                understanding = run.understanding or {}
+                if understanding.get("parse_stage1"):
+                    files.append("parse_stage1.json")
+                if understanding.get("parse_stage2"):
+                    files.append("parse_stage2.json")
             if run.keywords:
                 files.append("keywords.json")
             if run.queries:
@@ -228,4 +253,3 @@ class DatabaseStore:
                 files.append("retrieval_framework.json")
             
             return sorted(files)
-

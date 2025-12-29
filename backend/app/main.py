@@ -13,7 +13,9 @@ from app.core.paths import get_data_dir
 from app.db.connection import db_manager
 from app.db.repository import AuthorshipRepository, RunPaperRepository
 from app.db.service import DatabaseStore
+from app.input_text_validate import analyze_english_text, input_text_validate
 from app.phase1.models import Slots
+from app.phase1.parse import parse_stage1, parse_stage2
 from app.phase1.steps import step_parse, step_query_build, step_retrieve, step_synonyms
 from app.phase2.pg_aggregations import PostgresMapAggregator
 from app.phase2.pg_ingest import PostgresIngestionPipeline
@@ -68,6 +70,23 @@ class UpdateResearchDescriptionRequest(BaseModel):
 
 class UpdateSlotsRequest(BaseModel):
     slots_normalized: Slots
+
+
+class QC1AnalyzeRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=50_000)
+
+
+class QC1ValidateRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=50_000)
+
+
+class ParseStage1Request(BaseModel):
+    candidate_description: str = Field(min_length=1, max_length=50_000)
+
+
+class ParseStage2Request(BaseModel):
+    current_description: str = Field(min_length=1, max_length=200_000)
+    user_additional_info: str = Field(default="", max_length=200_000)
 
 
 class UpdateKeywordsRequest(BaseModel):
@@ -179,6 +198,59 @@ async def update_research_description(project_id: str, run_id: str, req: UpdateR
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True}
+
+
+@app.post("/api/qc1/analyze")
+async def qc1_analyze(req: QC1AnalyzeRequest) -> dict:
+    return {"data": analyze_english_text(req.text)}
+
+
+@app.post("/api/qc1/validate")
+async def qc1_validate_route(req: QC1ValidateRequest) -> dict:
+    return {"data": input_text_validate(req.text)}
+
+
+@app.post("/api/text-validate/validate")
+async def text_validate_route(req: QC1ValidateRequest) -> dict:
+    return {"data": input_text_validate(req.text)}
+
+
+@app.post("/api/projects/{project_id}/runs/{run_id}/parse/stage1")
+async def parse_stage1_route(project_id: str, run_id: str, req: ParseStage1Request) -> dict:
+    project = store.get_project(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    tv = input_text_validate(req.candidate_description)
+    if not tv.get("ok"):
+        raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+    try:
+        data = await parse_stage1(store, project_id, run_id, req.candidate_description)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Run not found")
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=502, detail=f"Upstream HTTP error: {e.response.status_code}") from e
+    return {"data": data}
+
+
+@app.post("/api/projects/{project_id}/runs/{run_id}/parse/stage2")
+async def parse_stage2_route(project_id: str, run_id: str, req: ParseStage2Request) -> dict:
+    project = store.get_project(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    tv = input_text_validate(req.user_additional_info)
+    if not tv.get("ok"):
+        raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+    try:
+        data = await parse_stage2(store, project_id, run_id, req.current_description, req.user_additional_info)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Run not found")
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=502, detail=f"Upstream HTTP error: {e.response.status_code}") from e
+    return {"data": data}
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/parse")

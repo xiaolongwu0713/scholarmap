@@ -94,6 +94,51 @@ export async function parseRun(projectId: string, runId: string, research_descri
   return await res.json();
 }
 
+export async function qc1Analyze(text: string): Promise<any> {
+  const res = await fetch(`${baseUrl}/api/qc1/analyze`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ text })
+  });
+  await throwIfNotOk(res, "qc1Analyze");
+  return await res.json();
+}
+
+export async function textValidate(text: string): Promise<any> {
+  const res = await fetch(`${baseUrl}/api/text-validate/validate`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ text })
+  });
+  await throwIfNotOk(res, "textValidate");
+  return await res.json();
+}
+
+export async function parseStage1(projectId: string, runId: string, candidate_description: string): Promise<any> {
+  const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/parse/stage1`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ candidate_description })
+  });
+  await throwIfNotOk(res, "parseStage1");
+  return await res.json();
+}
+
+export async function parseStage2(
+  projectId: string,
+  runId: string,
+  current_description: string,
+  user_additional_info: string
+): Promise<any> {
+  const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/parse/stage2`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ current_description, user_additional_info })
+  });
+  await throwIfNotOk(res, "parseStage2");
+  return await res.json();
+}
+
 export async function updateSlots(projectId: string, runId: string, slots_normalized: any): Promise<void> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/slots`, {
     method: "PUT",

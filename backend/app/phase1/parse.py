@@ -1,0 +1,185 @@
+from __future__ import annotations
+
+import json
+import re
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+from app.core.audit_log import append_log
+from app.core.paths import prompts_dir
+from app.core.storage import FileStore
+from app.phase1.llm import OpenAIClient
+
+
+def _utc_now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _read_prompt(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+def _extract_json_object(text: str) -> dict[str, Any]:
+    s = (text or "").strip()
+    if not s:
+        raise RuntimeError("LLM returned empty response")
+
+    # Fast path: direct JSON object.
+    if s.startswith("{") and s.endswith("}"):
+        return json.loads(s)
+
+    # Remove common code fences.
+    s2 = re.sub(r"^```(?:json)?\s*|\s*```$", "", s, flags=re.IGNORECASE).strip()
+    if s2.startswith("{") and s2.endswith("}"):
+        return json.loads(s2)
+
+    # Best-effort: find first '{' and last '}'.
+    start = s2.find("{")
+    end = s2.rfind("}")
+    if start == -1 or end == -1 or end <= start:
+        raise RuntimeError("LLM returned non-JSON content")
+    return json.loads(s2[start : end + 1])
+
+
+def _require_fields(obj: dict[str, Any], required: list[str]) -> None:
+    missing = [k for k in required if k not in obj]
+    if missing:
+        raise RuntimeError(f"LLM JSON missing fields: {', '.join(missing)}")
+
+
+async def parse_stage1(store: FileStore, project_id: str, run_id: str, candidate_description: str) -> dict[str, Any]:
+    prompt_path = prompts_dir() / "parse_stage1_understanding.md"
+    template = _read_prompt(prompt_path)
+    prompt = template.replace("<<<CANDIDATE_DESCRIPTION>>>", candidate_description.strip())
+
+    llm = OpenAIClient()
+    append_log(
+        "parse.stage1.prompt",
+        {
+            "project_id": project_id,
+            "run_id": run_id,
+            "model": llm.model,
+            "reasoning_effort": getattr(llm, "reasoning_effort", ""),
+            "prompt_file": str(prompt_path),
+            "prompt": prompt,
+        },
+    )
+    raw = await llm.complete_text(prompt, temperature=0.0)
+    append_log(
+        "parse.stage1.response",
+        {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": raw},
+    )
+
+    data = _extract_json_object(raw)
+    _require_fields(
+        data,
+        [
+            "plausibility_level",
+            "is_research_description",
+            "is_clear_for_search",
+            "normalized_understanding",
+            "structured_summary",
+            "uncertainties",
+            "missing_fields",
+            "suggested_questions",
+            "guidance_to_user",
+        ],
+    )
+
+    understanding = await store.read_run_file(project_id, run_id, "understanding.json")
+    understanding["parse"] = {
+        "stage": "stage1",
+        "current_description": candidate_description,
+        "result": data,
+        "updated_at": _utc_now_iso(),
+    }
+    await store.write_run_file(project_id, run_id, "understanding.json", understanding)
+    await store.write_run_file(
+        project_id,
+        run_id,
+        "parse_stage1.json",
+        {"updated_at": _utc_now_iso(), "prompt_file": str(prompt_path), "result": data},
+    )
+
+    return data
+
+
+async def parse_stage2(
+    store: FileStore,
+    project_id: str,
+    run_id: str,
+    current_description: str,
+    user_additional_info: str,
+) -> dict[str, Any]:
+    prompt_path = prompts_dir() / "parse_stage2_converge.md"
+    template = _read_prompt(prompt_path)
+    prompt = (
+        template.replace("<<<CURRENT_DESCRIPTION>>>", current_description.strip())
+        .replace("<<<USER_ADDITIONAL_INFO>>>", (user_additional_info or "").strip())
+    )
+
+    llm = OpenAIClient()
+    append_log(
+        "parse.stage2.prompt",
+        {
+            "project_id": project_id,
+            "run_id": run_id,
+            "model": llm.model,
+            "reasoning_effort": getattr(llm, "reasoning_effort", ""),
+            "prompt_file": str(prompt_path),
+            "prompt": prompt,
+        },
+    )
+    raw = await llm.complete_text(prompt, temperature=0.0)
+    append_log(
+        "parse.stage2.response",
+        {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": raw},
+    )
+
+    data = _extract_json_object(raw)
+    _require_fields(
+        data,
+        [
+            "plausibility_level",
+            "is_research_description",
+            "is_clear_for_search",
+            "normalized_understanding",
+            "structured_summary",
+            "uncertainties",
+            "missing_fields",
+            "suggested_questions",
+            "guidance_to_user",
+        ],
+    )
+
+    understanding = await store.read_run_file(project_id, run_id, "understanding.json")
+    prev = (understanding.get("parse") or {}) if isinstance(understanding, dict) else {}
+    history = []
+    if isinstance(prev, dict) and isinstance(prev.get("history"), list):
+        history = prev["history"]
+    history = history + [
+        {
+            "current_description": current_description,
+            "user_additional_info": user_additional_info,
+            "result": data,
+            "updated_at": _utc_now_iso(),
+        }
+    ]
+    understanding["parse"] = {
+        "stage": "stage2",
+        "current_description": current_description,
+        "last_user_additional_info": user_additional_info,
+        "result": data,
+        "history": history[-10:],
+        "updated_at": _utc_now_iso(),
+    }
+    await store.write_run_file(project_id, run_id, "understanding.json", understanding)
+    await store.write_run_file(
+        project_id,
+        run_id,
+        "parse_stage2.json",
+        {"updated_at": _utc_now_iso(), "prompt_file": str(prompt_path), "result": data},
+    )
+
+    return data
