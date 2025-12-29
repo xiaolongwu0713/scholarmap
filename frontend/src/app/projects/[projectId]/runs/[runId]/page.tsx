@@ -90,6 +90,11 @@ function validateClientInput(text: string): string[] {
   return issues;
 }
 
+function charLimitHint(text: string, minChars = 50, maxChars = 300): string {
+  const len = (text ?? "").trim().length;
+  return `${len}/${maxChars} chars (min ${minChars})`;
+}
+
 function extractFinalPubMedQuery(text: string): string {
   const m = text.match(/##\s*Final Combined PubMed Query[\s\S]*?```text\s*([\s\S]*?)\s*```/i);
   if (m?.[1]) return m[1].trim();
@@ -706,6 +711,21 @@ export default function RunPage() {
                 style={{ fontSize: "15px" }}
                 maxLength={300}
               />
+              <div
+                style={{
+                  position: "absolute",
+                  right: 10,
+                  bottom: 8,
+                  fontSize: 12,
+                  color: "rgba(0,0,0,0.55)",
+                  background: "rgba(255,255,255,0.75)",
+                  border: "1px solid rgba(0,0,0,0.08)",
+                  borderRadius: 999,
+                  padding: "2px 8px"
+                }}
+              >
+                {charLimitHint(researchDescription)}
+              </div>
             </div>
             <div className="row" style={{ justifyContent: "center" }}>
               <button
@@ -878,6 +898,21 @@ export default function RunPage() {
                         style={{ fontSize: "14px" }}
                         maxLength={300}
                       />
+                      <div
+                        style={{
+                          position: "absolute",
+                          right: 10,
+                          bottom: 8,
+                          fontSize: 12,
+                          color: "rgba(0,0,0,0.55)",
+                          background: "rgba(255,255,255,0.75)",
+                          border: "1px solid rgba(0,0,0,0.08)",
+                          borderRadius: 999,
+                          padding: "2px 8px"
+                        }}
+                      >
+                        {charLimitHint(parseAdditionalInfo)}
+                      </div>
                     </div>
                     <div className="row" style={{ justifyContent: "center" }}>
                       <button
@@ -930,6 +965,21 @@ export default function RunPage() {
                         style={{ fontSize: "14px" }}
                         maxLength={300}
                       />
+                      <div
+                        style={{
+                          position: "absolute",
+                          right: 10,
+                          bottom: 8,
+                          fontSize: 12,
+                          color: "rgba(0,0,0,0.55)",
+                          background: "rgba(255,255,255,0.75)",
+                          border: "1px solid rgba(0,0,0,0.08)",
+                          borderRadius: 999,
+                          padding: "2px 8px"
+                        }}
+                      >
+                        {charLimitHint(textValidateDraft)}
+                      </div>
                     </div>
                     <div className="row" style={{ justifyContent: "center" }}>
                       <button
