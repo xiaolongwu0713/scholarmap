@@ -154,6 +154,17 @@ class RunRepository:
         if run:
             run.retrieval_framework = framework
             await self.session.flush()
+    
+    async def delete_run(self, run_id: str) -> None:
+        """Delete a run and all associated data."""
+        # Delete RunPaper associations first (foreign key constraint)
+        await self.session.execute(
+            delete(RunPaper).where(RunPaper.run_id == run_id)
+        )
+        # Delete the Run record
+        await self.session.execute(
+            delete(Run).where(Run.run_id == run_id)
+        )
 
 
 class PaperRepository:

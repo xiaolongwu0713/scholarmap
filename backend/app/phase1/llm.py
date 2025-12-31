@@ -5,6 +5,7 @@ from typing import Any
 
 import httpx
 
+from app.core.audit_log import append_log
 from app.core.config import settings
 from app.phase1.models import Slots
 
@@ -74,7 +75,13 @@ class OpenAIClient:
         self.reasoning_effort = (settings.openai_reasoning_effort or "").strip()
         self.api_base = (settings.openai_api_base or "https://api.openai.com").rstrip("/")
 
-    async def _chat_json(self, system_prompt: str, user_text: str, temperature: float = 0.0) -> Any:
+    async def _chat_json(
+        self, 
+        system_prompt: str, 
+        user_text: str, 
+        temperature: float = 0.0,
+        log_context: dict[str, Any] | None = None
+    ) -> Any:
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is not set")
 
@@ -94,12 +101,25 @@ class OpenAIClient:
             data = resp.json()
 
         content = data["choices"][0]["message"]["content"]
+        
+        # Log full prompt and raw JSON response for debugging
+        log_payload = {
+            "model": self.model,
+            "system_prompt": system_prompt,
+            "user_text": user_text,
+            "full_prompt": f"System: {system_prompt}\n\nUser: {user_text}",
+            "raw_json_response": content,
+        }
+        if log_context:
+            log_payload.update(log_context)
+        append_log("llm.chat_json.response", log_payload)
+        
         try:
             return json.loads(content)
         except json.JSONDecodeError as e:
             raise RuntimeError(f"OpenAI returned non-JSON: {e}") from e
 
-    async def _responses_text(self, prompt: str, temperature: float = 0.0) -> str:
+    async def _responses_text(self, prompt: str, temperature: float = 0.0, log_context: dict[str, Any] | None = None) -> str:
         payload: dict[str, Any] = {
             "model": self.model,
             "input": prompt,
@@ -119,18 +139,32 @@ class OpenAIClient:
                 if c.get("type") == "output_text" and c.get("text"):
                     parts.append(c["text"])
         if parts:
-            return "\n".join(parts).strip()
-        if data.get("output_text"):
-            return str(data["output_text"]).strip()
-        raise RuntimeError("OpenAI responses API returned no text")
+            raw_text = "\n".join(parts).strip()
+        elif data.get("output_text"):
+            raw_text = str(data["output_text"]).strip()
+        else:
+            raise RuntimeError("OpenAI responses API returned no text")
+        
+        # Log full prompt and raw response for debugging
+        log_payload = {
+            "model": self.model,
+            "api": "responses",
+            "full_prompt": prompt,
+            "raw_response": raw_text,
+        }
+        if log_context:
+            log_payload.update(log_context)
+        append_log("llm.responses_text.response", log_payload)
+        
+        return raw_text
 
-    async def complete_text(self, prompt: str, temperature: float = 0.0) -> str:
+    async def complete_text(self, prompt: str, temperature: float = 0.0, log_context: dict[str, Any] | None = None) -> str:
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is not set")
 
         # Prefer Responses API for "thinking"/reasoning models & controls.
         try:
-            return await self._responses_text(prompt, temperature=temperature)
+            return await self._responses_text(prompt, temperature=temperature, log_context=log_context)
         except Exception:
             payload = {
                 "model": self.model,
@@ -142,18 +176,31 @@ class OpenAIClient:
                 resp = await client.post(f"{self.api_base}/v1/chat/completions", json=payload, headers=headers)
                 resp.raise_for_status()
                 data = resp.json()
-            return data["choices"][0]["message"]["content"]
+            raw_content = data["choices"][0]["message"]["content"]
+            
+            # Log full prompt and raw response for debugging (fallback to chat/completions API)
+            log_payload = {
+                "model": self.model,
+                "api": "chat/completions",
+                "full_prompt": prompt,
+                "raw_response": raw_content,
+            }
+            if log_context:
+                log_payload.update(log_context)
+            append_log("llm.complete_text.response", log_payload)
+            
+            return raw_content
 
-    async def extract_slots(self, research_description: str) -> Slots:
-        slots_json = await self._chat_json(SLOTS_PROMPT, research_description, temperature=0.0)
+    async def extract_slots(self, research_description: str, log_context: dict[str, Any] | None = None) -> Slots:
+        slots_json = await self._chat_json(SLOTS_PROMPT, research_description, temperature=0.0, log_context=log_context)
         return Slots.model_validate(slots_json)
 
-    async def normalize_slots(self, slots: Slots) -> Slots:
-        normalized_json = await self._chat_json(NORMALIZE_PROMPT, json.dumps(slots.model_dump(), ensure_ascii=False), temperature=0.0)
+    async def normalize_slots(self, slots: Slots, log_context: dict[str, Any] | None = None) -> Slots:
+        normalized_json = await self._chat_json(NORMALIZE_PROMPT, json.dumps(slots.model_dump(), ensure_ascii=False), temperature=0.0, log_context=log_context)
         return Slots.model_validate(normalized_json)
 
-    async def generate_synonyms(self, term: str) -> list[str]:
-        data = await self._chat_json(SYNONYM_PROMPT, term, temperature=0.1)
+    async def generate_synonyms(self, term: str, log_context: dict[str, Any] | None = None) -> list[str]:
+        data = await self._chat_json(SYNONYM_PROMPT, term, temperature=0.1, log_context=log_context)
         if not isinstance(data, list):
             raise RuntimeError("Synonym response is not a JSON array")
         out: list[str] = []

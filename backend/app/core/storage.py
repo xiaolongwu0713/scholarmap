@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -186,3 +187,9 @@ class FileStore:
         if not run_dir.exists():
             raise FileNotFoundError("run")
         return sorted([p.name for p in run_dir.iterdir() if p.is_file() and p.suffix == ".json"])
+
+    def delete_run(self, project_id: str, run_id: str) -> None:
+        """Delete a run and all its files."""
+        run_dir = self._run_dir(project_id, run_id)
+        if run_dir.exists():
+            shutil.rmtree(run_dir)

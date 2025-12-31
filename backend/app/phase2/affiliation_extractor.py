@@ -6,6 +6,7 @@ import json
 import logging
 from typing import Any
 
+from app.core.audit_log import append_log
 from app.phase1.llm import OpenAIClient
 from app.phase2.models import GeoData
 
@@ -67,10 +68,30 @@ class AffiliationExtractor:
         prompt = AFFILIATION_EXTRACTION_PROMPT + numbered_list
         
         try:
+            # Log full prompt
+            append_log(
+                "phase2.affiliation_extraction.prompt",
+                {
+                    "batch_size": len(affiliations),
+                    "model": self.llm_client.model,
+                    "full_prompt": prompt,
+                },
+            )
+            
             # Use the complete_text method from OpenAIClient
             content = await self.llm_client.complete_text(
                 prompt=prompt,
                 temperature=0.0  # Deterministic
+            )
+            
+            # Log raw JSON response for debugging
+            append_log(
+                "phase2.affiliation_extraction.response",
+                {
+                    "batch_size": len(affiliations),
+                    "model": self.llm_client.model,
+                    "raw_json_response": content,
+                },
             )
             if not content:
                 logger.error("Empty response from LLM")

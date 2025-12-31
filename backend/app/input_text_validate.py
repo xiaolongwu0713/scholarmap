@@ -185,52 +185,22 @@ def analyze_english_text(text: str) -> dict[str, Any]:
 
 def input_text_validate(text: str) -> dict[str, Any]:
     """
-    Unified input text validator (base checks + English word quality).
+    Backend text validator: only performs complex quality checks that frontend cannot do.
+    Frontend already performs basic format checks (length, HTML, URL, email, etc.).
     Returns: { ok: bool, reason: str | null, stats?: dict }
     """
     s = (text or "").strip()
     if not s:
         return {"ok": False, "reason": "Input is empty."}
 
+    # Double-check critical format rules as defense in depth
     if len(s) < 50 or len(s) > 300:
         return {"ok": False, "reason": "Length must be 50–300 characters."}
 
-    if s.count("\n") > 5:
-        return {"ok": False, "reason": "Too many line breaks (max 5)."}
+    if s.count("\n") > 3:
+        return {"ok": False, "reason": "Too many line breaks (max 3)."}
 
-    if re.search(r"[^\x00-\x7F]", s):
-        return {"ok": False, "reason": "Must be English only (ASCII characters)."}
-
-    if re.search(r"<[^>]+>", s):
-        return {"ok": False, "reason": "HTML / rich-text tags are not allowed."}
-
-    if _MD_LINK_RE.search(s):
-        return {"ok": False, "reason": "Markdown links are not allowed."}
-
-    if _URL_RE.search(s):
-        return {"ok": False, "reason": "URLs are not allowed."}
-
-    if _EMAIL_RE.search(s):
-        return {"ok": False, "reason": "Email addresses are not allowed."}
-
-    if _PHONE_RE.search(s):
-        return {"ok": False, "reason": "Phone numbers are not allowed."}
-
-    if _WECHAT_RE.search(s):
-        return {"ok": False, "reason": "WeChat IDs are not allowed."}
-
-    if not re.search(r"[A-Za-z]", s):
-        return {"ok": False, "reason": "Must contain English words (letters A–Z)."}
-
-    if re.search(r"\d{6,}", s):
-        return {"ok": False, "reason": "Long consecutive numbers are not allowed."}
-
-    if re.search(r"(.)\1{5,}", s, flags=re.IGNORECASE):
-        return {"ok": False, "reason": "Repeated characters are not allowed."}
-
-    if re.search(r"[A-Za-z]{25,}", s):
-        return {"ok": False, "reason": "Long consecutive letters are not allowed."}
-
+    # Complex quality checks that require dictionaries and advanced algorithms (backend only)
     stats = analyze_english_text(s)
     illegal = (
         bool(stats.get("recommended_illegal"))

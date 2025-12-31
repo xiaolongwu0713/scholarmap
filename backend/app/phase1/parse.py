@@ -65,7 +65,11 @@ async def parse_stage1(store: FileStore, project_id: str, run_id: str, candidate
             "prompt": prompt,
         },
     )
-    raw = await llm.complete_text(prompt, temperature=0.0)
+    raw = await llm.complete_text(
+        prompt, 
+        temperature=0.0,
+        log_context={"project_id": project_id, "run_id": run_id, "stage": "stage1"}
+    )
     append_log(
         "parse.stage1.response",
         {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": raw},
@@ -114,8 +118,21 @@ async def parse_stage2(
 ) -> dict[str, Any]:
     prompt_path = prompts_dir() / "parse_stage2_converge.md"
     template = _read_prompt(prompt_path)
+    
+    # Get the last question from history if available
+    understanding = await store.read_run_file(project_id, run_id, "understanding.json")
+    prev = (understanding.get("parse") or {}) if isinstance(understanding, dict) else {}
+    question_for_user = ""
+    if isinstance(prev, dict) and isinstance(prev.get("result"), dict):
+        last_result = prev.get("result", {})
+        suggested_questions = last_result.get("suggested_questions", [])
+        if suggested_questions and len(suggested_questions) > 0:
+            # Combine all questions into one string
+            question_for_user = "\n".join([q.get("question", "") for q in suggested_questions if q.get("question")])
+    
     prompt = (
         template.replace("<<<CURRENT_DESCRIPTION>>>", current_description.strip())
+        .replace("<<<QUESTION_FOR_USER>>>", question_for_user.strip())
         .replace("<<<USER_ADDITIONAL_INFO>>>", (user_additional_info or "").strip())
     )
 
@@ -131,7 +148,11 @@ async def parse_stage2(
             "prompt": prompt,
         },
     )
-    raw = await llm.complete_text(prompt, temperature=0.0)
+    raw = await llm.complete_text(
+        prompt, 
+        temperature=0.0,
+        log_context={"project_id": project_id, "run_id": run_id, "stage": "stage2"}
+    )
     append_log(
         "parse.stage2.response",
         {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": raw},

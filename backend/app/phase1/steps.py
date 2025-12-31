@@ -185,7 +185,11 @@ async def step_parse(store: FileStore, project_id: str, run_id: str, research_de
             "prompt": final_prompt,
         },
     )
-    framework = await llm.complete_text(final_prompt, temperature=0.0)
+    framework = await llm.complete_text(
+        final_prompt, 
+        temperature=0.0,
+        log_context={"project_id": project_id, "run_id": run_id, "step": "parse"}
+    )
     append_log(
         "phase1.parse.response",
         {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": framework},
@@ -224,7 +228,10 @@ async def step_synonyms(store: FileStore, project_id: str, run_id: str, slots_no
 
         llm_syns = []
         try:
-            llm_syns = await llm.generate_synonyms(term)
+            llm_syns = await llm.generate_synonyms(
+                term, 
+                log_context={"project_id": project_id, "run_id": run_id, "term": term}
+            )
         except Exception:
             llm_syns = []
 
@@ -277,7 +284,11 @@ async def step_query_build(store: FileStore, project_id: str, run_id: str) -> Qu
             "prompt": final_prompt,
         },
     )
-    pubmed_query_text = await llm.complete_text(final_prompt, temperature=0.0)
+    pubmed_query_text = await llm.complete_text(
+        final_prompt, 
+        temperature=0.0,
+        log_context={"project_id": project_id, "run_id": run_id, "step": "query_build"}
+    )
     append_log(
         "phase1.query_build.response",
         {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": pubmed_query_text},

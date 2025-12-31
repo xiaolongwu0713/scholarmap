@@ -253,3 +253,10 @@ class DatabaseStore:
                 files.append("retrieval_framework.json")
             
             return sorted(files)
+    
+    async def delete_run(self, project_id: str, run_id: str) -> None:
+        """Delete a run and all its data."""
+        async with db_manager.session() as session:
+            repo = RunRepository(session)
+            await repo.delete_run(run_id)
+            await session.commit()

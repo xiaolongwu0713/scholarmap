@@ -12,6 +12,7 @@ from app.core.config import settings
 from app.core.paths import get_data_dir
 from app.db.connection import db_manager
 from app.db.repository import AuthorshipRepository, RunPaperRepository
+from app.core.storage import FileStore
 from app.db.service import DatabaseStore
 from app.input_text_validate import analyze_english_text, input_text_validate
 from app.phase1.models import Slots
@@ -55,6 +56,8 @@ app.add_middleware(
 
 # Use database store instead of file store
 store = DatabaseStore()
+# Also initialize file store for deleting local files if they exist
+file_store = FileStore(get_data_dir())
 
 
 class CreateProjectRequest(BaseModel):
@@ -62,7 +65,7 @@ class CreateProjectRequest(BaseModel):
 
 
 class CreateRunRequest(BaseModel):
-    research_description: str = Field(min_length=1, max_length=10_000)
+    research_description: str = Field(min_length=0, max_length=10_000)
 
 class UpdateResearchDescriptionRequest(BaseModel):
     research_description: str = Field(min_length=1, max_length=10_000)
@@ -135,8 +138,36 @@ async def create_run(project_id: str, req: CreateRunRequest) -> dict:
     project = await store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    # Allow empty description when creating - user will enter it in the Run page
+    # Only validate if description is provided and not empty
+    if req.research_description and req.research_description.strip():
+        tv = input_text_validate(req.research_description)
+        if not tv.get("ok"):
+            raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
     run = await store.create_run(project_id, req.research_description)
     return {"run": run.__dict__}
+
+
+@app.delete("/api/projects/{project_id}/runs/{run_id}")
+async def delete_run(project_id: str, run_id: str) -> dict:
+    """Delete a run and all its data (database records and local files)."""
+    # Verify run exists and belongs to project
+    project = await store.get_project(project_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Delete from database
+    await store.delete_run(project_id, run_id)
+    
+    # Also delete local files if they exist (for backwards compatibility)
+    if file_store:
+        try:
+            file_store.delete_run(project_id, run_id)
+        except (FileNotFoundError, ValueError):
+            # Files don't exist, that's fine
+            pass
+    
+    return {"message": "Run deleted successfully"}
 
 
 @app.get("/api/projects/{project_id}/runs")
@@ -258,6 +289,10 @@ async def phase1_parse(project_id: str, run_id: str, req: UpdateResearchDescript
     project = store.get_project(project_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    # Backend validation (quality checks - frontend already did format checks)
+    tv = input_text_validate(req.research_description)
+    if not tv.get("ok"):
+        raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
     try:
         data = await step_parse(store, project_id, run_id, req.research_description)
     except FileNotFoundError:
