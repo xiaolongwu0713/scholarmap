@@ -218,11 +218,11 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
 
     // Monitor fetch errors for mapbox.com requests
     const originalFetch = window.fetch;
-    window.fetch = async (...args: any[]) => {
-      const url = args[0]?.toString() || "";
+    window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const url = input.toString();
       if (url.includes("mapbox.com")) {
         try {
-          const response = await originalFetch.apply(window, args);
+          const response = await originalFetch(input, init);
           if (response.status === 401 && url.includes("mapbox.com")) {
             setMapError("Invalid or expired Mapbox access token. Please check your token in .env.local and restart the server.");
           }
@@ -231,7 +231,7 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
           throw error;
         }
       }
-      return originalFetch.apply(window, args);
+      return originalFetch(input, init);
     };
 
     window.addEventListener("error", handleError);
