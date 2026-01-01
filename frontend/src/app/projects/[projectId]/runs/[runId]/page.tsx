@@ -56,6 +56,7 @@ type ParseResult = {
   plausibility_level: "A_impossible" | "B_plausible";
   is_research_description: boolean;
   is_clear_for_search: boolean;
+  is_helpful: boolean;
   normalized_understanding: string;
   structured_summary: {
     domain: string | null;
@@ -80,12 +81,22 @@ function validateClientInput(text: string): string[] {
   const trimmed = s.trim();
   const issues: string[] = [];
 
+  // Basic format checks (frontend can easily do these)
+  if (!trimmed) issues.push("required");
   if (trimmed.length < 50 || trimmed.length > 300) issues.push("50–300 chars");
-  if ((s.match(/\n/g) || []).length >= 3) issues.push("max 2 newlines");
+  const newlineCount = (s.match(/\n/g) || []).length;
+  if (newlineCount > 3) issues.push("max 3 newlines");
   if (/<[^>]+>/.test(s)) issues.push("no HTML");
-  if (/\[[^\]]+\]\([^)]+\)/.test(s)) issues.push("no links");
+  if (/\[[^\]]+\]\([^)]+\)/.test(s)) issues.push("no markdown links");
   if (/(https?:\/\/|www\.)\S+/i.test(s)) issues.push("no URL");
   if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(s)) issues.push("no email");
+  if (/\b(?:\+?\d[\d\s().-]{7,}\d)\b/.test(s)) issues.push("no phone");
+  if (/\b(wechat|weixin|wxid|vx)\b/i.test(s)) issues.push("no wechat");
+  if (/[^\x00-\x7F]/.test(s)) issues.push("ASCII only");
+  if (!/[A-Za-z]/.test(s)) issues.push("must contain letters");
+  if (/\d{6,}/.test(s)) issues.push("no long number strings");
+  if (/(.)\1{5,}/i.test(s)) issues.push("no repeated chars");
+  if (/[A-Za-z]{25,}/.test(s)) issues.push("no long letter strings");
 
   return issues;
 }
@@ -127,11 +138,14 @@ export default function RunPage() {
   const [textValidateMessages, setTextValidateMessages] = useState<ChatMessage[]>([]);
   const [parseStage1Attempts, setParseStage1Attempts] = useState(0);
   const [parseStage2Attempts, setParseStage2Attempts] = useState(0);
+  const [parseStage2TotalAttempts, setParseStage2TotalAttempts] = useState(0);
+  const [parseStage2ConsecutiveFalse, setParseStage2ConsecutiveFalse] = useState(0);
   const [parseStage1Locked, setParseStage1Locked] = useState(false);
   const [parseStage2Locked, setParseStage2Locked] = useState(false);
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
   const [parseAdditionalInfo, setParseAdditionalInfo] = useState("");
   const [parseCurrentDescription, setParseCurrentDescription] = useState("");
+  const [normalizedUnderstandingsHistory, setNormalizedUnderstandingsHistory] = useState<string[]>([]);
   const [questions, setQuestions] = useState<string[]>([]);
   const [frameworkText, setFrameworkText] = useState<string>("");
   const [pubmedQueryText, setPubmedQueryText] = useState<string>("");
@@ -190,9 +204,45 @@ export default function RunPage() {
   async function loadInitial() {
     await refreshFiles();
     const u = await getRunFile(projectId, runId, "understanding.json");
+    // Load description (empty string will show placeholder)
     setResearchDescription(u?.research_description || "");
     setQuestions((u?.clarification_questions as string[]) || []);
     if (u?.retrieval_framework) setFrameworkText(String(u.retrieval_framework));
+
+    // Load parse history and normalized understandings
+    if (u?.parse?.history) {
+      const history = u.parse.history as Array<{ result?: { normalized_understanding?: string } }>;
+      const understandings = history
+        .map((h) => h.result?.normalized_understanding)
+        .filter((u): u is string => Boolean(u));
+      setNormalizedUnderstandingsHistory(understandings);
+    }
+    if (u?.parse?.result?.normalized_understanding) {
+      // Add current result if not already in history
+      const current = u.parse.result.normalized_understanding;
+      setNormalizedUnderstandingsHistory((prev) => {
+        if (!prev.includes(current)) {
+          return [...prev, current];
+        }
+        return prev;
+      });
+    }
+
+    // Load parse stage 2 attempts count from history
+    if (u?.parse?.history) {
+      const history = u.parse.history as Array<any>;
+      setParseStage2TotalAttempts(history.length);
+      // Count consecutive false from the end
+      let consecutiveFalse = 0;
+      for (let i = history.length - 1; i >= 0; i--) {
+        if (history[i]?.result?.is_helpful === false) {
+          consecutiveFalse++;
+        } else {
+          break;
+        }
+      }
+      setParseStage2ConsecutiveFalse(consecutiveFalse);
+    }
 
     try {
       const q = await getRunFile(projectId, runId, "queries.json");
@@ -242,6 +292,11 @@ export default function RunPage() {
       setParseStage1Attempts((n) => n + 1);
       setParseCurrentDescription(candidate);
 
+      // Append normalized_understanding to history after Stage 1
+      if (d.normalized_understanding) {
+        setNormalizedUnderstandingsHistory((prev) => [...prev, d.normalized_understanding]);
+      }
+
       const stage1Failed = !d.is_research_description || d.plausibility_level === "A_impossible";
       setTextValidateMessages((prev) => [
         ...prev,
@@ -270,12 +325,14 @@ export default function RunPage() {
   }
 
   async function onParseStage2Submit(additionalInfo: string) {
-    const maxAttempts = 3;
-    if (parseStage2Attempts >= maxAttempts) {
+    const maxTotalAttempts = 5;
+    
+    // Check total attempts limit (5 times total)
+    if (parseStage2TotalAttempts >= maxTotalAttempts) {
       setParseStage2Locked(true);
       setTextValidateMessages((prev) => [
         ...prev,
-        { role: "system", content: "Parse stage2: Too many attempts (3/3). Service refused." }
+        { role: "system", content: `Parse stage2: Maximum attempts reached (${maxTotalAttempts}/5). Service refused.` }
       ]);
       return;
     }
@@ -283,8 +340,53 @@ export default function RunPage() {
     setBusy("parse");
     setError(null);
     try {
+      // Frontend validation
+      const clientIssues = validateClientInput(additionalInfo);
+      if (clientIssues.length > 0) {
+        setError(`Invalid input: ${clientIssues.join(", ")}`);
+        return;
+      }
+
+      // Backend validation (quality checks)
+      const validateRes = await textValidate(additionalInfo);
+      const validateData = validateRes.data as { ok: boolean; reason: string | null };
+      if (!validateData.ok) {
+        setError(validateData.reason || "Validation failed");
+        return;
+      }
+
       const res = await parseStage2(projectId, runId, parseCurrentDescription, additionalInfo);
       const d = res.data as ParseResult;
+
+      // Increment counters
+      const newTotalAttempts = parseStage2TotalAttempts + 1;
+      setParseStage2TotalAttempts(newTotalAttempts);
+
+      // Update consecutive false counter
+      let newConsecutiveFalse = 0;
+      if (!d.is_helpful) {
+        newConsecutiveFalse = parseStage2ConsecutiveFalse + 1;
+        setParseStage2ConsecutiveFalse(newConsecutiveFalse);
+        
+        // Lock if 2 consecutive false
+        if (newConsecutiveFalse >= 2) {
+          setParseStage2Locked(true);
+          setTextValidateMessages((prev) => [
+            ...prev,
+            { role: "user", content: additionalInfo },
+            { role: "system", content: "Parse: Service refused due to two consecutive unhelpful responses." }
+          ]);
+          setBusy(null);
+          return;
+        }
+      } else {
+        setParseStage2ConsecutiveFalse(0); // Reset counter on helpful response
+      }
+
+      // Lock if max attempts reached
+      if (newTotalAttempts >= maxTotalAttempts) {
+        setParseStage2Locked(true);
+      }
 
       setParseResult(d);
       setParseStage2Attempts((n) => n + 1);
@@ -293,36 +395,36 @@ export default function RunPage() {
       setParseCurrentDescription(merged);
       setParseAdditionalInfo("");
 
-      setTextValidateMessages((prev) => [
-        ...prev,
+      // Update normalized understanding history only when is_helpful=true
+      if (d.is_helpful && d.normalized_understanding) {
+        setNormalizedUnderstandingsHistory((prev) => [...prev, d.normalized_understanding]);
+      }
+
+      // Update messages
+      const messages: ChatMessage[] = [
+        ...textValidateMessages,
         { role: "user", content: additionalInfo },
-        {
-          role: "system",
-          content:
-            d.plausibility_level === "A_impossible"
-              ? "Parse: impossible research description."
-              : d.is_clear_for_search
-                ? "Parse converged: clear for search. You can build the retrieval framework."
-                : "Parse: still unclear. Please provide more details."
-        }
-      ]);
+      ];
 
       if (d.plausibility_level === "A_impossible" || !d.is_research_description) {
         setParseStage2Locked(true);
-        setTextValidateMessages((prev) => [
-          ...prev,
-          { role: "system", content: "Parse: Service refused due to impossible/non-research input." }
-        ]);
-        return;
+        messages.push({ role: "system", content: "Parse: Service refused due to impossible/non-research input." });
+      } else if (!d.is_helpful) {
+        messages.push({ 
+          role: "system", 
+          content: `Your response was not helpful for clarifying the research. You have ${2 - newConsecutiveFalse} more chance(s).` 
+        });
+      } else if (d.is_helpful) {
+        messages.push({ 
+          role: "system", 
+          content: d.is_clear_for_search
+            ? "Parse converged: clear for search. You can build the retrieval framework or continue answering questions."
+            : "Your response was helpful. You can use the current understanding to build framework or continue answering questions."
+        });
       }
 
-      if (!d.is_clear_for_search && parseStage2Attempts + 1 >= maxAttempts) {
-        setParseStage2Locked(true);
-        setTextValidateMessages((prev) => [
-          ...prev,
-          { role: "system", content: "Parse stage2: Too many attempts (3/3). Service refused." }
-        ]);
-      }
+      setTextValidateMessages(messages);
+
     } catch (e) {
       setError(String(e));
     } finally {
@@ -334,7 +436,29 @@ export default function RunPage() {
     setBusy("buildFramework");
     setError(null);
     try {
-      const input = parseCurrentDescription.trim();
+      // Use the latest normalized_understanding if available, otherwise use parseCurrentDescription
+      const input = (parseResult?.normalized_understanding || parseCurrentDescription).trim();
+      
+      if (!input) {
+        setError("No research description available. Please complete parse stage first.");
+        return;
+      }
+
+      // Frontend validation
+      const clientIssues = validateClientInput(input);
+      if (clientIssues.length > 0) {
+        setError(`Invalid input: ${clientIssues.join(", ")}`);
+        return;
+      }
+
+      // Backend validation (quality checks)
+      const validateRes = await textValidate(input);
+      const validateData = validateRes.data as { ok: boolean; reason: string | null };
+      if (!validateData.ok) {
+        setError(validateData.reason || "Validation failed");
+        return;
+      }
+
       const res = await parseRun(projectId, runId, input);
       const d = res.data;
       setQuestions([]);
@@ -707,7 +831,7 @@ export default function RunPage() {
                 rows={5}
                 value={researchDescription}
                 onChange={(e) => setResearchDescription(e.target.value)}
-                placeholder="Example: I am working on invasive speech brain-computer interface decoding using ECoG and sEEG..."
+                placeholder="Enter your research description here. Please provide details about your research question, methods, and objectives."
                 style={{ fontSize: "15px" }}
                 maxLength={300}
               />
@@ -862,7 +986,15 @@ export default function RunPage() {
               <div className="stack" style={{ gap: 8 }}>
                 {parseResult?.plausibility_level === "B_plausible" && parseResult.is_clear_for_search ? (
                   <div className="row" style={{ justifyContent: "center" }}>
-                    <button onClick={onBuildFramework} disabled={busy !== null} className="gradient-green">
+                    <button 
+                      onClick={onBuildFramework} 
+                      disabled={
+                        busy !== null || 
+                        !parseCurrentDescription.trim() || 
+                        validateClientInput(parseCurrentDescription.trim()).length > 0
+                      } 
+                      className="gradient-green"
+                    >
                       {busy === "buildFramework" ? "🔄 Building…" : "Build Retrieval Framework"}
                     </button>
                   </div>
@@ -914,20 +1046,45 @@ export default function RunPage() {
                         {charLimitHint(parseAdditionalInfo)}
                       </div>
                     </div>
-                    <div className="row" style={{ justifyContent: "center" }}>
+                    <div className="row" style={{ justifyContent: "center", gap: 12 }}>
                       <button
                         onClick={() => onParseStage2Submit(parseAdditionalInfo.trim())}
                         disabled={
                           parseStage2Locked ||
                           busy !== null ||
                           !parseAdditionalInfo.trim() ||
-                          parseAdditionalClientIssues.length > 0
+                          parseAdditionalClientIssues.length > 0 ||
+                          parseStage2TotalAttempts >= 5
                         }
                         className="gradient-blue"
                       >
                         {busy === "parse" ? "🔄 Parsing…" : "submit"}
                       </button>
+                      {parseResult?.is_helpful && (
+                        <button
+                          onClick={onBuildFramework}
+                          disabled={busy !== null || parseStage2Locked}
+                          className="gradient-green"
+                        >
+                          {busy === "buildFramework" ? "🔄 Building…" : "Use the current understanding"}
+                        </button>
+                      )}
                     </div>
+                    {parseStage2TotalAttempts > 0 && (
+                      <div style={{ 
+                        textAlign: "center", 
+                        fontSize: 12, 
+                        color: "#666",
+                        marginTop: -8 
+                      }}>
+                        Attempts: {parseStage2TotalAttempts}/5
+                        {parseStage2ConsecutiveFalse > 0 && (
+                          <span style={{ color: "#dc2626", marginLeft: 8 }}>
+                            (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/2)
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
@@ -1003,12 +1160,34 @@ export default function RunPage() {
 
             <div className="stack" style={{ gap: 10 }}>
               <div className="muted">Latest research description</div>
-              <textarea
-                readOnly
-                rows={12}
-                value={parseCurrentDescription || textValidateLatest}
-                style={{ fontSize: "14px", whiteSpace: "pre-wrap", opacity: 0.95 }}
-              />
+              <div style={{ maxHeight: 400, overflow: "auto" }}>
+                {normalizedUnderstandingsHistory.length > 0 ? (
+                  <div className="stack" style={{ gap: 12 }}>
+                    {normalizedUnderstandingsHistory.map((understanding, idx) => (
+                      <div key={idx} style={{ 
+                        padding: 12, 
+                        background: "#f5f5f5", 
+                        borderRadius: 6,
+                        border: "1px solid #e5e5e5"
+                      }}>
+                        <div style={{ fontSize: 11, color: "#666", marginBottom: 6 }}>
+                          Version {idx + 1}
+                        </div>
+                        <div style={{ fontSize: "14px", whiteSpace: "pre-wrap", lineHeight: 1.6 }}>
+                          {understanding}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <textarea
+                    readOnly
+                    rows={12}
+                    value={parseCurrentDescription || textValidateLatest}
+                    style={{ fontSize: "14px", whiteSpace: "pre-wrap", opacity: 0.95 }}
+                  />
+                )}
+              </div>
             </div>
           </div>
         )}

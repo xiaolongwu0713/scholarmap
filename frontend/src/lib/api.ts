@@ -59,6 +59,13 @@ export async function createRun(projectId: string, research_description: string)
   return json.run as Run;
 }
 
+export async function deleteRun(projectId: string, runId: string): Promise<void> {
+  const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}`, {
+    method: "DELETE"
+  });
+  await throwIfNotOk(res, "deleteRun");
+}
+
 export async function getRunFile(projectId: string, runId: string, filename: string): Promise<any> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/files/${filename}`, {
     cache: "no-store"
