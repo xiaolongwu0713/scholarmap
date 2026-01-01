@@ -9,7 +9,7 @@ from wordfreq import zipf_frequency
 
 VOWELS = set("aeiou")
 
-# Base QC1 constraints (non-LLM)
+# Base text validate constraints (non-LLM)
 _MD_LINK_RE = re.compile(r"\[[^\]]+\]\([^)]+\)")
 _URL_RE = re.compile(r"(https?://|www\.)\S+", re.IGNORECASE)
 _EMAIL_RE = re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE)
@@ -54,15 +54,28 @@ def is_gibberish_shape(tok: str) -> bool:
     if re.search(r"[bcdfghjklmnpqrstvwxyz]{6,}", t):
         return True
 
-    # vowel ratio too low (len>=7)
-    if len(t) >= 7:
+    # vowel ratio too low
+    # For longer words (>=7), require at least 20% vowels
+    # For shorter words (4-6), require at least 25% vowels
+    if len(t) >= 4:
         vr = sum(c in VOWELS for c in t) / len(t)
-        if vr < 0.20:
+        threshold = 0.20 if len(t) >= 7 else 0.25
+        if vr < threshold:
             return True
 
-    # low character diversity (len>=7)
-    if len(t) >= 7 and (len(set(t)) / len(t) < 0.35):
-        return True
+    # low character diversity
+    # For longer words (>=7), require at least 35% unique chars
+    # For shorter words (4-6), require at least 40% unique chars
+    if len(t) >= 4:
+        diversity = len(set(t)) / len(t)
+        threshold = 0.35 if len(t) >= 7 else 0.40
+        if diversity < threshold:
+            return True
+
+    # Suspicious consonant clusters (3+ consonants in a row for short words)
+    if len(t) >= 4 and len(t) <= 8:
+        if re.search(r"[bcdfghjklmnpqrstvwxyz]{4,}", t):
+            return True
 
     return False
 
@@ -160,11 +173,20 @@ def analyze_english_text(text: str) -> dict[str, Any]:
     recommended_illegal = False
     reason = "ok"
     if total >= 10:
-        if (gib_ratio >= 0.60 or misspelled_ratio >= 0.40) and (
+        # High unknown ratio indicates gibberish/nonsense words
+        if unknown_ratio >= 0.50:
+            recommended_illegal = True
+            reason = "too_many_unknown_words"
+        elif (gib_ratio >= 0.60 or misspelled_ratio >= 0.40) and (
             unique_token_ratio <= 0.65 or repeated_token_ratio >= 0.25 or trigram_repeats >= 1
         ):
             recommended_illegal = True
             reason = "gibberish_or_misspelled_with_repetition"
+    elif total >= 5:
+        # For shorter texts, be more strict with unknown words
+        if unknown_ratio >= 0.60:
+            recommended_illegal = True
+            reason = "too_many_unknown_words"
 
     return {
         "total_words": total,
@@ -202,19 +224,31 @@ def input_text_validate(text: str) -> dict[str, Any]:
 
     # Complex quality checks that require dictionaries and advanced algorithms (backend only)
     stats = analyze_english_text(s)
-    illegal = (
-        bool(stats.get("recommended_illegal"))
-        or float(stats.get("gibberish_token_ratio") or 0.0) >= 0.60
-        or float(stats.get("misspelled_ratio") or 0.0) >= 0.40
-        or float(stats.get("unique_token_ratio") or 1.0) <= 0.65
-        or float(stats.get("repeated_token_ratio") or 0.0) >= 0.25
-        or int(stats.get("repeated_word_trigrams") or 0) >= 1
-    )
+    total_words = stats.get("total_words", 0)
+    unknown_ratio = float(stats.get("unknown_ratio") or 0.0)
+    
+    # Primary check: high unknown word ratio indicates gibberish
+    # For texts with >= 10 words, reject if >50% are unknown
+    # For shorter texts (5-9 words), reject if >60% are unknown
+    if total_words >= 10 and unknown_ratio >= 0.50:
+        illegal = True
+    elif total_words >= 5 and unknown_ratio >= 0.60:
+        illegal = True
+    else:
+        illegal = (
+            bool(stats.get("recommended_illegal"))
+            or float(stats.get("gibberish_token_ratio") or 0.0) >= 0.60
+            or float(stats.get("misspelled_ratio") or 0.0) >= 0.40
+            or float(stats.get("unique_token_ratio") or 1.0) <= 0.65
+            or float(stats.get("repeated_token_ratio") or 0.0) >= 0.25
+            or int(stats.get("repeated_word_trigrams") or 0) >= 1
+        )
     if illegal:
         return {
             "ok": False,
             "reason": (
                 "English word quality check failed: "
+                f"unknown={stats.get('unknown_ratio')}, "
                 f"gibberish={stats.get('gibberish_token_ratio')}, "
                 f"misspelled={stats.get('misspelled_ratio')}, "
                 f"unique={stats.get('unique_token_ratio')}, "
