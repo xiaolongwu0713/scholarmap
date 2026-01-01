@@ -135,6 +135,7 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
   const [level, setLevel] = useState<MapLevel>("world");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   // Data for each level
   const [worldData, setWorldData] = useState<WorldMapData[]>([]);
@@ -170,6 +171,79 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     loadWorldData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Listen for Mapbox authentication errors
+  useEffect(() => {
+    if (!mapboxToken) return;
+
+    // Monitor console errors for Mapbox-related errors
+    const originalConsoleError = console.error;
+    console.error = (...args: any[]) => {
+      const errorMsg = args.join(" ");
+      if (
+        errorMsg.includes("401") ||
+        errorMsg.includes("Unauthorized") ||
+        (errorMsg.includes("mapbox.com") && errorMsg.includes("401"))
+      ) {
+        setMapError("Invalid or expired Mapbox access token. Please check your token in .env.local and restart the server.");
+      }
+      originalConsoleError.apply(console, args);
+    };
+
+    const handleError = (event: ErrorEvent) => {
+      const errorMessage = event.message || "";
+      const errorUrl = (event.filename || "").toLowerCase();
+      if (
+        errorMessage.includes("401") ||
+        errorMessage.includes("Unauthorized") ||
+        errorMessage.includes("Mapbox") ||
+        event.error?.message?.includes("access token") ||
+        (errorUrl.includes("mapbox.com") && (errorMessage.includes("401") || errorMessage.includes("Unauthorized")))
+      ) {
+        setMapError("Invalid or expired Mapbox access token. Please check your token in .env.local and restart the server.");
+      }
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      const reason = event.reason?.message || String(event.reason || "");
+      if (
+        reason.includes("401") ||
+        reason.includes("Unauthorized") ||
+        reason.includes("Mapbox") ||
+        reason.includes("access token")
+      ) {
+        setMapError("Invalid or expired Mapbox access token. Please check your token in .env.local and restart the server.");
+      }
+    };
+
+    // Monitor fetch errors for mapbox.com requests
+    const originalFetch = window.fetch;
+    window.fetch = async (...args: any[]) => {
+      const url = args[0]?.toString() || "";
+      if (url.includes("mapbox.com")) {
+        try {
+          const response = await originalFetch.apply(window, args);
+          if (response.status === 401 && url.includes("mapbox.com")) {
+            setMapError("Invalid or expired Mapbox access token. Please check your token in .env.local and restart the server.");
+          }
+          return response;
+        } catch (error) {
+          throw error;
+        }
+      }
+      return originalFetch.apply(window, args);
+    };
+
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleUnhandledRejection);
+
+    return () => {
+      console.error = originalConsoleError;
+      window.fetch = originalFetch;
+      window.removeEventListener("error", handleError);
+      window.removeEventListener("unhandledrejection", handleUnhandledRejection);
+    };
+  }, [mapboxToken]);
 
   async function loadWorldData() {
     setLoading(true);
@@ -808,13 +882,70 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
               </div>
             )}
             {mapboxToken ? (
-              <Map
-                {...viewState}
-                onMove={(evt) => setViewState(evt.viewState)}
-                style={{ width: "100%", height: "100%" }}
-                mapStyle="mapbox://styles/mapbox/light-v11"
-                mapboxAccessToken={mapboxToken}
-              >
+              mapError ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100%",
+                    backgroundColor: "#f5f5f5",
+                    padding: 40,
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ 
+                    padding: "24px", 
+                    background: "#fee2e2", 
+                    borderRadius: "12px",
+                    color: "#dc2626",
+                    fontSize: 16,
+                    maxWidth: 600,
+                    border: "2px solid #fca5a5"
+                  }}>
+                    <div style={{ fontSize: 24, marginBottom: 12 }}>⚠️ Mapbox Authentication Error</div>
+                    <div style={{ marginBottom: 16, lineHeight: 1.6 }}>
+                      {mapError}
+                    </div>
+                    <div style={{ 
+                      fontSize: 14, 
+                      color: "#991b1b", 
+                      background: "#ffffff",
+                      padding: 16,
+                      borderRadius: 8,
+                      marginTop: 16,
+                      textAlign: "left"
+                    }}>
+                      <div style={{ fontWeight: 600, marginBottom: 8 }}>To fix this:</div>
+                      <ol style={{ margin: 0, paddingLeft: 20, lineHeight: 1.8 }}>
+                        <li>Get a Mapbox access token from <a href="https://account.mapbox.com/access-tokens/" target="_blank" rel="noopener noreferrer" style={{ color: "#2563eb", textDecoration: "underline" }}>https://account.mapbox.com/access-tokens/</a></li>
+                        <li>Add it to your <code style={{ background: "#f3f4f6", padding: "2px 6px", borderRadius: 4 }}>frontend/.env.local</code> file:</li>
+                      </ol>
+                      <div style={{ 
+                        background: "#f3f4f6", 
+                        padding: 12, 
+                        borderRadius: 6, 
+                        marginTop: 8,
+                        fontFamily: "monospace",
+                        fontSize: 13
+                      }}>
+                        NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.your_token_here
+                      </div>
+                      <div style={{ marginTop: 12, fontSize: 13 }}>
+                        <li style={{ listStyle: "none", marginTop: 8 }}>Restart your Next.js development server</li>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Map
+                  {...viewState}
+                  onMove={(evt) => setViewState(evt.viewState)}
+                  style={{ width: "100%", height: "100%" }}
+                  mapStyle="mapbox://styles/mapbox/light-v11"
+                  mapboxAccessToken={mapboxToken}
+                >
                 {renderMarkers()}
 
                 {popupInfo && level !== "country" && (
@@ -854,7 +985,8 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                     </div>
                   </Popup>
                 )}
-              </Map>
+                </Map>
+              )
             ) : (
               <div
                 style={{
