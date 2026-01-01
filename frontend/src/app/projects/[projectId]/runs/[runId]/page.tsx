@@ -18,6 +18,12 @@ import {
   getAuthorshipStats,
   type IngestStats
 } from "@/lib/api";
+import {
+  TEXT_VALIDATION_MAX_ATTEMPTS,
+  PARSE_STAGE1_MAX_ATTEMPTS,
+  PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
+  PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
+} from "@/lib/parseConfig";
 import dynamic from "next/dynamic";
 import MetricCard from "@/components/MetricCard";
 import ProgressSteps from "@/components/ProgressSteps";
@@ -50,6 +56,8 @@ type AggregatedItem = {
 type ChatMessage = {
   role: "user" | "system";
   content: string;
+  status?: "helpful" | "not_helpful" | "info" | "error";
+  consecutiveUnhelpful?: number;
 };
 
 type ParseResult = {
@@ -114,6 +122,109 @@ function extractFinalPubMedQuery(text: string): string {
   return text.trim();
 }
 
+function translateValidationError(reason: string | null): string {
+  if (!reason) return "Validation failed. Please check your input.";
+  
+  const reasonLower = reason.toLowerCase();
+  
+  // Check various error types and convert to human-readable messages
+  if (reasonLower.includes("unknown") || reasonLower.includes("misspelled") || reasonLower.includes("invalid")) {
+    if (reasonLower.includes("too_many_unknown_words") || reasonLower.includes("unknown_ratio")) {
+      return "Your input contains too many unrecognized or misspelled words. Please use correct English words.";
+    }
+    if (reasonLower.includes("gibberish")) {
+      return "Your input contains too many meaningless character combinations. Please use proper English words and sentences.";
+    }
+    if (reasonLower.includes("quality check failed")) {
+      return "Text quality check failed: Your input contains too many unrecognized words, misspellings, or gibberish. Please use proper English.";
+    }
+  }
+  
+  if (reasonLower.includes("length") || reasonLower.includes("50") || reasonLower.includes("300")) {
+    return "Input length does not meet requirements. Please enter text between 50-300 characters.";
+  }
+  
+  if (reasonLower.includes("empty")) {
+    return "Input cannot be empty. Please enter your research description.";
+  }
+  
+  if (reasonLower.includes("line break") || reasonLower.includes("newline")) {
+    return "Input contains too many line breaks. Maximum 3 line breaks allowed.";
+  }
+  
+  // Default: return original reason but remove technical details
+  return reason
+    .replace(/unknown=\d+\.\d+/g, "")
+    .replace(/misspelled=\d+\.\d+/g, "")
+    .replace(/invalid=\d+\.\d+/g, "")
+    .replace(/gibberish=\d+\.\d+/g, "")
+    .replace(/unique=\d+\.\d+/g, "")
+    .replace(/repeated=\d+\.\d+/g, "")
+    .replace(/trigram=\d+/g, "")
+    .replace(/English word quality check failed:\s*/g, "Text quality check failed: ")
+    .trim() || "Validation failed. Please check that your input meets the requirements.";
+}
+
+function formatSystemUnderstanding(result: ParseResult, isStage2: boolean = false, consecutiveUnhelpful: number = 0): ChatMessage | null {
+  let status: "helpful" | "not_helpful" | "info" | "error" | undefined;
+  let content = "";
+  
+  if (isStage2) {
+    // Stage 2: Check if helpful
+    if (result.is_helpful) {
+      status = "helpful";
+      content = "Your answer is helpful. Below is the new understanding and further instruction for refinement. Or, you can choose to use it without further refinement.";
+    } else {
+      status = "not_helpful";
+      content = "Please provide more useful information. You have one chance left to refine system understanding.";
+    }
+  } else {
+    // Stage 1: Check plausibility and clarity
+    if (result.plausibility_level === "A_impossible" || !result.is_research_description) {
+      status = "error";
+      content = "This is not a valid research description, or the input does not meet the requirements for a research description.";
+    } else if (result.is_clear_for_search) {
+      status = "info";
+      content = "Below is the system understanding of your research and further instructions for refinement.";
+    } else {
+      status = "info";
+      content = "Below is the system understanding of your research and further instructions for refinement.";
+    }
+  }
+  
+  return { role: "system", content, status, consecutiveUnhelpful: consecutiveUnhelpful > 0 ? consecutiveUnhelpful : undefined };
+}
+
+function formatParseResultAsMessage(result: ParseResult): string {
+  let content = result.normalized_understanding || "";
+  
+  if (result.plausibility_level === "A_impossible") {
+    if (result.guidance_to_user) {
+      content += "\n\n" + result.guidance_to_user;
+    }
+  } else if (!result.is_clear_for_search) {
+    const parts: string[] = [];
+    
+    if (result.uncertainties && result.uncertainties.length > 0) {
+      parts.push("Uncertainties:\n" + result.uncertainties.map(u => `- ${u}`).join("\n"));
+    }
+    
+    if (result.suggested_questions && result.suggested_questions.length > 0) {
+      parts.push("Questions:\n" + result.suggested_questions.map(q => `- ${q.question}`).join("\n"));
+    }
+    
+    if (result.guidance_to_user) {
+      parts.push(result.guidance_to_user);
+    }
+    
+    if (parts.length > 0) {
+      content += "\n\n" + parts.join("\n\n");
+    }
+  }
+  
+  return content.trim();
+}
+
 export default function RunPage() {
   const params = useParams();
   const projectId = params.projectId as string;
@@ -123,6 +234,7 @@ export default function RunPage() {
     null | "textValidate" | "parse" | "buildFramework" | "queryBuild" | "query" | "ingest"
   >(null);
   const [error, setError] = useState<string | null>(null);
+  const [validationErrorModal, setValidationErrorModal] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
   
   // Phase 2 state
   const [ingestStats, setIngestStats] = useState<IngestStats | null>(null);
@@ -272,12 +384,11 @@ export default function RunPage() {
   }, [projectId, runId, rawSelected]);
 
   async function onParseStage1(candidate: string) {
-    const maxAttempts = 3;
-    if (parseStage1Attempts >= maxAttempts) {
+    if (parseStage1Attempts >= PARSE_STAGE1_MAX_ATTEMPTS) {
       setParseStage1Locked(true);
       setTextValidateMessages((prev) => [
         ...prev,
-        { role: "system", content: "Parse stage1: Too many attempts (3/3). Service refused." }
+        { role: "system", content: `Parse stage1: Too many attempts (${PARSE_STAGE1_MAX_ATTEMPTS}/${PARSE_STAGE1_MAX_ATTEMPTS}). Service refused.` }
       ]);
       return;
     }
@@ -297,24 +408,24 @@ export default function RunPage() {
         setNormalizedUnderstandingsHistory((prev) => [...prev, d.normalized_understanding]);
       }
 
+      // Add system understanding first, then LLM response
+      const systemUnderstanding = formatSystemUnderstanding(d, false);
+      const llmResponse = formatParseResultAsMessage(d);
       const stage1Failed = !d.is_research_description || d.plausibility_level === "A_impossible";
-      setTextValidateMessages((prev) => [
-        ...prev,
-        {
-          role: "system",
-          content: stage1Failed
-            ? "Parse stage1 failed. Please revise your research description."
-            : d.is_clear_for_search
-              ? "Parse passed: clear for search. You can build the retrieval framework."
-              : "Parse passed: plausible but unclear. Please answer the questions."
-        }
-      ]);
+      
+      const newMessages: ChatMessage[] = [];
+      if (systemUnderstanding) {
+        newMessages.push(systemUnderstanding);
+      }
+      newMessages.push({ role: "system", content: llmResponse });
+      
+      setTextValidateMessages((prev) => [...prev, ...newMessages]);
 
-      if (stage1Failed && parseStage1Attempts + 1 >= maxAttempts) {
+      if (stage1Failed && parseStage1Attempts >= PARSE_STAGE1_MAX_ATTEMPTS) {
         setParseStage1Locked(true);
         setTextValidateMessages((prev) => [
           ...prev,
-          { role: "system", content: "Parse stage1: Too many failed attempts (3/3). Service refused." }
+          { role: "system", content: `Parse stage1: Too many failed attempts (${PARSE_STAGE1_MAX_ATTEMPTS}/${PARSE_STAGE1_MAX_ATTEMPTS}). Service refused.` }
         ]);
       }
     } catch (e) {
@@ -325,14 +436,12 @@ export default function RunPage() {
   }
 
   async function onParseStage2Submit(additionalInfo: string) {
-    const maxTotalAttempts = 5;
-    
-    // Check total attempts limit (5 times total)
-    if (parseStage2TotalAttempts >= maxTotalAttempts) {
+    // Check total attempts limit
+    if (parseStage2TotalAttempts >= PARSE_STAGE2_MAX_TOTAL_ATTEMPTS) {
       setParseStage2Locked(true);
       setTextValidateMessages((prev) => [
         ...prev,
-        { role: "system", content: `Parse stage2: Maximum attempts reached (${maxTotalAttempts}/5). Service refused.` }
+        { role: "system", content: `Parse stage2: Maximum attempts reached (${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS}/${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS}). Service refused.` }
       ]);
       return;
     }
@@ -351,7 +460,8 @@ export default function RunPage() {
       const validateRes = await textValidate(additionalInfo);
       const validateData = validateRes.data as { ok: boolean; reason: string | null };
       if (!validateData.ok) {
-        setError(validateData.reason || "Validation failed");
+        const userFriendlyMessage = translateValidationError(validateData.reason);
+        setValidationErrorModal({ show: true, message: userFriendlyMessage });
         return;
       }
 
@@ -367,24 +477,12 @@ export default function RunPage() {
       if (!d.is_helpful) {
         newConsecutiveFalse = parseStage2ConsecutiveFalse + 1;
         setParseStage2ConsecutiveFalse(newConsecutiveFalse);
-        
-        // Lock if 2 consecutive false
-        if (newConsecutiveFalse >= 2) {
-          setParseStage2Locked(true);
-          setTextValidateMessages((prev) => [
-            ...prev,
-            { role: "user", content: additionalInfo },
-            { role: "system", content: "Parse: Service refused due to two consecutive unhelpful responses." }
-          ]);
-          setBusy(null);
-          return;
-        }
       } else {
         setParseStage2ConsecutiveFalse(0); // Reset counter on helpful response
       }
 
       // Lock if max attempts reached
-      if (newTotalAttempts >= maxTotalAttempts) {
+      if (newTotalAttempts >= PARSE_STAGE2_MAX_TOTAL_ATTEMPTS) {
         setParseStage2Locked(true);
       }
 
@@ -400,27 +498,27 @@ export default function RunPage() {
         setNormalizedUnderstandingsHistory((prev) => [...prev, d.normalized_understanding]);
       }
 
-      // Update messages
+      // Update messages - add user input, system understanding, and LLM response
+      const systemUnderstanding = formatSystemUnderstanding(d, true, newConsecutiveFalse);
+      const llmResponse = formatParseResultAsMessage(d);
       const messages: ChatMessage[] = [
         ...textValidateMessages,
-        { role: "user", content: additionalInfo },
+        { role: "user", content: additionalInfo }
       ];
+      
+      if (systemUnderstanding) {
+        messages.push(systemUnderstanding);
+      }
+      messages.push({ role: "system", content: llmResponse });
+
+      // Lock if consecutive unhelpful threshold reached (after adding the response)
+      if (!d.is_helpful && newConsecutiveFalse >= PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL) {
+        setParseStage2Locked(true);
+        messages.push({ role: "system", content: `Parse: Service refused due to ${PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL} consecutive unhelpful responses.` });
+      }
 
       if (d.plausibility_level === "A_impossible" || !d.is_research_description) {
         setParseStage2Locked(true);
-        messages.push({ role: "system", content: "Parse: Service refused due to impossible/non-research input." });
-      } else if (!d.is_helpful) {
-        messages.push({ 
-          role: "system", 
-          content: `Your response was not helpful for clarifying the research. You have ${2 - newConsecutiveFalse} more chance(s).` 
-        });
-      } else if (d.is_helpful) {
-        messages.push({ 
-          role: "system", 
-          content: d.is_clear_for_search
-            ? "Parse converged: clear for search. You can build the retrieval framework or continue answering questions."
-            : "Your response was helpful. You can use the current understanding to build framework or continue answering questions."
-        });
       }
 
       setTextValidateMessages(messages);
@@ -455,7 +553,8 @@ export default function RunPage() {
       const validateRes = await textValidate(input);
       const validateData = validateRes.data as { ok: boolean; reason: string | null };
       if (!validateData.ok) {
-        setError(validateData.reason || "Validation failed");
+        const userFriendlyMessage = translateValidationError(validateData.reason);
+        setValidationErrorModal({ show: true, message: userFriendlyMessage });
         return;
       }
 
@@ -475,8 +574,6 @@ export default function RunPage() {
   async function onParse() {
     setError(null);
     setTextValidateMode(true);
-
-    const maxAttempts = 3;
     const source = textValidateMode ? textValidateDraft : researchDescription;
     const input = source.trim();
 
@@ -486,7 +583,6 @@ export default function RunPage() {
     const nextAttempts = textValidateAttempts + 1;
     setTextValidateAttempts(nextAttempts);
     setTextValidateReason(null);
-    setTextValidateMessages((prev) => [...prev, { role: "user", content: input }]);
 
     // Starting a new candidate invalidates any previously generated downstream artifacts.
     setQuestions([]);
@@ -511,35 +607,31 @@ export default function RunPage() {
       const d = res.data as { ok: boolean; reason: string | null };
       if (!d.ok) {
         const reason = d.reason || "Invalid input.";
+        const userFriendlyMessage = translateValidationError(reason);
         setTextValidateReason(reason);
-        setTextValidateMessages((prev) => [
-          ...prev,
-          { role: "system", content: `text validation failed: ${reason}` }
-        ]);
-        if (nextAttempts >= maxAttempts) {
+        // 不添加到对话框，而是显示弹窗
+        setValidationErrorModal({ show: true, message: userFriendlyMessage });
+        if (nextAttempts >= TEXT_VALIDATION_MAX_ATTEMPTS) {
           setTextValidateLocked(true);
-          setTextValidateMessages((prev) => [
-            ...prev,
-            { role: "system", content: "Too many invalid attempts. Input has been disabled." }
-          ]);
         }
         return;
       }
     } catch (e) {
       setError(String(e));
-      setTextValidateReason("Text validate service unavailable.");
-      setTextValidateMessages((prev) => [
-        ...prev,
-        { role: "system", content: "text validation failed: validation service unavailable." }
-      ]);
+      const userFriendlyMessage = "Text validation service is temporarily unavailable. Please try again later.";
+      setValidationErrorModal({ show: true, message: userFriendlyMessage });
       return;
     } finally {
       setBusy(null);
     }
 
+    // 只有验证通过才添加到对话框
     setTextValidateLocked(false);
     setResearchDescription(input);
-    setTextValidateMessages((prev) => [...prev, { role: "system", content: "text validation passed." }]);
+    setTextValidateMessages((prev) => [
+      ...prev,
+      { role: "user", content: input }
+    ]);
 
     await onParseStage1(input);
   }
@@ -794,6 +886,56 @@ export default function RunPage() {
         </div>
       ) : null}
 
+      {/* Validation Error Modal */}
+      {validationErrorModal.show && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000
+          }}
+          onClick={() => setValidationErrorModal({ show: false, message: "" })}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "24px",
+              maxWidth: "500px",
+              width: "90%",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+              border: "1px solid #e5e7eb"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ marginBottom: "16px" }}>
+              <h3 style={{ margin: 0, marginBottom: "8px", color: "#dc2626", fontSize: "20px" }}>
+                ⚠️ Validation Failed
+              </h3>
+              <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.5" }}>
+                {validationErrorModal.message}
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+              <button
+                className="primary"
+                onClick={() => setValidationErrorModal({ show: false, message: "" })}
+                style={{ padding: "8px 16px", fontSize: "14px" }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="card stack accent-blue">
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
           <div>
@@ -870,24 +1012,10 @@ export default function RunPage() {
               <div className="row" style={{ justifyContent: "space-between" }}>
                 <div className="muted">Dialogue</div>
                 <div className="muted" style={{ fontSize: 12 }}>
-                  Parse-1: {parseStage1Attempts}/3 · Parse-2: {parseStage2Attempts}/3
+                  Parse-1: {parseStage1Attempts}/{PARSE_STAGE1_MAX_ATTEMPTS} · Parse-2: {parseStage2Attempts}/{PARSE_STAGE1_MAX_ATTEMPTS}
                 </div>
               </div>
 
-              {textValidateReason ? (
-                <div
-                  style={{
-                    padding: "10px 12px",
-                    background: "#fee2e2",
-                    border: "1px solid #fecaca",
-                    borderRadius: "10px",
-                    color: "#dc2626",
-                    fontSize: "13px"
-                  }}
-                >
-                  ⚠️ {textValidateReason}
-                </div>
-              ) : null}
 
               <div
                 style={{
@@ -901,87 +1029,55 @@ export default function RunPage() {
               >
                 {textValidateMessages.length ? (
                   <div className="stack" style={{ gap: 8 }}>
-                    {textValidateMessages.map((m, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          padding: "10px 12px",
-                          borderRadius: 12,
-                          whiteSpace: "pre-wrap",
-                          background: m.role === "user" ? "#e0f2fe" : "#f1f5f9",
-                          border: "1px solid rgba(0,0,0,0.06)"
-                        }}
-                      >
-                        <div className="muted" style={{ fontSize: 11, marginBottom: 4 }}>
-                          {m.role === "user" ? "You" : "System"}
+                    {textValidateMessages.map((m, idx) => {
+                      // Determine background and text color based on status
+                      let background = m.role === "user" ? "#e0f2fe" : "#f1f5f9";
+                      let textColor = "#1f2937";
+                      let borderColor = "rgba(0,0,0,0.06)";
+                      
+                      if (m.status === "helpful") {
+                        background = "#dbeafe";
+                        textColor = "#1e40af";
+                        borderColor = "#93c5fd";
+                      } else if (m.status === "not_helpful") {
+                        background = "#fee2e2";
+                        textColor = "#dc2626";
+                        borderColor = "#fca5a5";
+                      } else if (m.status === "error") {
+                        background = "#fee2e2";
+                        textColor = "#dc2626";
+                        borderColor = "#fca5a5";
+                      } else if (m.status === "info") {
+                        background = "#f0f9ff";
+                        textColor = "#0369a1";
+                        borderColor = "#7dd3fc";
+                      }
+                      
+                      return (
+                        <div
+                          key={idx}
+                          style={{
+                            padding: "10px 12px",
+                            borderRadius: 12,
+                            whiteSpace: "pre-wrap",
+                            background,
+                            border: `1px solid ${borderColor}`,
+                            color: textColor
+                          }}
+                        >
+                          <div className="muted" style={{ fontSize: 11, marginBottom: 4, color: textColor, opacity: 0.8 }}>
+                            {m.role === "user" ? "You" : "System"}
+                          </div>
+                          <div style={{ fontSize: 13 }}>{m.content || "(empty)"}</div>
                         </div>
-                        <div style={{ fontSize: 13 }}>{m.content || "(empty)"}</div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="muted">No messages yet.</div>
                 )}
               </div>
 
-              {parseResult ? (
-                <div
-                  style={{
-                    border: "1px solid rgba(0,0,0,0.08)",
-                    borderRadius: 12,
-                    padding: 12,
-                    background: "rgba(255,255,255,0.7)"
-                  }}
-                >
-                  <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}>
-                    Parse result
-                  </div>
-                  <div style={{ fontSize: 13, whiteSpace: "pre-wrap" }}>
-                    {parseResult.normalized_understanding}
-                  </div>
-                  {parseResult.plausibility_level === "A_impossible" ? (
-                    <div className="muted" style={{ fontSize: 12, marginTop: 8, whiteSpace: "pre-wrap" }}>
-                      {parseResult.guidance_to_user}
-                    </div>
-                  ) : !parseResult.is_clear_for_search ? (
-                    <div className="stack" style={{ gap: 8, marginTop: 10 }}>
-                      {parseResult.uncertainties?.length ? (
-                        <div>
-                          <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>
-                            Uncertainties
-                          </div>
-                          <ul style={{ margin: 0, paddingLeft: 18 }}>
-                            {parseResult.uncertainties.map((u) => (
-                              <li key={u} className="muted" style={{ fontSize: 12 }}>
-                                {u}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                      {parseResult.suggested_questions?.length ? (
-                        <div>
-                          <div className="muted" style={{ fontSize: 12, marginBottom: 4 }}>
-                            Questions
-                          </div>
-                          <ul style={{ margin: 0, paddingLeft: 18 }}>
-                            {parseResult.suggested_questions.map((q, idx) => (
-                              <li key={`${q.field}-${idx}`} className="muted" style={{ fontSize: 12 }}>
-                                {q.question}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
-                      {parseResult.guidance_to_user ? (
-                        <div className="muted" style={{ fontSize: 12, whiteSpace: "pre-wrap" }}>
-                          {parseResult.guidance_to_user}
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
 
               <div className="stack" style={{ gap: 8 }}>
                 {parseResult?.plausibility_level === "B_plausible" && parseResult.is_clear_for_search ? (
@@ -1026,7 +1122,7 @@ export default function RunPage() {
                         value={parseAdditionalInfo}
                         onChange={(e) => setParseAdditionalInfo(e.target.value)}
                         disabled={parseStage2Locked || busy !== null}
-                        placeholder={parseStage2Locked ? "Parse stage2 locked after 3 attempts." : "Add details to answer the questions..."}
+                        placeholder={parseStage2Locked ? `Parse stage2 locked after ${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS} attempts.` : "Add details to answer the questions..."}
                         style={{ fontSize: "14px" }}
                         maxLength={300}
                       />
@@ -1054,7 +1150,7 @@ export default function RunPage() {
                           busy !== null ||
                           !parseAdditionalInfo.trim() ||
                           parseAdditionalClientIssues.length > 0 ||
-                          parseStage2TotalAttempts >= 5
+                          parseStage2TotalAttempts >= PARSE_STAGE2_MAX_TOTAL_ATTEMPTS
                         }
                         className="gradient-blue"
                       >
@@ -1077,10 +1173,10 @@ export default function RunPage() {
                         color: "#666",
                         marginTop: -8 
                       }}>
-                        Attempts: {parseStage2TotalAttempts}/5
+                        Attempts: {parseStage2TotalAttempts}/{PARSE_STAGE2_MAX_TOTAL_ATTEMPTS}
                         {parseStage2ConsecutiveFalse > 0 && (
                           <span style={{ color: "#dc2626", marginLeft: 8 }}>
-                            (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/2)
+                            (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/{PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL})
                           </span>
                         )}
                       </div>
@@ -1114,9 +1210,9 @@ export default function RunPage() {
                         disabled={textValidateLocked || parseStage1Locked || busy !== null}
                         placeholder={
                           textValidateLocked
-                            ? "Input disabled after 3 invalid attempts."
+                            ? `Input disabled after ${TEXT_VALIDATION_MAX_ATTEMPTS} invalid attempts.`
                             : parseStage1Locked
-                              ? "Parse stage1 locked after 3 failed attempts."
+                              ? `Parse stage1 locked after ${PARSE_STAGE1_MAX_ATTEMPTS} failed attempts.`
                               : "Revise and click parse again..."
                         }
                         style={{ fontSize: "14px" }}

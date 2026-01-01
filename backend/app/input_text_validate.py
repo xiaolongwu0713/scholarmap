@@ -7,6 +7,32 @@ from typing import Any
 from spellchecker import SpellChecker
 from wordfreq import zipf_frequency
 
+from app.parse_config import (
+    TEXT_MIN_LENGTH,
+    TEXT_MAX_LENGTH,
+    TEXT_MAX_LINE_BREAKS,
+    QUALITY_CHECK_WORD_COUNT_THRESHOLD,
+    QUALITY_UNKNOWN_RATIO_THRESHOLD_10PLUS,
+    QUALITY_INVALID_RATIO_THRESHOLD_10PLUS,
+    QUALITY_GIBBERISH_RATIO_THRESHOLD_10PLUS,
+    QUALITY_GIBBERISH_RATIO_SECONDARY_10PLUS,
+    QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD,
+    QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD,
+    QUALITY_REPEATED_TRIGRAM_THRESHOLD,
+    QUALITY_CHECK_WORD_COUNT_MIN,
+    QUALITY_UNKNOWN_RATIO_THRESHOLD_5_9,
+    QUALITY_INVALID_RATIO_THRESHOLD_5_9,
+    QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT,
+    QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT,
+    RECOMMENDED_ILLEGAL_UNKNOWN_RATIO_10PLUS,
+    RECOMMENDED_ILLEGAL_GIBBERISH_RATIO_10PLUS,
+    RECOMMENDED_ILLEGAL_MISSPELLED_RATIO_10PLUS,
+    RECOMMENDED_ILLEGAL_UNIQUE_TOKEN_RATIO_10PLUS,
+    RECOMMENDED_ILLEGAL_REPEATED_TOKEN_RATIO_10PLUS,
+    RECOMMENDED_ILLEGAL_TRIGRAM_THRESHOLD_10PLUS,
+    RECOMMENDED_ILLEGAL_UNKNOWN_RATIO_5_9,
+)
+
 VOWELS = set("aeiou")
 
 # Base text validate constraints (non-LLM)
@@ -94,18 +120,41 @@ def classify_word_en(tok: str) -> str:
 
     wl = w.lower()
 
-    # 2) High-frequency words => correct
+    # 2) Single letters: only accept if very high frequency (common words like 'a', 'i')
+    if len(wl) == 1:
+        if zipf_frequency(wl, "en") >= 4.0:  # Very strict for single letters
+            return "correct"
+        else:
+            return "unknown"  # Most single letters are not valid words
+
+    # 3) Very short words (2 chars): be strict
+    if len(wl) == 2:
+        if zipf_frequency(wl, "en") >= 3.5:  # Stricter threshold
+            return "correct"
+        elif wl in _spell:
+            return "correct"
+        else:
+            # For 2-char words, if not in dict and low frequency, likely gibberish
+            return "unknown"
+
+    # 4) High-frequency words => correct
     if zipf_frequency(wl, "en") >= 3.0:
         return "correct"
 
-    # 3) Dictionary hit
+    # 5) Dictionary hit
     if wl in _spell:
         return "correct"
 
-    # 4) Correction candidate: only accept if candidate is high-frequency
+    # 6) Correction candidate: be more strict
+    # Only accept if correction is high-frequency AND the original word looks plausible
     cand = _spell.correction(wl)
     if cand and cand != wl:
+        # Check if correction is high-frequency
         if zipf_frequency(cand, "en") >= 3.0:
+            # Additional check: if original word is very short or looks like gibberish,
+            # don't trust the correction
+            if len(wl) <= 4 or is_gibberish_shape(wl):
+                return "unknown"  # Likely gibberish, not a real misspelling
             return "misspelled"
 
     return "unknown"
@@ -172,19 +221,22 @@ def analyze_english_text(text: str) -> dict[str, Any]:
     # Recommended illegal heuristic (as provided; tunable)
     recommended_illegal = False
     reason = "ok"
-    if total >= 10:
+    if total >= QUALITY_CHECK_WORD_COUNT_THRESHOLD:
         # High unknown ratio indicates gibberish/nonsense words
-        if unknown_ratio >= 0.50:
+        if unknown_ratio >= RECOMMENDED_ILLEGAL_UNKNOWN_RATIO_10PLUS:
             recommended_illegal = True
             reason = "too_many_unknown_words"
-        elif (gib_ratio >= 0.60 or misspelled_ratio >= 0.40) and (
-            unique_token_ratio <= 0.65 or repeated_token_ratio >= 0.25 or trigram_repeats >= 1
+        elif (gib_ratio >= RECOMMENDED_ILLEGAL_GIBBERISH_RATIO_10PLUS or 
+              misspelled_ratio >= RECOMMENDED_ILLEGAL_MISSPELLED_RATIO_10PLUS) and (
+            unique_token_ratio <= RECOMMENDED_ILLEGAL_UNIQUE_TOKEN_RATIO_10PLUS or 
+            repeated_token_ratio >= RECOMMENDED_ILLEGAL_REPEATED_TOKEN_RATIO_10PLUS or 
+            trigram_repeats >= RECOMMENDED_ILLEGAL_TRIGRAM_THRESHOLD_10PLUS
         ):
             recommended_illegal = True
             reason = "gibberish_or_misspelled_with_repetition"
-    elif total >= 5:
+    elif total >= QUALITY_CHECK_WORD_COUNT_MIN:
         # For shorter texts, be more strict with unknown words
-        if unknown_ratio >= 0.60:
+        if unknown_ratio >= RECOMMENDED_ILLEGAL_UNKNOWN_RATIO_5_9:
             recommended_illegal = True
             reason = "too_many_unknown_words"
 
@@ -216,32 +268,61 @@ def input_text_validate(text: str) -> dict[str, Any]:
         return {"ok": False, "reason": "Input is empty."}
 
     # Double-check critical format rules as defense in depth
-    if len(s) < 50 or len(s) > 300:
-        return {"ok": False, "reason": "Length must be 50–300 characters."}
+    if len(s) < TEXT_MIN_LENGTH or len(s) > TEXT_MAX_LENGTH:
+        return {"ok": False, "reason": f"Length must be {TEXT_MIN_LENGTH}–{TEXT_MAX_LENGTH} characters."}
 
-    if s.count("\n") > 3:
-        return {"ok": False, "reason": "Too many line breaks (max 3)."}
+    if s.count("\n") > TEXT_MAX_LINE_BREAKS:
+        return {"ok": False, "reason": f"Too many line breaks (max {TEXT_MAX_LINE_BREAKS})."}
 
     # Complex quality checks that require dictionaries and advanced algorithms (backend only)
     stats = analyze_english_text(s)
     total_words = stats.get("total_words", 0)
     unknown_ratio = float(stats.get("unknown_ratio") or 0.0)
+    misspelled_ratio = float(stats.get("misspelled_ratio") or 0.0)
+    gibberish_ratio = float(stats.get("gibberish_token_ratio") or 0.0)
     
-    # Primary check: high unknown word ratio indicates gibberish
-    # For texts with >= 10 words, reject if >50% are unknown
-    # For shorter texts (5-9 words), reject if >60% are unknown
-    if total_words >= 10 and unknown_ratio >= 0.50:
-        illegal = True
-    elif total_words >= 5 and unknown_ratio >= 0.60:
-        illegal = True
+    # Primary check: high unknown + misspelled word ratio indicates gibberish
+    # For texts with >= 10 words, reject if (unknown + misspelled) >= 60%
+    # This catches cases where gibberish words are misclassified as "misspelled"
+    invalid_ratio = unknown_ratio + misspelled_ratio
+    
+    if total_words >= QUALITY_CHECK_WORD_COUNT_THRESHOLD:
+        if unknown_ratio >= QUALITY_UNKNOWN_RATIO_THRESHOLD_10PLUS:
+            illegal = True
+        elif invalid_ratio >= QUALITY_INVALID_RATIO_THRESHOLD_10PLUS:  # unknown + misspelled combined
+            illegal = True
+        elif gibberish_ratio >= QUALITY_GIBBERISH_RATIO_THRESHOLD_10PLUS:  # High gibberish ratio
+            illegal = True
+        else:
+            illegal = (
+                bool(stats.get("recommended_illegal"))
+                or float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_SECONDARY_10PLUS
+                or float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD
+                or float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD
+                or int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD
+            )
+    elif total_words >= QUALITY_CHECK_WORD_COUNT_MIN:
+        if unknown_ratio >= QUALITY_UNKNOWN_RATIO_THRESHOLD_5_9:
+            illegal = True
+        elif invalid_ratio >= QUALITY_INVALID_RATIO_THRESHOLD_5_9:  # Stricter for shorter texts
+            illegal = True
+        else:
+            illegal = (
+                bool(stats.get("recommended_illegal"))
+                or float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT
+                or float(stats.get("misspelled_ratio") or 0.0) >= QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT
+                or float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD
+                or float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD
+                or int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD
+            )
     else:
         illegal = (
             bool(stats.get("recommended_illegal"))
-            or float(stats.get("gibberish_token_ratio") or 0.0) >= 0.60
-            or float(stats.get("misspelled_ratio") or 0.0) >= 0.40
-            or float(stats.get("unique_token_ratio") or 1.0) <= 0.65
-            or float(stats.get("repeated_token_ratio") or 0.0) >= 0.25
-            or int(stats.get("repeated_word_trigrams") or 0) >= 1
+            or float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT
+            or float(stats.get("misspelled_ratio") or 0.0) >= QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT
+            or float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD
+            or float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD
+            or int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD
         )
     if illegal:
         return {
@@ -249,8 +330,9 @@ def input_text_validate(text: str) -> dict[str, Any]:
             "reason": (
                 "English word quality check failed: "
                 f"unknown={stats.get('unknown_ratio')}, "
-                f"gibberish={stats.get('gibberish_token_ratio')}, "
                 f"misspelled={stats.get('misspelled_ratio')}, "
+                f"invalid={unknown_ratio + misspelled_ratio:.2f}, "
+                f"gibberish={stats.get('gibberish_token_ratio')}, "
                 f"unique={stats.get('unique_token_ratio')}, "
                 f"repeated={stats.get('repeated_token_ratio')}, "
                 f"trigram={stats.get('repeated_word_trigrams')}."
