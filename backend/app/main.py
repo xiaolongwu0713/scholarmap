@@ -205,8 +205,8 @@ async def send_verification_code(req: SendVerificationCodeRequest) -> dict:
         await code_repo.create_code(email, code, expire_minutes=10)
         await session.commit()
     
-    # Send email (or print to console if SMTP_PASSWORD not set)
-    # If SMTP_PASSWORD is set, send_verification_email will raise exception on failure
+    # Send email (or print to console if SENDGRID_API_KEY not set)
+    # If SENDGRID_API_KEY is set, send_verification_email will raise exception on failure
     try:
         await send_verification_email(email, code)
     except Exception as e:

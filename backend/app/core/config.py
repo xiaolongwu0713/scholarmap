@@ -5,6 +5,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
+        # Only use .env file in project root directory
+        # Try both paths to support running from project root (.env) or backend/ directory (../.env)
         env_file=(".env", "../.env"),
         env_file_encoding="utf-8",
         extra="ignore",
@@ -33,15 +35,11 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
     
     # Email configuration (for verification codes)
-    # SendGrid API Key (preferred for production, especially on Render)
-    sendgrid_api_key: str = ""  # Should be set via environment variable
+    # SendGrid API Key - can be set via environment variable or .env file
+    sendgrid_api_key: str = ""  # Set via SENDGRID_API_KEY environment variable or .env file
     
-    # Legacy SMTP configuration (kept for backward compatibility, but not used if SendGrid is configured)
-    smtp_host: str = "smtp.gmail.com"
-    smtp_port: int = 587
-    smtp_user: str = "xiaolongwu0713@gmail.com"
-    smtp_password: str = ""  # Legacy: Gmail App Password (not used if SendGrid is configured)
-    smtp_from_email: str = "xiaolongwu0713@gmail.com"
+    # Email sender address (used by SendGrid)
+    email_from: str = "xiaolongwu0713@gmail.com"  # Sender email address for verification codes
 
 
 settings = Settings()

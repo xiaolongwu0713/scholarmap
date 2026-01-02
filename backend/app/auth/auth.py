@@ -156,7 +156,7 @@ async def send_verification_email(email: str, code: str) -> None:
         
         # Create email message
         message = Mail(
-            from_email=settings.smtp_from_email or settings.smtp_user,
+            from_email=settings.email_from,
             to_emails=email,
             subject="ScholarMap Email Verification Code",
             plain_text_content=f"""Your ScholarMap verification code is: {code}
