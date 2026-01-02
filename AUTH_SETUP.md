@@ -29,46 +29,48 @@ The ScholarMap application now requires user authentication. All users must regi
 
 ## Configuration
 
-### Email Configuration (Gmail)
+### Email Configuration (SendGrid)
 
-The system is configured to send verification codes via Gmail (xiaolongwu0713@gmail.com).
+The system uses SendGrid API to send verification codes. SendGrid is required for production deployments on Render, as Render blocks direct SMTP connections.
 
 **Setup Instructions**:
 
-1. Go to your Google Account settings (https://myaccount.google.com/apppasswords)
-2. Enable 2-Step Verification (if not already enabled)
-3. Generate an App Password for "Mail"
-4. **For Local Development**: Add the password to `.env` file in the project root or `backend/.env`:
+1. **Create SendGrid Account** (if not already done):
+   - Go to https://sendgrid.com and create an account
+   - Verify your email address
+
+2. **Create API Key**:
+   - Go to SendGrid Dashboard → Settings → API Keys
+   - Click "Create API Key"
+   - Name: "ScholarMap Email Service"
+   - Permissions: Select "Full Access" or "Mail Send" (minimum required)
+   - Click "Create & View"
+   - **Important**: Copy the API key immediately (it won't be shown again)
+
+3. **For Local Development**: Add the API key to `.env` file in the project root or `backend/.env`:
    ```bash
-   SMTP_PASSWORD=your-gmail-app-password-here
+   SENDGRID_API_KEY=SG.your-sendgrid-api-key-here
    ```
-5. **For Render Deployment**: Add `SMTP_PASSWORD` as an environment variable in Render dashboard:
+
+4. **For Render Deployment**: Add `SENDGRID_API_KEY` as an environment variable in Render dashboard:
    - Go to your Backend service → Environment → Add Environment Variable
-   - Key: `SMTP_PASSWORD`
-   - Value: your Gmail App Password
+   - Key: `SENDGRID_API_KEY`
+   - Value: Your SendGrid API Key (starts with `SG.`)
 
-**SMTP Configuration**:
-- Host: `smtp.gmail.com` (hardcoded)
-- Port: `465` (default, uses SSL) - can be changed to `587` (STARTTLS) if needed
-- User: `xiaolongwu0713@gmail.com` (hardcoded)
-- Password: Set via `SMTP_PASSWORD` environment variable
-- SSL: Enabled by default (port 465) - better for platforms like Render
+**Email Configuration**:
+- Service: SendGrid API (via SDK)
+- From Email: `xiaolongwu0713@gmail.com` (hardcoded)
+- API Key: Set via `SENDGRID_API_KEY` environment variable
 
-**Development Mode**: If `SMTP_PASSWORD` is empty or not set (in `.env` file or environment variable), verification codes will be printed to the console instead of being sent via email. This is useful for local development.
+**Development Mode**: If `SENDGRID_API_KEY` is empty or not set (in `.env` file or environment variable), verification codes will be printed to the console instead of being sent via email. This is useful for local development.
 
-**Production Mode**: If `SMTP_PASSWORD` is set, the system **must** successfully send the email via SMTP. If sending fails, an error will be raised and the registration will fail. This ensures email delivery in production.
+**Production Mode**: If `SENDGRID_API_KEY` is set, the system **must** successfully send the email via SendGrid API. If sending fails, an error will be raised and the registration will fail. This ensures email delivery in production.
 
 **Render Platform Notes**:
-- The code uses SSL port 465 by default (better compatibility with Render)
-- The code includes timeout settings (30s connection, 60s operations) to handle network delays
-- If you encounter "Network is unreachable" errors:
-  1. **First, verify SMTP_PASSWORD is correctly set in Render environment variables**
-  2. **Verify Gmail App Password is valid and not expired**
-  3. **Check Render service network connectivity** (check Render status page)
-  4. **If still failing**: Render may block outbound SMTP connections. Consider:
-     - Using a third-party email service (SendGrid, Mailgun, AWS SES)
-     - Using a background job service for email sending
-     - Contacting Render support about SMTP restrictions
+- Render blocks direct SMTP connections, so SendGrid API is required
+- SendGrid API uses HTTPS, which is always allowed on Render
+- No network restrictions or firewall issues with SendGrid
+- SendGrid free tier allows 100 emails per day (sufficient for development/testing)
 
 ### JWT Secret Key
 

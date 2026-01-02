@@ -33,12 +33,15 @@ class Settings(BaseSettings):
     jwt_access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
     
     # Email configuration (for verification codes)
+    # SendGrid API Key (preferred for production, especially on Render)
+    sendgrid_api_key: str = ""  # Should be set via environment variable
+    
+    # Legacy SMTP configuration (kept for backward compatibility, but not used if SendGrid is configured)
     smtp_host: str = "smtp.gmail.com"
-    smtp_port: int = 465  # Use SSL port 465 instead of STARTTLS port 587 (better for Render)
+    smtp_port: int = 587
     smtp_user: str = "xiaolongwu0713@gmail.com"
-    smtp_password: str = ""  # Should be set via environment variable (Gmail App Password)
+    smtp_password: str = ""  # Legacy: Gmail App Password (not used if SendGrid is configured)
     smtp_from_email: str = "xiaolongwu0713@gmail.com"
-    smtp_use_ssl: bool = True  # Use SSL (port 465) instead of STARTTLS (port 587)
 
 
 settings = Settings()

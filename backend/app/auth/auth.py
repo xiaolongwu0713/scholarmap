@@ -5,13 +5,12 @@ import base64
 import hashlib
 import re
 import secrets
-import smtplib
 from datetime import datetime, timezone, timedelta
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
 import bcrypt
 from jose import JWTError, jwt
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from app.core.config import settings
 from app.guardrail_config import (
@@ -132,81 +131,55 @@ def decode_access_token(token: str) -> dict | None:
 
 async def send_verification_email(email: str, code: str) -> None:
     """
-    Send verification code via email.
+    Send verification code via email using SendGrid.
     
     Behavior:
-    - If SMTP_PASSWORD is set (in .env file or environment variable), 
-      must send email via SMTP. Raises exception if sending fails.
-    - If SMTP_PASSWORD is not set (or empty), prints code to console.
+    - If SENDGRID_API_KEY is set (in .env file or environment variable), 
+      must send email via SendGrid API. Raises exception if sending fails.
+    - If SENDGRID_API_KEY is not set (or empty), prints code to console.
     
     Raises:
-        Exception: If SMTP_PASSWORD is set but email sending fails
+        Exception: If SENDGRID_API_KEY is set but email sending fails
     """
-    # Check if SMTP_PASSWORD is configured (from .env file or environment variable)
-    smtp_password = settings.smtp_password
-    if not smtp_password or not smtp_password.strip():
-        # SMTP_PASSWORD not set - print to console for development
+    # Check if SENDGRID_API_KEY is configured (from .env file or environment variable)
+    sendgrid_api_key = settings.sendgrid_api_key
+    if not sendgrid_api_key or not sendgrid_api_key.strip():
+        # SENDGRID_API_KEY not set - print to console for development
         print(f"[DEV] Email verification code for {email}: {code}")
-        print(f"[DEV] To enable email sending, set SMTP_PASSWORD in .env file or as environment variable")
+        print(f"[DEV] To enable email sending, set SENDGRID_API_KEY in .env file or as environment variable")
         return
     
-    # SMTP_PASSWORD is set - must send email via SMTP
+    # SENDGRID_API_KEY is set - must send email via SendGrid
     try:
-        msg = MIMEMultipart()
-        msg['From'] = settings.smtp_from_email or settings.smtp_user
-        msg['To'] = email
-        msg['Subject'] = "ScholarMap Email Verification Code"
+        # Create SendGrid client
+        sg = SendGridAPIClient(sendgrid_api_key.strip())
         
-        body = f"""
-        Your ScholarMap verification code is: {code}
-        
-        This code will expire in 10 minutes.
-        
-        If you did not request this code, please ignore this email.
-        """
-        
-        msg.attach(MIMEText(body, 'plain'))
-        
-        # Create SMTP connection with timeout (30 seconds for connection, 60 seconds for operations)
-        # Use SSL (port 465) or STARTTLS (port 587) based on configuration
-        if settings.smtp_use_ssl:
-            # Use SSL connection (port 465) - better for platforms like Render
-            server = smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, timeout=30)
-        else:
-            # Use STARTTLS connection (port 587)
-            server = smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=30)
-            server.starttls()
-        
-        server.set_debuglevel(0)  # Set to 1 for debugging
-        
-        # Login with credentials
-        server.login(settings.smtp_user, smtp_password)
+        # Create email message
+        message = Mail(
+            from_email=settings.smtp_from_email or settings.smtp_user,
+            to_emails=email,
+            subject="ScholarMap Email Verification Code",
+            plain_text_content=f"""Your ScholarMap verification code is: {code}
+
+This code will expire in 10 minutes.
+
+If you did not request this code, please ignore this email."""
+        )
         
         # Send email
-        text = msg.as_string()
-        server.sendmail(settings.smtp_from_email or settings.smtp_user, email, text)
-        server.quit()
+        response = sg.send(message)
         
-        print(f"[EMAIL] Verification code sent to {email}")
-    except smtplib.SMTPException as e:
-        # SMTP-specific errors
-        error_msg = f"SMTP error sending verification email to {email}: {e}"
-        print(f"[ERROR] {error_msg}")
-        raise Exception(error_msg) from e
-    except OSError as e:
-        # Network errors (connection refused, network unreachable, etc.)
-        error_msg = f"Network error sending verification email to {email}: {e}"
-        print(f"[ERROR] {error_msg}")
-        print(f"[ERROR] SMTP settings: host={settings.smtp_host}, port={settings.smtp_port}, use_ssl={settings.smtp_use_ssl}")
-        print(f"[ERROR] This may indicate that the platform blocks outbound SMTP connections.")
-        print(f"[ERROR] Solutions:")
-        print(f"[ERROR]   1. Try using a different SMTP port (465 for SSL, 587 for STARTTLS)")
-        print(f"[ERROR]   2. Use a third-party email service (SendGrid, Mailgun, etc.)")
-        print(f"[ERROR]   3. Check platform firewall/network restrictions")
-        raise Exception(error_msg) from e
+        # Check response status
+        if response.status_code >= 200 and response.status_code < 300:
+            print(f"[EMAIL] Verification code sent to {email} via SendGrid (status: {response.status_code})")
+        else:
+            error_msg = f"SendGrid API returned error status {response.status_code}: {response.body}"
+            print(f"[ERROR] {error_msg}")
+            raise Exception(error_msg)
+            
     except Exception as e:
-        # Other errors
-        error_msg = f"Failed to send verification email to {email}: {e}"
+        # Email sending failed - raise exception since SENDGRID_API_KEY was set
+        error_msg = f"Failed to send verification email to {email} via SendGrid: {e}"
         print(f"[ERROR] {error_msg}")
         raise Exception(error_msg) from e
 
