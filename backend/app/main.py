@@ -206,9 +206,11 @@ async def send_verification_code(req: SendVerificationCodeRequest) -> dict:
         await session.commit()
     
     # Send email (or print to console if SMTP_PASSWORD not set)
-    success = await send_verification_email(email, code)
-    if not success:
-        raise HTTPException(status_code=500, detail="Failed to send verification code")
+    # If SMTP_PASSWORD is set, send_verification_email will raise exception on failure
+    try:
+        await send_verification_email(email, code)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to send verification code: {str(e)}")
     
     return {"ok": True, "message": "Verification code sent"}
 

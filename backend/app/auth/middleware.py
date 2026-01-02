@@ -53,12 +53,13 @@ class AuthMiddleware(BaseHTTPMiddleware):
     }
     
     async def dispatch(self, request: Request, call_next) -> Response:
-        # Skip authentication for public paths
-        if request.url.path in self.PUBLIC_PATHS or request.url.path.startswith("/docs") or request.url.path.startswith("/openapi"):
+        # Skip OPTIONS requests (CORS preflight)
+        if request.method == "OPTIONS":
             return await call_next(request)
         
-        # Skip OPTIONS requests
-        if request.method == "OPTIONS":
+        # Skip authentication for public paths
+        path = request.url.path
+        if path in self.PUBLIC_PATHS or path.startswith("/docs") or path.startswith("/openapi"):
             return await call_next(request)
         
         # Check for authentication token

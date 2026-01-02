@@ -38,12 +38,32 @@ The system is configured to send verification codes via Gmail (xiaolongwu0713@gm
 1. Go to your Google Account settings (https://myaccount.google.com/apppasswords)
 2. Enable 2-Step Verification (if not already enabled)
 3. Generate an App Password for "Mail"
-4. Add the password to `.env` file in the project root or `backend/.env`:
+4. **For Local Development**: Add the password to `.env` file in the project root or `backend/.env`:
    ```bash
    SMTP_PASSWORD=your-gmail-app-password-here
    ```
+5. **For Render Deployment**: Add `SMTP_PASSWORD` as an environment variable in Render dashboard:
+   - Go to your Backend service → Environment → Add Environment Variable
+   - Key: `SMTP_PASSWORD`
+   - Value: your Gmail App Password
 
-**Development Mode**: If `SMTP_PASSWORD` is empty or not set in the `.env` file, verification codes will be printed to the console instead of being sent via email. This is useful for local development.
+**SMTP Configuration**:
+- Host: `smtp.gmail.com` (hardcoded)
+- Port: `587` (hardcoded, uses STARTTLS)
+- User: `xiaolongwu0713@gmail.com` (hardcoded)
+- Password: Set via `SMTP_PASSWORD` environment variable
+
+**Development Mode**: If `SMTP_PASSWORD` is empty or not set (in `.env` file or environment variable), verification codes will be printed to the console instead of being sent via email. This is useful for local development.
+
+**Production Mode**: If `SMTP_PASSWORD` is set, the system **must** successfully send the email via SMTP. If sending fails, an error will be raised and the registration will fail. This ensures email delivery in production.
+
+**Render Platform Notes**:
+- Render allows outbound SMTP connections on port 587
+- The code includes timeout settings (30s connection, 60s operations) to handle network delays
+- If you encounter "Network is unreachable" errors, check:
+  1. SMTP_PASSWORD is correctly set in Render environment variables
+  2. Gmail App Password is valid and not expired
+  3. Render service has network connectivity (check Render status page)
 
 ### JWT Secret Key
 

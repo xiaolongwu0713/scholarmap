@@ -130,21 +130,27 @@ def decode_access_token(token: str) -> dict | None:
         return None
 
 
-async def send_verification_email(email: str, code: str) -> bool:
+async def send_verification_email(email: str, code: str) -> None:
     """
     Send verification code via email.
     
-    If SMTP_PASSWORD is not set in .env file, the code will be printed to console.
+    Behavior:
+    - If SMTP_PASSWORD is set (in .env file or environment variable), 
+      must send email via SMTP. Raises exception if sending fails.
+    - If SMTP_PASSWORD is not set (or empty), prints code to console.
     
-    Returns:
-        True if sent successfully (or printed to console), False otherwise
+    Raises:
+        Exception: If SMTP_PASSWORD is set but email sending fails
     """
-    # If SMTP_PASSWORD is empty, print code to console for development
-    if not settings.smtp_password or not settings.smtp_password.strip():
+    # Check if SMTP_PASSWORD is configured (from .env file or environment variable)
+    smtp_password = settings.smtp_password
+    if not smtp_password or not smtp_password.strip():
+        # SMTP_PASSWORD not set - print to console for development
         print(f"[DEV] Email verification code for {email}: {code}")
-        print(f"[DEV] To enable email sending, set SMTP_PASSWORD in .env file")
-        return True
+        print(f"[DEV] To enable email sending, set SMTP_PASSWORD in .env file or as environment variable")
+        return
     
+    # SMTP_PASSWORD is set - must send email via SMTP
     try:
         msg = MIMEMultipart()
         msg['From'] = settings.smtp_from_email or settings.smtp_user
@@ -161,15 +167,36 @@ async def send_verification_email(email: str, code: str) -> bool:
         
         msg.attach(MIMEText(body, 'plain'))
         
-        server = smtplib.SMTP(settings.smtp_host, settings.smtp_port)
+        # Create SMTP connection with timeout (30 seconds for connection, 60 seconds for operations)
+        server = smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=30)
+        server.set_debuglevel(0)  # Set to 1 for debugging
+        
+        # Enable STARTTLS for secure connection
         server.starttls()
-        server.login(settings.smtp_user, settings.smtp_password)
+        
+        # Login with credentials
+        server.login(settings.smtp_user, smtp_password)
+        
+        # Send email
         text = msg.as_string()
         server.sendmail(settings.smtp_from_email or settings.smtp_user, email, text)
         server.quit()
         
-        return True
+        print(f"[EMAIL] Verification code sent to {email}")
+    except smtplib.SMTPException as e:
+        # SMTP-specific errors
+        error_msg = f"SMTP error sending verification email to {email}: {e}"
+        print(f"[ERROR] {error_msg}")
+        raise Exception(error_msg) from e
+    except OSError as e:
+        # Network errors (connection refused, network unreachable, etc.)
+        error_msg = f"Network error sending verification email to {email}: {e}"
+        print(f"[ERROR] {error_msg}")
+        print(f"[ERROR] Check SMTP settings: host={settings.smtp_host}, port={settings.smtp_port}")
+        raise Exception(error_msg) from e
     except Exception as e:
-        print(f"Error sending email: {e}")
-        return False
+        # Other errors
+        error_msg = f"Failed to send verification email to {email}: {e}"
+        print(f"[ERROR] {error_msg}")
+        raise Exception(error_msg) from e
 
