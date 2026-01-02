@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getProject, createRun, deleteRun, type Run } from "@/lib/api";
+import AuthGuard from "@/components/AuthGuard";
 
-export default function ProjectPage() {
+function ProjectPageContent() {
   const params = useParams();
   const projectId = params.projectId as string;
   const router = useRouter();
@@ -112,5 +113,13 @@ export default function ProjectPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function ProjectPage() {
+  return (
+    <AuthGuard>
+      <ProjectPageContent />
+    </AuthGuard>
   );
 }

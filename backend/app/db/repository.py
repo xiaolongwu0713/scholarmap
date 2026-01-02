@@ -31,24 +31,28 @@ class ProjectRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
     
-    async def list_projects(self) -> list[Project]:
-        """List all projects."""
+    async def list_projects(self, user_id: str) -> list[Project]:
+        """List all projects for a user."""
         result = await self.session.execute(
-            select(Project).order_by(Project.created_at.desc())
+            select(Project)
+            .where(Project.user_id == user_id)
+            .order_by(Project.created_at.desc())
         )
         return list(result.scalars().all())
     
-    async def get_project(self, project_id: str) -> Project | None:
-        """Get project by ID."""
-        result = await self.session.execute(
-            select(Project).where(Project.project_id == project_id)
-        )
+    async def get_project(self, project_id: str, user_id: str | None = None) -> Project | None:
+        """Get project by ID. Optionally filter by user_id."""
+        query = select(Project).where(Project.project_id == project_id)
+        if user_id is not None:
+            query = query.where(Project.user_id == user_id)
+        result = await self.session.execute(query)
         return result.scalar_one_or_none()
     
-    async def create_project(self, name: str) -> Project:
+    async def create_project(self, user_id: str, name: str) -> Project:
         """Create a new project."""
         project = Project(
             project_id=uuid.uuid4().hex[:12],
+            user_id=user_id,
             name=name,
             created_at=_utc_now()
         )

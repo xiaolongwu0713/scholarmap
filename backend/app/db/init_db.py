@@ -36,11 +36,23 @@ async def drop_all_tables() -> None:
     print("⚠️  All tables dropped")
 
 
+async def recreate_database() -> None:
+    """Drop all tables and recreate them (for development only)."""
+    await drop_all_tables()
+    await init_database()
+    print("✅ Database recreated successfully")
+
+
 if __name__ == "__main__":
     import sys
     
-    if len(sys.argv) > 1 and sys.argv[1] == "--drop":
-        asyncio.run(drop_all_tables())
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "--drop":
+            asyncio.run(drop_all_tables())
+        elif sys.argv[1] == "--recreate":
+            asyncio.run(recreate_database())
+        else:
+            print("Usage: python init_db.py [--drop|--recreate]")
     else:
         asyncio.run(init_database())
 

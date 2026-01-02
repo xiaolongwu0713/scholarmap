@@ -26,6 +26,18 @@ class Settings(BaseSettings):
     
     # Database configuration
     database_url: str = ""  # PostgreSQL connection URL
+    
+    # Authentication
+    jwt_secret_key: str = "change-this-secret-key-in-production"  # Should be set via environment variable
+    jwt_algorithm: str = "HS256"
+    jwt_access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
+    
+    # Email configuration (for verification codes)
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = "xiaolongwu0713@gmail.com"
+    smtp_password: str = ""  # Should be set via environment variable (Gmail App Password)
+    smtp_from_email: str = "xiaolongwu0713@gmail.com"
 
 
 settings = Settings()

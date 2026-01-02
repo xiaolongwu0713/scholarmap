@@ -7,7 +7,7 @@ from typing import Any
 from spellchecker import SpellChecker
 from wordfreq import zipf_frequency
 
-from app.parse_config import (
+from app.guardrail_config import (
     TEXT_MIN_LENGTH,
     TEXT_MAX_LENGTH,
     TEXT_MAX_LINE_BREAKS,

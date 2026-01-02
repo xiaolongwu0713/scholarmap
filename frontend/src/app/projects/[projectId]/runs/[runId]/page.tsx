@@ -27,6 +27,7 @@ import {
 import dynamic from "next/dynamic";
 import MetricCard from "@/components/MetricCard";
 import ProgressSteps from "@/components/ProgressSteps";
+import AuthGuard from "@/components/AuthGuard";
 
 const MapModal = dynamic(() => import("@/components/MapModal"), { ssr: false });
 
@@ -225,7 +226,7 @@ function formatParseResultAsMessage(result: ParseResult): string {
   return content.trim();
 }
 
-export default function RunPage() {
+function RunPageContent() {
   const params = useParams();
   const projectId = params.projectId as string;
   const runId = params.runId as string;
@@ -1612,5 +1613,13 @@ export default function RunPage() {
 
       {showMap && <MapModal projectId={projectId} runId={runId} onClose={() => setShowMap(false)} />}
     </div>
+  );
+}
+
+export default function RunPage() {
+  return (
+    <AuthGuard>
+      <RunPageContent />
+    </AuthGuard>
   );
 }

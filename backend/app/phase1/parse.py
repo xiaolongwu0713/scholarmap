@@ -9,6 +9,7 @@ from typing import Any
 from app.core.audit_log import append_log
 from app.core.paths import prompts_dir
 from app.core.storage import FileStore
+from app.parse_protection import sanitize_user_input, check_prompt_length
 from app.phase1.llm import OpenAIClient
 
 
@@ -49,9 +50,20 @@ def _require_fields(obj: dict[str, Any], required: list[str]) -> None:
 
 
 async def parse_stage1(store: FileStore, project_id: str, run_id: str, candidate_description: str) -> dict[str, Any]:
+    # Sanitize user input to prevent prompt injection
+    sanitized_description = sanitize_user_input(candidate_description)
+    
     prompt_path = prompts_dir() / "parse_stage1_understanding.md"
     template = _read_prompt(prompt_path)
-    prompt = template.replace("<<<CANDIDATE_DESCRIPTION>>>", candidate_description.strip())
+    prompt = template.replace("<<<CANDIDATE_DESCRIPTION>>>", sanitized_description)
+    
+    # Check prompt length before calling LLM
+    is_valid, current_length, max_length = check_prompt_length(prompt)
+    if not is_valid:
+        raise RuntimeError(
+            f"Prompt length ({current_length} chars) exceeds maximum ({max_length} chars). "
+            "Please reduce the input text length."
+        )
 
     llm = OpenAIClient()
     append_log(
@@ -130,11 +142,23 @@ async def parse_stage2(
             # Combine all questions into one string
             question_for_user = "\n".join([q.get("question", "") for q in suggested_questions if q.get("question")])
     
+    # Sanitize user inputs to prevent prompt injection
+    sanitized_current = sanitize_user_input(current_description)
+    sanitized_additional = sanitize_user_input(user_additional_info or "")
+    
     prompt = (
-        template.replace("<<<CURRENT_DESCRIPTION>>>", current_description.strip())
+        template.replace("<<<CURRENT_DESCRIPTION>>>", sanitized_current)
         .replace("<<<QUESTION_FOR_USER>>>", question_for_user.strip())
-        .replace("<<<USER_ADDITIONAL_INFO>>>", (user_additional_info or "").strip())
+        .replace("<<<USER_ADDITIONAL_INFO>>>", sanitized_additional)
     )
+    
+    # Check prompt length before calling LLM
+    is_valid, current_length, max_length = check_prompt_length(prompt)
+    if not is_valid:
+        raise RuntimeError(
+            f"Prompt length ({current_length} chars) exceeds maximum ({max_length} chars). "
+            "Please reduce the input text length."
+        )
 
     llm = OpenAIClient()
     append_log(

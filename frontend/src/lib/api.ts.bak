@@ -45,24 +45,6 @@ export interface LoginResponse {
   email: string;
 }
 
-export interface PasswordRequirements {
-  min_length: number;
-  max_length: number;
-  require_capital: boolean;
-  require_digit: boolean;
-  require_letter: boolean;
-  require_special: boolean;
-  special_chars: string;
-}
-
-export async function getPasswordRequirements(): Promise<PasswordRequirements> {
-  const res = await fetch(`${baseUrl}/api/auth/password-requirements`, {
-    headers: getDefaultHeaders(),
-  });
-  await throwIfNotOk(res, "getPasswordRequirements");
-  return await res.json();
-}
-
 export async function sendVerificationCode(email: string): Promise<void> {
   const res = await fetch(`${baseUrl}/api/auth/send-verification-code`, {
     method: "POST",
@@ -144,16 +126,14 @@ export async function createRun(projectId: string, research_description: string)
 
 export async function deleteRun(projectId: string, runId: string): Promise<void> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}`, {
-    method: "DELETE",
-    headers: getDefaultHeaders(),
+    method: "DELETE"
   });
   await throwIfNotOk(res, "deleteRun");
 }
 
 export async function getRunFile(projectId: string, runId: string, filename: string): Promise<any> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/files/${filename}`, {
-    cache: "no-store",
-    headers: getDefaultHeaders(),
+    cache: "no-store"
   });
   await throwIfNotOk(res, "getRunFile");
   const json = await res.json();
@@ -161,7 +141,7 @@ export async function getRunFile(projectId: string, runId: string, filename: str
 }
 
 export async function listRunFiles(projectId: string, runId: string): Promise<string[]> {
-  const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/files`, { cache: "no-store", headers: getDefaultHeaders() });
+  const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/files`, { cache: "no-store" });
   await throwIfNotOk(res, "listRunFiles");
   const json = await res.json();
   return json.files as string[];
@@ -170,7 +150,7 @@ export async function listRunFiles(projectId: string, runId: string): Promise<st
 export async function runQuery(projectId: string, runId: string): Promise<any> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/query`, {
     method: "POST",
-    headers: getDefaultHeaders()
+    headers: { "content-type": "application/json" }
   });
   await throwIfNotOk(res, "runQuery");
   return await res.json();
@@ -243,7 +223,7 @@ export async function updateSlots(projectId: string, runId: string, slots_normal
 export async function runSynonyms(projectId: string, runId: string): Promise<any> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/synonyms`, {
     method: "POST",
-    headers: getDefaultHeaders()
+    headers: { "content-type": "application/json" }
   });
   await throwIfNotOk(res, "runSynonyms");
   return await res.json();
@@ -266,7 +246,7 @@ export async function updateKeywords(
 export async function runQueryBuild(projectId: string, runId: string): Promise<any> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/query-build`, {
     method: "POST",
-    headers: getDefaultHeaders()
+    headers: { "content-type": "application/json" }
   });
   await throwIfNotOk(res, "runQueryBuild");
   return await res.json();

@@ -27,11 +27,11 @@ class RunDTO:
 class DatabaseStore:
     """Database-backed storage service with FileStore-compatible interface."""
     
-    async def list_projects(self) -> list[ProjectDTO]:
-        """List all projects."""
+    async def list_projects(self, user_id: str) -> list[ProjectDTO]:
+        """List all projects for a user."""
         async with db_manager.session() as session:
             repo = ProjectRepository(session)
-            projects = await repo.list_projects()
+            projects = await repo.list_projects(user_id)
             return [
                 ProjectDTO(
                     project_id=p.project_id,
@@ -41,11 +41,11 @@ class DatabaseStore:
                 for p in projects
             ]
     
-    async def get_project(self, project_id: str) -> ProjectDTO | None:
-        """Get project by ID."""
+    async def get_project(self, project_id: str, user_id: str) -> ProjectDTO | None:
+        """Get project by ID for a user."""
         async with db_manager.session() as session:
             repo = ProjectRepository(session)
-            project = await repo.get_project(project_id)
+            project = await repo.get_project(project_id, user_id)
             if not project:
                 return None
             return ProjectDTO(
@@ -54,11 +54,11 @@ class DatabaseStore:
                 created_at=project.created_at.isoformat()
             )
     
-    async def create_project(self, name: str) -> ProjectDTO:
-        """Create a new project."""
+    async def create_project(self, user_id: str, name: str) -> ProjectDTO:
+        """Create a new project for a user."""
         async with db_manager.session() as session:
             repo = ProjectRepository(session)
-            project = await repo.create_project(name)
+            project = await repo.create_project(user_id, name)
             return ProjectDTO(
                 project_id=project.project_id,
                 name=project.name,

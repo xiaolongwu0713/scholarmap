@@ -27,6 +27,30 @@ PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 5
 PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2
 
 # ============================================================================
+# Backend API Protection (Server-side enforcement)
+# ============================================================================
+
+# Server-side attempt limits (enforced at API level, cannot be bypassed)
+# These should match or be stricter than frontend limits
+BACKEND_STAGE1_MAX_ATTEMPTS = 3
+BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS = 5
+BACKEND_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2
+
+# API rate limiting (per project_id + run_id)
+# Maximum requests per time window
+API_RATE_LIMIT_MAX_REQUESTS = 10  # requests per window
+API_RATE_LIMIT_WINDOW_SECONDS = 60  # time window in seconds
+
+# Prompt length limits (to control LLM costs)
+# Maximum total prompt length in characters (approximate token count: chars / 4)
+PROMPT_MAX_LENGTH_CHARS = 16000  # ~4000 tokens (assuming ~4 chars per token)
+PROMPT_MAX_LENGTH_TOKENS = 4000  # Hard limit for token counting if available
+
+# Concurrency control
+# Maximum concurrent parse requests per run_id
+MAX_CONCURRENT_PARSE_PER_RUN = 1
+
+# ============================================================================
 # Text Format Validation
 # ============================================================================
 
@@ -90,3 +114,21 @@ RECOMMENDED_ILLEGAL_TRIGRAM_THRESHOLD_10PLUS = 1
 
 # Unknown ratio threshold for recommended_illegal (5-9 words)
 RECOMMENDED_ILLEGAL_UNKNOWN_RATIO_5_9 = 0.50
+
+# ============================================================================
+# Password Strength Requirements
+# ============================================================================
+
+# Password length limits
+PASSWORD_MIN_LENGTH = 8
+PASSWORD_MAX_LENGTH = 15
+
+# Password complexity requirements
+PASSWORD_REQUIRE_CAPITAL = True  # Require at least one uppercase letter
+PASSWORD_REQUIRE_DIGIT = True  # Require at least one digit
+PASSWORD_REQUIRE_LETTER = True  # Require at least one letter (a-z, A-Z)
+PASSWORD_REQUIRE_SPECIAL = True  # Require at least one special character
+
+# Allowed special characters (including @, #, *)
+PASSWORD_SPECIAL_CHARS = "@#*!$%^&*(),.?\":{}|<>"
+

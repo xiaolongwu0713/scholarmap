@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -14,7 +14,36 @@ from app.db.connection import db_manager
 from app.db.repository import AuthorshipRepository, RunPaperRepository
 from app.core.storage import FileStore
 from app.db.service import DatabaseStore
+from app.auth.middleware import AuthMiddleware
+from app.auth.auth import (
+    get_password_hash,
+    verify_password,
+    validate_password_strength,
+    create_access_token,
+    generate_verification_code,
+    send_verification_email,
+)
+from app.auth.repository import UserRepository, EmailVerificationCodeRepository
+from app.db.connection import db_manager
+from app.frontend_only_middleware import FrontendOnlyMiddleware
 from app.input_text_validate import analyze_english_text, input_text_validate
+from app.guardrail_config import (
+    API_RATE_LIMIT_MAX_REQUESTS,
+    API_RATE_LIMIT_WINDOW_SECONDS,
+    BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS,
+    PASSWORD_MIN_LENGTH,
+    PASSWORD_MAX_LENGTH,
+    PASSWORD_REQUIRE_CAPITAL,
+    PASSWORD_REQUIRE_DIGIT,
+    PASSWORD_REQUIRE_LETTER,
+    PASSWORD_REQUIRE_SPECIAL,
+    PASSWORD_SPECIAL_CHARS,
+)
+from app.parse_protection import (
+    ParseAttemptTracker,
+    _global_rate_limiter,
+    _global_concurrency_controller,
+)
 from app.phase1.models import Slots
 from app.phase1.parse import parse_stage1, parse_stage2
 from app.phase1.steps import step_parse, step_query_build, step_retrieve, step_synonyms
@@ -41,6 +70,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="ScholarMap API", lifespan=lifespan)
 
+# Add CORS middleware first
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -50,9 +80,17 @@ app.add_middleware(
     ],
     allow_origin_regex=r"https://.*\.onrender\.com",
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
+
+# Add authentication middleware (after CORS)
+# Auth middleware will check for valid JWT tokens on protected routes
+app.add_middleware(AuthMiddleware)
+
+# Add frontend-only middleware (after auth)
+app.add_middleware(FrontendOnlyMiddleware)
 
 # Use database store instead of file store
 store = DatabaseStore()
@@ -107,26 +145,178 @@ class UpdateRetrievalFrameworkRequest(BaseModel):
     retrieval_framework: str = Field(min_length=1, max_length=200_000)
 
 
+# Authentication request models
+class SendVerificationCodeRequest(BaseModel):
+    email: str = Field(min_length=1, max_length=255)
+
+
+class RegisterRequest(BaseModel):
+    email: str = Field(min_length=1, max_length=255)
+    verification_code: str = Field(min_length=6, max_length=6)
+    password: str = Field(min_length=PASSWORD_MIN_LENGTH, max_length=PASSWORD_MAX_LENGTH)
+    password_retype: str | None = None  # Optional, validated on frontend
+
+
+class LoginRequest(BaseModel):
+    email: str = Field(min_length=1, max_length=255)
+    password: str = Field(min_length=1, max_length=255)
+
+
 @app.get("/healthz")
 def healthz() -> dict[str, str]:
     return {"status": "ok"}
 
 
+# ============================================================================
+# Authentication Endpoints
+# ============================================================================
+
+@app.get("/api/auth/password-requirements")
+async def get_password_requirements() -> dict:
+    """Get password requirements configuration for frontend validation."""
+    return {
+        "min_length": PASSWORD_MIN_LENGTH,
+        "max_length": PASSWORD_MAX_LENGTH,
+        "require_capital": PASSWORD_REQUIRE_CAPITAL,
+        "require_digit": PASSWORD_REQUIRE_DIGIT,
+        "require_letter": PASSWORD_REQUIRE_LETTER,
+        "require_special": PASSWORD_REQUIRE_SPECIAL,
+        "special_chars": PASSWORD_SPECIAL_CHARS,
+    }
+
+@app.post("/api/auth/send-verification-code")
+async def send_verification_code(req: SendVerificationCodeRequest) -> dict:
+    """Send email verification code."""
+    from email_validator import validate_email, EmailNotValidError
+    
+    # Validate email format
+    try:
+        validation = validate_email(req.email, check_deliverability=False)
+        email = validation.email.lower().strip()
+    except EmailNotValidError:
+        raise HTTPException(status_code=400, detail="Invalid email format")
+    
+    # Generate verification code
+    code = generate_verification_code()
+    
+    # Store code in database
+    async with db_manager.session() as session:
+        code_repo = EmailVerificationCodeRepository(session)
+        await code_repo.create_code(email, code, expire_minutes=10)
+        await session.commit()
+    
+    # Send email (or print to console if SMTP_PASSWORD not set)
+    success = await send_verification_email(email, code)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to send verification code")
+    
+    return {"ok": True, "message": "Verification code sent"}
+
+
+@app.post("/api/auth/register")
+async def register_user(req: RegisterRequest) -> dict:
+    """Register a new user."""
+    from email_validator import validate_email, EmailNotValidError
+    import uuid
+    
+    # Validate email format
+    try:
+        validation = validate_email(req.email, check_deliverability=False)
+        email = validation.email.lower().strip()
+    except EmailNotValidError:
+        raise HTTPException(status_code=400, detail="Invalid email format")
+    
+    # Password validation is done on the frontend
+    # Backend only hashes the password (SHA-256 + bcrypt)
+    
+    # Verify code
+    async with db_manager.session() as session:
+        code_repo = EmailVerificationCodeRepository(session)
+        user_repo = UserRepository(session)
+        
+        # Check if user already exists
+        existing_user = await user_repo.get_user_by_email(email)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="User with this email already exists")
+        
+        # Verify code
+        code_valid = await code_repo.verify_code(email, req.verification_code)
+        if not code_valid:
+            raise HTTPException(status_code=400, detail="Invalid or expired verification code")
+        
+        # Create user
+        user_id = uuid.uuid4().hex[:16]
+        password_hash = get_password_hash(req.password)
+        user = await user_repo.create_user(user_id, email, password_hash)
+        
+        await session.commit()
+        
+        # Generate JWT token
+        token = create_access_token(data={"sub": user_id})
+        
+        return {
+            "ok": True,
+            "access_token": token,
+            "token_type": "bearer",
+            "user_id": user.user_id,
+            "email": user.email,
+        }
+
+
+@app.post("/api/auth/login")
+async def login_user(req: LoginRequest) -> dict:
+    """Login and return JWT token."""
+    from email_validator import validate_email, EmailNotValidError
+    
+    # Validate email format
+    try:
+        validation = validate_email(req.email, check_deliverability=False)
+        email = validation.email.lower().strip()
+    except EmailNotValidError:
+        raise HTTPException(status_code=400, detail="Invalid email format")
+    
+    # Get user from database
+    async with db_manager.session() as session:
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_email(email)
+        
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        # Verify password
+        if not verify_password(req.password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+        
+        # Generate JWT token
+        token = create_access_token(data={"sub": user.user_id})
+        
+        return {
+            "ok": True,
+            "access_token": token,
+            "token_type": "bearer",
+            "user_id": user.user_id,
+            "email": user.email,
+        }
+
+
 @app.get("/api/projects")
-async def list_projects() -> dict:
-    projects = await store.list_projects()
+async def list_projects(request: Request) -> dict:
+    user_id = request.state.user_id
+    projects = await store.list_projects(user_id)
     return {"projects": [p.__dict__ for p in projects]}
 
 
 @app.post("/api/projects")
-async def create_project(req: CreateProjectRequest) -> dict:
-    project = await store.create_project(req.name)
+async def create_project(request: Request, req: CreateProjectRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.create_project(user_id, req.name)
     return {"project": project.__dict__}
 
 
 @app.get("/api/projects/{project_id}")
-async def get_project(project_id: str) -> dict:
-    project = await store.get_project(project_id)
+async def get_project(request: Request, project_id: str) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     runs = await store.list_runs(project_id)
@@ -134,8 +324,9 @@ async def get_project(project_id: str) -> dict:
 
 
 @app.post("/api/projects/{project_id}/runs")
-async def create_run(project_id: str, req: CreateRunRequest) -> dict:
-    project = await store.get_project(project_id)
+async def create_run(request: Request, project_id: str, req: CreateRunRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     # Allow empty description when creating - user will enter it in the Run page
@@ -149,10 +340,11 @@ async def create_run(project_id: str, req: CreateRunRequest) -> dict:
 
 
 @app.delete("/api/projects/{project_id}/runs/{run_id}")
-async def delete_run(project_id: str, run_id: str) -> dict:
+async def delete_run(request: Request, project_id: str, run_id: str) -> dict:
     """Delete a run and all its data (database records and local files)."""
     # Verify run exists and belongs to project
-    project = await store.get_project(project_id)
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
@@ -171,8 +363,9 @@ async def delete_run(project_id: str, run_id: str) -> dict:
 
 
 @app.get("/api/projects/{project_id}/runs")
-async def list_runs(project_id: str) -> dict:
-    project = await store.get_project(project_id)
+async def list_runs(request: Request, project_id: str) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     runs = await store.list_runs(project_id)
@@ -180,7 +373,12 @@ async def list_runs(project_id: str) -> dict:
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/files/{filename}")
-async def get_run_file(project_id: str, run_id: str, filename: str) -> dict:
+async def get_run_file(request: Request, project_id: str, run_id: str, filename: str) -> dict:
+    user_id = request.state.user_id
+    # Verify project belongs to user
+    project = await store.get_project(project_id, user_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
     try:
         data = await store.read_run_file(project_id, run_id, filename)
     except FileNotFoundError:
@@ -191,7 +389,12 @@ async def get_run_file(project_id: str, run_id: str, filename: str) -> dict:
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/files")
-async def list_run_files(project_id: str, run_id: str) -> dict:
+async def list_run_files(request: Request, project_id: str, run_id: str) -> dict:
+    user_id = request.state.user_id
+    # Verify project belongs to user
+    project = await store.get_project(project_id, user_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
     try:
         files = await store.list_run_files(project_id, run_id)
     except FileNotFoundError:
@@ -202,8 +405,9 @@ async def list_run_files(project_id: str, run_id: str) -> dict:
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/query")
-async def phase1_query(project_id: str, run_id: str) -> dict:
-    project = store.get_project(project_id)
+async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -218,8 +422,9 @@ async def phase1_query(project_id: str, run_id: str) -> dict:
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/research-description")
-async def update_research_description(project_id: str, run_id: str, req: UpdateResearchDescriptionRequest) -> dict:
-    project = await store.get_project(project_id)
+async def update_research_description(request: Request, project_id: str, run_id: str, req: UpdateResearchDescriptionRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -247,46 +452,129 @@ async def text_validate_route(req: QC1ValidateRequest) -> dict:
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/parse/stage1")
-async def parse_stage1_route(project_id: str, run_id: str, req: ParseStage1Request) -> dict:
-    project = store.get_project(project_id)
-    if project is None:
-        raise HTTPException(status_code=404, detail="Project not found")
-    tv = input_text_validate(req.candidate_description)
-    if not tv.get("ok"):
-        raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+async def parse_stage1_route(request: Request, project_id: str, run_id: str, req: ParseStage1Request) -> dict:
+    import uuid
+    
+    # 1. Rate limiting check
+    identifier = f"{project_id}:{run_id}"
+    is_allowed, remaining = _global_rate_limiter.check_rate_limit("parse_stage1", identifier)
+    if not is_allowed:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Rate limit exceeded. Maximum {API_RATE_LIMIT_MAX_REQUESTS} requests per {API_RATE_LIMIT_WINDOW_SECONDS} seconds. Please wait before trying again."
+        )
+    
+    # 2. Concurrency control
+    request_id = str(uuid.uuid4())
+    acquired = await _global_concurrency_controller.acquire(run_id, request_id)
+    if not acquired:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Another parse request is already in progress for this run. Please wait for it to complete."
+        )
+    
     try:
-        data = await parse_stage1(store, project_id, run_id, req.candidate_description)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Run not found")
-    except RuntimeError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except httpx.HTTPStatusError as e:
-        raise HTTPException(status_code=502, detail=f"Upstream HTTP error: {e.response.status_code}") from e
-    return {"data": data}
+        # 3. Server-side attempt limit check
+        tracker = ParseAttemptTracker(store)
+        is_locked, current_count = await tracker.check_stage1_limit(project_id, run_id)
+        if is_locked:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Parse stage1 limit reached ({current_count} attempts). Service refused."
+            )
+        
+        user_id = request.state.user_id
+        project = await store.get_project(project_id, user_id)
+        if project is None:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        tv = input_text_validate(req.candidate_description)
+        if not tv.get("ok"):
+            raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+        
+        try:
+            # Increment attempt count before calling LLM
+            attempt_count = await tracker.increment_stage1_attempt(project_id, run_id)
+            
+            data = await parse_stage1(store, project_id, run_id, req.candidate_description)
+            
+            return {"data": data}
+        except FileNotFoundError:
+            raise HTTPException(status_code=404, detail="Run not found")
+        except RuntimeError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=502, detail=f"Upstream HTTP error: {e.response.status_code}") from e
+    finally:
+        # Always release concurrency slot
+        await _global_concurrency_controller.release(run_id, request_id)
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/parse/stage2")
-async def parse_stage2_route(project_id: str, run_id: str, req: ParseStage2Request) -> dict:
-    project = store.get_project(project_id)
-    if project is None:
-        raise HTTPException(status_code=404, detail="Project not found")
-    tv = input_text_validate(req.user_additional_info)
-    if not tv.get("ok"):
-        raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+async def parse_stage2_route(request: Request, project_id: str, run_id: str, req: ParseStage2Request) -> dict:
+    import uuid
+    
+    # 1. Rate limiting check
+    identifier = f"{project_id}:{run_id}"
+    is_allowed, remaining = _global_rate_limiter.check_rate_limit("parse_stage2", identifier)
+    if not is_allowed:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Rate limit exceeded. Maximum {API_RATE_LIMIT_MAX_REQUESTS} requests per {API_RATE_LIMIT_WINDOW_SECONDS} seconds. Please wait before trying again."
+        )
+    
+    # 2. Concurrency control
+    request_id = str(uuid.uuid4())
+    acquired = await _global_concurrency_controller.acquire(run_id, request_id)
+    if not acquired:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Another parse request is already in progress for this run. Please wait for it to complete."
+        )
+    
     try:
-        data = await parse_stage2(store, project_id, run_id, req.current_description, req.user_additional_info)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Run not found")
-    except RuntimeError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except httpx.HTTPStatusError as e:
-        raise HTTPException(status_code=502, detail=f"Upstream HTTP error: {e.response.status_code}") from e
-    return {"data": data}
+        # 3. Server-side attempt limit check
+        tracker = ParseAttemptTracker(store)
+        is_locked, total_count, consecutive_unhelpful = await tracker.check_stage2_limit(project_id, run_id)
+        if is_locked:
+            reason = "maximum attempts reached" if total_count >= BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS else "consecutive unhelpful responses"
+            raise HTTPException(
+                status_code=403,
+                detail=f"Parse stage2 limit reached ({reason}). Service refused."
+            )
+        
+        user_id = request.state.user_id
+        project = await store.get_project(project_id, user_id)
+        if project is None:
+            raise HTTPException(status_code=404, detail="Project not found")
+        
+        tv = input_text_validate(req.user_additional_info)
+        if not tv.get("ok"):
+            raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+        
+        try:
+            data = await parse_stage2(store, project_id, run_id, req.current_description, req.user_additional_info)
+            
+            # Increment attempt count after successful LLM call
+            is_helpful = data.get("is_helpful", False)
+            await tracker.increment_stage2_attempt(project_id, run_id, is_helpful)
+            
+            return {"data": data}
+        except FileNotFoundError:
+            raise HTTPException(status_code=404, detail="Run not found")
+        except RuntimeError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        except httpx.HTTPStatusError as e:
+            raise HTTPException(status_code=502, detail=f"Upstream HTTP error: {e.response.status_code}") from e
+    finally:
+        # Always release concurrency slot
+        await _global_concurrency_controller.release(run_id, request_id)
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/parse")
-async def phase1_parse(project_id: str, run_id: str, req: UpdateResearchDescriptionRequest) -> dict:
-    project = store.get_project(project_id)
+async def phase1_parse(request: Request, project_id: str, run_id: str, req: UpdateResearchDescriptionRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     # Backend validation (quality checks - frontend already did format checks)
@@ -303,8 +591,9 @@ async def phase1_parse(project_id: str, run_id: str, req: UpdateResearchDescript
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/slots")
-async def phase1_update_slots(project_id: str, run_id: str, req: UpdateSlotsRequest) -> dict:
-    project = await store.get_project(project_id)
+async def phase1_update_slots(request: Request, project_id: str, run_id: str, req: UpdateSlotsRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -317,8 +606,9 @@ async def phase1_update_slots(project_id: str, run_id: str, req: UpdateSlotsRequ
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/synonyms")
-async def phase1_synonyms(project_id: str, run_id: str) -> dict:
-    project = store.get_project(project_id)
+async def phase1_synonyms(request: Request, project_id: str, run_id: str) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -331,8 +621,9 @@ async def phase1_synonyms(project_id: str, run_id: str) -> dict:
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/keywords")
-async def phase1_update_keywords(project_id: str, run_id: str, req: UpdateKeywordsRequest) -> dict:
-    project = await store.get_project(project_id)
+async def phase1_update_keywords(request: Request, project_id: str, run_id: str, req: UpdateKeywordsRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -346,8 +637,9 @@ async def phase1_update_keywords(project_id: str, run_id: str, req: UpdateKeywor
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/query-build")
-async def phase1_query_build(project_id: str, run_id: str) -> dict:
-    project = store.get_project(project_id)
+async def phase1_query_build(request: Request, project_id: str, run_id: str) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -360,8 +652,9 @@ async def phase1_query_build(project_id: str, run_id: str) -> dict:
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/queries")
-async def phase1_update_queries(project_id: str, run_id: str, req: UpdateQueriesRequest) -> dict:
-    project = await store.get_project(project_id)
+async def phase1_update_queries(request: Request, project_id: str, run_id: str, req: UpdateQueriesRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -372,8 +665,9 @@ async def phase1_update_queries(project_id: str, run_id: str, req: UpdateQueries
 
 
 @app.put("/api/projects/{project_id}/runs/{run_id}/retrieval-framework")
-async def phase1_update_retrieval_framework(project_id: str, run_id: str, req: UpdateRetrievalFrameworkRequest) -> dict:
-    project = await store.get_project(project_id)
+async def phase1_update_retrieval_framework(request: Request, project_id: str, run_id: str, req: UpdateRetrievalFrameworkRequest) -> dict:
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     try:
@@ -394,14 +688,15 @@ class IngestRequest(BaseModel):
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/authorship/stats")
-async def phase2_authorship_stats(project_id: str, run_id: str) -> dict:
+async def phase2_authorship_stats(request: Request, project_id: str, run_id: str) -> dict:
+    user_id = request.state.user_id
     """
     Get authorship statistics for a run (check if data exists).
     
     Returns summary stats from existing authorship data in database,
     or null if no data exists yet.
     """
-    project = await store.get_project(project_id)
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
@@ -456,7 +751,8 @@ async def phase2_authorship_stats(project_id: str, run_id: str) -> dict:
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/ingest")
-async def phase2_ingest(project_id: str, run_id: str, req: IngestRequest = IngestRequest()) -> dict:
+async def phase2_ingest(request: Request, project_id: str, run_id: str, req: IngestRequest = IngestRequest()) -> dict:
+    user_id = request.state.user_id
     """
     Ingest papers from Phase 1 into authorship database.
     
@@ -467,7 +763,7 @@ async def phase2_ingest(project_id: str, run_id: str, req: IngestRequest = Inges
     4. Extracts geographic data via LLM
     5. Stores in PostgreSQL database
     """
-    project = await store.get_project(project_id)
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
@@ -504,6 +800,7 @@ async def phase2_ingest(project_id: str, run_id: str, req: IngestRequest = Inges
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/map/world")
 async def phase2_map_world(
+    request: Request,
     project_id: str,
     run_id: str,
     min_confidence: str = "low"
@@ -527,7 +824,8 @@ async def phase2_map_world(
       ...
     ]
     """
-    project = await store.get_project(project_id)
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
@@ -541,7 +839,7 @@ async def phase2_map_world(
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/map/country/{country}")
-async def phase2_map_country(
+async def phase2_map_country(request: Request, 
     project_id: str,
     run_id: str,
     country: str,
@@ -568,7 +866,8 @@ async def phase2_map_country(
       ...
     ]
     """
-    project = await store.get_project(project_id)
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
@@ -582,7 +881,7 @@ async def phase2_map_country(
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/map/city/{country}/{city}")
-async def phase2_map_city(
+async def phase2_map_city(request: Request, 
     project_id: str,
     run_id: str,
     country: str,
@@ -608,7 +907,8 @@ async def phase2_map_city(
       ...
     ]
     """
-    project = await store.get_project(project_id)
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
@@ -622,7 +922,7 @@ async def phase2_map_city(
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/map/institution")
-async def phase2_map_institution(
+async def phase2_map_institution(request: Request, 
     project_id: str,
     run_id: str,
     institution: str,
@@ -650,7 +950,8 @@ async def phase2_map_institution(
       ]
     }
     """
-    project = await store.get_project(project_id)
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
