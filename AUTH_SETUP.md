@@ -49,21 +49,26 @@ The system is configured to send verification codes via Gmail (xiaolongwu0713@gm
 
 **SMTP Configuration**:
 - Host: `smtp.gmail.com` (hardcoded)
-- Port: `587` (hardcoded, uses STARTTLS)
+- Port: `465` (default, uses SSL) - can be changed to `587` (STARTTLS) if needed
 - User: `xiaolongwu0713@gmail.com` (hardcoded)
 - Password: Set via `SMTP_PASSWORD` environment variable
+- SSL: Enabled by default (port 465) - better for platforms like Render
 
 **Development Mode**: If `SMTP_PASSWORD` is empty or not set (in `.env` file or environment variable), verification codes will be printed to the console instead of being sent via email. This is useful for local development.
 
 **Production Mode**: If `SMTP_PASSWORD` is set, the system **must** successfully send the email via SMTP. If sending fails, an error will be raised and the registration will fail. This ensures email delivery in production.
 
 **Render Platform Notes**:
-- Render allows outbound SMTP connections on port 587
+- The code uses SSL port 465 by default (better compatibility with Render)
 - The code includes timeout settings (30s connection, 60s operations) to handle network delays
-- If you encounter "Network is unreachable" errors, check:
-  1. SMTP_PASSWORD is correctly set in Render environment variables
-  2. Gmail App Password is valid and not expired
-  3. Render service has network connectivity (check Render status page)
+- If you encounter "Network is unreachable" errors:
+  1. **First, verify SMTP_PASSWORD is correctly set in Render environment variables**
+  2. **Verify Gmail App Password is valid and not expired**
+  3. **Check Render service network connectivity** (check Render status page)
+  4. **If still failing**: Render may block outbound SMTP connections. Consider:
+     - Using a third-party email service (SendGrid, Mailgun, AWS SES)
+     - Using a background job service for email sending
+     - Contacting Render support about SMTP restrictions
 
 ### JWT Secret Key
 

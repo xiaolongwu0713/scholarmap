@@ -34,10 +34,11 @@ class Settings(BaseSettings):
     
     # Email configuration (for verification codes)
     smtp_host: str = "smtp.gmail.com"
-    smtp_port: int = 587
+    smtp_port: int = 465  # Use SSL port 465 instead of STARTTLS port 587 (better for Render)
     smtp_user: str = "xiaolongwu0713@gmail.com"
     smtp_password: str = ""  # Should be set via environment variable (Gmail App Password)
     smtp_from_email: str = "xiaolongwu0713@gmail.com"
+    smtp_use_ssl: bool = True  # Use SSL (port 465) instead of STARTTLS (port 587)
 
 
 settings = Settings()

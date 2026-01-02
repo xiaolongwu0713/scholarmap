@@ -168,11 +168,16 @@ async def send_verification_email(email: str, code: str) -> None:
         msg.attach(MIMEText(body, 'plain'))
         
         # Create SMTP connection with timeout (30 seconds for connection, 60 seconds for operations)
-        server = smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=30)
-        server.set_debuglevel(0)  # Set to 1 for debugging
+        # Use SSL (port 465) or STARTTLS (port 587) based on configuration
+        if settings.smtp_use_ssl:
+            # Use SSL connection (port 465) - better for platforms like Render
+            server = smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port, timeout=30)
+        else:
+            # Use STARTTLS connection (port 587)
+            server = smtplib.SMTP(settings.smtp_host, settings.smtp_port, timeout=30)
+            server.starttls()
         
-        # Enable STARTTLS for secure connection
-        server.starttls()
+        server.set_debuglevel(0)  # Set to 1 for debugging
         
         # Login with credentials
         server.login(settings.smtp_user, smtp_password)
@@ -192,7 +197,12 @@ async def send_verification_email(email: str, code: str) -> None:
         # Network errors (connection refused, network unreachable, etc.)
         error_msg = f"Network error sending verification email to {email}: {e}"
         print(f"[ERROR] {error_msg}")
-        print(f"[ERROR] Check SMTP settings: host={settings.smtp_host}, port={settings.smtp_port}")
+        print(f"[ERROR] SMTP settings: host={settings.smtp_host}, port={settings.smtp_port}, use_ssl={settings.smtp_use_ssl}")
+        print(f"[ERROR] This may indicate that the platform blocks outbound SMTP connections.")
+        print(f"[ERROR] Solutions:")
+        print(f"[ERROR]   1. Try using a different SMTP port (465 for SSL, 587 for STARTTLS)")
+        print(f"[ERROR]   2. Use a third-party email service (SendGrid, Mailgun, etc.)")
+        print(f"[ERROR]   3. Check platform firewall/network restrictions")
         raise Exception(error_msg) from e
     except Exception as e:
         # Other errors
