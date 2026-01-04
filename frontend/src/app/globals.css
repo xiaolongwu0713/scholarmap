@@ -417,3 +417,20 @@ pre {
   background: #fee2e2;
   color: #dc2626;
 }
+
+/* Mapbox Popup Styles - Remove double layer appearance */
+.mapboxgl-popup {
+  max-width: none !important;
+}
+
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: white !important;
+}

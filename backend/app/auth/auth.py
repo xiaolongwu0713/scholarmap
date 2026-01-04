@@ -12,7 +12,13 @@ from jose import JWTError, jwt
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-from app.core.config import settings
+import sys
+from pathlib import Path
+
+# Add repo root to path to import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+import config
+settings = config.settings
 from app.guardrail_config import (
     PASSWORD_MIN_LENGTH,
     PASSWORD_MAX_LENGTH,

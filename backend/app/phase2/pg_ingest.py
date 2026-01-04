@@ -4,6 +4,13 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+import sys
+from pathlib import Path
+
+# Add repo root to path to import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+import config
+settings = config.settings
 from app.db.connection import db_manager
 from app.db.repository import (
     AuthorshipRepository,
@@ -11,7 +18,7 @@ from app.db.repository import (
     RunPaperRepository,
 )
 from app.db.service import DatabaseStore
-from app.phase2.affiliation_extractor import AffiliationExtractor
+from app.phase2.affiliation_extractor import create_extractor
 from app.phase2.models import GeoData, IngestStats, ParsedPaper
 from app.phase2.pubmed_fetcher import PubMedFetcher
 from app.phase2.pubmed_parser import PubMedXMLParser
@@ -30,7 +37,7 @@ class PostgresIngestionPipeline:
         self.project_id = project_id
         self.fetcher = PubMedFetcher(api_key=api_key)
         self.parser = PubMedXMLParser()
-        self.extractor = AffiliationExtractor(batch_size=20)
+        self.extractor = create_extractor(settings.affiliation_extraction_method)
     
     async def ingest_run(
         self,
@@ -161,7 +168,7 @@ class PostgresIngestionPipeline:
         self,
         papers: list[ParsedPaper]
     ) -> dict[str, Any]:
-        """Extract geographic data from affiliations using LLM (no cache)."""
+        """Extract geographic data from affiliations (no cache)."""
         # Collect unique affiliation strings
         unique_affiliations = set()
         for paper in papers:
@@ -178,29 +185,22 @@ class PostgresIngestionPipeline:
                 "llm_calls": 0
             }
         
-        logger.info(f"Extracting {len(unique_affiliations)} affiliations via LLM (no cache)")
+        method_name = "rule-based" if settings.affiliation_extraction_method == "rule_based" else "LLM"
+        logger.info(f"Extracting {len(unique_affiliations)} affiliations via {method_name} (no cache)")
         
-        # Extract all affiliations via LLM (no cache check)
-        geo_map: dict[str, GeoData] = {}
+        # Extract all affiliations (no cache check)
         affiliation_list = list(unique_affiliations)
-        
-        # Process in batches
-        batch_size = self.extractor.batch_size
-        llm_calls = 0
-        
-        for i in range(0, len(affiliation_list), batch_size):
-            batch = affiliation_list[i:i + batch_size]
-            logger.info(f"Processing LLM batch {i//batch_size + 1}/{(len(affiliation_list)-1)//batch_size + 1}")
-            
-            batch_results = await self.extractor.extract_batch(batch)
-            # Map affiliations to GeoData objects
-            batch_map = {aff: geo for aff, geo in zip(batch, batch_results)}
-            geo_map.update(batch_map)
-            llm_calls += 1
+        geo_map = await self.extractor.extract_affiliations(affiliation_list, cache_lookup=None)
         
         with_country = sum(1 for g in geo_map.values() if g.country)
         
-        logger.info(f"LLM extraction complete: {len(geo_map)} affiliations, {with_country} with country")
+        # Calculate LLM calls (only for LLM-based extraction)
+        llm_calls = 0
+        if settings.affiliation_extraction_method == "llm":
+            # Estimate LLM calls (batch size = 20)
+            llm_calls = (len(affiliation_list) + 19) // 20
+        
+        logger.info(f"Extraction complete: {len(geo_map)} affiliations, {with_country} with country")
         
         return {
             "geo_map": geo_map,

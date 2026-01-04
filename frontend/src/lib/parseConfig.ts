@@ -37,3 +37,9 @@ export const PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 5;
  */
 export const PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2;
 
+/**
+ * Retrieval Framework adjustment maximum attempts
+ * Maximum number of times user can adjust the retrieval framework.
+ */
+export const RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS = 2;
+

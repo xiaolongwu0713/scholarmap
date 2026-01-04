@@ -4,37 +4,53 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any
+from pathlib import Path
+from typing import Any, Protocol
 
 from app.core.audit_log import append_log
+from app.core.paths import prompts_dir
 from app.phase1.llm import OpenAIClient
 from app.phase2.models import GeoData
 
 logger = logging.getLogger(__name__)
 
 
-AFFILIATION_EXTRACTION_PROMPT = """You are a geographic data extractor for academic affiliations.
+class AffiliationExtractorProtocol(Protocol):
+    """Protocol for affiliation extractors."""
+    
+    async def extract_batch(self, affiliations: list[str]) -> list[GeoData]:
+        """Extract geographic data from a batch of affiliations."""
+        ...
+    
+    async def extract_affiliations(
+        self,
+        affiliations: list[str],
+        cache_lookup: Any = None
+    ) -> dict[str, GeoData]:
+        """Extract geographic data from all unique affiliations."""
+        ...
 
-Extract the following from each affiliation string:
-- country: Full country name (e.g., "United States", "United Kingdom", "China")
-- city: City name if present (e.g., "Boston", "London", "Beijing")
-- institution: Primary institution name if present (e.g., "Harvard Medical School", "MIT")
 
-Rules:
-1. Return exact matches from the text, don't invent information
-2. If a field is missing or unclear, return null
-3. Use full country names, not abbreviations (USA → United States)
-4. confidence: "high" if all fields clear, "medium" if some unclear, "low" if very ambiguous, "none" if no geographic info
+def create_extractor(method: str = "llm") -> AffiliationExtractorProtocol:
+    """
+    Factory function to create an affiliation extractor based on configuration.
+    
+    Args:
+        method: Extraction method, either "llm" or "rule_based"
+    
+    Returns:
+        An instance of AffiliationExtractor or RuleBasedExtractor
+    """
+    if method == "rule_based":
+        from app.phase2.rule_based_extractor import RuleBasedExtractor
+        return RuleBasedExtractor()
+    else:
+        return AffiliationExtractor(batch_size=20)
 
-Return a JSON array with one object per affiliation in the EXACT same order as input:
-[
-  {"country": "United States", "city": "Boston", "institution": "Massachusetts General Hospital", "confidence": "high"},
-  {"country": "China", "city": "Beijing", "institution": null, "confidence": "medium"},
-  ...
-]
 
-Affiliations to process:
-"""
+def _read_prompt(path: Path) -> str:
+    """Read prompt template from file."""
+    return path.read_text(encoding="utf-8")
 
 
 class AffiliationExtractor:
@@ -60,12 +76,17 @@ class AffiliationExtractor:
         if not affiliations:
             return []
         
+        # Load prompt template from file
+        prompt_path = prompts_dir() / "affiliation_extraction.md"
+        template = _read_prompt(prompt_path)
+        
         # Format affiliations as numbered list
         numbered_list = "\n".join(
             f"{i+1}. {aff}" for i, aff in enumerate(affiliations)
         )
         
-        prompt = AFFILIATION_EXTRACTION_PROMPT + numbered_list
+        # Replace placeholder with actual affiliations
+        prompt = template.replace("<<<AFFILIATIONS>>>", numbered_list)
         
         try:
             # Log full prompt
@@ -74,6 +95,7 @@ class AffiliationExtractor:
                 {
                     "batch_size": len(affiliations),
                     "model": self.llm_client.model,
+                    "prompt_file": str(prompt_path),
                     "full_prompt": prompt,
                 },
             )

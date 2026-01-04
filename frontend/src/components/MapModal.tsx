@@ -699,7 +699,13 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     const minSize = 8;
     const maxSize = 70;
     const logCount = Math.log(count + 1);
-    const maxLogCount = Math.log(Math.max(...worldData.map(c => c.scholar_count), ...countryData.map(c => c.scholar_count)) + 1);
+    const allCounts = [
+      ...worldData.map(c => c.scholar_count),
+      ...countryData.map(c => c.scholar_count)
+    ];
+    const maxCount = allCounts.length > 0 ? Math.max(...allCounts) : count;
+    const maxLogCount = Math.log(maxCount + 1);
+    if (maxLogCount === 0) return minSize;
     return minSize + ((maxSize - minSize) * logCount) / maxLogCount;
   }
 
@@ -736,10 +742,19 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                   color: "white",
                   width: `${size}px`,
                   height: `${size}px`,
+                  minWidth: `${size}px`,
+                  minHeight: `${size}px`,
                   fontSize: `${fontSize}px`,
                   boxShadow: shadow,
                   lineHeight: `${size}px`,
-                  textAlign: "center"
+                  textAlign: "center",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  position: "relative",
+                  zIndex: 10
                 }}
                 onClick={() => drillToCountry(country.country)}
                 onMouseEnter={() =>
@@ -775,10 +790,19 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                 color: "white",
                 width: `${size}px`,
                 height: `${size}px`,
+                minWidth: `${size}px`,
+                minHeight: `${size}px`,
                 fontSize: `${fontSize}px`,
                 boxShadow: shadow,
                 lineHeight: `${size}px`,
-                textAlign: "center"
+                textAlign: "center",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                position: "relative",
+                zIndex: 10
               }}
               onClick={() => drillToCity(selectedCountry, city.city)}
             >
@@ -861,22 +885,22 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
               <div
                 style={{
                   position: "absolute",
-                  top: 20,
+                  top: 12,
                   left: "50%",
                   transform: "translateX(-50%)",
                   zIndex: 10,
                   backgroundColor: "white",
-                  padding: "16px 20px",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                  border: "2px solid #e5e7eb",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                  border: "1px solid #e5e7eb",
                   pointerEvents: "none"
                 }}
               >
-                <div style={{ fontSize: "20px", fontWeight: 700, color: "#111827", marginBottom: "4px" }}>
+                <div style={{ fontSize: "14px", fontWeight: 600, color: "#111827", marginBottom: "2px" }}>
                   {selectedCountry}
                 </div>
-                <div style={{ fontSize: "14px", color: "#6b7280" }}>
+                <div style={{ fontSize: "12px", color: "#6b7280" }}>
                   👥 {countryData.reduce((sum, city) => sum + city.scholar_count, 0)} scholars
                 </div>
               </div>
@@ -956,13 +980,16 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
                     closeButton={false}
                     closeOnClick={false}
                     offset={25}
+                    style={{ padding: 0 }}
                   >
                     <div style={{ 
                       padding: "10px 14px", 
                       fontSize: "13px",
                       background: "white",
                       borderRadius: "8px",
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                      border: "none",
+                      margin: 0
                     }}>
                       <div style={{ fontWeight: 700, color: "#111827", marginBottom: "4px" }}>
                         📍 {popupInfo.name}

@@ -6,7 +6,13 @@ from typing import Any
 import httpx
 
 from app.core.audit_log import append_log
-from app.core.config import settings
+import sys
+from pathlib import Path
+
+# Add repo root to path to import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+import config
+settings = config.settings
 from app.phase1.models import Slots
 
 
@@ -145,11 +151,10 @@ class OpenAIClient:
         else:
             raise RuntimeError("OpenAI responses API returned no text")
         
-        # Log full prompt and raw response for debugging
+        # Log raw response for debugging
         log_payload = {
             "model": self.model,
             "api": "responses",
-            "full_prompt": prompt,
             "raw_response": raw_text,
         }
         if log_context:
@@ -178,11 +183,10 @@ class OpenAIClient:
                 data = resp.json()
             raw_content = data["choices"][0]["message"]["content"]
             
-            # Log full prompt and raw response for debugging (fallback to chat/completions API)
+            # Log raw response for debugging (fallback to chat/completions API)
             log_payload = {
                 "model": self.model,
                 "api": "chat/completions",
-                "full_prompt": prompt,
                 "raw_response": raw_content,
             }
             if log_context:

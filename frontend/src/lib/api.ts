@@ -176,11 +176,11 @@ export async function runQuery(projectId: string, runId: string): Promise<any> {
   return await res.json();
 }
 
-export async function parseRun(projectId: string, runId: string, research_description: string): Promise<any> {
+export async function parseRun(projectId: string, runId: string, research_description: string, skipValidation: boolean = false): Promise<any> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/parse`, {
     method: "POST",
     headers: getDefaultHeaders(),
-    body: JSON.stringify({ research_description })
+    body: JSON.stringify({ research_description, skip_validation: skipValidation })
   });
   await throwIfNotOk(res, "parseRun");
   return await res.json();
@@ -294,6 +294,16 @@ export async function updateRetrievalFramework(
   await throwIfNotOk(res, "updateRetrievalFramework");
 }
 
+export async function adjustRetrievalFramework(projectId: string, runId: string, user_additional_info: string): Promise<any> {
+  const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/retrieval-framework/adjust`, {
+    method: "POST",
+    headers: getDefaultHeaders(),
+    body: JSON.stringify({ user_additional_info })
+  });
+  await throwIfNotOk(res, "adjustRetrievalFramework");
+  return await res.json();
+}
+
 // ============================================================
 // Phase 2: Authorship & Map APIs
 // ============================================================
@@ -352,7 +362,8 @@ export async function getAuthorshipStats(
   runId: string
 ): Promise<IngestStats | null> {
   const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/authorship/stats`, {
-    cache: "no-store"
+    cache: "no-store",
+    headers: getDefaultHeaders()
   });
   await throwIfNotOk(res, "getAuthorshipStats");
   const json = await res.json();

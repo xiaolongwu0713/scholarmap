@@ -99,7 +99,6 @@ async def parse_stage1(store: FileStore, project_id: str, run_id: str, candidate
             "uncertainties",
             "missing_fields",
             "suggested_questions",
-            "guidance_to_user",
         ],
     )
 
@@ -194,7 +193,6 @@ async def parse_stage2(
             "uncertainties",
             "missing_fields",
             "suggested_questions",
-            "guidance_to_user",
         ],
     )
 

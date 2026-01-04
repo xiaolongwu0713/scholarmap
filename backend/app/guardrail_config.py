@@ -21,10 +21,34 @@ TEXT_VALIDATION_MAX_ATTEMPTS = 3
 PARSE_STAGE1_MAX_ATTEMPTS = 3
 
 # Parse Stage 2 total maximum attempts
-PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 5
+PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 3
 
 # Parse Stage 2 consecutive unhelpful responses before lockout
 PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2
+
+# Retrieval Framework adjustment maximum attempts
+RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS = 2
+
+# ============================================================================
+# Framework Adjustment Input Validation Thresholds
+# ============================================================================
+# Lighter validation for framework adjustment inputs (no repetition checks)
+# These thresholds can be adjusted independently from regular text validation
+
+# Unknown word ratio threshold for adjustment inputs (>= 10 words)
+ADJUST_UNKNOWN_RATIO_THRESHOLD_10PLUS = 0.40
+
+# Invalid ratio threshold (unknown + misspelled) for adjustment inputs (>= 10 words)
+ADJUST_INVALID_RATIO_THRESHOLD_10PLUS = 0.50
+
+# Gibberish ratio threshold for adjustment inputs (>= 10 words)
+ADJUST_GIBBERISH_RATIO_THRESHOLD_10PLUS = 0.40
+
+# Unknown word ratio threshold for adjustment inputs (5-9 words)
+ADJUST_UNKNOWN_RATIO_THRESHOLD_5_9 = 0.60
+
+# Invalid ratio threshold (unknown + misspelled) for adjustment inputs (5-9 words)
+ADJUST_INVALID_RATIO_THRESHOLD_5_9 = 0.70
 
 # ============================================================================
 # Backend API Protection (Server-side enforcement)
@@ -32,9 +56,9 @@ PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2
 
 # Server-side attempt limits (enforced at API level, cannot be bypassed)
 # These should match or be stricter than frontend limits
-BACKEND_STAGE1_MAX_ATTEMPTS = 3
-BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS = 5
-BACKEND_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2
+BACKEND_STAGE1_MAX_ATTEMPTS = PARSE_STAGE1_MAX_ATTEMPTS
+BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS = PARSE_STAGE2_MAX_TOTAL_ATTEMPTS
+BACKEND_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL
 
 # API rate limiting (per project_id + run_id)
 # Maximum requests per time window

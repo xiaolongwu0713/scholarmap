@@ -14,6 +14,7 @@ import {
   runQueryBuild,
   updateQueries,
   updateRetrievalFramework,
+  adjustRetrievalFramework,
   runIngest,
   getAuthorshipStats,
   type IngestStats
@@ -23,6 +24,7 @@ import {
   PARSE_STAGE1_MAX_ATTEMPTS,
   PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
   PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
+  RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
 } from "@/lib/parseConfig";
 import dynamic from "next/dynamic";
 import MetricCard from "@/components/MetricCard";
@@ -82,7 +84,6 @@ type ParseResult = {
     field: string;
     question: string;
   }>;
-  guidance_to_user: string;
 };
 
 function validateClientInput(text: string): string[] {
@@ -200,8 +201,9 @@ function formatParseResultAsMessage(result: ParseResult): string {
   let content = result.normalized_understanding || "";
   
   if (result.plausibility_level === "A_impossible") {
-    if (result.guidance_to_user) {
-      content += "\n\n" + result.guidance_to_user;
+    // For A_impossible, show uncertainties (which now contains the reason)
+    if (result.uncertainties && result.uncertainties.length > 0) {
+      content += "\n\n" + result.uncertainties.map(u => `- ${u}`).join("\n");
     }
   } else if (!result.is_clear_for_search) {
     const parts: string[] = [];
@@ -212,10 +214,6 @@ function formatParseResultAsMessage(result: ParseResult): string {
     
     if (result.suggested_questions && result.suggested_questions.length > 0) {
       parts.push("Questions:\n" + result.suggested_questions.map(q => `- ${q.question}`).join("\n"));
-    }
-    
-    if (result.guidance_to_user) {
-      parts.push(result.guidance_to_user);
     }
     
     if (parts.length > 0) {
@@ -232,13 +230,14 @@ function RunPageContent() {
   const runId = params.runId as string;
 
   const [busy, setBusy] = useState<
-    null | "textValidate" | "parse" | "buildFramework" | "queryBuild" | "query" | "ingest"
+    null | "textValidate" | "parse" | "buildFramework" | "adjustFramework" | "queryBuild" | "query" | "ingest"
   >(null);
   const [error, setError] = useState<string | null>(null);
   const [validationErrorModal, setValidationErrorModal] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
   
   // Phase 2 state
   const [ingestStats, setIngestStats] = useState<IngestStats | null>(null);
+  const [ingestionCompleted, setIngestionCompleted] = useState(false);
   const [showMap, setShowMap] = useState(false);
 
   const [researchDescription, setResearchDescription] = useState("");
@@ -259,8 +258,16 @@ function RunPageContent() {
   const [parseAdditionalInfo, setParseAdditionalInfo] = useState("");
   const [parseCurrentDescription, setParseCurrentDescription] = useState("");
   const [normalizedUnderstandingsHistory, setNormalizedUnderstandingsHistory] = useState<string[]>([]);
+  const [parseCompleted, setParseCompleted] = useState(false);
   const [questions, setQuestions] = useState<string[]>([]);
   const [frameworkText, setFrameworkText] = useState<string>("");
+  const [showFrameworkAdjustUI, setShowFrameworkAdjustUI] = useState(false);
+  const [frameworkAdjustMessages, setFrameworkAdjustMessages] = useState<ChatMessage[]>([]);
+  const [frameworkAdjustInput, setFrameworkAdjustInput] = useState<string>("");
+  const [frameworkAdjustHistory, setFrameworkAdjustHistory] = useState<string[]>([]);
+  const [frameworkAdjustAttempts, setFrameworkAdjustAttempts] = useState(0);
+  const [frameworkAdjustLocked, setFrameworkAdjustLocked] = useState(false);
+  const [frameworkCompleted, setFrameworkCompleted] = useState(false);
   const [pubmedQueryText, setPubmedQueryText] = useState<string>("");
   const [queriesObj, setQueriesObj] = useState<{
     pubmed: string;
@@ -285,6 +292,7 @@ function RunPageContent() {
   const researchClientIssues = validateClientInput(researchDescription);
   const textValidateDraftClientIssues = validateClientInput(textValidateDraft);
   const parseAdditionalClientIssues = validateClientInput(parseAdditionalInfo);
+  const frameworkAdjustClientIssues = validateClientInput(frameworkAdjustInput);
 
   async function refreshFiles() {
     try {
@@ -320,25 +328,174 @@ function RunPageContent() {
     // Load description (empty string will show placeholder)
     setResearchDescription(u?.research_description || "");
     setQuestions((u?.clarification_questions as string[]) || []);
-    if (u?.retrieval_framework) setFrameworkText(String(u.retrieval_framework));
+    if (u?.retrieval_framework) {
+      setFrameworkText(String(u.retrieval_framework));
+      // Load framework adjust history if exists
+      const adjustHistory = u?.retrieval_framework_adjust_history || [];
+      if (adjustHistory.length > 0) {
+        const frameworks = adjustHistory.map((item: any) => item.framework || "");
+        setFrameworkAdjustHistory([String(u.retrieval_framework), ...frameworks].filter(Boolean));
+        setFrameworkAdjustAttempts(adjustHistory.length);
+        
+        // Rebuild frameworkAdjustMessages from history
+        const messages: ChatMessage[] = [{
+          role: "system",
+          content: "The right is the current Retrieval Framework which will be used to generate the search query for literature databases. You can talk to system to make adjustment, or you can use the current framework.",
+          status: "info"
+        }];
+        
+        for (const item of adjustHistory) {
+          if (item.user_input) {
+            messages.push({
+              role: "user",
+              content: item.user_input
+            });
+          }
+          if (item.framework) {
+            messages.push({
+              role: "system",
+              content: item.framework,
+              status: "info"
+            });
+          }
+        }
+        
+        setFrameworkAdjustMessages(messages);
+        setShowFrameworkAdjustUI(true);
+        
+        // Restore frameworkAdjustInput from last history item
+        const lastAdjustItem = adjustHistory[adjustHistory.length - 1];
+        if (lastAdjustItem?.user_input) {
+          setFrameworkAdjustInput(lastAdjustItem.user_input);
+        }
+      } else {
+        // Initialize messages even without history
+        setFrameworkAdjustMessages([{
+          role: "system",
+          content: "The right is the current Retrieval Framework which will be used to generate the search query for literature databases. You can talk to system to make adjustment, or you can use the current framework.",
+          status: "info"
+        }]);
+        setShowFrameworkAdjustUI(true);
+      }
+    }
 
     // Load parse history and normalized understandings
-    if (u?.parse?.history) {
-      const history = u.parse.history as Array<{ result?: { normalized_understanding?: string } }>;
-      const understandings = history
-        .map((h) => h.result?.normalized_understanding)
-        .filter((u): u is string => Boolean(u));
-      setNormalizedUnderstandingsHistory(understandings);
+    const messages: ChatMessage[] = [];
+    let consecutiveFalse = 0;
+    
+    // Rebuild messages from parse result and history
+    if (u?.parse?.result) {
+      const parseStage = u.parse.stage as string | undefined;
+      const result = u.parse.result as ParseResult;
+      
+      // If stage1, add stage1 messages
+      if (parseStage === "stage1") {
+        const systemUnderstanding = formatSystemUnderstanding(result, false);
+        if (systemUnderstanding) {
+          messages.push(systemUnderstanding);
+        }
+        const llmResponse = formatParseResultAsMessage(result);
+        messages.push({
+          role: "system",
+          content: llmResponse
+        });
     }
-    if (u?.parse?.result?.normalized_understanding) {
-      // Add current result if not already in history
-      const current = u.parse.result.normalized_understanding;
+      
+      // Load parse result
+      setParseResult(result);
+      // Add current result to history if not already there
+      if (result.normalized_understanding) {
+        const current = result.normalized_understanding;
       setNormalizedUnderstandingsHistory((prev) => {
         if (!prev.includes(current)) {
           return [...prev, current];
         }
         return prev;
       });
+        // Set current description to the latest normalized understanding
+        setParseCurrentDescription(current);
+      }
+      // Enable textValidateMode if there's parse result
+      setTextValidateMode(true);
+    }
+    
+    // Add stage2 history messages
+    if (u?.parse?.history) {
+      const history = u.parse.history as Array<{ 
+        current_description?: string;
+        user_additional_info?: string;
+        result?: ParseResult;
+      }>;
+      const understandings = history
+        .map((h) => h.result?.normalized_understanding)
+        .filter((u): u is string => Boolean(u));
+      setNormalizedUnderstandingsHistory((prev) => {
+        const combined = [...prev, ...understandings];
+        // Remove duplicates while preserving order
+        return Array.from(new Set(combined));
+      });
+      
+      for (const item of history) {
+        if (item.user_additional_info) {
+          // Add user message
+          messages.push({
+            role: "user",
+            content: item.user_additional_info
+          });
+        }
+        
+        if (item.result) {
+          // Add system understanding message
+          const systemUnderstanding = formatSystemUnderstanding(item.result, true, consecutiveFalse);
+          if (systemUnderstanding) {
+            messages.push(systemUnderstanding);
+          }
+          
+          // Add LLM response
+          const llmResponse = formatParseResultAsMessage(item.result);
+          messages.push({
+            role: "system",
+            content: llmResponse
+          });
+          
+          // Update consecutive false count
+          if (item.result.is_helpful === false) {
+            consecutiveFalse++;
+          } else {
+            consecutiveFalse = 0;
+          }
+        }
+      }
+      
+      // Restore parseAdditionalInfo from last history item
+      const lastHistoryItem = history[history.length - 1];
+      if (lastHistoryItem?.user_additional_info) {
+        setParseAdditionalInfo(lastHistoryItem.user_additional_info);
+      }
+      
+      // Enable textValidateMode if there's parse history
+      setTextValidateMode(true);
+      
+      // Set current description to the latest understanding from history if not already set
+      if (!parseCurrentDescription) {
+        const latestUnderstanding = history
+          .map((h) => h.result?.normalized_understanding)
+          .filter((u): u is string => Boolean(u))
+          .pop();
+        if (latestUnderstanding) {
+          setParseCurrentDescription(latestUnderstanding);
+        }
+      }
+    }
+    
+    // Set messages if we have any
+    if (messages.length > 0) {
+      setTextValidateMessages(messages);
+    }
+    
+    // Restore parseCompleted state - if framework exists, parse must be completed
+    if (u?.retrieval_framework) {
+      setParseCompleted(true);
     }
 
     // Load parse stage 2 attempts count from history
@@ -367,9 +524,28 @@ function RunPageContent() {
           openalex: String(q.openalex || "")
         };
         setQueriesObj(obj);
-        setPubmedQueryText(obj.pubmed_full || obj.pubmed);
+        const queryText = obj.pubmed_full || obj.pubmed;
+        if (queryText && queryText.trim()) {
+          setPubmedQueryText(queryText);
+          // If queries exist, framework must be completed
+          setFrameworkCompleted(true);
+        }
       }
-    } catch {}
+    } catch (e) {
+      // queries.json might not exist yet, which is fine
+      // Don't set pubmedQueryText if file doesn't exist
+    }
+
+    // Check if ingestion has been completed by loading authorship stats
+    try {
+      const stats = await getAuthorshipStats(projectId, runId);
+      if (stats) {
+        setIngestStats(stats);
+        setIngestionCompleted(true);
+      }
+    } catch {
+      // No authorship data yet, ingestion not completed
+    }
 
     await loadResults();
   }
@@ -535,36 +711,135 @@ function RunPageContent() {
     setBusy("buildFramework");
     setError(null);
     try {
-      // Use the latest normalized_understanding if available, otherwise use parseCurrentDescription
-      const input = (parseResult?.normalized_understanding || parseCurrentDescription).trim();
+      // Use the latest research description from history (right panel list), or fallback to parseCurrentDescription
+      const input = normalizedUnderstandingsHistory.length > 0
+        ? normalizedUnderstandingsHistory[normalizedUnderstandingsHistory.length - 1]
+        : parseCurrentDescription;
       
-      if (!input) {
+      const trimmedInput = input.trim();
+      if (!trimmedInput) {
         setError("No research description available. Please complete parse stage first.");
         return;
       }
 
-      // Frontend validation
-      const clientIssues = validateClientInput(input);
-      if (clientIssues.length > 0) {
-        setError(`Invalid input: ${clientIssues.join(", ")}`);
-        return;
-      }
-
-      // Backend validation (quality checks)
-      const validateRes = await textValidate(input);
-      const validateData = validateRes.data as { ok: boolean; reason: string | null };
-      if (!validateData.ok) {
-        const userFriendlyMessage = translateValidationError(validateData.reason);
-        setValidationErrorModal({ show: true, message: userFriendlyMessage });
-        return;
-      }
-
-      const res = await parseRun(projectId, runId, input);
+      // No validation - directly use the latest research description and generate framework
+      // Skip validation since normalized_understanding is already validated LLM output
+      const res = await parseRun(projectId, runId, trimmedInput, true);
       const d = res.data;
+      const newFramework = String(d.retrieval_framework || "");
       setQuestions([]);
-      setFrameworkText(String(d.retrieval_framework || ""));
+      setFrameworkText(newFramework);
+      
+      // Initialize framework adjustment UI
+      setFrameworkAdjustHistory([newFramework]);
+      setFrameworkAdjustMessages([{
+        role: "system",
+        content: "The right is the current Retrieval Framework which will be used to generate the search query for literature databases. You can talk to system to make adjustment, or you can use the current framework.",
+        status: "info"
+      }]);
+      setFrameworkAdjustAttempts(0);
+      setFrameworkAdjustLocked(false);
+      setShowFrameworkAdjustUI(true);
+      
+      // Mark parse as completed - disable parse input
+      setParseCompleted(true);
+      
       await refreshFiles();
       setRawSelected("retrieval_framework.json");
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function onAdjustFramework() {
+    if (!frameworkAdjustInput.trim() || frameworkAdjustLocked) return;
+    
+    setBusy("adjustFramework");
+    setError(null);
+    try {
+      // Client-side validation (same as parse stage)
+      const clientIssues = validateClientInput(frameworkAdjustInput);
+      if (clientIssues.length > 0) {
+        setError(`Input validation failed: ${clientIssues.join("; ")}`);
+        return;
+      }
+
+      // Add user message
+      setFrameworkAdjustMessages(prev => [...prev, {
+        role: "user",
+        content: frameworkAdjustInput
+      }]);
+
+      const userInput = frameworkAdjustInput;
+      setFrameworkAdjustInput("");
+
+      // Call API
+      const res = await adjustRetrievalFramework(projectId, runId, userInput);
+      const newFramework = res.retrieval_framework || "";
+
+      // Add system response
+      setFrameworkAdjustMessages(prev => [...prev, {
+        role: "system",
+        content: newFramework,
+        status: "info"
+      }]);
+
+      // Update history
+      setFrameworkAdjustHistory(prev => [...prev, newFramework]);
+      setFrameworkText(newFramework);
+      setFrameworkAdjustAttempts(prev => prev + 1);
+
+      // Check if limit reached
+      if (frameworkAdjustAttempts + 1 >= RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS) {
+        setFrameworkAdjustLocked(true);
+      }
+
+      await refreshFiles();
+    } catch (e: any) {
+      setError(String(e?.message || e));
+      // Remove user message on error
+      setFrameworkAdjustMessages(prev => prev.slice(0, -1));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function onUseFramework() {
+    // Use current framework (latest from history) and proceed to query build
+    const currentFramework = frameworkAdjustHistory.length > 0 
+      ? frameworkAdjustHistory[frameworkAdjustHistory.length - 1]
+      : frameworkText;
+    if (!currentFramework || !currentFramework.trim()) {
+      setError("No framework available. Please generate framework first.");
+        return;
+      }
+
+    // Keep framework adjust UI visible, just trigger query build
+    // Ensure frameworkText is set to the latest framework
+    setFrameworkText(currentFramework.trim());
+    
+    // Automatically trigger query build
+    setBusy("queryBuild");
+    setError(null);
+    try {
+      await updateRetrievalFramework(projectId, runId, currentFramework.trim());
+      const res = await runQueryBuild(projectId, runId);
+      const obj = {
+        pubmed: String(res.data?.pubmed || ""),
+        pubmed_full: String(res.data?.pubmed_full || ""),
+        semantic_scholar: String(res.data?.semantic_scholar || ""),
+        openalex: String(res.data?.openalex || "")
+      };
+      setQueriesObj(obj);
+      setPubmedQueryText(obj.pubmed_full || obj.pubmed);
+      
+      // Mark framework as completed - disable framework input and button
+      setFrameworkCompleted(true);
+      
+      await refreshFiles();
+      setRawSelected("queries.json");
     } catch (e) {
       setError(String(e));
     } finally {
@@ -691,6 +966,7 @@ function RunPageContent() {
       const stats = await getAuthorshipStats(projectId, runId);
       if (stats) {
         setIngestStats(stats);
+        setIngestionCompleted(true);
       } else {
         setError("No authorship data found. Please run ingestion first.");
       }
@@ -707,6 +983,8 @@ function RunPageContent() {
     try {
       const stats = await runIngest(projectId, runId, false);
       setIngestStats(stats);
+      // Mark ingestion as completed on success
+      setIngestionCompleted(true);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -1055,22 +1333,22 @@ function RunPageContent() {
                       }
                       
                       return (
-                        <div
-                          key={idx}
-                          style={{
-                            padding: "10px 12px",
-                            borderRadius: 12,
-                            whiteSpace: "pre-wrap",
+                      <div
+                        key={idx}
+                        style={{
+                          padding: "10px 12px",
+                          borderRadius: 12,
+                          whiteSpace: "pre-wrap",
                             background,
                             border: `1px solid ${borderColor}`,
                             color: textColor
-                          }}
-                        >
+                        }}
+                      >
                           <div className="muted" style={{ fontSize: 11, marginBottom: 4, color: textColor, opacity: 0.8 }}>
-                            {m.role === "user" ? "You" : "System"}
-                          </div>
-                          <div style={{ fontSize: 13 }}>{m.content || "(empty)"}</div>
+                          {m.role === "user" ? "You" : "System"}
                         </div>
+                        <div style={{ fontSize: 13 }}>{m.content || "(empty)"}</div>
+                      </div>
                       );
                     })}
                   </div>
@@ -1086,6 +1364,7 @@ function RunPageContent() {
                     <button 
                       onClick={onBuildFramework} 
                       disabled={
+                        parseCompleted ||
                         busy !== null || 
                         !parseCurrentDescription.trim() || 
                         validateClientInput(parseCurrentDescription.trim()).length > 0
@@ -1122,8 +1401,8 @@ function RunPageContent() {
                         rows={4}
                         value={parseAdditionalInfo}
                         onChange={(e) => setParseAdditionalInfo(e.target.value)}
-                        disabled={parseStage2Locked || busy !== null}
-                        placeholder={parseStage2Locked ? `Parse stage2 locked after ${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS} attempts.` : "Add details to answer the questions..."}
+                        disabled={parseCompleted || parseStage2Locked || busy !== null}
+                        placeholder={parseCompleted ? "Parse stage completed. Input disabled." : parseStage2Locked ? `Parse stage2 locked after ${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS} attempts.` : "Add details to answer the questions..."}
                         style={{ fontSize: "14px" }}
                         maxLength={300}
                       />
@@ -1147,6 +1426,7 @@ function RunPageContent() {
                       <button
                         onClick={() => onParseStage2Submit(parseAdditionalInfo.trim())}
                         disabled={
+                          parseCompleted ||
                           parseStage2Locked ||
                           busy !== null ||
                           !parseAdditionalInfo.trim() ||
@@ -1157,15 +1437,6 @@ function RunPageContent() {
                       >
                         {busy === "parse" ? "🔄 Parsing…" : "submit"}
                       </button>
-                      {parseResult?.is_helpful && (
-                        <button
-                          onClick={onBuildFramework}
-                          disabled={busy !== null || parseStage2Locked}
-                          className="gradient-green"
-                        >
-                          {busy === "buildFramework" ? "🔄 Building…" : "Use the current understanding"}
-                        </button>
-                      )}
                     </div>
                     {parseStage2TotalAttempts > 0 && (
                       <div style={{ 
@@ -1285,6 +1556,17 @@ function RunPageContent() {
                   />
                 )}
               </div>
+              {/* Button to use current understanding and build framework */}
+              {parseResult?.is_helpful && (
+                <button
+                  onClick={onBuildFramework}
+                  disabled={parseCompleted || busy !== null || parseStage2Locked}
+                  className="gradient-green"
+                  style={{ width: "100%" }}
+                >
+                  {busy === "buildFramework" ? "🔄 Building…" : "Use the current understanding"}
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -1302,32 +1584,207 @@ function RunPageContent() {
         ) : null}
       </div>
 
+      {/* Retrieval Framework area - always shown to indicate next step */}
+      {showFrameworkAdjustUI ? (
       <div className="card stack accent-green">
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
           <div>
-            <h2 style={{ margin: 0 }}>🧠 Retrieval Framework</h2>
-            <div className="muted">AI-generated search strategy (editable)</div>
+              <h2 style={{ margin: 0 }}>🧠 Retrieval Framework Adjustment</h2>
+              <div className="muted">Adjust the retrieval framework through dialogue</div>
           </div>
-          {frameworkText && (
-            <span className="badge success">✓ Generated</span>
+            {frameworkAdjustAttempts > 0 && (
+              <span className="badge" style={{ background: "#fef3c7", color: "#92400e" }}>
+                {frameworkAdjustAttempts}/{RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS} adjustments
+              </span>
           )}
         </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            {/* Left: Dialogue */}
+            <div className="stack" style={{ gap: 12 }}>
+              <div className="muted" style={{ fontSize: 13 }}>Dialogue</div>
+              <div
+                style={{
+                  minHeight: 400,
+                  maxHeight: 500,
+                  overflow: "auto",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: 12,
+                  padding: 16,
+                  background: "#fafafa"
+                }}
+              >
+                {frameworkAdjustMessages.length > 0 ? (
+                  <div className="stack" style={{ gap: 12 }}>
+                    {frameworkAdjustMessages.map((m, idx) => {
+                      const isSystem = m.role === "system";
+                      const bg = isSystem
+                        ? (m.status === "error" ? "#fee2e2" : m.status === "info" ? "#dbeafe" : "#f3f4f6")
+                        : "#ffffff";
+                      const borderColor = isSystem
+                        ? (m.status === "error" ? "#fecaca" : m.status === "info" ? "#93c5fd" : "#e5e7eb")
+                        : "#e5e7eb";
+                      const textColor = isSystem && m.status === "error" ? "#991b1b" : "#1f2937";
+                      return (
+                        <div
+                          key={idx}
+                          style={{
+                            padding: "10px 12px",
+                            borderRadius: 12,
+                            whiteSpace: "pre-wrap",
+                            background: bg,
+                            border: `1px solid ${borderColor}`,
+                            color: textColor
+                          }}
+                        >
+                          <div className="muted" style={{ fontSize: 11, marginBottom: 4, color: textColor, opacity: 0.8 }}>
+                            {m.role === "user" ? "You" : "System"}
+                          </div>
+                          <div style={{ fontSize: 13 }}>{m.content || "(empty)"}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="muted">No messages yet.</div>
+                )}
+              </div>
+
+              <div className="stack" style={{ gap: 8 }}>
+                <div style={{ position: "relative" }}>
+                  {frameworkAdjustClientIssues.length ? (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        right: 10,
+                        zIndex: 1,
+                        fontSize: 12,
+                        color: "#b91c1c",
+                        background: "#fee2e2",
+                        border: "1px solid #fecaca",
+                        borderRadius: 999,
+                        padding: "2px 8px"
+                      }}
+                    >
+                      {frameworkAdjustClientIssues.join(" · ")}
+                    </div>
+                  ) : null}
         <textarea
-          rows={14}
-          value={frameworkText}
-          onChange={(e) => setFrameworkText(e.target.value)}
-          spellCheck={false}
-          placeholder="Click 'Build Retrieval Framework' above to generate a retrieval framework automatically..."
-          style={{ fontFamily: "inherit", fontSize: "14px", lineHeight: "1.6" }}
-        />
+                    rows={4}
+                    value={frameworkAdjustInput}
+                    onChange={(e) => setFrameworkAdjustInput(e.target.value)}
+                    disabled={frameworkCompleted || frameworkAdjustLocked || busy !== null}
+                    placeholder={
+                      frameworkCompleted
+                        ? "Framework stage completed. Input disabled."
+                        : frameworkAdjustLocked
+                        ? `Input disabled after ${RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS} adjustments.`
+                        : "Enter your adjustment request..."
+                    }
+                    style={{ fontSize: "14px" }}
+                    maxLength={300}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: 10,
+                      bottom: 8,
+                      fontSize: 12,
+                      color: "rgba(0,0,0,0.55)",
+                      background: "rgba(255,255,255,0.75)",
+                      border: "1px solid rgba(0,0,0,0.08)",
+                      borderRadius: 999,
+                      padding: "2px 8px"
+                    }}
+                  >
+                    {charLimitHint(frameworkAdjustInput)}
+                  </div>
+                </div>
+                <div className="row" style={{ justifyContent: "center", gap: 12, alignItems: "center" }}>
+                  <button
+                    onClick={onAdjustFramework}
+                    disabled={
+                      frameworkAdjustLocked ||
+                      busy !== null ||
+                      !frameworkAdjustInput.trim() ||
+                      frameworkAdjustClientIssues.length > 0 ||
+                      frameworkAdjustAttempts >= RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS
+                    }
+                    className="gradient-green"
+                  >
+                    {busy === "adjustFramework" ? "🔄 Adjusting…" : "Submit Adjustment"}
+                  </button>
+                  <span className="muted" style={{ fontSize: "13px" }}>
+                    {frameworkAdjustAttempts}/{RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Framework History */}
+            <div className="stack" style={{ gap: 12 }}>
+              <div className="muted" style={{ fontSize: 13 }}>Latest Retrieval Framework</div>
+              <div style={{ maxHeight: 400, overflow: "auto" }}>
+                {frameworkAdjustHistory.length > 0 ? (
+                  <div className="stack" style={{ gap: 12 }}>
+                    {frameworkAdjustHistory.map((framework, idx) => (
+                      <div key={idx} style={{
+                        padding: 12,
+                        background: idx === frameworkAdjustHistory.length - 1 ? "#fef3c7" : "#f9fafb",
+                        border: `1px solid ${idx === frameworkAdjustHistory.length - 1 ? "#fbbf24" : "#e5e7eb"}`,
+                        borderRadius: 8,
+                        fontSize: 13,
+                        lineHeight: 1.6,
+                        whiteSpace: "pre-wrap"
+                      }}>
+                        <div className="muted" style={{ fontSize: 11, marginBottom: 6 }}>
+                          Version {idx + 1} {idx === frameworkAdjustHistory.length - 1 ? "(Latest)" : ""}
+                        </div>
+                        <div>{framework}</div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="muted">No framework yet.</div>
+                )}
+              </div>
         <div className="row" style={{ justifyContent: "center" }}>
-          <button onClick={onQueryBuild} disabled={busy !== null} className="gradient-green">
-            {busy === "queryBuild" ? "🔄 Building…" : "⚙️ Build Database Queries"}
+                <button onClick={onUseFramework} disabled={frameworkCompleted || busy !== null || !frameworkText.trim()} className="gradient-green">
+                  Use the current framework
           </button>
         </div>
       </div>
+          </div>
+        </div>
+      ) : null}
 
-      <div className="card stack accent-purple">
+      {!showFrameworkAdjustUI && !frameworkText && (
+        <div className="card stack accent-green">
+          <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
+            <div>
+              <h2 style={{ margin: 0 }}>🧠 Retrieval Framework</h2>
+              <div className="muted">AI-generated search strategy (will be generated after parse stage)</div>
+            </div>
+          </div>
+          <div
+            style={{
+              padding: "40px 20px",
+              textAlign: "center",
+              color: "#6b7280",
+              fontSize: "14px",
+              background: "#f9fafb",
+              borderRadius: "8px",
+              border: "1px dashed #e5e7eb"
+            }}
+          >
+            Complete the research description parse stage above to generate the retrieval framework.
+          </div>
+        </div>
+      )}
+
+      {frameworkText && (
+        <div className="card stack accent-purple">
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
           <div>
             <h2 style={{ margin: 0 }}>⚙️ Database Queries</h2>
@@ -1341,31 +1798,24 @@ function RunPageContent() {
         </div>
         <textarea
           rows={8}
-          value={pubmedQueryText}
-          onChange={(e) => {
-            const v = e.target.value;
-            setPubmedQueryText(v);
-            setQueriesObj((prev) => ({
-              pubmed: extractFinalPubMedQuery(v),
-              pubmed_full: v,
-              semantic_scholar: prev?.semantic_scholar || "",
-              openalex: prev?.openalex || ""
-            }));
-          }}
+          value={pubmedQueryText || ""}
+            readOnly
           spellCheck={false}
-          placeholder="Click 'Build Database Queries' above to generate optimized search queries..."
+            placeholder={pubmedQueryText ? undefined : "Queries will be generated after clicking 'Use the current framework'"}
+            style={{ fontFamily: "inherit", fontSize: "14px", lineHeight: "1.6", background: "#f9fafb", cursor: "default" }}
         />
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           <div className="muted" style={{ fontSize: "12px", textAlign: "center" }}>
             💡 The final PubMed query is extracted from "Final Combined PubMed Query" section
           </div>
           <div className="row" style={{ justifyContent: "center" }}>
-            <button onClick={onQuery} disabled={busy !== null}>
+            <button onClick={onQuery} disabled={hasResults || ingestionCompleted || busy !== null || !pubmedQueryText}>
               {busy === "query" ? "🔄 Executing…" : "🚀 Execute Query"}
             </button>
           </div>
         </div>
       </div>
+      )}
 
       <div className="card stack accent-orange">
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "12px" }}>
@@ -1452,10 +1902,10 @@ function RunPageContent() {
           </button>
           <button
             onClick={onIngest}
-            disabled={busy !== null || !agg?.length}
+            disabled={ingestionCompleted || busy !== null || !agg?.length}
             style={{ background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)" }}
           >
-            {busy === "ingest" ? "🔄 Ingesting..." : "⚡ Run Ingestion Pipeline"}
+            {busy === "ingest" ? "🔄 Ingesting..." : ingestionCompleted ? "✓ Ingestion Completed" : "⚡ Run Ingestion Pipeline"}
           </button>
         </div>
 

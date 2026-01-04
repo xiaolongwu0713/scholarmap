@@ -4,10 +4,15 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from pathlib import Path
 
+# Add repo root to path to import config
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+import config
+settings = config.settings
 from app.core.storage import FileStore
-from app.phase2.affiliation_extractor import AffiliationExtractor
+from app.phase2.affiliation_extractor import create_extractor
 from app.phase2.database import Database
 from app.phase2.models import GeoData, IngestStats, ParsedPaper
 from app.phase2.pubmed_fetcher import PubMedFetcher
@@ -37,7 +42,7 @@ class IngestionPipeline:
         self.db = Database(project_id, data_dir)
         self.fetcher = PubMedFetcher(api_key=api_key)
         self.parser = PubMedXMLParser()
-        self.extractor = AffiliationExtractor(batch_size=20)
+        self.extractor = create_extractor(settings.affiliation_extraction_method)
     
     async def ingest_run(
         self,
@@ -205,8 +210,11 @@ class IngestionPipeline:
             if geo.country
         )
         
-        # Estimate LLM calls (batch size = 20)
-        stats.llm_calls_made = (len(unique_affiliations) + 19) // 20
+        # Estimate LLM calls (only for LLM-based extraction)
+        if settings.affiliation_extraction_method == "llm":
+            stats.llm_calls_made = (len(unique_affiliations) + 19) // 20
+        else:
+            stats.llm_calls_made = 0
         
         return affiliation_map
     

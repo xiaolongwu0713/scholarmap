@@ -31,6 +31,11 @@ from app.guardrail_config import (
     RECOMMENDED_ILLEGAL_REPEATED_TOKEN_RATIO_10PLUS,
     RECOMMENDED_ILLEGAL_TRIGRAM_THRESHOLD_10PLUS,
     RECOMMENDED_ILLEGAL_UNKNOWN_RATIO_5_9,
+    ADJUST_UNKNOWN_RATIO_THRESHOLD_10PLUS,
+    ADJUST_INVALID_RATIO_THRESHOLD_10PLUS,
+    ADJUST_GIBBERISH_RATIO_THRESHOLD_10PLUS,
+    ADJUST_UNKNOWN_RATIO_THRESHOLD_5_9,
+    ADJUST_INVALID_RATIO_THRESHOLD_5_9,
 )
 
 VOWELS = set("aeiou")
@@ -336,6 +341,62 @@ def input_text_validate(text: str) -> dict[str, Any]:
                 f"unique={stats.get('unique_token_ratio')}, "
                 f"repeated={stats.get('repeated_token_ratio')}, "
                 f"trigram={stats.get('repeated_word_trigrams')}."
+            ),
+            "stats": stats,
+        }
+
+    return {"ok": True, "reason": None, "stats": stats}
+
+
+def input_text_validate_for_adjustment(text: str) -> dict[str, Any]:
+    """
+    Lighter validation for framework adjustment inputs.
+    Only checks for unknown/misspelled/gibberish words, not repetition metrics.
+    Returns: { ok: bool, reason: str | null, stats?: dict }
+    """
+    s = (text or "").strip()
+    if not s:
+        return {"ok": False, "reason": "Input is empty."}
+
+    # Double-check critical format rules as defense in depth
+    if len(s) < TEXT_MIN_LENGTH or len(s) > TEXT_MAX_LENGTH:
+        return {"ok": False, "reason": f"Length must be {TEXT_MIN_LENGTH}–{TEXT_MAX_LENGTH} characters."}
+
+    if s.count("\n") > TEXT_MAX_LINE_BREAKS:
+        return {"ok": False, "reason": f"Too many line breaks (max {TEXT_MAX_LINE_BREAKS})."}
+
+    # Only check for unknown/misspelled/gibberish words, not repetition
+    stats = analyze_english_text(s)
+    total_words = stats.get("total_words", 0)
+    unknown_ratio = float(stats.get("unknown_ratio") or 0.0)
+    misspelled_ratio = float(stats.get("misspelled_ratio") or 0.0)
+    gibberish_ratio = float(stats.get("gibberish_token_ratio") or 0.0)
+    
+    invalid_ratio = unknown_ratio + misspelled_ratio
+    
+    illegal = False
+    if total_words >= QUALITY_CHECK_WORD_COUNT_THRESHOLD:
+        if unknown_ratio >= ADJUST_UNKNOWN_RATIO_THRESHOLD_10PLUS:
+            illegal = True
+        elif invalid_ratio >= ADJUST_INVALID_RATIO_THRESHOLD_10PLUS:
+            illegal = True
+        elif gibberish_ratio >= ADJUST_GIBBERISH_RATIO_THRESHOLD_10PLUS:
+            illegal = True
+    elif total_words >= QUALITY_CHECK_WORD_COUNT_MIN:
+        if unknown_ratio >= ADJUST_UNKNOWN_RATIO_THRESHOLD_5_9:
+            illegal = True
+        elif invalid_ratio >= ADJUST_INVALID_RATIO_THRESHOLD_5_9:
+            illegal = True
+    
+    if illegal:
+        return {
+            "ok": False,
+            "reason": (
+                "English word quality check failed: "
+                f"unknown={stats.get('unknown_ratio')}, "
+                f"misspelled={stats.get('misspelled_ratio')}, "
+                f"invalid={unknown_ratio + misspelled_ratio:.2f}, "
+                f"gibberish={stats.get('gibberish_token_ratio')}."
             ),
             "stats": stats,
         }

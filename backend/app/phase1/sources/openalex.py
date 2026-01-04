@@ -3,7 +3,13 @@ from __future__ import annotations
 import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from app.core.config import settings
+import sys
+from pathlib import Path
+
+# Add repo root to path to import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+import config
+settings = config.settings
 from app.phase1.models import Paper
 from app.phase1.text_utils import normalize_doi
 

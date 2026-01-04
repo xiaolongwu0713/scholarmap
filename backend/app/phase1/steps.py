@@ -6,7 +6,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from app.core.audit_log import append_log
-from app.core.config import settings
+import sys
+from pathlib import Path
+
+# Add repo root to path to import config
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+import config
+settings = config.settings
 from app.core.paths import prompts_dir
 from app.core.storage import FileStore
 from app.phase1.aggregate import aggregate_by_doi, serialize_papers
@@ -165,7 +171,7 @@ async def step_parse(store: FileStore, project_id: str, run_id: str, research_de
     Parse step now produces a Conceptual Retrieval Framework (prompt-driven),
     and persists it for query construction.
     """
-    prompt_path = prompts_dir() / "retrival_framework.md"
+    prompt_path = prompts_dir() / "retrival_framework_stage1.md"
     template = _read_prompt(prompt_path)
     final_prompt = _inject_between(
         template,
@@ -208,6 +214,83 @@ async def step_parse(store: FileStore, project_id: str, run_id: str, research_de
         {"updated_at": _utc_now_iso(), "prompt_file": str(prompt_path), "framework": framework},
     )
 
+    return {"retrieval_framework": framework}
+
+
+async def adjust_retrieval_framework(
+    store: FileStore, 
+    project_id: str, 
+    run_id: str, 
+    current_framework: str,
+    user_additional_info: str
+) -> dict:
+    """
+    Adjust the Retrieval Framework based on user input.
+    
+    Args:
+        store: FileStore instance
+        project_id: Project ID
+        run_id: Run ID
+        current_framework: Current retrieval framework text
+        user_additional_info: User's adjustment request
+        
+    Returns:
+        Dictionary with updated retrieval_framework
+    """
+    from app.parse_protection import sanitize_user_input, check_prompt_length
+    
+    # Sanitize user input to prevent prompt injection
+    sanitized_framework = sanitize_user_input(current_framework)
+    sanitized_user_input = sanitize_user_input(user_additional_info)
+    
+    prompt_path = prompts_dir() / "retrival_framework_stage2.md"
+    template = _read_prompt(prompt_path)
+    final_prompt = (
+        template.replace("<<<CURRENT_FRAMEWORK>>>", sanitized_framework)
+        .replace("<<<USER_ADDITIONAL_INFO>>>", sanitized_user_input)
+    )
+    
+    # Check prompt length before calling LLM
+    is_valid, current_length, max_length = check_prompt_length(final_prompt)
+    if not is_valid:
+        raise RuntimeError(
+            f"Prompt length ({current_length} chars) exceeds maximum ({max_length} chars). "
+            "Please reduce the input text length."
+        )
+    
+    llm = OpenAIClient()
+    append_log(
+        "phase1.adjust_framework.prompt",
+        {
+            "project_id": project_id,
+            "run_id": run_id,
+            "model": llm.model,
+            "reasoning_effort": getattr(llm, "reasoning_effort", ""),
+            "prompt_file": str(prompt_path),
+            "prompt": final_prompt,
+        },
+    )
+    framework = await llm.complete_text(
+        final_prompt, 
+        temperature=0.0,
+        log_context={"project_id": project_id, "run_id": run_id, "step": "adjust_framework"}
+    )
+    append_log(
+        "phase1.adjust_framework.response",
+        {"project_id": project_id, "run_id": run_id, "model": llm.model, "response": framework},
+    )
+    
+    understanding = await store.read_run_file(project_id, run_id, "understanding.json")
+    understanding["retrieval_framework"] = framework
+    understanding["parse_updated_at"] = _utc_now_iso()
+    await store.write_run_file(project_id, run_id, "understanding.json", understanding)
+    await store.write_run_file(
+        project_id,
+        run_id,
+        "retrieval_framework.json",
+        {"updated_at": _utc_now_iso(), "prompt_file": str(prompt_path), "framework": framework},
+    )
+    
     return {"retrieval_framework": framework}
 
 

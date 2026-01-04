@@ -1,14 +1,20 @@
 from __future__ import annotations
 
+import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
+
+# Add repo root to path to import config (must be before other imports that use config)
+# From backend/app/main.py: parent.parent.parent = repo root
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+import config
+settings = config.settings
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 import httpx
-
-from app.core.config import settings
 from app.core.paths import get_data_dir
 from app.db.connection import db_manager
 from app.db.repository import AuthorshipRepository, RunPaperRepository
@@ -46,7 +52,7 @@ from app.parse_protection import (
 )
 from app.phase1.models import Slots
 from app.phase1.parse import parse_stage1, parse_stage2
-from app.phase1.steps import step_parse, step_query_build, step_retrieve, step_synonyms
+from app.phase1.steps import step_parse, step_query_build, step_retrieve, step_synonyms, adjust_retrieval_framework
 from app.phase2.pg_aggregations import PostgresMapAggregator
 from app.phase2.pg_ingest import PostgresIngestionPipeline
 
@@ -107,6 +113,7 @@ class CreateRunRequest(BaseModel):
 
 class UpdateResearchDescriptionRequest(BaseModel):
     research_description: str = Field(min_length=1, max_length=10_000)
+    skip_validation: bool = Field(default=False)  # Allow skipping validation for normalized_understanding
 
 
 class UpdateSlotsRequest(BaseModel):
@@ -143,6 +150,10 @@ class UpdateQueriesRequest(BaseModel):
 
 class UpdateRetrievalFrameworkRequest(BaseModel):
     retrieval_framework: str = Field(min_length=1, max_length=200_000)
+
+
+class AdjustRetrievalFrameworkRequest(BaseModel):
+    user_additional_info: str = Field(min_length=1, max_length=10_000)
 
 
 # Authentication request models
@@ -580,9 +591,11 @@ async def phase1_parse(request: Request, project_id: str, run_id: str, req: Upda
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     # Backend validation (quality checks - frontend already did format checks)
-    tv = input_text_validate(req.research_description)
-    if not tv.get("ok"):
-        raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+    # Skip validation if skip_validation flag is set (e.g., for normalized_understanding from LLM)
+    if not req.skip_validation:
+        tv = input_text_validate(req.research_description)
+        if not tv.get("ok"):
+            raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
     try:
         data = await step_parse(store, project_id, run_id, req.research_description)
     except FileNotFoundError:
@@ -679,6 +692,59 @@ async def phase1_update_retrieval_framework(request: Request, project_id: str, r
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Run not found")
     return {"ok": True}
+
+
+@app.post("/api/projects/{project_id}/runs/{run_id}/retrieval-framework/adjust")
+async def adjust_retrieval_framework_route(request: Request, project_id: str, run_id: str, req: AdjustRetrievalFrameworkRequest) -> dict:
+    """Adjust the Retrieval Framework based on user input."""
+    from app.guardrail_config import RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS
+    from app.input_text_validate import input_text_validate
+    
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Backend validation (lighter validation for adjustment inputs - no repetition checks)
+    from app.input_text_validate import input_text_validate_for_adjustment
+    tv = input_text_validate_for_adjustment(req.user_additional_info)
+    if not tv.get("ok"):
+        raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
+    
+    try:
+        # Get current framework
+        understanding = await store.read_run_file(project_id, run_id, "understanding.json")
+        current_framework = understanding.get("retrieval_framework") or ""
+        if not current_framework:
+            raise HTTPException(status_code=400, detail="No current retrieval framework found. Please generate framework first.")
+        
+        # Check attempt limit (stored in understanding.json)
+        adjust_history = understanding.get("retrieval_framework_adjust_history", [])
+        if len(adjust_history) >= RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Retrieval framework adjustment limit reached ({RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS} attempts). Service refused."
+            )
+        
+        # Call adjustment function
+        result = await adjust_retrieval_framework(store, project_id, run_id, current_framework, req.user_additional_info)
+        new_framework = result["retrieval_framework"]
+        
+        # Update history
+        from datetime import datetime, timezone
+        adjust_history.append({
+            "user_input": req.user_additional_info,
+            "framework": new_framework,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        })
+        understanding["retrieval_framework_adjust_history"] = adjust_history
+        await store.write_run_file(project_id, run_id, "understanding.json", understanding)
+        
+        return {"ok": True, "retrieval_framework": new_framework}
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Run not found")
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 # ============================================================

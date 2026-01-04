@@ -35,30 +35,29 @@ domain, task, subject_system, methods, scope, intent, exclusions
     {"field":"domain|task|subject_system|methods|scope|intent|exclusions", "question": string},
     {"field":"...", "question": string},
     {"field":"...", "question": string}
-  ],
-  "guidance_to_user": string
+  ]
 }
 
 约束：
 - 用英文回答。
 - 如果is_research_description = false，则
-  - guidance_to_user 给出判断不是research statement的原因。
+  - uncertainties 给出判断不是research statement的原因。
   - ncertainties/missing_fields/suggested_questions为空数组[];
   - structured_summary为全null；
 - normalized_understanding：300-600个英文字符，必须是你对研究的“当前理解”，语言规范、聚焦、可检索；不要写“我认为/可能”等口水话，直接用陈述句组织。
+
 - 如果 是B_plausible，且 is_clear_for_search=true，则：
   - is_research_description = true
   - suggested_questions 必须为空数组
   - uncertainties 允许为空数组或只保留0-1条轻微风险
-  - guidance_to_user 为空
+
 - 如果 是B_plausible，且 is_clear_for_search=false，则：
   - is_research_description = true
   - uncertainties 至少2条
   - missing_fields 仅列出缺失项
   - suggested_questions 为1-3条，必须与 uncertainties/missing_fields 对应
-  - guidance_to_user 给用户如何回答问题的提示（<=300字符）
+
 - 如果 plausibility_level=A_impossible，则：
   - is_clear_for_search=false
   - suggested_questions 为空
-  - uncertainties=[]
-  - guidance_to_user 给出impossible的提示。
+  - uncertainties <=200英文字符：给出impossible的原因。

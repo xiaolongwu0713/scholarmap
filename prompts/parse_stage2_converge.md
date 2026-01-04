@@ -47,14 +47,13 @@ user_additional_info（用户本轮补充信息，可能为空）：
     {"field":"domain|task|subject_system|methods|scope|intent|exclusions", "question": string},
     {"field":"...", "question": string},
     {"field":"...", "question": string}
-  ],
-  "guidance_to_user": string
-}
+  ]
+  }
 
 约束：
 - 用英文回答。
 - 如果is_research_description = false，则
-  - guidance_to_user 给出判断不是research statement的原因。
+  - uncertainties 给出判断不是research statement的原因。
   - 其他所有字段都为空。
 - normalized_understanding：300-600英文字符，必须是你融合两段文本后的“当前理解”，术语一致、范围聚焦。
 - 如果 plausibility_level=B_plausible且is_clear_for_search=true：
@@ -63,8 +62,8 @@ user_additional_info（用户本轮补充信息，可能为空）：
 - 如果 plausibility_level=B_plausible且is_clear_for_search=false：
   - uncertainties 至少2条
   - suggested_questions 为1-3条，必须与uncertainties/missing_fields一致
-  - guidance_to_user <=200英文字符：提示用户如何补充信息
+
 - 如果 plausibility_level=A_impossible：
   - is_clear_for_search 必须为 false
   - suggested_questions 必须为空数组
-  - guidance_to_user <=200英文字符：提示用户impossible的原因。
+  - uncertainties <=200英文字符：提示用户impossible的原因。

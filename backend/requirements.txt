@@ -12,6 +12,7 @@ asyncpg>=0.29
 psycopg2-binary>=2.9
 alembic>=1.13
 geopy>=2.4
+pycountry>=23.0
 pyspellchecker>=0.8
 wordfreq>=3.1
 python-jose[cryptography]>=3.3.0

@@ -25,7 +25,13 @@ def get_data_dir() -> Path:
     If the path is relative, it's resolved relative to the repository root.
     If absolute, it's used as-is.
     """
-    from app.core.config import settings
+    import sys
+    from pathlib import Path
+    
+    # Add repo root to path to import config
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+    import config
+    settings = config.settings
     data_dir = Path(settings.scholarmap_data_dir)
     if data_dir.is_absolute():
         return data_dir
