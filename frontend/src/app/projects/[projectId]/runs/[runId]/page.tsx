@@ -129,17 +129,96 @@ function translateValidationError(reason: string | null): string {
   
   const reasonLower = reason.toLowerCase();
   
-  // Check various error types and convert to human-readable messages
-  if (reasonLower.includes("unknown") || reasonLower.includes("misspelled") || reasonLower.includes("invalid")) {
-    if (reasonLower.includes("too_many_unknown_words") || reasonLower.includes("unknown_ratio")) {
-      return "Your input contains too many unrecognized or misspelled words. Please use correct English words.";
+  // Format specific error types with clear messages
+  if (reasonLower.includes("too_many_unknown_words")) {
+    const match = reason.match(/too_many_unknown_words.*?ratio:\s*([\d.]+)%.*?threshold:\s*([\d.]+)%/i);
+    if (match) {
+      return `Your input contains too many unrecognized words (${match[1]}% found, maximum ${match[2]}% allowed). Please use correct English words.`;
     }
-    if (reasonLower.includes("gibberish")) {
-      return "Your input contains too many meaningless character combinations. Please use proper English words and sentences.";
+    return "Your input contains too many unrecognized words. Please use correct English words.";
+  }
+  
+  if (reasonLower.includes("too_many_invalid_words")) {
+    const match = reason.match(/too_many_invalid_words.*?ratio:\s*([\d.]+)%.*?threshold:\s*([\d.]+)%/i);
+    if (match) {
+      return `Your input contains too many unrecognized or misspelled words (${match[1]}% found, maximum ${match[2]}% allowed). Please use correct English words.`;
     }
-    if (reasonLower.includes("quality check failed")) {
-      return "Text quality check failed: Your input contains too many unrecognized words, misspellings, or gibberish. Please use proper English.";
+    return "Your input contains too many unrecognized or misspelled words. Please use correct English words.";
+  }
+  
+  if (reasonLower.includes("too_many_gibberish_words")) {
+    // Match both "ratio: X%, threshold: Y%" and "ratio: X.X%, threshold: Y.Y%" formats
+    const match = reason.match(/too_many_gibberish_words[^)]*?ratio:\s*([\d.]+)%.*?threshold:\s*([\d.]+)%/i);
+    if (match) {
+      return `Your input contains too many meaningless character combinations (${match[1]}% found, maximum ${match[2]}% allowed). Please use proper English words and sentences.`;
     }
+    return "Your input contains too many meaningless character combinations. Please use proper English words and sentences.";
+  }
+  
+  if (reasonLower.includes("too_many_misspelled_words")) {
+    const match = reason.match(/too_many_misspelled_words.*?ratio:\s*([\d.]+)%.*?threshold:\s*([\d.]+)%/i);
+    if (match) {
+      return `Your input contains too many misspelled words (${match[1]}% found, maximum ${match[2]}% allowed). Please check your spelling.`;
+    }
+    return "Your input contains too many misspelled words. Please check your spelling.";
+  }
+  
+  if (reasonLower.includes("too_many_repeated_trigrams")) {
+    const match = reason.match(/too_many_repeated_trigrams.*?count:\s*(\d+).*?threshold:\s*(\d+)/i);
+    if (match) {
+      return `Your input contains too many repeated word sequences (${match[1]} found, maximum ${match[2]} allowed). Please avoid repeating the same phrases.`;
+    }
+    return "Your input contains too many repeated word sequences. Please avoid repeating the same phrases.";
+  }
+  
+  if (reasonLower.includes("too_many_repeated_tokens")) {
+    const match = reason.match(/too_many_repeated_tokens.*?ratio:\s*([\d.]+)%.*?threshold:\s*([\d.]+)%/i);
+    if (match) {
+      return `Your input contains too many repeated words (${match[1]}% found, maximum ${match[2]}% allowed). Please use more varied vocabulary.`;
+    }
+    return "Your input contains too many repeated words. Please use more varied vocabulary.";
+  }
+  
+  if (reasonLower.includes("too_low_unique_token_ratio")) {
+    const match = reason.match(/too_low_unique_token_ratio.*?ratio:\s*([\d.]+)%.*?threshold:\s*([\d.]+)%/i);
+    if (match) {
+      return `Your input has too few unique words (${match[1]}% found, minimum ${match[2]}% required). Please use more varied vocabulary.`;
+    }
+    return "Your input has too few unique words. Please use more varied vocabulary.";
+  }
+  
+  if (reasonLower.includes("recommended_illegal")) {
+    const match = reason.match(/recommended_illegal.*?reason:\s*(\w+)/i);
+    if (match) {
+      return `Text quality check failed: ${match[1]}. Please revise your input.`;
+    }
+    return "Text quality check failed. Please revise your input.";
+  }
+  
+  // Check for "issues found" pattern and try to extract specific issues
+  if (reasonLower.includes("issues found")) {
+    // Try to match any specific issue type first
+    const issueMatch = reason.match(/issues found:\s*([^.]+\.[^.]*)/i);
+    if (issueMatch) {
+      // If we have a specific issue, try to format it better
+      const issueText = issueMatch[1];
+      // Check if it's a known issue type we haven't matched yet
+      if (issueText.includes("too_many_repeated_trigrams")) {
+        const trigramMatch = issueText.match(/too_many_repeated_trigrams.*?count:\s*(\d+).*?threshold:\s*(\d+)/i);
+        if (trigramMatch) {
+          return `Your input contains too many repeated word sequences (${trigramMatch[1]} found, maximum ${trigramMatch[2]} allowed). Please avoid repeating the same phrases.`;
+        }
+      }
+      // For other issues, return formatted message
+      return `Text quality check failed: ${issueText}.`;
+    }
+    // Fallback: return the detailed reason from backend
+    return reason.replace(/Text quality check failed\.\s*/, "Text quality check failed: ");
+  }
+  
+  if (reasonLower.includes("quality check failed")) {
+    // Return the detailed reason from backend, which now includes specific issues
+    return reason.replace(/Text quality check failed\.\s*/, "Text quality check failed: ");
   }
   
   if (reasonLower.includes("length") || reasonLower.includes("50") || reasonLower.includes("300")) {
@@ -154,17 +233,8 @@ function translateValidationError(reason: string | null): string {
     return "Input contains too many line breaks. Maximum 3 line breaks allowed.";
   }
   
-  // Default: return original reason but remove technical details
-  return reason
-    .replace(/unknown=\d+\.\d+/g, "")
-    .replace(/misspelled=\d+\.\d+/g, "")
-    .replace(/invalid=\d+\.\d+/g, "")
-    .replace(/gibberish=\d+\.\d+/g, "")
-    .replace(/unique=\d+\.\d+/g, "")
-    .replace(/repeated=\d+\.\d+/g, "")
-    .replace(/trigram=\d+/g, "")
-    .replace(/English word quality check failed:\s*/g, "Text quality check failed: ")
-    .trim() || "Validation failed. Please check that your input meets the requirements.";
+  // Default: return the original reason (which should now be more detailed)
+  return reason || "Validation failed. Please check that your input meets the requirements.";
 }
 
 function formatSystemUnderstanding(result: ParseResult, isStage2: boolean = false, consecutiveUnhelpful: number = 0): ChatMessage | null {
@@ -1705,6 +1775,7 @@ function RunPageContent() {
                   <button
                     onClick={onAdjustFramework}
                     disabled={
+                      frameworkCompleted ||
                       frameworkAdjustLocked ||
                       busy !== null ||
                       !frameworkAdjustInput.trim() ||

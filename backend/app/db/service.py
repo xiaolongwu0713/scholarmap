@@ -6,6 +6,14 @@ from typing import Any
 
 from app.db.connection import db_manager
 from app.db.repository import ProjectRepository, RunRepository
+from app.auth.repository import UserRepository
+
+# Import config for super user check
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+import config
+settings = config.settings
 
 
 @dataclass(frozen=True)
@@ -22,6 +30,17 @@ class RunDTO:
     run_id: str
     created_at: str
     description: str
+
+
+async def is_super_user(user_id: str) -> bool:
+    """Check if a user is a super user."""
+    async with db_manager.session() as session:
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_id(user_id)
+        if not user:
+            return False
+        # Check if user's email matches super user email
+        return user.email.lower().strip() == settings.super_user_email.lower().strip()
 
 
 class DatabaseStore:
@@ -42,17 +61,32 @@ class DatabaseStore:
             ]
     
     async def get_project(self, project_id: str, user_id: str) -> ProjectDTO | None:
-        """Get project by ID for a user."""
-        async with db_manager.session() as session:
-            repo = ProjectRepository(session)
-            project = await repo.get_project(project_id, user_id)
-            if not project:
-                return None
-            return ProjectDTO(
-                project_id=project.project_id,
-                name=project.name,
-                created_at=project.created_at.isoformat()
-            )
+        """Get project by ID for a user. Super users can access any project."""
+        # Check if user is super user
+        if await is_super_user(user_id):
+            # Super user: don't filter by user_id
+            async with db_manager.session() as session:
+                repo = ProjectRepository(session)
+                project = await repo.get_project(project_id, None)
+                if not project:
+                    return None
+                return ProjectDTO(
+                    project_id=project.project_id,
+                    name=project.name,
+                    created_at=project.created_at.isoformat()
+                )
+        else:
+            # Regular user: filter by user_id
+            async with db_manager.session() as session:
+                repo = ProjectRepository(session)
+                project = await repo.get_project(project_id, user_id)
+                if not project:
+                    return None
+                return ProjectDTO(
+                    project_id=project.project_id,
+                    name=project.name,
+                    created_at=project.created_at.isoformat()
+                )
     
     async def create_project(self, user_id: str, name: str) -> ProjectDTO:
         """Create a new project for a user."""

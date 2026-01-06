@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 
 # Add repo root to path to import config
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+# From backend/app/db/init_db.py: parent.parent.parent.parent = repo root
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent.parent))
 import config
 settings = config.settings
 from app.db.connection import db_manager

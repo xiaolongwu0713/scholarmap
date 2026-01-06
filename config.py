@@ -48,6 +48,11 @@ class Settings(BaseSettings):
     # Can be loaded from .env file or environment variables
     sendgrid_api_key: str = ""
     email_from: str = "xiaolongwu0713@gmail.com"  # Sender email address for verification codes
+    
+    # Super user configuration (can access all projects and runs)
+    # Super users can access any project and run, bypassing ownership checks
+    super_user_email: str = "xiaolongwu0713@gmail.com"
+    super_user_password: str = "xiaowu"
 
 
 settings = Settings()

@@ -187,7 +187,8 @@ class PostgresMapAggregator:
                         )
                     )
                 ).label('scholar_count'),
-                func.count(func.distinct(Authorship.institution)).label('institution_count')
+                func.count(func.distinct(Authorship.institution)).label('institution_count'),
+                func.min(Authorship.affiliation_raw_joined).label('sample_affiliation')
             ).where(
                 and_(
                     Authorship.country == country_normalized,
@@ -204,18 +205,75 @@ class PostgresMapAggregator:
             result = await session.execute(query)
             rows = result.all()
             
-            # Add geocoding
-            geocoder = self._get_geocoder()
-            items = []
+            # Build city map with data (without coordinates yet)
+            city_map: dict[str, dict[str, Any]] = {}
             for row in rows:
-                coords = await geocoder.get_coordinates(country_normalized, row.city)
-                items.append({
+                city_map[row.city] = {
                     "city": row.city,
                     "scholar_count": row.scholar_count,
                     "institution_count": row.institution_count,
-                    "latitude": coords[0] if coords else None,
-                    "longitude": coords[1] if coords else None
-                })
+                    "latitude": None,
+                    "longitude": None,
+                    "sample_affiliation": row.sample_affiliation
+                }
+            
+            # Batch fetch all coordinates from cache
+            from app.db.repository import GeocodingCacheRepository
+            from app.phase2.pg_geocoding import PostgresGeocoder
+            
+            city_keys = [PostgresGeocoder.make_location_key(country_normalized, city) for city in city_map.keys()]
+            
+            cached_coords: dict[str, tuple[float, float] | None] = {}
+            to_geocode: list[str] = []
+            
+            async with db_manager.session() as session:
+                cache_repo = GeocodingCacheRepository(session)
+                cached_items = await cache_repo.get_batch_cached(city_keys)
+                
+                for city, location_key in zip(city_map.keys(), city_keys):
+                    cached = cached_items.get(location_key)
+                    if cached and cached.latitude is not None and cached.longitude is not None:
+                        cached_coords[city] = (cached.latitude, cached.longitude)
+                    else:
+                        to_geocode.append(city)
+            
+            # Geocode only the missing ones and batch cache the results
+            if to_geocode:
+                geocoder = self._get_geocoder()
+                new_cache_entries: dict[str, tuple[float | None, float | None]] = {}
+                
+                # Geocode sequentially to respect rate limits
+                for city in to_geocode:
+                    # Get sample affiliation for this city for better error logging
+                    sample_affiliation = city_map.get(city, {}).get("sample_affiliation")
+                    coords = await geocoder._geocode_external(
+                        country_normalized, 
+                        city,
+                        original_affiliation=sample_affiliation
+                    )
+                    cached_coords[city] = coords
+                    location_key = PostgresGeocoder.make_location_key(country_normalized, city)
+                    new_cache_entries[location_key] = (coords[0] if coords else None, coords[1] if coords else None)
+                
+                # Batch save all new cache entries
+                if new_cache_entries:
+                    async with db_manager.session() as session:
+                        cache_repo = GeocodingCacheRepository(session)
+                        await cache_repo.cache_locations_batch(new_cache_entries)
+                        await session.commit()
+            
+            # Apply coordinates to city_map
+            for city in city_map:
+                coords = cached_coords.get(city)
+                if coords:
+                    city_map[city]["latitude"] = coords[0]
+                    city_map[city]["longitude"] = coords[1]
+                # Remove sample_affiliation from output (it was only for logging)
+                city_map[city].pop("sample_affiliation", None)
+            
+            # Convert to list and sort by scholar_count
+            items = list(city_map.values())
+            items.sort(key=lambda x: x["scholar_count"], reverse=True)
             
             return items
     

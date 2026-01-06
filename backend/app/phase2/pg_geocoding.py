@@ -77,7 +77,8 @@ class PostgresGeocoder:
     async def _geocode_external(
         self,
         country: str,
-        city: str | None = None
+        city: str | None = None,
+        original_affiliation: str | None = None
     ) -> Tuple[float, float] | None:
         """Geocode location using external API (Nominatim)."""
         try:
@@ -99,11 +100,18 @@ class PostgresGeocoder:
                 logger.info(f"Geocoded '{query}' -> {coords}")
                 return coords
             else:
-                logger.warning(f"Could not geocode '{query}'")
+                # Log with original affiliation if available
+                if original_affiliation:
+                    logger.warning(f"Could not geocode '{query}' (from affiliation: {original_affiliation})")
+                else:
+                    logger.warning(f"Could not geocode '{query}'")
                 return None
             
         except Exception as e:
-            logger.error(f"Geocoding failed for '{country}, {city}': {e}")
+            if original_affiliation:
+                logger.error(f"Geocoding failed for '{country}, {city}' (from affiliation: {original_affiliation}): {e}")
+            else:
+                logger.error(f"Geocoding failed for '{country}, {city}': {e}")
             return None
     
     async def get_coordinates(

@@ -11,6 +11,15 @@ Rules:
 3. Use full country names, not abbreviations (USA → United States)
 4. confidence: "high" if all fields clear, "medium" if some unclear, "low" if very ambiguous, "none" if no geographic info
 
+IMPORTANT - City extraction rules:
+- DO NOT extract US state abbreviations (MD, OH, WV, NY, CA, etc.) as cities
+- DO NOT extract institution names (e.g., "Department of Health", "UC Berkeley", "Harvard Medical School") as cities
+- DO NOT extract department names (e.g., "Department of Physiology", "Departments of Neurosurgery") as cities
+- DO NOT extract format errors (e.g., "New York NY USA", "MD USA") as cities
+- Only extract actual city names (e.g., "Boston", "Albany", "San Francisco", "New York" without state/abbreviations)
+- If you see "MD USA" or "OH USA", the city should be null (these are state abbreviations, not cities)
+- If you see "Department of X" or "UC Berkeley", extract it as institution, not city
+
 Return a JSON array with one object per affiliation in the EXACT same order as input:
 [
   {"country": "United States", "city": "Boston", "institution": "Massachusetts General Hospital", "confidence": "high"},

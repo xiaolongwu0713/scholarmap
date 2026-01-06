@@ -561,7 +561,9 @@ async def parse_stage2_route(request: Request, project_id: str, run_id: str, req
         if project is None:
             raise HTTPException(status_code=404, detail="Project not found")
         
-        tv = input_text_validate(req.user_additional_info)
+        # Use lighter validation for parse stage 2 (allows some repetition, focuses on word quality)
+        from app.input_text_validate import input_text_validate_for_adjustment
+        tv = input_text_validate_for_adjustment(req.user_additional_info)
         if not tv.get("ok"):
             raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
         

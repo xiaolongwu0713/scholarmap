@@ -14,7 +14,19 @@ from app.phase2.models import GeoData
 # --------------------
 _email_re = re.compile(r"[\w\.-]+@[\w\.-]+\.\w+", re.I)
 _electronic_re = re.compile(r"\b(Electronic address|E-mail|Email)\s*:\s*.*$", re.I)
-_postal_re = re.compile(r"\b[0-9]{5}(-[0-9]{4})?\b|\b[A-Z]\d[A-Z]\s?\d[A-Z]\d\b", re.I)
+# Postal code patterns:
+# - US: 5 digits or 5-4 format (e.g., "10001", "10001-1234")
+# - Canada: A1A 1A1 format
+# - China and others: 6 digits (e.g., "200023", "100000")
+# - UK: Various formats (e.g., "SW1A 1AA", "EC1A 1BB")
+# - Japan: 3-4 digits (e.g., "100-0001")
+_postal_re = re.compile(
+    r"\b[0-9]{5}(-[0-9]{4})?\b|"  # US format (5 digits, optional -4)
+    r"\b[0-9]{6}\b|"  # China and other 6-digit formats
+    r"\b[0-9]{3}-[0-9]{4}\b|"  # Japan format (3-4 digits)
+    r"\b[A-Z]\d[A-Z]\s?\d[A-Z]\d\b",  # Canada format
+    re.I
+)
 _tail_abbr_re = re.compile(r"^(?P<prefix>.*?)(?:\s+|,)(?P<abbr>[A-Z]{2})$", re.U)
 
 # --------------------
@@ -241,7 +253,10 @@ def _infer_country(country, region_norm, region_raw, tokens):
 # Department / institution
 # --------------------
 def _choose_institution(tokens):
+    """Choose institution from tokens, recognizing both academic and company names."""
     best = None
+    
+    # First pass: look for academic institutions (university, college, etc.)
     for t in tokens:
         tl = _norm_token(t).lower()
         if any(k in tl for k in [
@@ -249,12 +264,44 @@ def _choose_institution(tokens):
             "hospital", "centre", "center", "academy", "foundation"
         ]):
             best = _norm_token(t)
+            break
+    
+    # Second pass: look for "school of" pattern
     if not best:
         for t in tokens:
             tl = _norm_token(t).lower()
             if "school of" in tl:
                 best = _norm_token(t)
                 break
+    
+    # Third pass: look for research groups, departments, and organizational units
+    if not best:
+        for t in tokens:
+            tl = _norm_token(t).lower()
+            # Check for research groups, departments, and organizational units
+            if any(k in tl for k in [
+                "group", "department", "departments", "division", "faculty", 
+                "laboratory", "lab", "program", "programme", "unit", "team",
+                "focus", "center", "centre", "research", "project", "initiative"
+            ]):
+                best = _norm_token(t)
+                break
+    
+    # Fourth pass: look for company name patterns (Co. Ltd, Inc., Corp., etc.)
+    if not best:
+        company_patterns = [
+            r"\b(co\.?\s*ltd\.?|ltd\.?|inc\.?|corp\.?|corporation|llc|gmbh|ag|s\.a\.|s\.p\.a\.|plc|bv|nv)\b",
+            r"\b(company|companies|limited|incorporated)\b"
+        ]
+        for t in tokens:
+            tl = _norm_token(t).lower()
+            for pattern in company_patterns:
+                if re.search(pattern, tl, re.IGNORECASE):
+                    best = _norm_token(t)
+                    break
+            if best:
+                break
+    
     return best
 
 
@@ -273,11 +320,95 @@ def _choose_department(tokens):
 # --------------------
 # City detection
 # --------------------
-def _detect_city(tokens, country_token=None, region_norm=None, region_raw=None):
+def _is_valid_city_name(city: str) -> bool:
+    """
+    Check if a city name is valid (not a state abbreviation, institution, or department).
+    
+    Returns False for:
+    - US state abbreviations (MD, OH, WV, etc.)
+    - Institution names (containing keywords like "University", "Department", etc.)
+    - Department names
+    - Format errors (containing "USA" or multiple state abbreviations)
+    - Too short names (likely abbreviations or errors)
+    """
+    if not city or len(city.strip()) == 0:
+        return False
+    
+    city_upper = city.upper()
+    city_lower = city.lower()
+    
+    # Check if it's just a state abbreviation
+    if city_upper.strip() in US_STATES:
+        return False
+    
+    # Check if it contains "USA" (format error like "New York NY USA")
+    if " USA" in city_upper or city_upper.endswith(" USA") or city_upper == "USA":
+        return False
+    
+    # Check if it's an institution name (contains institution keywords)
+    institution_keywords = [
+        "university", "college", "institute", "hospital", "centre", "center", "school",
+        "department", "departments", "division", "faculty", "laboratory", "lab",
+        "state department", "health", "medical center", "medical centre",
+        "uc ", "uc-", "berkeley", "science and", "disorders", "neurosurgery", "physiology",
+        "communication", "program", "programme", "unit",
+        # Research groups and organizational units
+        "group", "team", "focus", "research", "project", "initiative",
+        # Academic/research terms that shouldn't be cities
+        "neuroscience", "neurotechnology", "neurocognitive", "neurophysics", "psychology"
+    ]
+    if any(keyword in city_lower for keyword in institution_keywords):
+        return False
+    
+    # Check if it's a company name (contains company patterns)
+    company_patterns = [
+        r"\b(co\.?\s*ltd\.?|ltd\.?|inc\.?|corp\.?|corporation|llc|gmbh|ag|s\.a\.|s\.p\.a\.|plc|bv|nv)\b",
+        r"\b(company|companies|limited|incorporated)\b"
+    ]
+    for pattern in company_patterns:
+        if re.search(pattern, city_lower, re.IGNORECASE):
+            return False
+    
+    # Check if it starts with common department/institution prefixes
+    if city_lower.startswith(("department", "departments", "division", "faculty", "school of", "program", "programme")):
+        return False
+    
+    # Check if it's too short (likely an abbreviation or error)
+    if len(city.strip()) <= 2:
+        return False
+    
+    # Check if it contains multiple state abbreviations (format error)
+    state_abbr_count = sum(1 for abbr in US_STATES if f" {abbr} " in f" {city_upper} " or city_upper.endswith(f" {abbr}"))
+    if state_abbr_count > 1:
+        return False
+    
+    # Check if it's a single state abbreviation followed by "USA" (e.g., "MD USA")
+    if city_upper.strip() in US_STATES and "USA" in city_upper:
+        return False
+    
+    return True
+
+
+def _detect_city(tokens, country_token=None, region_norm=None, region_raw=None, institution=None):
+    """
+    Detect city name from tokens.
+    
+    Args:
+        tokens: List of location tokens
+        country_token: Country token to exclude
+        region_norm: Normalized region (state/province)
+        region_raw: Raw region name
+        institution: Detected institution name (to avoid using it as city)
+    """
     toks = [_norm_text(t) for t in tokens if _norm_text(t)]
     if country_token:
         ct = _norm_text(country_token)
         toks = [t for t in toks if t != ct]
+    
+    # Exclude institution name from city candidates
+    if institution:
+        inst_norm = _norm_text(institution)
+        toks = [t for t in toks if _norm_text(t) != inst_norm]
 
     # Expand tokens like "Washington DC" into ["Washington","DC"]
     expanded = []
@@ -297,6 +428,7 @@ def _detect_city(tokens, country_token=None, region_norm=None, region_raw=None):
         expanded.append(t2)
     toks = expanded
 
+    # Try to find city near region (state/province)
     for target in [region_raw, region_norm]:
         if not target:
             continue
@@ -304,22 +436,29 @@ def _detect_city(tokens, country_token=None, region_norm=None, region_raw=None):
             if toks[i].upper() == str(target).upper():
                 if i - 1 >= 0:
                     cand = toks[i - 1]
-                    if not any(k in cand.lower() for k in [
-                        "university", "college", "institute", "hospital", "centre", "center", "school"
-                    ]):
+                    # Validate candidate before returning
+                    if _is_valid_city_name(cand):
                         return cand
 
+    # Fallback: look for any valid city name in tokens (reverse order)
     for t in reversed(toks):
-        if any(k in t.lower() for k in [
-            "university", "college", "institute", "hospital", "centre", "center", "school",
-            "department", "division", "faculty", "laboratory", "lab"
-        ]):
+        # Skip "USA" explicitly
+        if t.upper() == "USA":
             continue
+        # Skip institution name if provided
+        if institution and _norm_text(t) == _norm_text(institution):
+            continue
+        # Skip invalid city names
+        if not _is_valid_city_name(t):
+            continue
+        # Skip tokens with digits
         if re.search(r"\d", t):
             continue
+        # Skip very short uppercase tokens (likely abbreviations)
         if len(t) <= 2 and t.isupper():
             continue
         return t
+    
     return None
 
 
@@ -362,8 +501,9 @@ def _parse_affiliation(affiliation_raw: str) -> dict:
 
     institution = _choose_institution(tokens)
     department = _choose_department(tokens)
+    # Pass institution to _detect_city to avoid using institution name as city
     city = _detect_city(
-        loc_tokens, country_token=country_token, region_norm=region_norm, region_raw=region_raw
+        loc_tokens, country_token=country_token, region_norm=region_norm, region_raw=region_raw, institution=institution
     )
 
     source = "rules+pycountry" if country else "rules"

@@ -66,6 +66,46 @@ const COUNTRY_COORDS: Record<string, [number, number]> = {
   Taiwan: [120.9605, 23.6978]
 };
 
+// Country zoom levels based on country size
+// Larger countries need lower zoom levels to show the entire country
+// Zoom level guide: 1=world, 2=continent, 3=very large country, 4=large country, 5=medium, 6=small, 7=city, 8=district
+// For very large countries like China, use zoom 2.5-3 to show the entire country
+const COUNTRY_ZOOM_LEVELS: Record<string, number> = {
+  // Very large countries (zoom 2-2.5) - need to show entire country
+  // These countries are so large that they need very low zoom to see the whole country
+  Russia: 2,
+  Canada: 2,
+  China: 2,  // Very low zoom to show entire country (zoom 2 shows ~continent level)
+  "United States": 2,  // Very low zoom for better coverage
+  Brazil: 2,
+  Australia: 2,
+  India: 2.5,  // Slightly higher as it's narrower
+  Argentina: 2.5,
+  // Large countries (zoom 4-5)
+  Mexico: 4,
+  Indonesia: 4,
+  "South Africa": 4,
+  Turkey: 4,
+  // Medium countries (zoom 5-6)
+  France: 5,
+  Spain: 5,
+  Germany: 5,
+  Italy: 5,
+  Japan: 5,
+  "United Kingdom": 4,
+  Poland: 5,
+  // Small countries (zoom 6-7)
+  Netherlands: 6,
+  Belgium: 6,
+  Switzerland: 6,
+  Austria: 6,
+  "South Korea": 6,
+  // Very small countries (zoom 7-8)
+  Singapore: 7,
+  "Hong Kong": 7,
+  Taiwan: 7,
+};
+
 // City coordinates (major cities)
 const CITY_COORDS: Record<string, [number, number]> = {
   // US Cities
@@ -269,50 +309,27 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
       setSelectedCountry(country);
       setLevel("country");
 
-      // Calculate bounds from city coordinates to show entire country
-      const citiesWithCoords = data.filter(c => c.latitude !== null && c.longitude !== null);
-      if (citiesWithCoords.length > 0) {
-        const longitudes = citiesWithCoords.map(c => c.longitude!);
-        const latitudes = citiesWithCoords.map(c => c.latitude!);
-        
-        const minLon = Math.min(...longitudes);
-        const maxLon = Math.max(...longitudes);
-        const minLat = Math.min(...latitudes);
-        const maxLat = Math.max(...latitudes);
-        
-        // Calculate center
-        const centerLon = (minLon + maxLon) / 2;
-        const centerLat = (minLat + maxLat) / 2;
-        
-        // Calculate zoom level based on bounding box
-        // Approximate formula: larger bounding box = lower zoom
-        const lonDiff = maxLon - minLon;
-        const latDiff = maxLat - minLat;
-        const maxDiff = Math.max(lonDiff, latDiff);
-        
-        // Zoom levels: larger countries get lower zoom (more zoomed out)
-        // Rough mapping: 0.1 degrees ≈ zoom 7, 1 degree ≈ zoom 5, 10 degrees ≈ zoom 3
-        let zoom = 5;
-        if (maxDiff > 20) zoom = 3;
-        else if (maxDiff > 10) zoom = 4;
-        else if (maxDiff > 5) zoom = 5;
-        else if (maxDiff > 2) zoom = 6;
-        else if (maxDiff > 1) zoom = 7;
-        else zoom = 8;
-        
+      // Always show the entire country using predefined country center coordinates
+      // Do not adapt to marker positions - just show the country as a whole
+      const coords = COUNTRY_COORDS[country];
+      if (coords) {
+        // Use country-specific zoom level, or default to 5 for countries not in the list
+        const zoom = COUNTRY_ZOOM_LEVELS[country] || 5;
         setViewState({
-          longitude: centerLon,
-          latitude: centerLat,
+          longitude: coords[0],
+          latitude: coords[1],
           zoom: zoom
         });
       } else {
-        // Fallback to country center if no city coordinates
-        const coords = COUNTRY_COORDS[country];
-        if (coords) {
+        // Fallback: if country not in COUNTRY_COORDS, try to get from first city with coords
+        const citiesWithCoords = data.filter(c => c.latitude !== null && c.longitude !== null);
+        if (citiesWithCoords.length > 0) {
+          // Use country-specific zoom level, or default to 5
+          const zoom = COUNTRY_ZOOM_LEVELS[country] || 5;
           setViewState({
-            longitude: coords[0],
-            latitude: coords[1],
-            zoom: 5
+            longitude: citiesWithCoords[0].longitude!,
+            latitude: citiesWithCoords[0].latitude!,
+            zoom: zoom
           });
         }
       }
@@ -721,7 +738,6 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     if (level === "world") {
       // Show country markers
       const validCountries = worldData.filter((country) => country.latitude !== null && country.longitude !== null);
-      console.log("Rendering markers for", validCountries.length, "countries");
       
       return validCountries.map((country, index) => {
           const size = getMarkerSize(country.scholar_count);

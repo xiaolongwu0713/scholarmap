@@ -87,10 +87,10 @@ def is_gibberish_shape(tok: str) -> bool:
 
     # vowel ratio too low
     # For longer words (>=7), require at least 20% vowels
-    # For shorter words (4-6), require at least 25% vowels
+    # For shorter words (4-6), require at least 20% vowels (relaxed from 25% to avoid false positives like "study")
     if len(t) >= 4:
         vr = sum(c in VOWELS for c in t) / len(t)
-        threshold = 0.20 if len(t) >= 7 else 0.25
+        threshold = 0.20  # Use same threshold for all words >= 4 chars
         if vr < threshold:
             return True
 
@@ -291,57 +291,76 @@ def input_text_validate(text: str) -> dict[str, Any]:
     # This catches cases where gibberish words are misclassified as "misspelled"
     invalid_ratio = unknown_ratio + misspelled_ratio
     
+    # Track specific failure reasons for clearer error messages
+    failure_reasons = []
+    
     if total_words >= QUALITY_CHECK_WORD_COUNT_THRESHOLD:
         if unknown_ratio >= QUALITY_UNKNOWN_RATIO_THRESHOLD_10PLUS:
-            illegal = True
-        elif invalid_ratio >= QUALITY_INVALID_RATIO_THRESHOLD_10PLUS:  # unknown + misspelled combined
-            illegal = True
-        elif gibberish_ratio >= QUALITY_GIBBERISH_RATIO_THRESHOLD_10PLUS:  # High gibberish ratio
-            illegal = True
+            failure_reasons.append(f"too_many_unknown_words (ratio: {unknown_ratio:.1%}, threshold: {QUALITY_UNKNOWN_RATIO_THRESHOLD_10PLUS:.1%})")
+        elif invalid_ratio >= QUALITY_INVALID_RATIO_THRESHOLD_10PLUS:
+            failure_reasons.append(f"too_many_invalid_words (unknown+misspelled ratio: {invalid_ratio:.1%}, threshold: {QUALITY_INVALID_RATIO_THRESHOLD_10PLUS:.1%})")
+        elif gibberish_ratio >= QUALITY_GIBBERISH_RATIO_THRESHOLD_10PLUS:
+            failure_reasons.append(f"too_many_gibberish_words (ratio: {gibberish_ratio:.1%}, threshold: {QUALITY_GIBBERISH_RATIO_THRESHOLD_10PLUS:.1%})")
         else:
-            illegal = (
-                bool(stats.get("recommended_illegal"))
-                or float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_SECONDARY_10PLUS
-                or float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD
-                or float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD
-                or int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD
-            )
+            # Check secondary quality metrics
+            if bool(stats.get("recommended_illegal")):
+                failure_reasons.append(f"recommended_illegal (reason: {stats.get('reason', 'unknown')})")
+            if float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_SECONDARY_10PLUS:
+                failure_reasons.append(f"too_many_gibberish_words_secondary (ratio: {gibberish_ratio:.1%}, threshold: {QUALITY_GIBBERISH_RATIO_SECONDARY_10PLUS:.1%})")
+            if float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD:
+                unique_ratio = float(stats.get("unique_token_ratio") or 1.0)
+                failure_reasons.append(f"too_low_unique_token_ratio (ratio: {unique_ratio:.1%}, threshold: {QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD:.1%})")
+            if float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD:
+                repeated_ratio = float(stats.get("repeated_token_ratio") or 0.0)
+                failure_reasons.append(f"too_many_repeated_tokens (ratio: {repeated_ratio:.1%}, threshold: {QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD:.1%})")
+            if int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD:
+                trigram_count = int(stats.get("repeated_word_trigrams") or 0)
+                failure_reasons.append(f"too_many_repeated_trigrams (count: {trigram_count}, threshold: {QUALITY_REPEATED_TRIGRAM_THRESHOLD})")
     elif total_words >= QUALITY_CHECK_WORD_COUNT_MIN:
         if unknown_ratio >= QUALITY_UNKNOWN_RATIO_THRESHOLD_5_9:
-            illegal = True
-        elif invalid_ratio >= QUALITY_INVALID_RATIO_THRESHOLD_5_9:  # Stricter for shorter texts
-            illegal = True
+            failure_reasons.append(f"too_many_unknown_words (ratio: {unknown_ratio:.1%}, threshold: {QUALITY_UNKNOWN_RATIO_THRESHOLD_5_9:.1%})")
+        elif invalid_ratio >= QUALITY_INVALID_RATIO_THRESHOLD_5_9:
+            failure_reasons.append(f"too_many_invalid_words (unknown+misspelled ratio: {invalid_ratio:.1%}, threshold: {QUALITY_INVALID_RATIO_THRESHOLD_5_9:.1%})")
         else:
-            illegal = (
-                bool(stats.get("recommended_illegal"))
-                or float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT
-                or float(stats.get("misspelled_ratio") or 0.0) >= QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT
-                or float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD
-                or float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD
-                or int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD
-            )
+            # Check secondary quality metrics
+            if bool(stats.get("recommended_illegal")):
+                failure_reasons.append(f"recommended_illegal (reason: {stats.get('reason', 'unknown')})")
+            if float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT:
+                failure_reasons.append(f"too_many_gibberish_words (ratio: {gibberish_ratio:.1%}, threshold: {QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT:.1%})")
+            if float(stats.get("misspelled_ratio") or 0.0) >= QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT:
+                failure_reasons.append(f"too_many_misspelled_words (ratio: {misspelled_ratio:.1%}, threshold: {QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT:.1%})")
+            if float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD:
+                unique_ratio = float(stats.get("unique_token_ratio") or 1.0)
+                failure_reasons.append(f"too_low_unique_token_ratio (ratio: {unique_ratio:.1%}, threshold: {QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD:.1%})")
+            if float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD:
+                repeated_ratio = float(stats.get("repeated_token_ratio") or 0.0)
+                failure_reasons.append(f"too_many_repeated_tokens (ratio: {repeated_ratio:.1%}, threshold: {QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD:.1%})")
+            if int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD:
+                trigram_count = int(stats.get("repeated_word_trigrams") or 0)
+                failure_reasons.append(f"too_many_repeated_trigrams (count: {trigram_count}, threshold: {QUALITY_REPEATED_TRIGRAM_THRESHOLD})")
     else:
-        illegal = (
-            bool(stats.get("recommended_illegal"))
-            or float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT
-            or float(stats.get("misspelled_ratio") or 0.0) >= QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT
-            or float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD
-            or float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD
-            or int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD
-        )
-    if illegal:
+        # For very short texts (< 5 words)
+        if bool(stats.get("recommended_illegal")):
+            failure_reasons.append(f"recommended_illegal (reason: {stats.get('reason', 'unknown')})")
+        if float(stats.get("gibberish_token_ratio") or 0.0) >= QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT:
+            failure_reasons.append(f"too_many_gibberish_words (ratio: {gibberish_ratio:.1%}, threshold: {QUALITY_GIBBERISH_RATIO_THRESHOLD_SHORT:.1%})")
+        if float(stats.get("misspelled_ratio") or 0.0) >= QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT:
+            failure_reasons.append(f"too_many_misspelled_words (ratio: {misspelled_ratio:.1%}, threshold: {QUALITY_MISSPELLED_RATIO_THRESHOLD_SHORT:.1%})")
+        if float(stats.get("unique_token_ratio") or 1.0) <= QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD:
+            unique_ratio = float(stats.get("unique_token_ratio") or 1.0)
+            failure_reasons.append(f"too_low_unique_token_ratio (ratio: {unique_ratio:.1%}, threshold: {QUALITY_UNIQUE_TOKEN_RATIO_THRESHOLD:.1%})")
+        if float(stats.get("repeated_token_ratio") or 0.0) >= QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD:
+            repeated_ratio = float(stats.get("repeated_token_ratio") or 0.0)
+            failure_reasons.append(f"too_many_repeated_tokens (ratio: {repeated_ratio:.1%}, threshold: {QUALITY_REPEATED_TOKEN_RATIO_THRESHOLD:.1%})")
+        if int(stats.get("repeated_word_trigrams") or 0) >= QUALITY_REPEATED_TRIGRAM_THRESHOLD:
+            trigram_count = int(stats.get("repeated_word_trigrams") or 0)
+            failure_reasons.append(f"too_many_repeated_trigrams (count: {trigram_count}, threshold: {QUALITY_REPEATED_TRIGRAM_THRESHOLD})")
+    
+    if failure_reasons:
+        reason_text = "Text quality check failed. Issues found: " + "; ".join(failure_reasons) + "."
         return {
             "ok": False,
-            "reason": (
-                "English word quality check failed: "
-                f"unknown={stats.get('unknown_ratio')}, "
-                f"misspelled={stats.get('misspelled_ratio')}, "
-                f"invalid={unknown_ratio + misspelled_ratio:.2f}, "
-                f"gibberish={stats.get('gibberish_token_ratio')}, "
-                f"unique={stats.get('unique_token_ratio')}, "
-                f"repeated={stats.get('repeated_token_ratio')}, "
-                f"trigram={stats.get('repeated_word_trigrams')}."
-            ),
+            "reason": reason_text,
             "stats": stats,
         }
 
@@ -374,30 +393,27 @@ def input_text_validate_for_adjustment(text: str) -> dict[str, Any]:
     
     invalid_ratio = unknown_ratio + misspelled_ratio
     
-    illegal = False
+    # Track specific failure reasons for clearer error messages
+    failure_reasons = []
+    
     if total_words >= QUALITY_CHECK_WORD_COUNT_THRESHOLD:
         if unknown_ratio >= ADJUST_UNKNOWN_RATIO_THRESHOLD_10PLUS:
-            illegal = True
+            failure_reasons.append(f"too_many_unknown_words (ratio: {unknown_ratio:.1%}, threshold: {ADJUST_UNKNOWN_RATIO_THRESHOLD_10PLUS:.1%})")
         elif invalid_ratio >= ADJUST_INVALID_RATIO_THRESHOLD_10PLUS:
-            illegal = True
+            failure_reasons.append(f"too_many_invalid_words (unknown+misspelled ratio: {invalid_ratio:.1%}, threshold: {ADJUST_INVALID_RATIO_THRESHOLD_10PLUS:.1%})")
         elif gibberish_ratio >= ADJUST_GIBBERISH_RATIO_THRESHOLD_10PLUS:
-            illegal = True
+            failure_reasons.append(f"too_many_gibberish_words (ratio: {gibberish_ratio:.1%}, threshold: {ADJUST_GIBBERISH_RATIO_THRESHOLD_10PLUS:.1%})")
     elif total_words >= QUALITY_CHECK_WORD_COUNT_MIN:
         if unknown_ratio >= ADJUST_UNKNOWN_RATIO_THRESHOLD_5_9:
-            illegal = True
+            failure_reasons.append(f"too_many_unknown_words (ratio: {unknown_ratio:.1%}, threshold: {ADJUST_UNKNOWN_RATIO_THRESHOLD_5_9:.1%})")
         elif invalid_ratio >= ADJUST_INVALID_RATIO_THRESHOLD_5_9:
-            illegal = True
+            failure_reasons.append(f"too_many_invalid_words (unknown+misspelled ratio: {invalid_ratio:.1%}, threshold: {ADJUST_INVALID_RATIO_THRESHOLD_5_9:.1%})")
     
-    if illegal:
+    if failure_reasons:
+        reason_text = "Text quality check failed. Issues found: " + "; ".join(failure_reasons) + "."
         return {
             "ok": False,
-            "reason": (
-                "English word quality check failed: "
-                f"unknown={stats.get('unknown_ratio')}, "
-                f"misspelled={stats.get('misspelled_ratio')}, "
-                f"invalid={unknown_ratio + misspelled_ratio:.2f}, "
-                f"gibberish={stats.get('gibberish_token_ratio')}."
-            ),
+            "reason": reason_text,
             "stats": stats,
         }
 
