@@ -22,6 +22,7 @@ from app.phase2.affiliation_extractor import create_extractor
 from app.phase2.models import GeoData, IngestStats, ParsedPaper
 from app.phase2.pubmed_fetcher import PubMedFetcher
 from app.phase2.pubmed_parser import PubMedXMLParser
+from app.phase2.pg_database import PostgresDatabase
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,7 @@ class PostgresIngestionPipeline:
         self.fetcher = PubMedFetcher(api_key=api_key)
         self.parser = PubMedXMLParser()
         self.extractor = create_extractor(settings.affiliation_extraction_method)
+        self.db = PostgresDatabase(project_id)
     
     async def ingest_run(
         self,
@@ -110,6 +112,23 @@ class PostgresIngestionPipeline:
             )
             
             logger.info(f"Ingestion complete: {stats}")
+            
+            # Step 7: Validate and fix affiliation extraction errors
+            if settings.affiliation_extraction_method == "rule_based":
+                logger.info("Starting post-ingestion validation and LLM fallback")
+                try:
+                    from app.phase2.affiliation_validator import AffiliationValidator
+                    validator = AffiliationValidator()
+                    validation_stats = await validator.validate_and_fix_run(run_id, self.project_id)
+                    logger.info(
+                        f"Validation and fixes complete: "
+                        f"{validation_stats.get('llm_fixes', 0)} affiliations fixed, "
+                        f"{validation_stats.get('nominatim_failures', 0)} geocoding failures found"
+                    )
+                except Exception as e:
+                    logger.error(f"Validation and fix failed: {e}", exc_info=True)
+                    # Don't fail ingestion if validation fails
+            
             return stats
             
         except Exception as e:
@@ -186,11 +205,18 @@ class PostgresIngestionPipeline:
             }
         
         method_name = "rule-based" if settings.affiliation_extraction_method == "rule_based" else "LLM"
-        logger.info(f"Extracting {len(unique_affiliations)} affiliations via {method_name} (no cache)")
+        logger.info(f"Extracting {len(unique_affiliations)} affiliations via {method_name} (with cache)")
         
-        # Extract all affiliations (no cache check)
+        # Extract affiliations with cache lookup
         affiliation_list = list(unique_affiliations)
-        geo_map = await self.extractor.extract_affiliations(affiliation_list, cache_lookup=None)
+        geo_map = await self.extractor.extract_affiliations(
+            affiliation_list,
+            cache_lookup=self.db.get_cached_affiliation
+        )
+        
+        # Cache the extracted results (update cache with new extractions)
+        if geo_map:
+            await self.db.cache_affiliations(geo_map)
         
         with_country = sum(1 for g in geo_map.values() if g.country)
         

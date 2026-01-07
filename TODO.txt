@@ -12,7 +12,7 @@
    步骤说明：
    - 第一步（前端触发）：Run 页面中的 `onIngest` 会调用 `runIngest(projectId, runId)`（frontend/src/app/projects/[projectId]/runs/[runId]/page.tsx:1037-1076, frontend/src/lib/api.ts:373-384），向后端 POST `/api/projects/{pid}/runs/{rid}/ingest`，UI 进入 busy=ingest 的 loading。
    - 第二步（后端入口）：FastAPI 端点校验项目归属后实例化 `PostgresIngestionPipeline` 并调用 `ingest_run`（backend/app/main.py:820-867），构造 `IngestStats` 用于统计。
-   - 第三步（PMID 收集）：pipeline 使用 `DatabaseStore.read_run_file` 依次读取 `results_pubmed.json` / `results_semantic_scholar.json` / `results_openalex.json` 等 Phase1 输出，提取唯一 PMID 列表（backend/app/phase2/pg_ingest.py:70-152）。
+   - 第三步（PMID 收集）：pipeline 使用 `DatabaseStore.read_run_file` 依次读取 `results_pubmed.json` / `results_semantic_scholar.json` / `results_openalex.json` 等 Phase1 输出，提取唯一 PMID 列表。
    - 第四步（PubMed 抓取与解析）：对所有 PMID 调用 `PubMedFetcher.fetch_batch` 获取 XML，再用 `PubMedXMLParser` 转为结构化 `ParsedPaper` 列表。 PMID放在内存里，一个python列表，没有入库。
    - 第五步（LLM/规则抽取）：`create_extractor` 返回的抽取器（LLM 或 rule-based）对全部作者原始机构文本做地理解析，统计 unique affiliations、LLM 调用次数等（同文件 154-217）。
    - 第六步（写入数据库）：在单独的 async session 中删除旧 `run_papers`（用户共享全局表）/`authorship`（用户共享全局表） 记录，然后 upsert `papers`、批量插入作者地理信息并重建 run→paper 关联（backend/app/phase2/pg_ingest.py:220-318）。该阶段包含大量 INSERT/DELETE，整体流程耗时显著。
@@ -43,3 +43,12 @@
 - geocoding_cache：`PostgresMapAggregator` 和 `PostgresGeocoder` 在计算国家/城市坐标时，先用 `GeocodingCacheRepository.get_batch_cached/location_key` 读取缓存；未命中则调用 Nominatim `get_coordinates`，并在 `cache_location`/`cache_locations_batch` 中写回，经 run 之间共享经纬度以减少重复外部调用。
   cache的越多，后面系统越快，因为不需要调用Nominatim。
   表结构：`location_key` (text PK)、`latitude`、`longitude`、`created_at` (timestamptz)。
+
+
+
+SELECT * FROM public.authorship Where pmid='27671642' and author_name_raw='Fedorenko, Evelina'
+下面这个affiliation被错误解析成Marracoo了（MA），实际上MA是美国州缩写，下面的国家（USA）缺失了。
+["Department of Psychiatry, Harvard Medical School, Boston, MA 02115; Department of Psychiatry, Massachusetts General Hospital, Boston, MA 02114; evelina.fedorenko@mgh.harvard.edu ngk@mit.edu."]
+
+这些都是解析出错的纪录：
+SELECT * FROM public.geocoding_cache where latitude IS NULL;
