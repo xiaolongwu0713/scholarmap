@@ -1,0 +1,45 @@
+
+
+1，地图显示：显示数量图标太慢，尤其是全球地图，一直显示loading data，大致一分钟。现在每次点击都会执行这三个步骤，可以考虑第一次调用Nominatim并标记结果，下一次就不再尝试调用Nominatim。
+   步骤说明：
+   - 第一步（前端触发）：点击“Open Interactive Map”或进入某个国家后，`MapModal` 会调用 `getWorldMap` / `getCountryMap`（frontend/src/components/MapModal.tsx, frontend/src/lib/api.ts），前端立即进入 loading 状态。
+   - 第二步（后端聚合）：FastAPI 接口 `/api/projects/{pid}/runs/{rid}/map/world|country` 创建 `PostgresMapAggregator`，先在 `run_papers` 表取该 run 的 PMID，再在 `authorship` 表按国家/城市聚合作者、论文、机构数量（backend/app/main.py:871-1012, backend/app/phase2/pg_aggregations.py:54-220）。
+   - 第三步（地理编码瓶颈）：聚合结果的每个国家/城市都要调用 `PostgresGeocoder.get_coordinates` 查缓存；若未命中，就串行访问 Nominatim，并在每次请求前 `await asyncio.sleep(1.0)`（backend/app/phase2/pg_geocoding.py:61-150），几十个地点会导致几十秒延迟，前端便一直显示“loading data”。
+
+2，后端 run 授权存在薄弱点：`RunRepository.get_run` / `DatabaseStore.read_run_file` 等接口仅按 `run_id` 查询，不校验该 run 是否属于当前请求的 `project_id`/`user_id`，导致猜到 run_id 即可跨项目读取、修改甚至删除他人 run。需要对所有 run 操作增加 project->run 的绑定校验，或在 run 表冗余 user_id 做过滤。
+
+3，点击 Ingestion 按钮后的整个流程较耗时，需要梳理以便优化。当前对收集的PMID做全量解析，并替换数据库中已有的纪录。可以考虑只对数据库中没有的PMID做解析，并追加到数据库中。
+   步骤说明：
+   - 第一步（前端触发）：Run 页面中的 `onIngest` 会调用 `runIngest(projectId, runId)`（frontend/src/app/projects/[projectId]/runs/[runId]/page.tsx:1037-1076, frontend/src/lib/api.ts:373-384），向后端 POST `/api/projects/{pid}/runs/{rid}/ingest`，UI 进入 busy=ingest 的 loading。
+   - 第二步（后端入口）：FastAPI 端点校验项目归属后实例化 `PostgresIngestionPipeline` 并调用 `ingest_run`（backend/app/main.py:820-867），构造 `IngestStats` 用于统计。
+   - 第三步（PMID 收集）：pipeline 使用 `DatabaseStore.read_run_file` 依次读取 `results_pubmed.json` / `results_semantic_scholar.json` / `results_openalex.json` 等 Phase1 输出，提取唯一 PMID 列表（backend/app/phase2/pg_ingest.py:70-152）。
+   - 第四步（PubMed 抓取与解析）：对所有 PMID 调用 `PubMedFetcher.fetch_batch` 获取 XML，再用 `PubMedXMLParser` 转为结构化 `ParsedPaper` 列表。 PMID放在内存里，一个python列表，没有入库。
+   - 第五步（LLM/规则抽取）：`create_extractor` 返回的抽取器（LLM 或 rule-based）对全部作者原始机构文本做地理解析，统计 unique affiliations、LLM 调用次数等（同文件 154-217）。
+   - 第六步（写入数据库）：在单独的 async session 中删除旧 `run_papers`（用户共享全局表）/`authorship`（用户共享全局表） 记录，然后 upsert `papers`、批量插入作者地理信息并重建 run→paper 关联（backend/app/phase2/pg_ingest.py:220-318）。该阶段包含大量 INSERT/DELETE，整体流程耗时显著。
+      - run_papers 表是用 run_id 与每个 pmid 的组合重建关联——先删掉该 run 现有的行，再用当前 ingest 得到的全部 pmid 重插，唯一约束是 (run_id, pmid)。
+      - authorship 表则按 pmid 维度操作：先查出这个 run 之前关联的所有 pmid，把这些 pmid 的作者记录整批删除，再用本次解析出的作者信息（每条携带 pmid、作者顺序等）重新插入。
+
+4，可以考虑在ingestion结束后，自动预处理聚合操作，这样点击地图就可以直接看到结果。
+      
+附录：相关表结构（摘自 backend/app/db/models.py）
+- run_papers
+  - `id`：serial 主键
+  - `run_id`：string，索引；指向 runs.run_id
+  - `pmid`：string，索引；指向 papers.pmid
+  - `added_at`：timestamptz，默认 `now()`
+  - 复合唯一索引 `idx_run_papers_unique(run_id, pmid)`
+- authorship
+  - `id`：serial 主键
+  - `pmid`、`author_order`
+  - 作者身份字段：`author_name_raw`、`last_name`、`fore_name`、`initials`、`suffix`、`is_collective`、`collective_name`
+  - 时间字段：`year`
+  - 机构原文字段：`affiliations_raw`（JSON 字符串）、`affiliation_raw_joined`、`has_author_affiliation`
+  - 地理解析字段：`country`、`city`、`institution`、`affiliation_confidence`
+  - 索引：`idx_authorship_pmid_order(pmid, author_order)`、`idx_authorship_country_city(country, city)`
+
+附录：缓存表使用方式
+- affiliation_cache：Phase2 抽取器在解析作者机构地理信息前，会用 `AffiliationCacheRepository.get_cached(affiliation_raw)` 查询是否已有 `country/city/institution`，命中则跳过 LLM；抽取完成后通过 `cache_affiliations` 批量写入，以便后续 run 共享。
+  表结构：`affiliation_raw` (text PK)、`country`、`city`、`institution`、`confidence`、`created_at` (timestamptz)。
+- geocoding_cache：`PostgresMapAggregator` 和 `PostgresGeocoder` 在计算国家/城市坐标时，先用 `GeocodingCacheRepository.get_batch_cached/location_key` 读取缓存；未命中则调用 Nominatim `get_coordinates`，并在 `cache_location`/`cache_locations_batch` 中写回，经 run 之间共享经纬度以减少重复外部调用。
+  cache的越多，后面系统越快，因为不需要调用Nominatim。
+  表结构：`location_key` (text PK)、`latitude`、`longitude`、`created_at` (timestamptz)。
