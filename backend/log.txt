@@ -329,3 +329,338 @@
 2026-01-08 14:08:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Baltimore, Andorra' -> (39.3877661, -76.5409489)
 2026-01-08 14:08:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Atlanta, United States' -> (33.7544657, -84.3898151)
 2026-01-08 14:08:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Boston, United States' -> (42.3588336, -71.0578303)
+2026-01-08 14:08:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Utrecht, Netherlands' -> (52.0907006, 5.1215634)
+2026-01-08 14:08:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Singapore Singapore, Singapore' -> (1.2959845, 103.7766186)
+2026-01-08 14:08:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Orlando, Austria' -> (48.2720833, 16.4517356)
+2026-01-08 14:08:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Andorra' -> (42.5407167, 1.5732033)
+2026-01-08 14:08:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Nagoya, Japan' -> (35.1851045, 136.8998438)
+2026-01-08 14:08:54 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, Andorra' -> (-23.6326758, -46.5184886)
+2026-01-08 14:08:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Bonn, Germany' -> (50.7352621, 7.1024635)
+2026-01-08 14:09:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Bern, Switzerland' -> (46.9484742, 7.4521749)
+2026-01-08 14:09:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Leipzig, Germany' -> (51.3406321, 12.3747329)
+2026-01-08 14:09:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Columbia, United States' -> (34.000754, -81.0352313)
+2026-01-08 14:09:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Copenhagen Denmark, Denmark' -> (55.6747103, 12.5743545)
+2026-01-08 14:09:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Italy' -> (42.6384261, 12.674297)
+2026-01-08 14:09:16 - app.phase2.pg_geocoding - INFO - Geocoded 'United Kingdom' -> (54.7023545, -3.2765753)
+2026-01-08 14:09:22 - app.phase2.pg_geocoding - INFO - Geocoded 'IMI, Austria' -> (47.276017, 12.4851009)
+2026-01-08 14:09:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Geneva, Switzerland' -> (46.2017559, 6.1466014)
+2026-01-08 14:09:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Rochester, United States' -> (43.157285, -77.615214)
+2026-01-08 14:09:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Stockholm, Sweden' -> (59.3251172, 18.0710935)
+2026-01-08 14:09:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Montréal, Canada' -> (45.5031824, -73.5698065)
+2026-01-08 14:09:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Netherlands' -> (52.2434979, 5.6343227)
+2026-01-08 14:09:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Cleveland, United States' -> (41.4996574, -81.6936772)
+2026-01-08 14:09:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Memphis, United States' -> (35.1460249, -90.0517638)
+2026-01-08 14:09:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Houston, Andorra' -> (40.0691918, -75.2308538)
+2026-01-08 14:09:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Evanston, United States' -> (42.0470043, -87.6846053)
+2026-01-08 14:10:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Madison, United States' -> (43.07469, -89.3841663)
+2026-01-08 14:10:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Albany, Netherlands' -> (51.8330089, 5.8134435)
+2026-01-08 14:10:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Gainesville, United States' -> (29.6519684, -82.3249846)
+2026-01-08 14:10:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Radboud Univ Nijmegen, Netherlands' -> (51.8215173, 5.8634209)
+2026-01-08 14:10:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Austria, Andorra' -> (48.2019133, 16.3701204)
+2026-01-08 14:10:21 - app.phase2.pg_geocoding - INFO - Geocoded 'California, United States' -> (36.7014631, -118.755997)
+2026-01-08 14:10:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Silver Spring, United States' -> (38.9997621, -77.0240371)
+2026-01-08 14:10:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Bronx, United States' -> (40.8466508, -73.8785937)
+2026-01-08 14:10:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Birmingham, United States' -> (33.5206824, -86.8024326)
+2026-01-08 14:10:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Mobile, United States' -> (30.6913462, -88.0437509)
+2026-01-08 14:10:48 - app.phase2.pg_geocoding - INFO - Geocoded 'D- Sankt Augustin, Germany' -> (50.7752776, 7.1895507)
+2026-01-08 14:10:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Pittsburgh, Panama' -> (40.4626339, -79.9519342)
+2026-01-08 14:10:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Switzerland, United States' -> (38.8249258, -85.0373975)
+2026-01-08 14:10:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Ecole Polytechnique Fédérale de Lausanne, Switzerland' -> (46.5186594, 6.5665615)
+2026-01-08 14:10:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Stanford, United States' -> (37.4265407, -122.1703055)
+2026-01-08 14:11:03 - app.phase2.pg_geocoding - INFO - Geocoded 'San Diego, United States' -> (32.7174202, -117.162772)
+2026-01-08 14:11:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Gif sur Yvette, France' -> (48.7018823, 2.134529)
+2026-01-08 14:11:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Kyoto, Japan' -> (35.0115754, 135.7681441)
+2026-01-08 14:11:09 - app.phase2.pg_geocoding - INFO - Geocoded 'ON Canada, Canada' -> (43.2572053, -79.0750293)
+2026-01-08 14:11:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Warsaw, Poland' -> (52.2333742, 21.0711489)
+2026-01-08 14:11:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Budapest, Hungary' -> (47.4978789, 19.0402383)
+2026-01-08 14:11:19 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Daejoen, South Korea' (from affiliation: Department of Mathematical Sciences, KAIST, Daejoen, 34141 Republic of Korea (PMID: 27534393))
+2026-01-08 14:11:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Madrid, Spain' -> (40.416782, -3.703507)
+2026-01-08 14:11:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Seoul, South Korea' -> (37.5666791, 126.9782914)
+2026-01-08 14:11:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Brockton, United States' -> (42.0834335, -71.0183787)
+2026-01-08 14:11:30 - app.phase2.pg_geocoding - INFO - Geocoded 'England, United Kingdom' -> (52.5310214, -1.2649062)
+2026-01-08 14:11:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Baden-Württemberg, Germany' -> (48.53775, 9.041169)
+2026-01-08 14:11:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Carlton, Australia' -> (-37.8004228, 144.9684343)
+2026-01-08 14:11:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Parkville, Australia' -> (-37.7871148, 144.9515533)
+2026-01-08 14:11:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Melbourne, Australia' -> (-37.8142454, 144.9631732)
+2026-01-08 14:11:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Berlin, Germany' -> (52.5173885, 13.3951309)
+2026-01-08 14:11:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Hatfield, United Kingdom' -> (51.7634675, -0.2258741)
+2026-01-08 14:11:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Linyi, China' -> (35.1032403, 118.3506988)
+2026-01-08 14:11:58 - app.phase2.pg_geocoding - INFO - Geocoded 'New Haven, United States' -> (41.3082138, -72.9250518)
+2026-01-08 14:12:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Tempe, United States' -> (33.4255117, -111.940016)
+2026-01-08 14:12:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Nijmegen, Netherlands' -> (51.8474946, 5.8637771)
+2026-01-08 14:12:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Norway' -> (61.1529386, 8.7876653)
+2026-01-08 14:12:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Oslo, Norway' -> (59.9133301, 10.7389701)
+2026-01-08 14:12:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Lausanne, Switzerland' -> (46.5218269, 6.6327025)
+2026-01-08 14:12:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Hamilton, New Zealand' -> (-37.7878809, 175.281788)
+2026-01-08 14:12:21 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Bron Cedex, France' (from affiliation: INSERM U846, Stem Cell and Brain Research Institute, Bron Cedex, France (PMID: 27534393))
+2026-01-08 14:12:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Tübingen, Germany' -> (48.5203263, 9.053596)
+2026-01-08 14:12:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Wako, Japan' -> (35.7817053, 139.6058692)
+2026-01-08 14:12:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Denton, United States' -> (33.1838787, -97.1413417)
+2026-01-08 14:12:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Reading, United Kingdom' -> (51.4514953, -0.9836342)
+2026-01-08 14:12:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Plymouth, United Kingdom' -> (50.3714122, -4.1424451)
+2026-01-08 14:12:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Gwangju, South Korea' -> (35.1594647, 126.8515034)
+2026-01-08 14:12:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Tsukuba, Japan' -> (36.0833265, 140.077279)
+2026-01-08 14:12:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Pohang, South Korea' -> (36.0189315, 129.3429384)
+2026-01-08 14:12:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Daejeon, South Korea' -> (36.3497007, 127.3849016)
+2026-01-08 14:12:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Czechia' -> (49.7439047, 15.3381061)
+2026-01-08 14:12:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Busan, South Korea' -> (35.1799528, 129.0752365)
+2026-01-08 14:13:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Indianapolis, United States' -> (39.7683331, -86.1583502)
+2026-01-08 14:13:13 - app.phase2.pg_geocoding - INFO - Geocoded 'ETH Zürich, Switzerland' -> (47.413218, 8.5374914)
+2026-01-08 14:13:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Saitama, Japan' -> (35.9754168, 139.4160114)
+2026-01-08 14:13:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Okinawa, Japan' -> (26.5707754, 128.0255901)
+2026-01-08 14:13:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Newcastle-under-Lyme, United Kingdom' -> (53.0117627, -2.2273919)
+2026-01-08 14:13:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Luebeck, Germany' -> (53.866444, 10.684738)
+2026-01-08 14:13:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Ann Arbor, United States' -> (42.2813722, -83.7484616)
+2026-01-08 14:13:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Xi’An City, China' -> (34.261004, 108.9423363)
+2026-01-08 14:13:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Kowloon Tong, Hong Kong' -> (22.334635, 114.177078)
+2026-01-08 14:13:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Clear Water Bay, Hong Kong' -> (22.2846714, 114.2962298)
+2026-01-08 14:13:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Sydney, Australia' -> (-33.8698439, 151.2082848)
+2026-01-08 14:13:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Göttingen, Germany' -> (51.5328328, 9.9351811)
+2026-01-08 14:13:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Yorktown Heights, United States' -> (41.270178, -73.7753539)
+2026-01-08 14:13:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Lancaster, United States' -> (40.0379958, -76.3056707)
+2026-01-08 14:13:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Shenzhen, China' -> (22.5445741, 114.0545429)
+2026-01-08 14:13:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Cambridge, United Kingdom' -> (52.2055314, 0.1186637)
+2026-01-08 14:13:53 - app.phase2.pg_geocoding - INFO - Geocoded 'New York City, United States' -> (40.7127281, -74.0060152)
+2026-01-08 14:13:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Oxford, United Kingdom' -> (51.7520131, -1.2578499)
+2026-01-08 14:13:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Louvain, Belgium' -> (50.879202, 4.7011675)
+2026-01-08 14:14:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Granada, Spain' -> (37.1734995, -3.5995337)
+2026-01-08 14:14:05 - app.phase2.pg_geocoding - INFO - Geocoded '- Iran, Iran, Islamic Republic of' -> (35.297447, 46.9996932)
+2026-01-08 14:14:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Zanjan, Iran' -> (36.515854, 48.4777616)
+2026-01-08 14:14:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Bristol, United Kingdom' -> (51.4538022, -2.5972985)
+2026-01-08 14:14:25 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Exeter%2C+United+Kingdom&format=json&limit=1
+2026-01-08 14:14:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Exeter, United Kingdom' -> (50.7256138, -3.5269209)
+2026-01-08 14:14:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Hessen, Germany' -> (50.6080651, 9.0284647)
+2026-01-08 14:14:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Adelaide, Australia' -> (-34.9281805, 138.5999312)
+2026-01-08 14:14:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Frankfurt am Main, Germany' -> (50.1106444, 8.6820917)
+2026-01-08 14:14:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Prague, Czechia' -> (50.0874654, 14.4212535)
+2026-01-08 14:14:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Salem, United States' -> (44.9391565, -123.033121)
+2026-01-08 14:14:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Louisville, United States' -> (38.2542376, -85.759407)
+2026-01-08 14:14:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Lexington, United States' -> (38.0464066, -84.4970393)
+2026-01-08 14:14:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Lubbock, United States' -> (33.5855677, -101.8470215)
+2026-01-08 14:14:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Washington, United States' -> (38.8950368, -77.0365427)
+2026-01-08 14:14:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Cambridge, United States' -> (42.3656347, -71.1040018)
+2026-01-08 14:15:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Brooklyn, United States' -> (40.6526006, -73.9497211)
+2026-01-08 14:15:04 - app.phase2.pg_geocoding - INFO - Geocoded 'La Jolla, United States' -> (32.8458529, -117.2575702)
+2026-01-08 14:15:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Okazaki, Japan' -> (34.9548784, 137.1728226)
+2026-01-08 14:15:15 - app.phase2.pg_geocoding - INFO - Geocoded 'NSW Australia, Australia' -> (-33.8475744, 151.0726201)
+2026-01-08 14:15:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Tehran, Iran' -> (35.6892523, 51.3896004)
+2026-01-08 14:15:21 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Saitama Japan, Japan' (from affiliation: RIKEN Brain Science Institute, Wako, Saitama 351-0198 Japan (PMID: 27534393))
+2026-01-08 14:15:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Princeton, United States' -> (40.3496953, -74.6597376)
+2026-01-08 14:15:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Stony Brook, United States' -> (40.908482, -73.1325471)
+2026-01-08 14:15:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Hyogo Japan, Japan' -> (34.6863335, 135.1844688)
+2026-01-08 14:15:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Turkey, Turkey' -> (39.294076, 35.2316631)
+2026-01-08 14:15:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Brighton, United Kingdom' -> (50.8214626, -0.1400561)
+2026-01-08 14:15:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Falmer, United Kingdom' -> (50.8687985, -0.0688139)
+2026-01-08 14:15:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Oldenburg, Germany' -> (53.1389753, 8.2146017)
+2026-01-08 14:15:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Offenbach, Germany' -> (50.1055002, 8.7610698)
+2026-01-08 14:15:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Jülich, Germany' -> (50.9220931, 6.3611015)
+2026-01-08 14:15:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Heidelberg, Germany' -> (49.4093582, 8.694724)
+2026-01-08 14:15:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Nottingham, United Kingdom' -> (52.9534193, -1.1496461)
+2026-01-08 14:16:02 - app.phase2.pg_geocoding - INFO - Geocoded 'TN Italy, Italy' -> (44.8873175, 7.3548152)
+2026-01-08 14:16:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Tangier, Morocco' -> (35.7696302, -5.8033522)
+2026-01-08 14:16:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Orangeburg, United States' -> (33.4918203, -80.8556476)
+2026-01-08 14:16:16 - app.phase2.pg_geocoding - INFO - Geocoded 'South Korea' -> (36.638392, 127.6961188)
+2026-01-08 14:16:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Alicante, Spain' -> (38.3436365, -0.4881708)
+2026-01-08 14:16:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Cold Spring Harbor, United States' -> (40.8601065, -73.4529025)
+2026-01-08 14:16:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Cologne, Germany' -> (50.938361, 6.959974)
+2026-01-08 14:16:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Ilmenau, Germany' -> (50.6867695, 10.9142385)
+2026-01-08 14:16:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Ulsan, South Korea' -> (35.5391697, 129.3119136)
+2026-01-08 14:16:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Helsinki, Finland' -> (60.1666204, 24.9435408)
+2026-01-08 14:16:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Greensboro, United States' -> (36.0726355, -79.7919754)
+2026-01-08 14:16:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Greenville, United States' -> (34.851354, -82.3984882)
+2026-01-08 14:17:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Okinawa Japan, Japan' -> (26.2463518, 127.766086)
+2026-01-08 14:17:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Nara Japan, Japan' -> (23.7623401, 90.358369)
+2026-01-08 14:17:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Würzburg, Germany' -> (49.7780356, 9.9434769)
+2026-01-08 14:17:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Prague, Czech Republic' -> (50.0874654, 14.4212535)
+2026-01-08 14:17:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Aachen, Germany' -> (50.776351, 6.083862)
+2026-01-08 14:17:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Milwaukee, United States' -> (43.0386475, -87.9090751)
+2026-01-08 14:17:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Mawson Lakes, Australia' -> (-34.8104796, 138.6111791)
+2026-01-08 14:17:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Brisbane, Australia' -> (-27.4689623, 153.0235009)
+2026-01-08 14:17:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Delaware, United States' -> (38.6920451, -75.4013315)
+2026-01-08 14:17:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Towson, United States' -> (39.3964591, -76.6148148)
+2026-01-08 14:17:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Bremen, Germany' -> (53.0758196, 8.8071646)
+2026-01-08 14:17:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Hamburg, Germany' -> (53.550341, 10.000654)
+2026-01-08 14:18:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Singapore, Singapore' -> (1.357107, 103.8194992)
+2026-01-08 14:18:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Singapore' -> (1.357107, 103.8194992)
+2026-01-08 14:18:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Barcelona, Spain' -> (41.3825802, 2.177073)
+2026-01-08 14:18:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Aarhus, Denmark' -> (56.1496278, 10.2134046)
+2026-01-08 14:18:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Lisbon, Portugal' -> (38.7077507, -9.1365919)
+2026-01-08 14:18:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Odense, Denmark' -> (55.3997225, 10.3852104)
+2026-01-08 14:18:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Hawthorn, Australia' -> (-37.8244246, 145.0317207)
+2026-01-08 14:18:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Daejon, South Korea' -> (36.3497007, 127.3849016)
+2026-01-08 14:18:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Tamil Nadu India, India' -> (13.0530054, 80.2279292)
+2026-01-08 14:18:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Morgantown, United States' -> (39.6296809, -79.9559437)
+2026-01-08 14:18:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Arlington, United States' -> (32.7355816, -97.1071186)
+2026-01-08 14:19:06 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Dallas%2C+United+States&format=json&limit=1
+2026-01-08 14:19:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Dallas, United States' -> (32.7762719, -96.7968559)
+2026-01-08 14:19:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Nancy, France' -> (48.6937223, 6.1834097)
+2026-01-08 14:19:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Boston, Morocco' -> (33.5925936, -7.6376382)
+2026-01-08 14:19:28 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Cambridge, Morocco' (from affiliation: Brain & Cognitive Sciences Department, McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA 02139 evelina.fedorenko@mgh.harvard.edu ngk@mit.edu. (PMID: 27671642))
+2026-01-08 14:19:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Asahikawa, Japan' -> (43.770625, 142.3649743)
+2026-01-08 14:19:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Graz, Austria' -> (47.0708678, 15.4382786)
+2026-01-08 14:19:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Cleveland, France' -> (54.6166477, -1.064288)
+2026-01-08 14:19:47 - app.phase2.pg_geocoding - INFO - Geocoded 'U.S.A, Lebanon' -> (40.375713, -76.4626118)
+2026-01-08 14:19:53 - app.phase2.pg_geocoding - INFO - Geocoded 'U.S.A, Georgia' -> (38.7100521, -86.5722154)
+2026-01-08 14:20:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Charleston, United States' -> (32.7884363, -79.9399309)
+2026-01-08 14:20:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Portland, United States' -> (45.5202471, -122.674194)
+2026-01-08 14:20:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Philadelphia PN, United States' -> (39.9527237, -75.1635262)
+2026-01-08 14:20:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Lebanon, United States' -> (40.375713, -76.4626118)
+2026-01-08 14:20:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Mountain View, United States' -> (37.3893889, -122.0832101)
+2026-01-08 14:20:40 - app.phase2.pg_geocoding - INFO - Geocoded 'The Netherlands, Andorra' -> (52.2245005, 5.1809361)
+2026-01-08 14:20:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Cognition and Behaviour, Netherlands' -> (51.8260925, 5.8630169)
+2026-01-08 14:20:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Hangzhou, China' -> (30.2489634, 120.2052342)
+2026-01-08 14:20:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Frankfurt, Germany' -> (50.1106444, 8.6820917)
+2026-01-08 14:20:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Philadelphia, Panama' -> (39.9470753, -75.1737717)
+2026-01-08 14:21:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Lebanon' -> (33.8750629, 35.843409)
+2026-01-08 14:21:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Manhasset, United States' -> (40.786702, -73.6967338)
+2026-01-08 14:21:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Tochigi, Japan' -> (36.6782167, 139.8096549)
+2026-01-08 14:21:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Austin, United States' -> (30.2711286, -97.7436995)
+2026-01-08 14:21:26 - app.phase2.pg_geocoding - INFO - Geocoded 'UCLouvain, Belgium' -> (50.8534643, 4.3611421)
+2026-01-08 14:21:34 - app.phase2.pg_geocoding - INFO - Geocoded 'F- Nancy, France' -> (48.6937223, 6.1834097)
+2026-01-08 14:21:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Rensselaer, United States' -> (42.7091389, -73.5107732)
+2026-01-08 14:21:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Bucharest, Romania' -> (44.4361414, 26.102684)
+2026-01-08 14:21:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Bowdoin, United States' -> (42.3613943, -71.0621043)
+2026-01-08 14:21:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Karnataka, India' -> (14.9562045, 75.7896741)
+2026-01-08 14:22:03 - app.phase2.pg_geocoding - INFO - Geocoded 'CNRS UMR, France' -> (48.8480448, 2.3467365)
+2026-01-08 14:22:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Villeurbanne, France' -> (45.7733573, 4.8868454)
+2026-01-08 14:22:10 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Atlanta, Gabon' (from affiliation: Department of Neurosurgery, Emory University, Atlanta, GA 30322. (PMID: 30847390))
+2026-01-08 14:22:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Nashville, United States' -> (36.1622767, -86.7742984)
+2026-01-08 14:22:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Berkeley, United States' -> (37.8708393, -122.272863)
+2026-01-08 14:22:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Dublin, Ireland' -> (53.3493795, -6.2605593)
+2026-01-08 14:22:37 - app.phase2.pg_geocoding - INFO - Geocoded 'KwaZulu-Natal, South Africa' -> (-28.503833, 30.8875009)
+2026-01-08 14:22:49 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Durban%2C+South+Africa&format=json&limit=1
+2026-01-08 14:23:01 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Durban%2C+South+Africa&format=json&limit=1
+2026-01-08 14:23:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Durban, South Africa' -> (-29.861825, 31.009909)
+2026-01-08 14:23:06 - app.phase2.pg_geocoding - INFO - Geocoded 'South Africa' -> (-28.8166236, 24.991639)
+2026-01-08 14:23:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Miami, United States' -> (25.7741566, -80.1935973)
+2026-01-08 14:23:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Albuquerque, Mexico' -> (35.0866327, -106.6202094)
+2026-01-08 14:23:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Providence, United States' -> (41.8239891, -71.4128343)
+2026-01-08 14:23:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Maastricht, Netherlands' -> (50.8579855, 5.6969882)
+2026-01-08 14:23:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Richmond, United States' -> (37.5385087, -77.43428)
+2026-01-08 15:53:59 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Chengdu%2C+China&format=json&limit=1
+2026-01-08 15:54:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Chengdu, China' -> (30.659867, 104.063315)
+2026-01-08 15:54:01 - app.phase2.pg_ingest - ERROR - ❌ Validation and fix failed: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
+[SQL: SELECT geocoding_cache.location_key, geocoding_cache.latitude, geocoding_cache.longitude, geocoding_cache.affiliations, geocoding_cache.created_at 
+FROM geocoding_cache 
+WHERE geocoding_cache.location_key = $1::VARCHAR]
+[parameters: ('city:Chengdu,China',)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+ConnectionResetError: [Errno 54] Connection reset by peer
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 550, in _prepare_and_execute
+    self._rows = deque(await prepared_stmt.fetch(*parameters))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 177, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 268, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 257, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 205, in bind_execute
+asyncpg.exceptions.ConnectionDoesNotExistError: connection was closed in the middle of operation
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.Error: <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_ingest.py", line 149, in ingest_run
+    validation_stats = await validator.validate_and_fix_run(run_id, self.project_id)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/affiliation_validator.py", line 105, in validate_and_fix_run
+    cached = await cache_repo.get_cached(location_key)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/repository.py", line 380, in get_cached
+    result = await self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 203, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.DBAPIError: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
+[SQL: SELECT geocoding_cache.location_key, geocoding_cache.latitude, geocoding_cache.longitude, geocoding_cache.affiliations, geocoding_cache.created_at 
+FROM geocoding_cache 
+WHERE geocoding_cache.location_key = $1::VARCHAR]
+[parameters: ('city:Chengdu,China',)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2026-01-08 15:54:01 - app.main - INFO - ================================================================================
+2026-01-08 15:54:01 - app.main - INFO - ✅ INGESTION COMPLETED - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 15:54:01 - app.main - INFO -    Total PMIDs: 500
+2026-01-08 15:54:01 - app.main - INFO -    Papers parsed: 500
+2026-01-08 15:54:01 - app.main - INFO -    Authorships created: 4432
+2026-01-08 15:54:01 - app.main - INFO -    Unique affiliations: 2545
+2026-01-08 15:54:01 - app.main - INFO -    Affiliations with country: 2441
+2026-01-08 15:54:01 - app.main - INFO -    LLM calls made: 0
+2026-01-08 15:54:01 - app.main - INFO - ================================================================================
