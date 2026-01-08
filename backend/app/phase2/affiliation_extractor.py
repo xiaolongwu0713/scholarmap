@@ -199,7 +199,13 @@ class AffiliationExtractor:
         # Check cache first
         for aff in affiliations:
             if cache_lookup:
-                cached = cache_lookup(aff)
+                # Support both sync and async cache_lookup
+                import inspect
+                if inspect.iscoroutinefunction(cache_lookup):
+                    cached = await cache_lookup(aff)
+                else:
+                    cached = cache_lookup(aff)
+                
                 if cached:
                     result_map[aff] = cached
                     continue

@@ -543,8 +543,14 @@ class RuleBasedExtractor:
         if not affiliations:
             return []
         
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        total = len(affiliations)
+        log_interval = max(1, total // 10)  # Log every 10% progress
+        
         results = []
-        for aff in affiliations:
+        for idx, aff in enumerate(affiliations):
             parsed = _parse_affiliation(aff)
             
             # Determine confidence based on what we found
@@ -564,6 +570,10 @@ class RuleBasedExtractor:
                 confidence=confidence
             )
             results.append(geo)
+            
+            # Log progress periodically
+            if (idx + 1) % log_interval == 0 or (idx + 1) == total:
+                logger.info(f"   Parsing progress: {idx + 1}/{total} ({100*(idx+1)//total}%)")
         
         return results
     
@@ -577,29 +587,94 @@ class RuleBasedExtractor:
         
         Args:
             affiliations: List of unique affiliation strings
-            cache_lookup: Optional function to check cache (for compatibility)
+            cache_lookup: Optional async function to check cache (for compatibility)
         
         Returns:
             Dict mapping affiliation_raw -> GeoData
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        total = len(affiliations)
+        logger.info(f"   Processing {total} affiliations...")
+        
         result_map: dict[str, GeoData] = {}
         to_extract: list[str] = []
         
         # Check cache first (if provided)
-        for aff in affiliations:
-            if cache_lookup:
-                cached = cache_lookup(aff)
-                if cached:
-                    result_map[aff] = cached
-                    continue
+        import inspect
+        is_async_cache = cache_lookup and inspect.iscoroutinefunction(cache_lookup)
+        
+        if cache_lookup:
+            # Check if cache_lookup supports batch (takes list instead of single string)
+            # Try to detect batch function signature
+            is_batch_cache = False
+            try:
+                import inspect as inspect_module
+                sig = inspect_module.signature(cache_lookup)
+                params = list(sig.parameters.values())
+                if len(params) > 0:
+                    param_annotation = str(params[0].annotation)
+                    # Check if it's a list type
+                    is_batch_cache = (
+                        'list' in param_annotation.lower() or
+                        'List' in param_annotation or
+                        params[0].annotation == list or
+                        'typing.List' in param_annotation
+                    )
+            except Exception as e:
+                # If signature inspection fails, try calling with a list to see if it works
+                # This is a fallback detection method
+                logger.debug(f"Could not inspect cache_lookup signature: {e}")
+                is_batch_cache = False
             
-            to_extract.append(aff)
+            if is_batch_cache:
+                # Batch cache lookup - much faster!
+                logger.info(f"   Batch checking cache for {total} affiliations...")
+                cached_map = await cache_lookup(affiliations)
+                cache_hits = len(cached_map)
+                
+                for aff in affiliations:
+                    if aff in cached_map:
+                        result_map[aff] = cached_map[aff]
+                    else:
+                        to_extract.append(aff)
+                
+                logger.info(f"   ✅ Batch cache check complete: {cache_hits} hits, {len(to_extract)} to extract")
+            else:
+                # Individual cache lookup (slower, but compatible)
+                cache_hits = 0
+                cache_check_interval = max(1, total // 20)  # Log every 5% progress
+                
+                for idx, aff in enumerate(affiliations):
+                    if is_async_cache:
+                        cached = await cache_lookup(aff)
+                    else:
+                        cached = cache_lookup(aff)
+                    
+                    if cached:
+                        result_map[aff] = cached
+                        cache_hits += 1
+                        # Log progress periodically
+                        if (idx + 1) % cache_check_interval == 0 or (idx + 1) == total:
+                            logger.info(f"   Cache check progress: {idx + 1}/{total} ({100*(idx+1)//total}%), cache hits: {cache_hits}")
+                        continue
+                    
+                    to_extract.append(aff)
+                
+                if cache_hits > 0:
+                    logger.info(f"   ✅ Cache check complete: {cache_hits} hits, {len(to_extract)} to extract")
+        else:
+            # No cache lookup, extract all
+            to_extract = list(affiliations)
         
         if not to_extract:
             return result_map
         
         # Process all at once (rule-based is fast, no need for batching)
+        logger.info(f"   Extracting {len(to_extract)} affiliations using rule-based parser...")
         batch_results = await self.extract_batch(to_extract)
+        logger.info(f"   ✅ Rule-based extraction complete: {len(batch_results)} results")
         
         # Map results back to affiliations
         for aff, geo in zip(to_extract, batch_results):

@@ -48,7 +48,11 @@ class PostgresIngestionPipeline:
         force_refresh: bool = False  # Ignored, always fresh
     ) -> IngestStats:
         """Ingest all papers from a Phase 1 run (always processes everything)."""
-        logger.info(f"Starting ingestion for run {run_id} (no cache, always fresh)")
+        logger.info("─" * 80)
+        logger.info(f"📥 INGESTION STEP 1: Starting ingestion for run {run_id}")
+        logger.info(f"   Project ID: {self.project_id}")
+        logger.info(f"   Force refresh: {force_refresh}")
+        logger.info("─" * 80)
         
         stats = IngestStats(
             run_id=run_id,
@@ -64,42 +68,55 @@ class PostgresIngestionPipeline:
         
         try:
             # Step 1: Load PMIDs from Phase 1 results
+            logger.info("📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...")
             pmids = await self._load_pmids_from_run(run_id, store)
             stats.total_pmids = len(pmids)
             
             if not pmids:
-                logger.warning(f"No PMIDs found for run {run_id}")
+                logger.warning(f"⚠️  No PMIDs found for run {run_id}")
                 return stats
             
-            logger.info(f"Found {len(pmids)} PMIDs from Phase 1 results")
+            logger.info(f"✅ INGESTION STEP 1 COMPLETE: Found {len(pmids)} PMIDs")
             
             # Step 2: Always fetch everything (no cache check)
             stats.pmids_fetched = len(pmids)
-            logger.info(f"Fetching {len(pmids)} PMIDs (no cache)")
+            logger.info("─" * 80)
+            logger.info(f"📥 INGESTION STEP 2: Fetching {len(pmids)} PMIDs from PubMed...")
             
             # Step 3: Fetch from PubMed
             xml_results = await self.fetcher.fetch_batch(pmids)
-            logger.info(f"Fetched {len(xml_results)} PubMed XML records")
+            logger.info(f"✅ INGESTION STEP 2 COMPLETE: Fetched {len(xml_results)} PubMed XML records")
             
             # Step 4: Parse XML
+            logger.info("─" * 80)
+            logger.info("📥 INGESTION STEP 3: Parsing XML into structured papers...")
             parsed_papers = []
             for pmid, xml_text in xml_results.items():
                 try:
                     papers = self.parser.parse_articles(xml_text)
                     parsed_papers.extend(papers)
                 except Exception as e:
-                    logger.error(f"Failed to parse XML for PMID {pmid}: {e}")
+                    logger.error(f"❌ Failed to parse XML for PMID {pmid}: {e}")
             
             stats.papers_parsed = len(parsed_papers)
-            logger.info(f"Parsed {len(parsed_papers)} papers")
+            logger.info(f"✅ INGESTION STEP 3 COMPLETE: Parsed {len(parsed_papers)} papers")
             
-            # Step 5: Extract affiliations via LLM (no cache)
+            # Step 5: Extract affiliations
+            logger.info("─" * 80)
+            method_name = "rule-based" if settings.affiliation_extraction_method == "rule_based" else "LLM"
+            logger.info(f"📥 INGESTION STEP 4: Extracting affiliations via {method_name}...")
             affiliation_data = await self._extract_affiliations(parsed_papers)
             stats.unique_affiliations = affiliation_data["unique_count"]
             stats.affiliations_with_country = affiliation_data["with_country"]
             stats.llm_calls_made = affiliation_data["llm_calls"]
+            logger.info(f"✅ INGESTION STEP 4 COMPLETE: Extracted {len(affiliation_data['geo_map'])} affiliations")
+            logger.info(f"   Unique affiliations: {stats.unique_affiliations}")
+            logger.info(f"   With country: {stats.affiliations_with_country}")
+            logger.info(f"   LLM calls: {stats.llm_calls_made}")
             
             # Step 6: Write to database
+            logger.info("─" * 80)
+            logger.info("📥 INGESTION STEP 5: Writing to database...")
             await self._write_to_database(
                 parsed_papers,
                 affiliation_data["geo_map"],
@@ -110,29 +127,45 @@ class PostgresIngestionPipeline:
             stats.authorships_created = sum(
                 len(p.authors) for p in parsed_papers
             )
+            logger.info(f"✅ INGESTION STEP 5 COMPLETE: Created {stats.authorships_created} authorships")
             
-            logger.info(f"Ingestion complete: {stats}")
+            logger.info("─" * 80)
+            logger.info(f"✅ INGESTION COMPLETE - Run: {run_id}")
+            logger.info(f"   Total PMIDs: {stats.total_pmids}")
+            logger.info(f"   Papers parsed: {stats.papers_parsed}")
+            logger.info(f"   Authorships created: {stats.authorships_created}")
+            logger.info(f"   Unique affiliations: {stats.unique_affiliations}")
+            logger.info(f"   Affiliations with country: {stats.affiliations_with_country}")
+            logger.info(f"   LLM calls made: {stats.llm_calls_made}")
+            logger.info("─" * 80)
             
             # Step 7: Validate and fix affiliation extraction errors
             if settings.affiliation_extraction_method == "rule_based":
-                logger.info("Starting post-ingestion validation and LLM fallback")
+                logger.info("─" * 80)
+                logger.info("📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...")
                 try:
                     from app.phase2.affiliation_validator import AffiliationValidator
                     validator = AffiliationValidator()
                     validation_stats = await validator.validate_and_fix_run(run_id, self.project_id)
+                    logger.info("✅ INGESTION STEP 6 COMPLETE: Validation and fixes completed")
                     logger.info(
-                        f"Validation and fixes complete: "
-                        f"{validation_stats.get('llm_fixes', 0)} affiliations fixed, "
-                        f"{validation_stats.get('nominatim_failures', 0)} geocoding failures found"
+                        f"   Affiliations fixed: {validation_stats.get('llm_fixes', 0)}"
                     )
+                    logger.info(
+                        f"   Geocoding failures found: {validation_stats.get('nominatim_failures', 0)}"
+                    )
+                    logger.info("─" * 80)
                 except Exception as e:
-                    logger.error(f"Validation and fix failed: {e}", exc_info=True)
+                    logger.error(f"❌ Validation and fix failed: {e}", exc_info=True)
                     # Don't fail ingestion if validation fails
             
             return stats
             
         except Exception as e:
-            logger.error(f"Ingestion failed: {e}", exc_info=True)
+            logger.error("─" * 80)
+            logger.error(f"❌ INGESTION FAILED - Run: {run_id}")
+            logger.error(f"   Error: {e}", exc_info=True)
+            logger.error("─" * 80)
             raise
     
     async def _load_pmids_from_run(
@@ -180,7 +213,7 @@ class PostgresIngestionPipeline:
                 logger.error(f"Failed to load PMIDs from results.json: {e}")
         
         unique_pmids = list(set(pmids))
-        logger.info(f"Loaded {len(unique_pmids)} unique PMIDs from run {run_id}")
+        logger.info(f"   Loaded {len(unique_pmids)} unique PMIDs from run {run_id}")
         return unique_pmids
     
     async def _extract_affiliations(
@@ -205,18 +238,29 @@ class PostgresIngestionPipeline:
             }
         
         method_name = "rule-based" if settings.affiliation_extraction_method == "rule_based" else "LLM"
-        logger.info(f"Extracting {len(unique_affiliations)} affiliations via {method_name} (with cache)")
+        logger.info(f"   Extracting {len(unique_affiliations)} affiliations via {method_name} (with cache)")
         
         # Extract affiliations with cache lookup
         affiliation_list = list(unique_affiliations)
-        geo_map = await self.extractor.extract_affiliations(
-            affiliation_list,
-            cache_lookup=self.db.get_cached_affiliation
-        )
+        
+        # Use batch cache lookup for better performance
+        if settings.affiliation_extraction_method == "rule_based":
+            # For rule-based, use batch cache lookup
+            geo_map = await self.extractor.extract_affiliations(
+                affiliation_list,
+                cache_lookup=self.db.get_batch_cached_affiliations
+            )
+        else:
+            # For LLM, use individual cache lookup (already optimized with batching)
+            geo_map = await self.extractor.extract_affiliations(
+                affiliation_list,
+                cache_lookup=self.db.get_cached_affiliation
+            )
         
         # Cache the extracted results (update cache with new extractions)
         if geo_map:
             await self.db.cache_affiliations(geo_map)
+            logger.info(f"   Cached {len(geo_map)} affiliation extraction results")
         
         with_country = sum(1 for g in geo_map.values() if g.country)
         
@@ -226,7 +270,7 @@ class PostgresIngestionPipeline:
             # Estimate LLM calls (batch size = 20)
             llm_calls = (len(affiliation_list) + 19) // 20
         
-        logger.info(f"Extraction complete: {len(geo_map)} affiliations, {with_country} with country")
+        logger.info(f"   Extraction complete: {len(geo_map)} affiliations, {with_country} with country")
         
         return {
             "geo_map": geo_map,
@@ -249,16 +293,17 @@ class PostgresIngestionPipeline:
             run_paper_repo = RunPaperRepository(session)
             
             # Delete existing data for this run first (to allow re-processing)
-            logger.info(f"Clearing existing data for run {run_id}")
+            logger.info(f"   Clearing existing data for run {run_id}...")
             # Get PMIDs for this run (if any exist)
             existing_pmids = await run_paper_repo.get_run_pmids(run_id)
             if existing_pmids:
                 # Delete authorships for these PMIDs
                 await auth_repo.delete_authorships_by_pmids(existing_pmids)
-                logger.info(f"Deleted authorships for {len(existing_pmids)} existing PMIDs")
+                logger.info(f"   Deleted authorships for {len(existing_pmids)} existing PMIDs")
             # Note: run_papers will be deleted in link_run_to_papers()
             
             # Insert papers (upsert)
+            logger.info(f"   Inserting/updating {len(papers)} papers...")
             for paper in papers:
                 await paper_repo.insert_paper(
                     pmid=paper.pmid,
@@ -267,8 +312,11 @@ class PostgresIngestionPipeline:
                     doi=paper.doi,
                     xml_stored=None  # Don't store XML in PostgreSQL
                 )
+            logger.info(f"   Papers inserted/updated: {len(papers)}")
             
             # Insert authorships
+            total_authorships = sum(len(p.authors) for p in papers)
+            logger.info(f"   Inserting {total_authorships} authorships...")
             for paper in papers:
                 for author in paper.authors:
                     # Get geo data from primary (first) affiliation
@@ -300,11 +348,12 @@ class PostgresIngestionPipeline:
                         institution=geo.institution,
                         affiliation_confidence=confidence
                     )
+            logger.info(f"   Authorships inserted: {total_authorships}")
             
             # Link run to papers
+            logger.info(f"   Linking run {run_id} to {len(all_pmids)} papers...")
             await run_paper_repo.link_run_to_papers(run_id, all_pmids)
-            
-            logger.info("Database write complete")
+            logger.info(f"   Database write complete")
     
     def _get_primary_geo(
         self,

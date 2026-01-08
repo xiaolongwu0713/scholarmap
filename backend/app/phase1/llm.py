@@ -136,6 +136,19 @@ class OpenAIClient:
         headers = {"authorization": f"Bearer {self.api_key}"}
         async with httpx.AsyncClient(timeout=180) as client:
             resp = await client.post(f"{self.api_base}/v1/responses", json=payload, headers=headers)
+            if resp.status_code == 400:
+                # Log the error details for debugging
+                try:
+                    error_data = resp.json()
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(
+                        f"Responses API returned 400 Bad Request for model {self.model}. "
+                        f"Error: {error_data.get('error', {}).get('message', 'Unknown error')}. "
+                        f"Falling back to chat/completions API."
+                    )
+                except:
+                    pass
             resp.raise_for_status()
             data = resp.json()
 
@@ -164,36 +177,57 @@ class OpenAIClient:
         return raw_text
 
     async def complete_text(self, prompt: str, temperature: float = 0.0, log_context: dict[str, Any] | None = None) -> str:
+        """
+        Complete text using OpenAI API.
+        
+        Uses /v1/chat/completions as the standard API (recommended by OpenAI).
+        Only attempts /v1/responses API for specific reasoning models that require it.
+        """
         if not self.api_key:
             raise RuntimeError("OPENAI_API_KEY is not set")
 
-        # Prefer Responses API for "thinking"/reasoning models & controls.
-        try:
-            return await self._responses_text(prompt, temperature=temperature, log_context=log_context)
-        except Exception:
-            payload = {
-                "model": self.model,
-                "temperature": temperature,
-                "messages": [{"role": "user", "content": prompt}],
-            }
-            headers = {"authorization": f"Bearer {self.api_key}"}
-            async with httpx.AsyncClient(timeout=180) as client:
-                resp = await client.post(f"{self.api_base}/v1/chat/completions", json=payload, headers=headers)
-                resp.raise_for_status()
-                data = resp.json()
-            raw_content = data["choices"][0]["message"]["content"]
-            
-            # Log raw response for debugging (fallback to chat/completions API)
-            log_payload = {
-                "model": self.model,
-                "api": "chat/completions",
-                "raw_response": raw_content,
-            }
-            if log_context:
-                log_payload.update(log_context)
-            append_log("llm.complete_text.response", log_payload)
-            
-            return raw_content
+        # Use standard chat/completions API for most models (recommended by OpenAI)
+        # Only try Responses API for specific reasoning models that explicitly require it
+        # Note: /v1/responses is a specialized API for advanced features, not the standard API
+        use_responses_api = (
+            self.model.startswith("o1") or 
+            self.model.startswith("o3")
+        )
+        
+        if use_responses_api:
+            try:
+                return await self._responses_text(prompt, temperature=temperature, log_context=log_context)
+            except Exception as e:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(
+                    f"Responses API failed for model {self.model}, falling back to chat/completions: {e}"
+                )
+        
+        # Use standard chat/completions API (recommended by OpenAI)
+        payload = {
+            "model": self.model,
+            "temperature": temperature,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        headers = {"authorization": f"Bearer {self.api_key}"}
+        async with httpx.AsyncClient(timeout=180) as client:
+            resp = await client.post(f"{self.api_base}/v1/chat/completions", json=payload, headers=headers)
+            resp.raise_for_status()
+            data = resp.json()
+        raw_content = data["choices"][0]["message"]["content"]
+        
+        # Log raw response for debugging
+        log_payload = {
+            "model": self.model,
+            "api": "chat/completions",
+            "raw_response": raw_content,
+        }
+        if log_context:
+            log_payload.update(log_context)
+        append_log("llm.complete_text.response", log_payload)
+        
+        return raw_content
 
     async def extract_slots(self, research_description: str, log_context: dict[str, Any] | None = None) -> Slots:
         slots_json = await self._chat_json(SLOTS_PROMPT, research_description, temperature=0.0, log_context=log_context)

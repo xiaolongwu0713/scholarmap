@@ -45,7 +45,7 @@ class PubMedXMLParser:
                 logger.error(f"Failed to parse article {pmid}: {e}")
                 continue
         
-        logger.info(f"Parsed {len(papers)} papers from XML batch")
+        # Removed verbose logging - total parsed papers are logged at ingestion level
         return papers
     
     def parse_articles(self, xml_text: str) -> list[ParsedPaper]:

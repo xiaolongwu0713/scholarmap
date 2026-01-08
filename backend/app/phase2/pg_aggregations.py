@@ -54,13 +54,19 @@ class PostgresMapAggregator:
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
         """Get world-level map data."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
         confidence_levels = self._get_confidence_levels(min_confidence)
         
+        logger.info(f"   Getting PMIDs for run {run_id}...")
         async with db_manager.session() as session:
             # Get PMIDs for this run
             pmids = await self._get_run_pmids(session, run_id)
             if not pmids:
+                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
                 return []
+            logger.info(f"   Found {len(pmids)} PMIDs")
             
             # Aggregate by country
             query = select(
@@ -157,6 +163,7 @@ class PostgresMapAggregator:
             items = list(country_map.values())
             items.sort(key=lambda x: x["scholar_count"], reverse=True)
             
+            logger.info(f"   ✅ World map aggregation complete: {len(items)} countries")
             return items
     
     async def get_country_map(
@@ -166,13 +173,19 @@ class PostgresMapAggregator:
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
         """Get country-level map data (cities)."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
         confidence_levels = self._get_confidence_levels(min_confidence)
         country_normalized = normalize_country(country)
         
+        logger.info(f"   Getting country map for {country} (normalized: {country_normalized})...")
         async with db_manager.session() as session:
             pmids = await self._get_run_pmids(session, run_id)
             if not pmids:
+                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
                 return []
+            logger.info(f"   Found {len(pmids)} PMIDs")
             
             query = select(
                 Authorship.city,
@@ -241,6 +254,7 @@ class PostgresMapAggregator:
             if to_geocode:
                 geocoder = self._get_geocoder()
                 new_cache_entries: dict[str, tuple[float | None, float | None]] = {}
+                affiliations_map: dict[str, str | None] = {}
                 
                 # Geocode sequentially to respect rate limits
                 for city in to_geocode:
@@ -254,12 +268,18 @@ class PostgresMapAggregator:
                     cached_coords[city] = coords
                     location_key = PostgresGeocoder.make_location_key(country_normalized, city)
                     new_cache_entries[location_key] = (coords[0] if coords else None, coords[1] if coords else None)
+                    affiliations_map[location_key] = sample_affiliation
                 
                 # Batch save all new cache entries
                 if new_cache_entries:
+                    from config import settings
                     async with db_manager.session() as session:
                         cache_repo = GeocodingCacheRepository(session)
-                        await cache_repo.cache_locations_batch(new_cache_entries)
+                        await cache_repo.cache_locations_batch(
+                            new_cache_entries,
+                            affiliations=affiliations_map,
+                            max_affiliations=settings.geocoding_cache_max_affiliations
+                        )
                         await session.commit()
             
             # Apply coordinates to city_map
@@ -275,6 +295,7 @@ class PostgresMapAggregator:
             items = list(city_map.values())
             items.sort(key=lambda x: x["scholar_count"], reverse=True)
             
+            logger.info(f"   ✅ Country map aggregation complete: {len(items)} cities in {country_normalized}")
             return items
     
     async def get_city_map(
@@ -285,13 +306,19 @@ class PostgresMapAggregator:
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
         """Get city-level map data (institutions)."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
         confidence_levels = self._get_confidence_levels(min_confidence)
         country_normalized = normalize_country(country)
         
+        logger.info(f"   Getting city map for {city}, {country}...")
         async with db_manager.session() as session:
             pmids = await self._get_run_pmids(session, run_id)
             if not pmids:
+                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
                 return []
+            logger.info(f"   Found {len(pmids)} PMIDs")
             
             query = select(
                 Authorship.institution,
@@ -323,7 +350,7 @@ class PostgresMapAggregator:
             result = await session.execute(query)
             rows = result.all()
             
-            return [
+            items = [
                 {
                     "country": country_normalized,
                     "city": city,
@@ -332,6 +359,9 @@ class PostgresMapAggregator:
                 }
                 for row in rows
             ]
+            
+            logger.info(f"   ✅ City map aggregation complete: {len(items)} institutions in {city}, {country_normalized}")
+            return items
     
     async def get_institution_scholars(
         self,
@@ -342,13 +372,19 @@ class PostgresMapAggregator:
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
         """Get scholars at a specific institution."""
+        import logging
+        logger = logging.getLogger(__name__)
+        
         confidence_levels = self._get_confidence_levels(min_confidence)
         country_normalized = normalize_country(country)
         
+        logger.info(f"   Getting scholars for {institution}, {city}, {country}...")
         async with db_manager.session() as session:
             pmids = await self._get_run_pmids(session, run_id)
             if not pmids:
+                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
                 return []
+            logger.info(f"   Found {len(pmids)} PMIDs")
             
             # Get distinct authors
             author_query = select(
@@ -411,6 +447,7 @@ class PostgresMapAggregator:
                     ]
                 })
             
+            logger.info(f"   ✅ Institution scholars aggregation complete: {len(scholars_data)} scholars at {institution}")
             return scholars_data
     
     async def _get_run_pmids(

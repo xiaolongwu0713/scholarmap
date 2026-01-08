@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -9,6 +10,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 import config
 settings = config.settings
+
+# Initialize logging configuration (must be early)
+from app.core.logging_config import setup_logging
+setup_logging(level=logging.INFO)
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -837,11 +842,14 @@ async def phase2_ingest(request: Request, project_id: str, run_id: str, req: Ing
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
-    import logging
     logger = logging.getLogger(__name__)
     
     try:
-        logger.info(f"Starting ingestion for project {project_id}, run {run_id}")
+        logger.info("=" * 80)
+        logger.info(f"🚀 INGESTION STARTED - Project: {project_id}, Run: {run_id}")
+        logger.info(f"   Force refresh: {req.force_refresh}")
+        logger.info("=" * 80)
+        
         pipeline = PostgresIngestionPipeline(
             project_id=project_id,
             api_key=settings.pubmed_api_key or None
@@ -853,15 +861,71 @@ async def phase2_ingest(request: Request, project_id: str, run_id: str, req: Ing
             force_refresh=req.force_refresh
         )
         
-        logger.info(f"Ingestion completed: {stats.model_dump()}")
+        logger.info("=" * 80)
+        logger.info(f"✅ INGESTION COMPLETED - Project: {project_id}, Run: {run_id}")
+        logger.info(f"   Total PMIDs: {stats.total_pmids}")
+        logger.info(f"   Papers parsed: {stats.papers_parsed}")
+        logger.info(f"   Authorships created: {stats.authorships_created}")
+        logger.info(f"   Unique affiliations: {stats.unique_affiliations}")
+        logger.info(f"   Affiliations with country: {stats.affiliations_with_country}")
+        logger.info(f"   LLM calls made: {stats.llm_calls_made}")
+        logger.info("=" * 80)
+        
         return {"stats": stats.model_dump()}
         
     except FileNotFoundError as e:
-        logger.error(f"File not found: {e}")
+        logger.error(f"❌ INGESTION FAILED - File not found: {e}")
         raise HTTPException(status_code=404, detail="Run not found")
     except Exception as e:
-        logger.error(f"Ingestion failed: {e}", exc_info=True)
+        logger.error(f"❌ INGESTION FAILED - Error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
+
+
+@app.post("/api/projects/{project_id}/runs/{run_id}/validate-affiliations")
+async def phase2_validate_affiliations(request: Request, project_id: str, run_id: str) -> dict:
+    """
+    Validate and fix affiliation extraction errors for a run.
+    
+    This endpoint:
+    1. Checks all authorships for geocoding failures
+    2. Identifies affiliations with extraction errors
+    3. Uses LLM to fix errors
+    4. Updates affiliation_cache and geocoding_cache
+    5. Updates authorship records in database
+    
+    Returns:
+        Dict with validation and fix statistics
+    """
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        logger.info("=" * 80)
+        logger.info(f"🔍 VALIDATION STARTED - Project: {project_id}, Run: {run_id}")
+        logger.info("=" * 80)
+        
+        from app.phase2.affiliation_validator import AffiliationValidator
+        validator = AffiliationValidator()
+        validation_stats = await validator.validate_and_fix_run(run_id, project_id)
+        
+        logger.info("=" * 80)
+        logger.info(f"✅ VALIDATION COMPLETED - Project: {project_id}, Run: {run_id}")
+        logger.info(f"   Total authorships: {validation_stats.get('total_authorships', 0)}")
+        logger.info(f"   Geocoding failures: {validation_stats.get('nominatim_failures', 0)}")
+        logger.info(f"   Affiliations fixed: {validation_stats.get('llm_fixes', 0)}")
+        logger.info(f"   Authorships updated: {validation_stats.get('authorship_updates', 0)}")
+        logger.info(f"   Geocoding updated: {validation_stats.get('geocoding_updates', 0)}")
+        logger.info("=" * 80)
+        
+        return {"stats": validation_stats}
+        
+    except Exception as e:
+        logger.error(f"❌ VALIDATION FAILED - Error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Validation failed: {str(e)}")
 
 
 # ============================================================
@@ -899,12 +963,25 @@ async def phase2_map_world(
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
+    logger = logging.getLogger(__name__)
+    
     try:
+        logger.info("=" * 80)
+        logger.info(f"🗺️  MAP OPERATION - World Map - Project: {project_id}, Run: {run_id}")
+        logger.info(f"   Min confidence: {min_confidence}")
+        logger.info("=" * 80)
+        
         aggregator = PostgresMapAggregator()
         data = await aggregator.get_world_map(run_id, min_confidence)
+        
+        logger.info(f"✅ MAP OPERATION COMPLETED - World Map")
+        logger.info(f"   Countries returned: {len(data)}")
+        logger.info("=" * 80)
+        
         return {"data": data}
         
     except Exception as e:
+        logger.error(f"❌ MAP OPERATION FAILED - World Map: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Aggregation failed: {str(e)}")
 
 
@@ -941,12 +1018,25 @@ async def phase2_map_country(request: Request,
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
+    logger = logging.getLogger(__name__)
+    
     try:
+        logger.info("=" * 80)
+        logger.info(f"🗺️  MAP OPERATION - Country Map - Project: {project_id}, Run: {run_id}")
+        logger.info(f"   Country: {country}, Min confidence: {min_confidence}")
+        logger.info("=" * 80)
+        
         aggregator = PostgresMapAggregator()
         data = await aggregator.get_country_map(run_id, country, min_confidence)
+        
+        logger.info(f"✅ MAP OPERATION COMPLETED - Country Map: {country}")
+        logger.info(f"   Cities returned: {len(data)}")
+        logger.info("=" * 80)
+        
         return {"data": data}
         
     except Exception as e:
+        logger.error(f"❌ MAP OPERATION FAILED - Country Map ({country}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Aggregation failed: {str(e)}")
 
 
@@ -982,12 +1072,25 @@ async def phase2_map_city(request: Request,
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
+    logger = logging.getLogger(__name__)
+    
     try:
+        logger.info("=" * 80)
+        logger.info(f"🗺️  MAP OPERATION - City Map - Project: {project_id}, Run: {run_id}")
+        logger.info(f"   Country: {country}, City: {city}, Min confidence: {min_confidence}")
+        logger.info("=" * 80)
+        
         aggregator = PostgresMapAggregator()
         data = await aggregator.get_city_map(run_id, country, city, min_confidence)
+        
+        logger.info(f"✅ MAP OPERATION COMPLETED - City Map: {city}, {country}")
+        logger.info(f"   Institutions returned: {len(data)}")
+        logger.info("=" * 80)
+        
         return {"data": data}
         
     except Exception as e:
+        logger.error(f"❌ MAP OPERATION FAILED - City Map ({city}, {country}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Aggregation failed: {str(e)}")
 
 
@@ -1028,7 +1131,15 @@ async def phase2_map_institution(request: Request,
     if not country or not city:
         raise HTTPException(status_code=400, detail="country and city are required")
     
+    logger = logging.getLogger(__name__)
+    
     try:
+        logger.info("=" * 80)
+        logger.info(f"🗺️  MAP OPERATION - Institution Scholars - Project: {project_id}, Run: {run_id}")
+        logger.info(f"   Institution: {institution}, Country: {country}, City: {city}")
+        logger.info(f"   Min confidence: {min_confidence}")
+        logger.info("=" * 80)
+        
         aggregator = PostgresMapAggregator()
         data = await aggregator.get_institution_scholars(
             run_id=run_id,
@@ -1037,7 +1148,13 @@ async def phase2_map_institution(request: Request,
             institution=institution,
             min_confidence=min_confidence
         )
+        
+        logger.info(f"✅ MAP OPERATION COMPLETED - Institution Scholars: {institution}")
+        logger.info(f"   Scholars returned: {len(data)}")
+        logger.info("=" * 80)
+        
         return {"scholars": data}
         
     except Exception as e:
+        logger.error(f"❌ MAP OPERATION FAILED - Institution Scholars ({institution}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Aggregation failed: {str(e)}")

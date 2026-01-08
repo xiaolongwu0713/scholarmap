@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     pubmed_api_key: str = ""
     affiliation_extraction_method: str = "rule_based"  # "llm" or "rule_based"
     
+    # Geocoding cache configuration
+    geocoding_cache_max_affiliations: int = 50  # Maximum number of affiliations to store per location in geocoding_cache
+    
     # Database configuration
     database_url: str = "postgresql://scholarmap_db_user:eA7MfK5KbhHmwORToRe27Xa1ZHkXGRDM@dpg-d5408om3jp1c738ud660-a.virginia-postgres.render.com/scholarmap_db"
     

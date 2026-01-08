@@ -10,6 +10,7 @@ from geopy.geocoders import Nominatim
 
 from app.db.connection import db_manager
 from app.db.repository import GeocodingCacheRepository
+from config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +28,10 @@ COUNTRY_ALIASES = {
     "England": "United Kingdom",
     "Korea": "South Korea",
     "Republic of Korea": "South Korea",
+    "Korea, Republic of": "South Korea",  # Add this for Nominatim compatibility
     "People's Republic of China": "China",
     "PRC": "China",
+    "Taiwan, Province of China": "Taiwan",  # Nominatim recognizes "Taiwan" better
 }
 
 
@@ -82,7 +85,9 @@ class PostgresGeocoder:
     ) -> Tuple[float, float] | None:
         """Geocode location using external API (Nominatim)."""
         try:
-            query = f"{city}, {country}" if city else country
+            # Normalize country name before querying Nominatim
+            country_normalized = normalize_country(country) or country
+            query = f"{city}, {country_normalized}" if city else country_normalized
             
             # Rate limiting
             await asyncio.sleep(self._rate_limit_delay)
@@ -117,7 +122,8 @@ class PostgresGeocoder:
     async def get_coordinates(
         self,
         country: str,
-        city: str | None = None
+        city: str | None = None,
+        affiliation: str | None = None
     ) -> Tuple[float, float] | None:
         """
         Get latitude/longitude for a location (with global cache).
@@ -128,6 +134,7 @@ class PostgresGeocoder:
         Args:
             country: Country name
             city: City name (optional)
+            affiliation: Optional affiliation text to store in cache
         
         Returns:
             Tuple of (latitude, longitude) or None if not found
@@ -142,12 +149,25 @@ class PostgresGeocoder:
                 
                 if cached and cached.latitude is not None and cached.longitude is not None:
                     logger.debug(f"Cache hit: {location_key} -> ({cached.latitude}, {cached.longitude})")
+                    # Update affiliations array if affiliation is provided (even on cache hit)
+                    if affiliation:
+                        try:
+                            await cache_repo.cache_location(
+                                location_key,
+                                cached.latitude,
+                                cached.longitude,
+                                affiliation=affiliation,
+                                max_affiliations=settings.geocoding_cache_max_affiliations
+                            )
+                            await session.commit()
+                        except Exception as e:
+                            logger.warning(f"Failed to update affiliations for {location_key}: {e}")
                     return (cached.latitude, cached.longitude)
         except Exception as e:
             logger.warning(f"Cache lookup failed for {location_key}: {e}, falling back to API")
         
         # Cache miss - call external API
-        coords = await self._geocode_external(country, city)
+        coords = await self._geocode_external(country, city, original_affiliation=affiliation)
         
         # Store in cache (even if None, to avoid repeated failed lookups with rate limiting)
         try:
@@ -156,8 +176,11 @@ class PostgresGeocoder:
                 await cache_repo.cache_location(
                     location_key,
                     coords[0] if coords else None,
-                    coords[1] if coords else None
+                    coords[1] if coords else None,
+                    affiliation=affiliation,
+                    max_affiliations=settings.geocoding_cache_max_affiliations
                 )
+                await session.commit()
                 logger.debug(f"Cached: {location_key} -> {coords}")
         except Exception as e:
             logger.warning(f"Cache store failed for {location_key}: {e}")

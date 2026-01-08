@@ -106,6 +106,24 @@ class PostgresDatabase:
                 )
             return None
     
+    async def get_batch_cached_affiliations(self, affiliation_raws: list[str]) -> dict[str, GeoData]:
+        """Batch get cached geo data for multiple affiliation strings."""
+        if not affiliation_raws:
+            return {}
+        
+        async with db_manager.session() as session:
+            repo = AffiliationCacheRepository(session)
+            caches = await repo.get_batch_cached(affiliation_raws)
+            result = {}
+            for affiliation_raw, cache in caches.items():
+                result[affiliation_raw] = GeoData(
+                    country=cache.country,
+                    city=cache.city,
+                    institution=cache.institution,
+                    confidence=cache.confidence
+                )
+            return result
+    
     async def cache_affiliations(self, affiliation_map: dict[str, GeoData]) -> None:
         """Cache extracted affiliation geo data."""
         async with db_manager.session() as session:

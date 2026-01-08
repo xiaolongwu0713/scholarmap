@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy import delete, select
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import (
@@ -315,20 +316,57 @@ class AffiliationCacheRepository:
         )
         return result.scalar_one_or_none()
     
+    async def get_batch_cached(self, affiliation_raws: list[str]) -> dict[str, AffiliationCache]:
+        """Batch fetch cached affiliation data for multiple affiliations."""
+        if not affiliation_raws:
+            return {}
+        
+        result = await self.session.execute(
+            select(AffiliationCache).where(
+                AffiliationCache.affiliation_raw.in_(affiliation_raws)
+            )
+        )
+        caches = result.scalars().all()
+        return {cache.affiliation_raw: cache for cache in caches}
+    
     async def cache_affiliations(
         self,
         affiliation_map: dict[str, dict[str, str | None]]
     ) -> None:
-        """Cache multiple affiliation extractions."""
+        """Cache multiple affiliation extractions using batch UPSERT operation.
+        
+        Uses PostgreSQL ON CONFLICT DO UPDATE for efficient batch insert/update.
+        This is much faster than individual merge() calls (2545 records in one operation
+        instead of 2545 separate database round-trips).
+        """
+        if not affiliation_map:
+            return
+        
+        # Prepare data for batch upsert
+        cache_records = []
         for affiliation_raw, geo_data in affiliation_map.items():
-            cache = AffiliationCache(
-                affiliation_raw=affiliation_raw,
-                country=geo_data.get("country"),
-                city=geo_data.get("city"),
-                institution=geo_data.get("institution"),
-                confidence=geo_data.get("confidence", "none")
-            )
-            await self.session.merge(cache)
+            cache_records.append({
+                "affiliation_raw": affiliation_raw,
+                "country": geo_data.get("country"),
+                "city": geo_data.get("city"),
+                "institution": geo_data.get("institution"),
+                "confidence": geo_data.get("confidence", "none")
+            })
+        
+        # Use PostgreSQL UPSERT (ON CONFLICT DO UPDATE) for efficient batch operation
+        # This handles both inserts and updates in a single database operation
+        stmt = insert(AffiliationCache.__table__).values(cache_records)
+        stmt = stmt.on_conflict_do_update(
+            index_elements=['affiliation_raw'],
+            set_={
+                'country': stmt.excluded.country,
+                'city': stmt.excluded.city,
+                'institution': stmt.excluded.institution,
+                'confidence': stmt.excluded.confidence
+            }
+        )
+        
+        await self.session.execute(stmt)
 
 
 class GeocodingCacheRepository:
@@ -366,30 +404,107 @@ class GeocodingCacheRepository:
         self,
         location_key: str,
         latitude: float | None,
-        longitude: float | None
+        longitude: float | None,
+        affiliation: str | None = None,
+        max_affiliations: int = 50
     ) -> None:
-        """Cache a geocoded location."""
-        cache = GeocodingCache(
-            location_key=location_key,
-            latitude=latitude,
-            longitude=longitude
+        """Cache a geocoded location.
+        
+        Args:
+            location_key: Location cache key
+            latitude: Latitude coordinate
+            longitude: Longitude coordinate
+            affiliation: Optional affiliation text to add to the affiliations array
+            max_affiliations: Maximum number of affiliations to store (default: 50)
+        """
+        from sqlalchemy import select
+        
+        # Use SELECT FOR UPDATE to handle concurrent updates
+        result = await self.session.execute(
+            select(GeocodingCache)
+            .where(GeocodingCache.location_key == location_key)
+            .with_for_update()
         )
-        await self.session.merge(cache)
+        existing = result.scalar_one_or_none()
+        
+        if existing:
+            # Update existing record
+            existing.latitude = latitude
+            existing.longitude = longitude
+            
+            # Update affiliations array if affiliation is provided
+            if affiliation:
+                current_affiliations = existing.affiliations or []
+                # Add affiliation if not already present (case-insensitive)
+                affiliation_lower = affiliation.lower()
+                if not any(aff.lower() == affiliation_lower for aff in current_affiliations):
+                    current_affiliations.append(affiliation)
+                    # Limit to max_affiliations (keep most recent)
+                    if len(current_affiliations) > max_affiliations:
+                        current_affiliations = current_affiliations[-max_affiliations:]
+                    existing.affiliations = current_affiliations
+        else:
+            # Create new record
+            affiliations = [affiliation] if affiliation else None
+            cache = GeocodingCache(
+                location_key=location_key,
+                latitude=latitude,
+                longitude=longitude,
+                affiliations=affiliations
+            )
+            self.session.add(cache)
     
     async def cache_locations_batch(
         self,
-        locations: dict[str, tuple[float | None, float | None]]
+        locations: dict[str, tuple[float | None, float | None]],
+        affiliations: dict[str, str | None] | None = None,
+        max_affiliations: int = 50
     ) -> None:
         """Batch cache multiple locations.
         
         Args:
             locations: Dict mapping location_key -> (latitude, longitude)
+            affiliations: Optional dict mapping location_key -> affiliation text
+            max_affiliations: Maximum number of affiliations to store per location (default: 50)
         """
+        from sqlalchemy import select
+        
+        # Process each location with SELECT FOR UPDATE for thread safety
         for location_key, (latitude, longitude) in locations.items():
-            cache = GeocodingCache(
-                location_key=location_key,
-                latitude=latitude,
-                longitude=longitude
+            affiliation = affiliations.get(location_key) if affiliations else None
+            
+            # Use SELECT FOR UPDATE to handle concurrent updates
+            result = await self.session.execute(
+                select(GeocodingCache)
+                .where(GeocodingCache.location_key == location_key)
+                .with_for_update()
             )
-            await self.session.merge(cache)
+            existing = result.scalar_one_or_none()
+            
+            if existing:
+                # Update existing record
+                existing.latitude = latitude
+                existing.longitude = longitude
+                
+                # Update affiliations array if affiliation is provided
+                if affiliation:
+                    current_affiliations = existing.affiliations or []
+                    # Add affiliation if not already present (case-insensitive)
+                    affiliation_lower = affiliation.lower()
+                    if not any(aff.lower() == affiliation_lower for aff in current_affiliations):
+                        current_affiliations.append(affiliation)
+                        # Limit to max_affiliations (keep most recent)
+                        if len(current_affiliations) > max_affiliations:
+                            current_affiliations = current_affiliations[-max_affiliations:]
+                        existing.affiliations = current_affiliations
+            else:
+                # Create new record
+                affiliations_list = [affiliation] if affiliation else None
+                cache = GeocodingCache(
+                    location_key=location_key,
+                    latitude=latitude,
+                    longitude=longitude,
+                    affiliations=affiliations_list
+                )
+                self.session.add(cache)
 

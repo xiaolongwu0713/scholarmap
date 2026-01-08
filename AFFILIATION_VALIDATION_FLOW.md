@@ -24,7 +24,7 @@
 
 在 ingestion 完成后，自动执行以下步骤：
 
-1. **验证阶段**：检查所有 authorships 的地理位置 geocoding 结果
+1. **验证阶段**：检查本次 run 的所有 authorships 的地理位置 geocoding 结果
 2. **错误检测**：通过 geocoding 失败识别提取错误
 3. **批量修复**：使用 LLM 重新提取错误的 affiliations
 4. **缓存更新**：更新 `affiliation_cache` 和 `geocoding_cache`
@@ -62,7 +62,7 @@ Ingestion 完成
         ├─> 步骤 5: LLM 批量修复
         │   ├─> 收集所有唯一错误 affiliations
         │   ├─> 批量调用 LLM 重新提取
-        │   └─> 获取修正后的 country, city, institution
+        │   └─> 获取修正后的 country, city, institution（也有可能失败->导致位置坐标null记录。）
         │
         ├─> 步骤 6: 更新缓存和数据库
         │   ├─> 更新 affiliation_cache（覆盖 rule-based 错误）
