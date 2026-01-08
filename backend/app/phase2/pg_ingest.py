@@ -1,6 +1,7 @@
 """PostgreSQL-based ingestion pipeline for Phase 2 (simplified, no cache)."""
 from __future__ import annotations
 
+import json
 import logging
 from typing import Any
 
@@ -302,21 +303,25 @@ class PostgresIngestionPipeline:
                 logger.info(f"   Deleted authorships for {len(existing_pmids)} existing PMIDs")
             # Note: run_papers will be deleted in link_run_to_papers()
             
-            # Insert papers (upsert)
-            logger.info(f"   Inserting/updating {len(papers)} papers...")
-            for paper in papers:
-                await paper_repo.insert_paper(
-                    pmid=paper.pmid,
-                    year=paper.year,
-                    title=paper.title,
-                    doi=paper.doi,
-                    xml_stored=None  # Don't store XML in PostgreSQL
-                )
+            # Insert papers (bulk upsert)
+            logger.info(f"   Inserting/updating {len(papers)} papers (bulk operation)...")
+            papers_data = [
+                {
+                    "pmid": paper.pmid,
+                    "year": paper.year,
+                    "title": paper.title,
+                    "doi": paper.doi,
+                    "xml_stored": None  # Don't store XML in PostgreSQL
+                }
+                for paper in papers
+            ]
+            await paper_repo.bulk_upsert_papers(papers_data)
             logger.info(f"   Papers inserted/updated: {len(papers)}")
             
-            # Insert authorships
+            # Insert authorships (bulk insert)
             total_authorships = sum(len(p.authors) for p in papers)
-            logger.info(f"   Inserting {total_authorships} authorships...")
+            logger.info(f"   Inserting {total_authorships} authorships (bulk operation)...")
+            authorships_data = []
             for paper in papers:
                 for author in paper.authors:
                     # Get geo data from primary (first) affiliation
@@ -329,25 +334,28 @@ class PostgresIngestionPipeline:
                     # Join affiliations
                     aff_joined = " | ".join(author.affiliations_raw) if author.affiliations_raw else ""
                     
-                    await auth_repo.insert_authorship(
-                        pmid=paper.pmid,
-                        author_order=author.author_order,
-                        author_name_raw=author.name.display_name,
-                        last_name=author.name.last_name,
-                        fore_name=author.name.fore_name,
-                        initials=author.name.initials,
-                        suffix=author.name.suffix,
-                        is_collective=author.name.is_collective,
-                        collective_name=author.name.collective_name,
-                        year=paper.year,
-                        affiliations_raw=author.affiliations_raw,
-                        affiliation_raw_joined=aff_joined,
-                        has_author_affiliation=has_aff,
-                        country=geo.country,
-                        city=geo.city,
-                        institution=geo.institution,
-                        affiliation_confidence=confidence
-                    )
+                    # Prepare authorship data (affiliations_raw must be JSON-encoded string)
+                    authorships_data.append({
+                        "pmid": paper.pmid,
+                        "author_order": author.author_order,
+                        "author_name_raw": author.name.display_name,
+                        "last_name": author.name.last_name,
+                        "fore_name": author.name.fore_name,
+                        "initials": author.name.initials,
+                        "suffix": author.name.suffix,
+                        "is_collective": author.name.is_collective,
+                        "collective_name": author.name.collective_name,
+                        "year": paper.year,
+                        "affiliations_raw": json.dumps(author.affiliations_raw),
+                        "affiliation_raw_joined": aff_joined,
+                        "has_author_affiliation": has_aff,
+                        "country": geo.country,
+                        "city": geo.city,
+                        "institution": geo.institution,
+                        "affiliation_confidence": confidence
+                    })
+            
+            await auth_repo.bulk_insert_authorships(authorships_data)
             logger.info(f"   Authorships inserted: {total_authorships}")
             
             # Link run to papers

@@ -205,6 +205,40 @@ class PaperRepository:
             xml_stored=xml_stored
         )
         await self.session.merge(paper)
+    
+    async def bulk_upsert_papers(
+        self,
+        papers_data: list[dict[str, Any]]
+    ) -> None:
+        """Bulk insert or update papers using PostgreSQL ON CONFLICT DO UPDATE.
+        
+        Handles PostgreSQL asyncpg parameter limit (32767) by batching upserts.
+        
+        Args:
+            papers_data: List of dicts with keys: pmid, year, title, doi, xml_stored
+        """
+        if not papers_data:
+            return
+        
+        # PostgreSQL asyncpg has a limit of 32767 parameters per query
+        # Each paper has 5 fields, so max ~6553 records per batch
+        # Use 5000 as a safe batch size
+        BATCH_SIZE = 5000
+        
+        # Process in batches to avoid parameter limit
+        for i in range(0, len(papers_data), BATCH_SIZE):
+            batch = papers_data[i:i + BATCH_SIZE]
+            stmt = insert(Paper.__table__).values(batch)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=['pmid'],
+                set_={
+                    'year': stmt.excluded.year,
+                    'title': stmt.excluded.title,
+                    'doi': stmt.excluded.doi,
+                    'xml_stored': stmt.excluded.xml_stored
+                }
+            )
+            await self.session.execute(stmt)
 
 
 class AuthorshipRepository:
@@ -255,6 +289,34 @@ class AuthorshipRepository:
         )
         self.session.add(authorship)
     
+    async def bulk_insert_authorships(
+        self,
+        authorships_data: list[dict[str, Any]]
+    ) -> None:
+        """Bulk insert authorship records using batch insert.
+        
+        This is much faster than individual insert_authorship() calls for large datasets.
+        Handles PostgreSQL asyncpg parameter limit (32767) by batching inserts.
+        
+        Args:
+            authorships_data: List of dicts with authorship fields. affiliations_raw should
+                            already be JSON-encoded strings.
+        """
+        if not authorships_data:
+            return
+        
+        # PostgreSQL asyncpg has a limit of 32767 parameters per query
+        # Each authorship has 17 fields, so max ~1927 records per batch
+        # Use 1500 as a safe batch size
+        BATCH_SIZE = 1500
+        num_fields = 17  # Number of fields in Authorship model
+        
+        # Process in batches to avoid parameter limit
+        for i in range(0, len(authorships_data), BATCH_SIZE):
+            batch = authorships_data[i:i + BATCH_SIZE]
+            stmt = insert(Authorship.__table__).values(batch)
+            await self.session.execute(stmt)
+    
     async def get_authorships_by_pmids(self, pmids: list[str]) -> list[Authorship]:
         """Get authorships for given PMIDs."""
         if not pmids:
@@ -286,10 +348,22 @@ class RunPaperRepository:
             delete(RunPaper).where(RunPaper.run_id == run_id)
         )
         
-        # Then insert new links
-        for pmid in pmids:
-            run_paper = RunPaper(run_id=run_id, pmid=pmid)
-            self.session.add(run_paper)
+        # Then bulk insert new links
+        if pmids:
+            run_papers_data = [
+                {"run_id": run_id, "pmid": pmid}
+                for pmid in pmids
+            ]
+            # PostgreSQL asyncpg has a limit of 32767 parameters per query
+            # Each RunPaper has 2 fields, so max ~16383 records per batch
+            # Use 10000 as a safe batch size
+            BATCH_SIZE = 10000
+            
+            # Process in batches to avoid parameter limit
+            for i in range(0, len(run_papers_data), BATCH_SIZE):
+                batch = run_papers_data[i:i + BATCH_SIZE]
+                stmt = insert(RunPaper.__table__).values(batch)
+                await self.session.execute(stmt)
     
     async def get_run_pmids(self, run_id: str) -> list[str]:
         """Get all PMIDs for a run."""
@@ -336,6 +410,7 @@ class AffiliationCacheRepository:
         """Cache multiple affiliation extractions using batch UPSERT operation.
         
         Uses PostgreSQL ON CONFLICT DO UPDATE for efficient batch insert/update.
+        Handles PostgreSQL asyncpg parameter limit (32767) by batching upserts.
         This is much faster than individual merge() calls (2545 records in one operation
         instead of 2545 separate database round-trips).
         """
@@ -353,20 +428,27 @@ class AffiliationCacheRepository:
                 "confidence": geo_data.get("confidence", "none")
             })
         
-        # Use PostgreSQL UPSERT (ON CONFLICT DO UPDATE) for efficient batch operation
-        # This handles both inserts and updates in a single database operation
-        stmt = insert(AffiliationCache.__table__).values(cache_records)
-        stmt = stmt.on_conflict_do_update(
-            index_elements=['affiliation_raw'],
-            set_={
-                'country': stmt.excluded.country,
-                'city': stmt.excluded.city,
-                'institution': stmt.excluded.institution,
-                'confidence': stmt.excluded.confidence
-            }
-        )
+        # PostgreSQL asyncpg has a limit of 32767 parameters per query
+        # Each cache record has 5 fields, so max ~6553 records per batch
+        # Use 5000 as a safe batch size
+        BATCH_SIZE = 5000
         
-        await self.session.execute(stmt)
+        # Process in batches to avoid parameter limit
+        for i in range(0, len(cache_records), BATCH_SIZE):
+            batch = cache_records[i:i + BATCH_SIZE]
+            # Use PostgreSQL UPSERT (ON CONFLICT DO UPDATE) for efficient batch operation
+            # This handles both inserts and updates in a single database operation
+            stmt = insert(AffiliationCache.__table__).values(batch)
+            stmt = stmt.on_conflict_do_update(
+                index_elements=['affiliation_raw'],
+                set_={
+                    'country': stmt.excluded.country,
+                    'city': stmt.excluded.city,
+                    'institution': stmt.excluded.institution,
+                    'confidence': stmt.excluded.confidence
+                }
+            )
+            await self.session.execute(stmt)
 
 
 class GeocodingCacheRepository:

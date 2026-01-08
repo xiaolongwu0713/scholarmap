@@ -1,666 +1,502 @@
-
-2026-01-08 13:07:27 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:07:27 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:07:27 - root - INFO - ================================================================================
-2026-01-08 13:08:06 - root - INFO - ================================================================================
-2026-01-08 13:08:06 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:08:06 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:08:06 - root - INFO - ================================================================================
-2026-01-08 13:09:39 - app.main - INFO - ================================================================================
-2026-01-08 13:09:39 - app.main - INFO - 🔍 VALIDATION STARTED - Project: 6af7ac1b6254, Run: 13092a22728c
-2026-01-08 13:09:39 - app.main - INFO - ================================================================================
-2026-01-08 13:09:39 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 13:09:39 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 13092a22728c...
-2026-01-08 13:09:40 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4432 authorships from 500 papers
-2026-01-08 13:09:50 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Anesthesiology and Perioperative Care, Andorra'
-2026-01-08 13:09:56 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Evanston, Andorra'
-2026-01-08 13:09:58 - app.phase2.pg_geocoding - WARNING - Could not geocode 'New York, Moldova, Republic of'
-2026-01-08 13:09:58 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:09:59 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:09:59 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:09:59 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:09:59 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:09:59 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:10:08 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Daejoen, South Korea'
-2026-01-08 13:10:13 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Bron Cedex, France'
-2026-01-08 13:10:18 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Saitama Japan, Japan'
-2026-01-08 13:10:18 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Riken Brai Science Institute, 2-1 Hirosawa, Wako, Saitama Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
-2026-01-08 13:10:28 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'RIKEN Brain Science Institute, Wako, Saitama 351-0198 Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
-2026-01-08 13:10:39 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Ecole Polytechnique Federal de Lausanne (EPFL, Switzerland'
-2026-01-08 13:10:46 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Cambridge, Morocco'
-2026-01-08 13:10:46 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Brain & Cognitive Sciences Department, McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA 02139 evelina.fedorenko@mgh.harvard.edu ngk@mit.edu.', country: 'Morocco', city: 'Cambridge', PMID: 27671642
-2026-01-08 13:10:56 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Rochester, Mongolia'
-2026-01-08 13:10:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
-2026-01-08 13:10:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
-2026-01-08 13:10:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
-2026-01-08 13:10:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
-2026-01-08 13:10:59 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Atlanta, Gabon'
-2026-01-08 13:10:59 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
-2026-01-08 13:10:59 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
-2026-01-08 13:11:09 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Pittsburgh, Andorra'
-2026-01-08 13:11:11 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
-2026-01-08 13:11:11 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
-2026-01-08 13:11:16 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Urbana-Champaign, Israel'
-2026-01-08 13:11:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
-2026-01-08 13:11:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
-2026-01-08 13:11:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
-2026-01-08 13:11:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
-2026-01-08 13:11:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Emory University, Atlanta, GA 30322.', country: 'Gabon', city: 'Atlanta', PMID: 30847390
-2026-01-08 13:11:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Electrical and Computer Engineering, University of Illinois, Urbana-Champaign, IL 61801.', country: 'Israel', city: 'Urbana-Champaign', PMID: 30847390
-2026-01-08 13:11:32 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Columbia, Seychelles'
-2026-01-08 13:11:42 - app.phase2.pg_geocoding - WARNING - Could not geocode 'P.O. Box, Netherlands'
-2026-01-08 13:11:42 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
-2026-01-08 13:11:42 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
-2026-01-08 13:11:42 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
-2026-01-08 13:11:43 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
-2026-01-08 13:11:47 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Chapel Hill, Taiwan'
-2026-01-08 13:11:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
-2026-01-08 13:11:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
-2026-01-08 13:11:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
-2026-01-08 13:11:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
-2026-01-08 13:11:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
-2026-01-08 13:11:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
-2026-01-08 13:11:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
-2026-01-08 13:12:22 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA.', country: 'Morocco', city: 'Cambridge', PMID: 39005394
-2026-01-08 13:12:25 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Princeton, Israel'
-2026-01-08 13:12:51 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Durham, New Caledonia'
-2026-01-08 13:12:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:52 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:52 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:52 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:52 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:52 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:52 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:52 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
-2026-01-08 13:12:57 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Tehran, Iran, Islamic Republic of'
-2026-01-08 13:12:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Cognitive Sciences, Institute for Research in Fundamental Sciences (IPM), Tehran, Iran.', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 41042753
-2026-01-08 13:12:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Cognitive Sciences, Institute for Research in Fundamental Sciences (IPM), Tehran, Iran.', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 41042753
-2026-01-08 13:12:58 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Cognitive Sciences, Institute for Research in Fundamental Sciences (IPM), Tehran, Iran.', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 41042753
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 2-4 COMPLETE: Geocoding validation finished
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Total authorships checked: 4432
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Cache hits (valid): 3653
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Cache misses: 18
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Nominatim successes: 0
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Nominatim failures: 18
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Unique error affiliations: 18
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Error PMIDs: 14
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 5: Fixing 18 error affiliations with LLM...
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Collecting 18 unique error affiliations for LLM fix
-2026-01-08 13:13:05 - app.phase2.affiliation_validator - INFO -    Calling LLM extractor (batch size: 20)...
-2026-01-08 13:13:05 - app.phase2.affiliation_extractor - INFO - Extracting 18 affiliations (cached: 0) in batches of 20
-2026-01-08 13:13:05 - app.phase2.affiliation_extractor - INFO - Processing batch 1/1
-2026-01-08 13:13:11 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-01-08 13:13:11 - app.phase2.affiliation_extractor - INFO - Extraction complete: 18 affiliations processed
-2026-01-08 13:13:11 - app.phase2.affiliation_validator - INFO -    LLM extraction complete: 18 results from 1 batches
-2026-01-08 13:13:11 - app.phase2.affiliation_validator - INFO -    Updating affiliation_cache with 18 LLM results...
-2026-01-08 13:13:12 - app.phase2.affiliation_validator - INFO -    ✅ Updated affiliation_cache with 18 LLM results
-2026-01-08 13:13:12 - app.phase2.affiliation_validator - INFO -    Re-geocoding and updating authorships...
-2026-01-08 13:13:14 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Daejoen, South Korea'
-2026-01-08 13:13:18 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Bron Cedex, France'
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO -    ✅ Fixed 18 affiliations
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO -    ✅ Updated 9 authorships
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO -    ✅ Re-geocoded 7 locations
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION COMPLETE - Run: 13092a22728c
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO -    Affiliations fixed: 18
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO -    Cache updates: 18
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO -    Authorship updates: 9
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO -    Geocoding updates: 7
-2026-01-08 13:13:20 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 13:13:20 - app.main - INFO - ================================================================================
-2026-01-08 13:13:20 - app.main - INFO - ✅ VALIDATION COMPLETED - Project: 6af7ac1b6254, Run: 13092a22728c
-2026-01-08 13:13:20 - app.main - INFO -    Total authorships: 4432
-2026-01-08 13:13:20 - app.main - INFO -    Geocoding failures: 18
-2026-01-08 13:13:20 - app.main - INFO -    Affiliations fixed: 18
-2026-01-08 13:13:20 - app.main - INFO -    Authorships updated: 9
-2026-01-08 13:13:20 - app.main - INFO -    Geocoding updated: 7
-2026-01-08 13:13:20 - app.main - INFO - ================================================================================
-2026-01-08 13:41:53 - root - INFO - ================================================================================
-2026-01-08 13:41:53 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:41:53 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:41:53 - root - INFO - ================================================================================
-2026-01-08 13:41:57 - root - INFO - ================================================================================
-2026-01-08 13:41:57 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:41:57 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:41:57 - root - INFO - ================================================================================
-2026-01-08 13:42:06 - root - INFO - ================================================================================
-2026-01-08 13:42:06 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:06 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:06 - root - INFO - ================================================================================
-2026-01-08 13:42:16 - root - INFO - ================================================================================
-2026-01-08 13:42:16 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:16 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:16 - root - INFO - ================================================================================
-2026-01-08 13:42:21 - root - INFO - ================================================================================
-2026-01-08 13:42:21 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:21 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:21 - root - INFO - ================================================================================
-2026-01-08 13:42:32 - root - INFO - ================================================================================
-2026-01-08 13:42:32 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:32 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:32 - root - INFO - ================================================================================
-2026-01-08 13:42:36 - root - INFO - ================================================================================
-2026-01-08 13:42:36 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:36 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:36 - root - INFO - ================================================================================
-2026-01-08 13:42:45 - root - INFO - ================================================================================
-2026-01-08 13:42:45 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:45 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:45 - root - INFO - ================================================================================
-2026-01-08 13:42:49 - root - INFO - ================================================================================
-2026-01-08 13:42:49 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:49 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:49 - root - INFO - ================================================================================
-2026-01-08 13:42:57 - root - INFO - ================================================================================
-2026-01-08 13:42:57 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:42:57 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:42:57 - root - INFO - ================================================================================
-2026-01-08 13:43:16 - root - INFO - ================================================================================
-2026-01-08 13:43:16 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:43:16 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:43:16 - root - INFO - ================================================================================
-2026-01-08 13:43:38 - root - INFO - ================================================================================
-2026-01-08 13:43:38 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:43:38 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:43:38 - root - INFO - ================================================================================
-2026-01-08 13:48:42 - app.main - INFO - ================================================================================
-2026-01-08 13:48:42 - app.main - INFO - 🔍 VALIDATION STARTED - Project: 6af7ac1b6254, Run: 13092a22728c
-2026-01-08 13:48:42 - app.main - INFO - ================================================================================
-2026-01-08 13:48:42 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 13:48:42 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 13092a22728c...
-2026-01-08 13:48:42 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4432 authorships from 500 papers
-2026-01-08 13:49:06 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Anesthesiology and Perioperative Care, Andorra' (from affiliation: Anesthesiology and Perioperative Care; and.)
-2026-01-08 13:49:16 - app.phase2.pg_geocoding - WARNING - Could not geocode 'New York, Moldova, Republic of' (from affiliation: From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.)
-2026-01-08 13:49:16 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:49:16 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:49:16 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:49:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:49:17 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
-2026-01-08 13:49:27 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Daejoen, South Korea' (from affiliation: Department of Mathematical Sciences, KAIST, Daejoen, 34141 Republic of Korea)
-2026-01-08 13:49:37 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Bron Cedex, France' (from affiliation: INSERM U846, Stem Cell and Brain Research Institute, Bron Cedex, France)
-2026-01-08 13:49:40 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Saitama Japan, Japan' (from affiliation: Riken Brai Science Institute, 2-1 Hirosawa, Wako, Saitama Japan)
-2026-01-08 13:50:00 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'RIKEN Brain Science Institute, Wako, Saitama 351-0198 Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
-2026-01-08 13:50:17 - root - INFO - ================================================================================
-2026-01-08 13:50:17 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:50:17 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:50:17 - root - INFO - ================================================================================
-2026-01-08 13:54:31 - root - INFO - ================================================================================
-2026-01-08 13:54:31 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:54:31 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:54:31 - root - INFO - ================================================================================
-2026-01-08 13:54:49 - root - INFO - ================================================================================
-2026-01-08 13:54:49 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 13:54:49 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 13:54:49 - root - INFO - ================================================================================
-2026-01-08 14:02:57 - root - INFO - ================================================================================
-2026-01-08 14:02:57 - root - INFO - Logging initialized - output to console and log.txt
-2026-01-08 14:02:57 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
-2026-01-08 14:02:57 - root - INFO - ================================================================================
-2026-01-08 14:03:02 - app.main - INFO - ================================================================================
-2026-01-08 14:03:02 - app.main - INFO - 🚀 INGESTION STARTED - Project: 6af7ac1b6254, Run: 13092a22728c
-2026-01-08 14:03:02 - app.main - INFO -    Force refresh: False
-2026-01-08 14:03:02 - app.main - INFO - ================================================================================
-2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Starting ingestion for run 13092a22728c
-2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO -    Project ID: 6af7ac1b6254
-2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO -    Force refresh: False
-2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...
-2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO -    Loaded 500 unique PMIDs from run 13092a22728c
-2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 1 COMPLETE: Found 500 PMIDs
-2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 2: Fetching 500 PMIDs from PubMed...
-2026-01-08 14:03:04 - app.phase2.pubmed_fetcher - INFO - Fetching 500 PMIDs in 4 batches (batch_size=150, rate_limit=3.0 rps)
-2026-01-08 14:03:04 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
-2026-01-08 14:03:05 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=24904404%2C41135818%2C37460730%2C40800288%2C33912122%2C22750156%2C38885688%2C41039113%2C31741702%2C39096896%2C33142282%2C27926827%2C27450996%2C29958109%2C36121939%2C40354107%2C26232713%2C26188384%2C14656066%2C39433597%2C40343020%2C27534393%2C34347873%2C38486966%2C8892373%2C27413155%2C36731812%2C40253415%2C30342252%2C33293456%2C34892495%2C30971792%2C38582333%2C29525721%2C30414541%2C16792292%2C17071238%2C21471638%2C35313351%2C24681353%2C39374038%2C33360179%2C35528322%2C30134167%2C30710356%2C31056408%2C27918346%2C35121181%2C31363096%2C26124702%2C38925110%2C39322094%2C36966852%2C30064321%2C31103409%2C31824257%2C29033809%2C23072156%2C40610484%2C41062786%2C30038000%2C27484713%2C25616459%2C38671062%2C31277857%2C31342677%2C35819528%2C33419861%2C39153482%2C29190521%2C37292795%2C29378977%2C16175856%2C19732923%2C40461573%2C40825359%2C40913768%2C26072003%2C39922365%2C28622530%2C27671642%2C39248654%2C37745380%2C35169837%2C20478745%2C24982625%2C41177674%2C37932250%2C30500619%2C34587350%2C20811093%2C41279744%2C39485790%2C28676308%2C32686761%2C30596439%2C39479009%2C34849596%2C34823894%2C37875404%2C17971857%2C25157216%2C39162748%2C40039596%2C28399442%2C23643922%2C29678760%2C36645968%2C35654375%2C28268620%2C33408621%2C36327599%2C25761260%2C37459853%2C24995815%2C26737497%2C39399739%2C15677998%2C41205609%2C32788249%2C40055549%2C37841873%2C34906982%2C40800829%2C41167038%2C41453123%2C27046113%2C37638314%2C33506209%2C29439164%2C29861132%2C30367077%2C30256217%2C30249918%2C37900727%2C41427281%2C29430213%2C38063368%2C28119593%2C32180695%2C39808939%2C38935898%2C41386385%2C25000321%2C23366629%2C38769115%2C29404403%2C18440570%2C27729844%2C41324025&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
-2026-01-08 14:03:06 - app.phase2.pubmed_fetcher - INFO - Batch 1/4 completed
-2026-01-08 14:03:06 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
-2026-01-08 14:03:06 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=38183998%2C32577713%2C34774771%2C32435182%2C31692177%2C34123657%2C41191764%2C25571555%2C15817517%2C9737437%2C33137575%2C29018336%2C34260835%2C30617653%2C29674950%2C28268617%2C41282818%2C31946284%2C39985774%2C32442776%2C38318272%2C35113857%2C34717248%2C33372958%2C25571558%2C22875868%2C27182530%2C30831567%2C39990398%2C30504559%2C40720979%2C28406383%2C37968869%2C39386565%2C18982128%2C37798921%2C35248810%2C29891885%2C21029784%2C40830488%2C30389490%2C21373361%2C39134741%2C31445890%2C40910467%2C38343801%2C40490093%2C38729074%2C27524194%2C37437189%2C40309789%2C37217308%2C37467739%2C27311642%2C27325763%2C37105171%2C33133815%2C39850351%2C22973215%2C23482627%2C39968245%2C25909573%2C20921326%2C33942078%2C41081527%2C29247963%2C36989073%2C37487487%2C28894834%2C38514133%2C30257858%2C36634533%2C40417558%2C30837823%2C23774120%2C15329073%2C27408802%2C38648781%2C28236761%2C32231340%2C22874396%2C24836588%2C34301825%2C27578414%2C31578420%2C20465359%2C30238309%2C34489664%2C30700532%2C40516665%2C37229140%2C31220442%2C40832215%2C35878727%2C24904069%2C30279650%2C25122702%2C32656294%2C40490003%2C37019103%2C27686506%2C37066306%2C35013268%2C41042753%2C41332755%2C29093659%2C29414401%2C25816090%2C26642090%2C27635975%2C24845600%2C30643130%2C39582595%2C38948730%2C19163831%2C25948269%2C38813793%2C36828156%2C29779940%2C22144944%2C31875441%2C37120741%2C41144819%2C35966994%2C38306217%2C30440349%2C31207466%2C34965874%2C41397373%2C24285843%2C28918128%2C37441880%2C40769034%2C36086071%2C40697162%2C28334963%2C25352799%2C36570848%2C22573665%2C36356309%2C30740659%2C41105453%2C40817733%2C39332803%2C28268618%2C9419036%2C26949710%2C31287601%2C41266624%2C35695785&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
-2026-01-08 14:03:07 - app.phase2.pubmed_fetcher - INFO - Batch 2/4 completed
-2026-01-08 14:03:07 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
-2026-01-08 14:03:07 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=30216929%2C20026224%2C22563311%2C36054730%2C29576436%2C30827578%2C30847390%2C31820736%2C27249656%2C37425292%2C38083559%2C27377299%2C41363150%2C21724424%2C39345158%2C34421555%2C35395633%2C29397190%2C40695313%2C28666338%2C33935673%2C37582062%2C37060887%2C39867597%2C32610290%2C24639642%2C39213665%2C34958951%2C12614397%2C39990331%2C40018762%2C25570869%2C37819985%2C26446212%2C23914170%2C41397928%2C40147418%2C40040033%2C28716965%2C41022986%2C37203491%2C38335090%2C32888480%2C39819752%2C35099768%2C19033707%2C34536230%2C26136107%2C31525179%2C27019106%2C29460482%2C37995287%2C23032488%2C33306299%2C27408803%2C25259669%2C22255402%2C28993231%2C40913530%2C28335018%2C35708911%2C21529188%2C32372065%2C25118584%2C35989149%2C32439539%2C38988764%2C22207857%2C33867912%2C35534226%2C36246502%2C20087111%2C38969758%2C37739786%2C34130614%2C32289685%2C27199638%2C39579033%2C39870041%2C35907491%2C35869138%2C33283856%2C32410969%2C32198060%2C28839071%2C37245559%2C38808652%2C33789135%2C38909761%2C24122368%2C25759647%2C26818506%2C37961305%2C33776668%2C25571556%2C21750369%2C26262160%2C41349179%2C37382208%2C29268943%2C28225156%2C25266305%2C19349241%2C32498058%2C35118367%2C39484239%2C23696279%2C26991386%2C21708506%2C23465430%2C31339411%2C29087324%2C32105726%2C24293161%2C40766385%2C27199720%2C27935031%2C38260011%2C41335998%2C38769157%2C24315545%2C28396294%2C41275704%2C25570199%2C40239679%2C29977189%2C38787551%2C38242691%2C32694561%2C41129388%2C21419227%2C38496670%2C21307246%2C36872854%2C25571553%2C34607318%2C39455254%2C38093008%2C38041253%2C26679420%2C23577157%2C26408491%2C17712784%2C37215328%2C37086161%2C30238924%2C28269552%2C40144585%2C24877680%2C26935890&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
-2026-01-08 14:03:08 - app.phase2.pubmed_fetcher - INFO - Batch 3/4 completed
-2026-01-08 14:03:08 - app.phase2.pubmed_fetcher - INFO - Fetching 50 PMIDs from PubMed...
-2026-01-08 14:03:09 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29052465%2C22890647%2C25819402%2C27148018%2C39974103%2C39464426%2C39554006%2C40972658%2C26888939%2C22255777%2C29271713%2C38222047%2C35311092%2C21471374%2C17271737%2C34753819%2C25822912%2C32840483%2C41254404%2C38559163%2C35276657%2C27956570%2C22941838%2C35777988%2C41034198%2C34408717%2C15876624%2C40260174%2C24672012%2C19279495%2C38581367%2C41021378%2C35185491%2C32378738%2C25273279%2C39005394%2C32828921%2C33841081%2C30721879%2C40894619%2C39371161%2C39194182%2C38696121%2C34918613%2C35568349%2C34411517%2C26386644%2C31419636%2C17980999%2C40302941&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
-2026-01-08 14:03:09 - app.phase2.pubmed_fetcher - INFO - Batch 4/4 completed
-2026-01-08 14:03:09 - app.phase2.pubmed_fetcher - INFO - Fetched 4/4 batches successfully
-2026-01-08 14:03:09 - app.phase2.pubmed_fetcher - INFO - Extracted 500 PMIDs from 4 batches
-2026-01-08 14:03:09 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 2 COMPLETE: Fetched 500 PubMed XML records
-2026-01-08 14:03:09 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:09 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 3: Parsing XML into structured papers...
-2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 3 COMPLETE: Parsed 500 papers
-2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 4: Extracting affiliations via rule-based...
-2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO -    Extracting 2545 affiliations via rule-based (with cache)
-2026-01-08 14:03:10 - app.phase2.rule_based_extractor - INFO -    Processing 2545 affiliations...
-2026-01-08 14:03:10 - app.phase2.rule_based_extractor - INFO -    Batch checking cache for 2545 affiliations...
-2026-01-08 14:03:10 - app.phase2.rule_based_extractor - INFO -    ✅ Batch cache check complete: 2545 hits, 0 to extract
-2026-01-08 14:03:12 - app.phase2.pg_ingest - INFO -    Cached 2545 affiliation extraction results
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Extraction complete: 2545 affiliations, 2441 with country
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 4 COMPLETE: Extracted 2545 affiliations
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2545
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    With country: 2441
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    LLM calls: 0
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 5: Writing to database...
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Clearing existing data for run 13092a22728c...
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Deleted authorships for 500 existing PMIDs
-2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Inserting/updating 500 papers...
-2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Papers inserted/updated: 500
-2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Inserting 4432 authorships...
-2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Authorships inserted: 4432
-2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Linking run 13092a22728c to 500 papers...
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Database write complete
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 5 COMPLETE: Created 4432 authorships
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ✅ INGESTION COMPLETE - Run: 13092a22728c
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Total PMIDs: 500
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Papers parsed: 500
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Authorships created: 4432
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2545
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Affiliations with country: 2441
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    LLM calls made: 0
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...
-2026-01-08 14:03:39 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
-2026-01-08 14:03:39 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 13092a22728c...
-2026-01-08 14:03:40 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4432 authorships from 500 papers
-2026-01-08 14:03:43 - app.phase2.pg_geocoding - INFO - Geocoded 'London, United Kingdom' -> (51.5074456, -0.1277653)
-2026-01-08 14:03:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Baltimore, United States' -> (39.2908816, -76.610759)
-2026-01-08 14:03:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Lyon, France' -> (45.7578137, 4.8320114)
-2026-01-08 14:04:05 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=St+Louis%2C+United+States&format=json&limit=1
-2026-01-08 14:04:07 - app.phase2.pg_geocoding - INFO - Geocoded 'St Louis, United States' -> (38.6254063, -90.190009)
-2026-01-08 14:04:12 - app.phase2.pg_geocoding - INFO - Geocoded 'New York, United States' -> (40.7127281, -74.0060152)
-2026-01-08 14:04:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Seattle, United States' -> (47.6038321, -122.330062)
-2026-01-08 14:04:20 - app.phase2.pg_geocoding - INFO - Geocoded 'California Univ, United States' -> (33.9727335, -117.3474449)
-2026-01-08 14:04:32 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=St.+Petersburg%2C+Russian+Federation&format=json&limit=1
-2026-01-08 14:04:37 - app.phase2.pg_geocoding - INFO - Geocoded 'St. Petersburg, Russian Federation' -> (59.938732, 30.316229)
-2026-01-08 14:04:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Paris, France' -> (48.8534951, 2.3483915)
-2026-01-08 14:04:52 - app.phase2.pg_geocoding - INFO - Geocoded 'United States' -> (39.7837304, -100.445882)
-2026-01-08 14:05:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Montpellier, France' -> (43.6112422, 3.8767337)
-2026-01-08 14:05:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Durham, United States' -> (35.996653, -78.9018053)
-2026-01-08 14:05:10 - app.phase2.pg_geocoding - INFO - Geocoded 'St. Louis, United States' -> (38.6254063, -90.190009)
-2026-01-08 14:05:14 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, United States' -> (37.7879363, -122.4075201)
-2026-01-08 14:05:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Salt Lake City, United States' -> (40.7596198, -111.886797)
-2026-01-08 14:05:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Norfolk, United States' -> (36.8493695, -76.2899539)
-2026-01-08 14:05:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Albany, United States' -> (42.6511674, -73.754968)
-2026-01-08 14:05:33 - app.phase2.pg_geocoding - INFO - Geocoded 'D- Bonn, Germany' -> (50.8181182, 6.8931658)
-2026-01-08 14:05:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Pittsburgh, United States' -> (40.4406968, -80.0025666)
-2026-01-08 14:05:47 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=S%C3%A3o+Paulo%2C+Brazil&format=json&limit=1
-2026-01-08 14:05:57 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=S%C3%A3o+Paulo%2C+Brazil&format=json&limit=1
-2026-01-08 14:06:07 - app.phase2.pg_geocoding - INFO - Geocoded 'São Paulo, Brazil' -> (-23.5506507, -46.6333824)
-2026-01-08 14:06:16 - app.phase2.pg_geocoding - INFO - Geocoded 'and Systems Engineering, United States' -> (41.5015735, -81.6070902)
-2026-01-08 14:06:18 - app.phase2.pg_geocoding - INFO - Geocoded 'France' -> (46.603354, 1.8883335)
-2026-01-08 14:06:26 - app.phase2.pg_geocoding - INFO - Geocoded 'F- Bron, France' -> (45.7337532, 4.9092352)
-2026-01-08 14:06:29 - app.phase2.pg_geocoding - INFO - Geocoded 'F- Lyon-Bron, France' -> (45.7342872, 4.8996431)
-2026-01-08 14:06:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Udine, Italy' -> (46.0634632, 13.2358377)
-2026-01-08 14:06:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Cincinnati, United States' -> (39.1014537, -84.5124602)
-2026-01-08 14:06:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Hokkaido, Japan' -> (43.4519831, 142.8197834)
-2026-01-08 14:06:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Germany' -> (51.1638175, 10.4478313)
-2026-01-08 14:06:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Tokyo, Japan' -> (35.6768601, 139.7638947)
-2026-01-08 14:06:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Shanghai, China' -> (31.2312707, 121.4700152)
-2026-01-08 14:06:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Beijing, China' -> (40.190632, 116.412144)
-2026-01-08 14:07:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Los Angeles, United States' -> (34.0536909, -118.242766)
-2026-01-08 14:07:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Marseille, France' -> (43.2961743, 5.3699525)
-2026-01-08 14:07:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Iowa City, United States' -> (41.6612561, -91.5299106)
-2026-01-08 14:07:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Freiburg, Germany' -> (47.9960901, 7.8494005)
-2026-01-08 14:07:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Houston, United States' -> (29.7589382, -95.3676974)
-2026-01-08 14:07:28 - app.phase2.pg_geocoding - INFO - Geocoded 'USA and, United States' -> (38.8889772, -77.0090433)
-2026-01-08 14:07:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Tel-Aviv, Israel' -> (32.0852997, 34.7818064)
-2026-01-08 14:07:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Los Angeles, Israel' -> (34.1013066, -118.3492537)
-2026-01-08 14:07:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Haifa, Israel' -> (32.8191218, 34.9983856)
-2026-01-08 14:07:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Niigata, Japan' -> (37.6452283, 138.7669125)
-2026-01-08 14:07:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Nara, Japan' -> (34.6845445, 135.8048359)
-2026-01-08 14:07:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Detroit, United States' -> (42.3315509, -83.0466403)
-2026-01-08 14:07:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Detroit, Japan' -> (34.6158982, 135.0201373)
-2026-01-08 14:07:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Japan' -> (36.5748441, 139.2394179)
-2026-01-08 14:07:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Bethesda, United States' -> (38.9812726, -77.1233587)
-2026-01-08 14:08:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Chicago, United States' -> (41.8755616, -87.6244212)
-2026-01-08 14:08:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Switzerland' -> (46.7985624, 8.2319736)
-2026-01-08 14:08:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Houston, Germany' -> (31.4399019, -95.350778)
-2026-01-08 14:08:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Otto-von-Guericke-Universitat Magdeburg, Germany' -> (52.1383797, 11.6334707)
-2026-01-08 14:08:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Chapel Hill, United States' -> (35.9131542, -79.05578)
-2026-01-08 14:08:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Philadelphia, United States' -> (39.9527237, -75.1635262)
-2026-01-08 14:08:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Baltimore, Andorra' -> (39.3877661, -76.5409489)
-2026-01-08 14:08:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Atlanta, United States' -> (33.7544657, -84.3898151)
-2026-01-08 14:08:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Boston, United States' -> (42.3588336, -71.0578303)
-2026-01-08 14:08:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Utrecht, Netherlands' -> (52.0907006, 5.1215634)
-2026-01-08 14:08:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Singapore Singapore, Singapore' -> (1.2959845, 103.7766186)
-2026-01-08 14:08:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Orlando, Austria' -> (48.2720833, 16.4517356)
-2026-01-08 14:08:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Andorra' -> (42.5407167, 1.5732033)
-2026-01-08 14:08:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Nagoya, Japan' -> (35.1851045, 136.8998438)
-2026-01-08 14:08:54 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, Andorra' -> (-23.6326758, -46.5184886)
-2026-01-08 14:08:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Bonn, Germany' -> (50.7352621, 7.1024635)
-2026-01-08 14:09:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Bern, Switzerland' -> (46.9484742, 7.4521749)
-2026-01-08 14:09:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Leipzig, Germany' -> (51.3406321, 12.3747329)
-2026-01-08 14:09:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Columbia, United States' -> (34.000754, -81.0352313)
-2026-01-08 14:09:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Copenhagen Denmark, Denmark' -> (55.6747103, 12.5743545)
-2026-01-08 14:09:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Italy' -> (42.6384261, 12.674297)
-2026-01-08 14:09:16 - app.phase2.pg_geocoding - INFO - Geocoded 'United Kingdom' -> (54.7023545, -3.2765753)
-2026-01-08 14:09:22 - app.phase2.pg_geocoding - INFO - Geocoded 'IMI, Austria' -> (47.276017, 12.4851009)
-2026-01-08 14:09:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Geneva, Switzerland' -> (46.2017559, 6.1466014)
-2026-01-08 14:09:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Rochester, United States' -> (43.157285, -77.615214)
-2026-01-08 14:09:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Stockholm, Sweden' -> (59.3251172, 18.0710935)
-2026-01-08 14:09:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Montréal, Canada' -> (45.5031824, -73.5698065)
-2026-01-08 14:09:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Netherlands' -> (52.2434979, 5.6343227)
-2026-01-08 14:09:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Cleveland, United States' -> (41.4996574, -81.6936772)
-2026-01-08 14:09:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Memphis, United States' -> (35.1460249, -90.0517638)
-2026-01-08 14:09:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Houston, Andorra' -> (40.0691918, -75.2308538)
-2026-01-08 14:09:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Evanston, United States' -> (42.0470043, -87.6846053)
-2026-01-08 14:10:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Madison, United States' -> (43.07469, -89.3841663)
-2026-01-08 14:10:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Albany, Netherlands' -> (51.8330089, 5.8134435)
-2026-01-08 14:10:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Gainesville, United States' -> (29.6519684, -82.3249846)
-2026-01-08 14:10:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Radboud Univ Nijmegen, Netherlands' -> (51.8215173, 5.8634209)
-2026-01-08 14:10:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Austria, Andorra' -> (48.2019133, 16.3701204)
-2026-01-08 14:10:21 - app.phase2.pg_geocoding - INFO - Geocoded 'California, United States' -> (36.7014631, -118.755997)
-2026-01-08 14:10:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Silver Spring, United States' -> (38.9997621, -77.0240371)
-2026-01-08 14:10:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Bronx, United States' -> (40.8466508, -73.8785937)
-2026-01-08 14:10:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Birmingham, United States' -> (33.5206824, -86.8024326)
-2026-01-08 14:10:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Mobile, United States' -> (30.6913462, -88.0437509)
-2026-01-08 14:10:48 - app.phase2.pg_geocoding - INFO - Geocoded 'D- Sankt Augustin, Germany' -> (50.7752776, 7.1895507)
-2026-01-08 14:10:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Pittsburgh, Panama' -> (40.4626339, -79.9519342)
-2026-01-08 14:10:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Switzerland, United States' -> (38.8249258, -85.0373975)
-2026-01-08 14:10:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Ecole Polytechnique Fédérale de Lausanne, Switzerland' -> (46.5186594, 6.5665615)
-2026-01-08 14:10:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Stanford, United States' -> (37.4265407, -122.1703055)
-2026-01-08 14:11:03 - app.phase2.pg_geocoding - INFO - Geocoded 'San Diego, United States' -> (32.7174202, -117.162772)
-2026-01-08 14:11:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Gif sur Yvette, France' -> (48.7018823, 2.134529)
-2026-01-08 14:11:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Kyoto, Japan' -> (35.0115754, 135.7681441)
-2026-01-08 14:11:09 - app.phase2.pg_geocoding - INFO - Geocoded 'ON Canada, Canada' -> (43.2572053, -79.0750293)
-2026-01-08 14:11:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Warsaw, Poland' -> (52.2333742, 21.0711489)
-2026-01-08 14:11:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Budapest, Hungary' -> (47.4978789, 19.0402383)
-2026-01-08 14:11:19 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Daejoen, South Korea' (from affiliation: Department of Mathematical Sciences, KAIST, Daejoen, 34141 Republic of Korea (PMID: 27534393))
-2026-01-08 14:11:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Madrid, Spain' -> (40.416782, -3.703507)
-2026-01-08 14:11:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Seoul, South Korea' -> (37.5666791, 126.9782914)
-2026-01-08 14:11:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Brockton, United States' -> (42.0834335, -71.0183787)
-2026-01-08 14:11:30 - app.phase2.pg_geocoding - INFO - Geocoded 'England, United Kingdom' -> (52.5310214, -1.2649062)
-2026-01-08 14:11:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Baden-Württemberg, Germany' -> (48.53775, 9.041169)
-2026-01-08 14:11:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Carlton, Australia' -> (-37.8004228, 144.9684343)
-2026-01-08 14:11:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Parkville, Australia' -> (-37.7871148, 144.9515533)
-2026-01-08 14:11:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Melbourne, Australia' -> (-37.8142454, 144.9631732)
-2026-01-08 14:11:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Berlin, Germany' -> (52.5173885, 13.3951309)
-2026-01-08 14:11:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Hatfield, United Kingdom' -> (51.7634675, -0.2258741)
-2026-01-08 14:11:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Linyi, China' -> (35.1032403, 118.3506988)
-2026-01-08 14:11:58 - app.phase2.pg_geocoding - INFO - Geocoded 'New Haven, United States' -> (41.3082138, -72.9250518)
-2026-01-08 14:12:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Tempe, United States' -> (33.4255117, -111.940016)
-2026-01-08 14:12:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Nijmegen, Netherlands' -> (51.8474946, 5.8637771)
-2026-01-08 14:12:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Norway' -> (61.1529386, 8.7876653)
-2026-01-08 14:12:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Oslo, Norway' -> (59.9133301, 10.7389701)
-2026-01-08 14:12:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Lausanne, Switzerland' -> (46.5218269, 6.6327025)
-2026-01-08 14:12:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Hamilton, New Zealand' -> (-37.7878809, 175.281788)
-2026-01-08 14:12:21 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Bron Cedex, France' (from affiliation: INSERM U846, Stem Cell and Brain Research Institute, Bron Cedex, France (PMID: 27534393))
-2026-01-08 14:12:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Tübingen, Germany' -> (48.5203263, 9.053596)
-2026-01-08 14:12:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Wako, Japan' -> (35.7817053, 139.6058692)
-2026-01-08 14:12:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Denton, United States' -> (33.1838787, -97.1413417)
-2026-01-08 14:12:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Reading, United Kingdom' -> (51.4514953, -0.9836342)
-2026-01-08 14:12:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Plymouth, United Kingdom' -> (50.3714122, -4.1424451)
-2026-01-08 14:12:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Gwangju, South Korea' -> (35.1594647, 126.8515034)
-2026-01-08 14:12:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Tsukuba, Japan' -> (36.0833265, 140.077279)
-2026-01-08 14:12:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Pohang, South Korea' -> (36.0189315, 129.3429384)
-2026-01-08 14:12:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Daejeon, South Korea' -> (36.3497007, 127.3849016)
-2026-01-08 14:12:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Czechia' -> (49.7439047, 15.3381061)
-2026-01-08 14:12:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Busan, South Korea' -> (35.1799528, 129.0752365)
-2026-01-08 14:13:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Indianapolis, United States' -> (39.7683331, -86.1583502)
-2026-01-08 14:13:13 - app.phase2.pg_geocoding - INFO - Geocoded 'ETH Zürich, Switzerland' -> (47.413218, 8.5374914)
-2026-01-08 14:13:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Saitama, Japan' -> (35.9754168, 139.4160114)
-2026-01-08 14:13:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Okinawa, Japan' -> (26.5707754, 128.0255901)
-2026-01-08 14:13:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Newcastle-under-Lyme, United Kingdom' -> (53.0117627, -2.2273919)
-2026-01-08 14:13:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Luebeck, Germany' -> (53.866444, 10.684738)
-2026-01-08 14:13:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Ann Arbor, United States' -> (42.2813722, -83.7484616)
-2026-01-08 14:13:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Xi’An City, China' -> (34.261004, 108.9423363)
-2026-01-08 14:13:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Kowloon Tong, Hong Kong' -> (22.334635, 114.177078)
-2026-01-08 14:13:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Clear Water Bay, Hong Kong' -> (22.2846714, 114.2962298)
-2026-01-08 14:13:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Sydney, Australia' -> (-33.8698439, 151.2082848)
-2026-01-08 14:13:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Göttingen, Germany' -> (51.5328328, 9.9351811)
-2026-01-08 14:13:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Yorktown Heights, United States' -> (41.270178, -73.7753539)
-2026-01-08 14:13:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Lancaster, United States' -> (40.0379958, -76.3056707)
-2026-01-08 14:13:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Shenzhen, China' -> (22.5445741, 114.0545429)
-2026-01-08 14:13:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Cambridge, United Kingdom' -> (52.2055314, 0.1186637)
-2026-01-08 14:13:53 - app.phase2.pg_geocoding - INFO - Geocoded 'New York City, United States' -> (40.7127281, -74.0060152)
-2026-01-08 14:13:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Oxford, United Kingdom' -> (51.7520131, -1.2578499)
-2026-01-08 14:13:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Louvain, Belgium' -> (50.879202, 4.7011675)
-2026-01-08 14:14:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Granada, Spain' -> (37.1734995, -3.5995337)
-2026-01-08 14:14:05 - app.phase2.pg_geocoding - INFO - Geocoded '- Iran, Iran, Islamic Republic of' -> (35.297447, 46.9996932)
-2026-01-08 14:14:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Zanjan, Iran' -> (36.515854, 48.4777616)
-2026-01-08 14:14:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Bristol, United Kingdom' -> (51.4538022, -2.5972985)
-2026-01-08 14:14:25 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Exeter%2C+United+Kingdom&format=json&limit=1
-2026-01-08 14:14:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Exeter, United Kingdom' -> (50.7256138, -3.5269209)
-2026-01-08 14:14:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Hessen, Germany' -> (50.6080651, 9.0284647)
-2026-01-08 14:14:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Adelaide, Australia' -> (-34.9281805, 138.5999312)
-2026-01-08 14:14:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Frankfurt am Main, Germany' -> (50.1106444, 8.6820917)
-2026-01-08 14:14:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Prague, Czechia' -> (50.0874654, 14.4212535)
-2026-01-08 14:14:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Salem, United States' -> (44.9391565, -123.033121)
-2026-01-08 14:14:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Louisville, United States' -> (38.2542376, -85.759407)
-2026-01-08 14:14:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Lexington, United States' -> (38.0464066, -84.4970393)
-2026-01-08 14:14:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Lubbock, United States' -> (33.5855677, -101.8470215)
-2026-01-08 14:14:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Washington, United States' -> (38.8950368, -77.0365427)
-2026-01-08 14:14:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Cambridge, United States' -> (42.3656347, -71.1040018)
-2026-01-08 14:15:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Brooklyn, United States' -> (40.6526006, -73.9497211)
-2026-01-08 14:15:04 - app.phase2.pg_geocoding - INFO - Geocoded 'La Jolla, United States' -> (32.8458529, -117.2575702)
-2026-01-08 14:15:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Okazaki, Japan' -> (34.9548784, 137.1728226)
-2026-01-08 14:15:15 - app.phase2.pg_geocoding - INFO - Geocoded 'NSW Australia, Australia' -> (-33.8475744, 151.0726201)
-2026-01-08 14:15:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Tehran, Iran' -> (35.6892523, 51.3896004)
-2026-01-08 14:15:21 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Saitama Japan, Japan' (from affiliation: RIKEN Brain Science Institute, Wako, Saitama 351-0198 Japan (PMID: 27534393))
-2026-01-08 14:15:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Princeton, United States' -> (40.3496953, -74.6597376)
-2026-01-08 14:15:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Stony Brook, United States' -> (40.908482, -73.1325471)
-2026-01-08 14:15:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Hyogo Japan, Japan' -> (34.6863335, 135.1844688)
-2026-01-08 14:15:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Turkey, Turkey' -> (39.294076, 35.2316631)
-2026-01-08 14:15:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Brighton, United Kingdom' -> (50.8214626, -0.1400561)
-2026-01-08 14:15:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Falmer, United Kingdom' -> (50.8687985, -0.0688139)
-2026-01-08 14:15:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Oldenburg, Germany' -> (53.1389753, 8.2146017)
-2026-01-08 14:15:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Offenbach, Germany' -> (50.1055002, 8.7610698)
-2026-01-08 14:15:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Jülich, Germany' -> (50.9220931, 6.3611015)
-2026-01-08 14:15:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Heidelberg, Germany' -> (49.4093582, 8.694724)
-2026-01-08 14:15:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Nottingham, United Kingdom' -> (52.9534193, -1.1496461)
-2026-01-08 14:16:02 - app.phase2.pg_geocoding - INFO - Geocoded 'TN Italy, Italy' -> (44.8873175, 7.3548152)
-2026-01-08 14:16:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Tangier, Morocco' -> (35.7696302, -5.8033522)
-2026-01-08 14:16:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Orangeburg, United States' -> (33.4918203, -80.8556476)
-2026-01-08 14:16:16 - app.phase2.pg_geocoding - INFO - Geocoded 'South Korea' -> (36.638392, 127.6961188)
-2026-01-08 14:16:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Alicante, Spain' -> (38.3436365, -0.4881708)
-2026-01-08 14:16:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Cold Spring Harbor, United States' -> (40.8601065, -73.4529025)
-2026-01-08 14:16:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Cologne, Germany' -> (50.938361, 6.959974)
-2026-01-08 14:16:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Ilmenau, Germany' -> (50.6867695, 10.9142385)
-2026-01-08 14:16:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Ulsan, South Korea' -> (35.5391697, 129.3119136)
-2026-01-08 14:16:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Helsinki, Finland' -> (60.1666204, 24.9435408)
-2026-01-08 14:16:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Greensboro, United States' -> (36.0726355, -79.7919754)
-2026-01-08 14:16:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Greenville, United States' -> (34.851354, -82.3984882)
-2026-01-08 14:17:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Okinawa Japan, Japan' -> (26.2463518, 127.766086)
-2026-01-08 14:17:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Nara Japan, Japan' -> (23.7623401, 90.358369)
-2026-01-08 14:17:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Würzburg, Germany' -> (49.7780356, 9.9434769)
-2026-01-08 14:17:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Prague, Czech Republic' -> (50.0874654, 14.4212535)
-2026-01-08 14:17:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Aachen, Germany' -> (50.776351, 6.083862)
-2026-01-08 14:17:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Milwaukee, United States' -> (43.0386475, -87.9090751)
-2026-01-08 14:17:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Mawson Lakes, Australia' -> (-34.8104796, 138.6111791)
-2026-01-08 14:17:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Brisbane, Australia' -> (-27.4689623, 153.0235009)
-2026-01-08 14:17:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Delaware, United States' -> (38.6920451, -75.4013315)
-2026-01-08 14:17:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Towson, United States' -> (39.3964591, -76.6148148)
-2026-01-08 14:17:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Bremen, Germany' -> (53.0758196, 8.8071646)
-2026-01-08 14:17:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Hamburg, Germany' -> (53.550341, 10.000654)
-2026-01-08 14:18:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Singapore, Singapore' -> (1.357107, 103.8194992)
-2026-01-08 14:18:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Singapore' -> (1.357107, 103.8194992)
-2026-01-08 14:18:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Barcelona, Spain' -> (41.3825802, 2.177073)
-2026-01-08 14:18:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Aarhus, Denmark' -> (56.1496278, 10.2134046)
-2026-01-08 14:18:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Lisbon, Portugal' -> (38.7077507, -9.1365919)
-2026-01-08 14:18:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Odense, Denmark' -> (55.3997225, 10.3852104)
-2026-01-08 14:18:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Hawthorn, Australia' -> (-37.8244246, 145.0317207)
-2026-01-08 14:18:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Daejon, South Korea' -> (36.3497007, 127.3849016)
-2026-01-08 14:18:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Tamil Nadu India, India' -> (13.0530054, 80.2279292)
-2026-01-08 14:18:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Morgantown, United States' -> (39.6296809, -79.9559437)
-2026-01-08 14:18:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Arlington, United States' -> (32.7355816, -97.1071186)
-2026-01-08 14:19:06 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Dallas%2C+United+States&format=json&limit=1
-2026-01-08 14:19:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Dallas, United States' -> (32.7762719, -96.7968559)
-2026-01-08 14:19:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Nancy, France' -> (48.6937223, 6.1834097)
-2026-01-08 14:19:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Boston, Morocco' -> (33.5925936, -7.6376382)
-2026-01-08 14:19:28 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Cambridge, Morocco' (from affiliation: Brain & Cognitive Sciences Department, McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA 02139 evelina.fedorenko@mgh.harvard.edu ngk@mit.edu. (PMID: 27671642))
-2026-01-08 14:19:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Asahikawa, Japan' -> (43.770625, 142.3649743)
-2026-01-08 14:19:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Graz, Austria' -> (47.0708678, 15.4382786)
-2026-01-08 14:19:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Cleveland, France' -> (54.6166477, -1.064288)
-2026-01-08 14:19:47 - app.phase2.pg_geocoding - INFO - Geocoded 'U.S.A, Lebanon' -> (40.375713, -76.4626118)
-2026-01-08 14:19:53 - app.phase2.pg_geocoding - INFO - Geocoded 'U.S.A, Georgia' -> (38.7100521, -86.5722154)
-2026-01-08 14:20:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Charleston, United States' -> (32.7884363, -79.9399309)
-2026-01-08 14:20:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Portland, United States' -> (45.5202471, -122.674194)
-2026-01-08 14:20:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Philadelphia PN, United States' -> (39.9527237, -75.1635262)
-2026-01-08 14:20:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Lebanon, United States' -> (40.375713, -76.4626118)
-2026-01-08 14:20:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Mountain View, United States' -> (37.3893889, -122.0832101)
-2026-01-08 14:20:40 - app.phase2.pg_geocoding - INFO - Geocoded 'The Netherlands, Andorra' -> (52.2245005, 5.1809361)
-2026-01-08 14:20:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Cognition and Behaviour, Netherlands' -> (51.8260925, 5.8630169)
-2026-01-08 14:20:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Hangzhou, China' -> (30.2489634, 120.2052342)
-2026-01-08 14:20:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Frankfurt, Germany' -> (50.1106444, 8.6820917)
-2026-01-08 14:20:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Philadelphia, Panama' -> (39.9470753, -75.1737717)
-2026-01-08 14:21:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Lebanon' -> (33.8750629, 35.843409)
-2026-01-08 14:21:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Manhasset, United States' -> (40.786702, -73.6967338)
-2026-01-08 14:21:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Tochigi, Japan' -> (36.6782167, 139.8096549)
-2026-01-08 14:21:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Austin, United States' -> (30.2711286, -97.7436995)
-2026-01-08 14:21:26 - app.phase2.pg_geocoding - INFO - Geocoded 'UCLouvain, Belgium' -> (50.8534643, 4.3611421)
-2026-01-08 14:21:34 - app.phase2.pg_geocoding - INFO - Geocoded 'F- Nancy, France' -> (48.6937223, 6.1834097)
-2026-01-08 14:21:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Rensselaer, United States' -> (42.7091389, -73.5107732)
-2026-01-08 14:21:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Bucharest, Romania' -> (44.4361414, 26.102684)
-2026-01-08 14:21:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Bowdoin, United States' -> (42.3613943, -71.0621043)
-2026-01-08 14:21:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Karnataka, India' -> (14.9562045, 75.7896741)
-2026-01-08 14:22:03 - app.phase2.pg_geocoding - INFO - Geocoded 'CNRS UMR, France' -> (48.8480448, 2.3467365)
-2026-01-08 14:22:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Villeurbanne, France' -> (45.7733573, 4.8868454)
-2026-01-08 14:22:10 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Atlanta, Gabon' (from affiliation: Department of Neurosurgery, Emory University, Atlanta, GA 30322. (PMID: 30847390))
-2026-01-08 14:22:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Nashville, United States' -> (36.1622767, -86.7742984)
-2026-01-08 14:22:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Berkeley, United States' -> (37.8708393, -122.272863)
-2026-01-08 14:22:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Dublin, Ireland' -> (53.3493795, -6.2605593)
-2026-01-08 14:22:37 - app.phase2.pg_geocoding - INFO - Geocoded 'KwaZulu-Natal, South Africa' -> (-28.503833, 30.8875009)
-2026-01-08 14:22:49 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Durban%2C+South+Africa&format=json&limit=1
-2026-01-08 14:23:01 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Durban%2C+South+Africa&format=json&limit=1
-2026-01-08 14:23:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Durban, South Africa' -> (-29.861825, 31.009909)
-2026-01-08 14:23:06 - app.phase2.pg_geocoding - INFO - Geocoded 'South Africa' -> (-28.8166236, 24.991639)
-2026-01-08 14:23:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Miami, United States' -> (25.7741566, -80.1935973)
-2026-01-08 14:23:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Albuquerque, Mexico' -> (35.0866327, -106.6202094)
-2026-01-08 14:23:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Providence, United States' -> (41.8239891, -71.4128343)
-2026-01-08 14:23:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Maastricht, Netherlands' -> (50.8579855, 5.6969882)
-2026-01-08 14:23:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Richmond, United States' -> (37.5385087, -77.43428)
-2026-01-08 15:53:59 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=Chengdu%2C+China&format=json&limit=1
-2026-01-08 15:54:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Chengdu, China' -> (30.659867, 104.063315)
-2026-01-08 15:54:01 - app.phase2.pg_ingest - ERROR - ❌ Validation and fix failed: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
-[SQL: SELECT geocoding_cache.location_key, geocoding_cache.latitude, geocoding_cache.longitude, geocoding_cache.affiliations, geocoding_cache.created_at 
-FROM geocoding_cache 
-WHERE geocoding_cache.location_key = $1::VARCHAR]
-[parameters: ('city:Chengdu,China',)]
-(Background on this error at: https://sqlalche.me/e/20/dbapi)
-ConnectionResetError: [Errno 54] Connection reset by peer
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 550, in _prepare_and_execute
-    self._rows = deque(await prepared_stmt.fetch(*parameters))
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 177, in fetch
-    data = await self.__bind_execute(args, 0, timeout)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 268, in __bind_execute
-    data, status, _ = await self.__do_execute(
-                      ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 257, in __do_execute
-    return await executor(protocol)
-           ^^^^^^^^^^^^^^^^^^^^^^^^
-  File "asyncpg/protocol/protocol.pyx", line 205, in bind_execute
-asyncpg.exceptions.ConnectionDoesNotExistError: connection was closed in the middle of operation
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
-    self.dialect.do_execute(
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
-    cursor.execute(statement, parameters)
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 585, in execute
-    self._adapt_connection.await_(
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
-    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
-    value = await result
-            ^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 563, in _prepare_and_execute
-    self._handle_exception(error)
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 513, in _handle_exception
-    self._adapt_connection._handle_exception(error)
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
-    raise translated_error from error
-sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.Error: <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_ingest.py", line 149, in ingest_run
-    validation_stats = await validator.validate_and_fix_run(run_id, self.project_id)
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/affiliation_validator.py", line 105, in validate_and_fix_run
-    cached = await cache_repo.get_cached(location_key)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/repository.py", line 380, in get_cached
-    result = await self.session.execute(
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
-    result = await greenlet_spawn(
-             ^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 203, in greenlet_spawn
-    result = context.switch(value)
-             ^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
-    return self._execute_internal(
-           ^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
-    result: Result[Any] = compile_state_cls.orm_execute_statement(
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
-    result = conn.execute(
-             ^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
-    return meth(
-           ^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
-    return connection._execute_clauseelement(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
-    ret = self._execute_context(
-          ^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
-    return self._exec_single_context(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
-    self._handle_dbapi_exception(
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
-    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
-    self.dialect.do_execute(
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
-    cursor.execute(statement, parameters)
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 585, in execute
-    self._adapt_connection.await_(
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
-    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
-    value = await result
-            ^^^^^^^^^^^^
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 563, in _prepare_and_execute
-    self._handle_exception(error)
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 513, in _handle_exception
-    self._adapt_connection._handle_exception(error)
-  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
-    raise translated_error from error
-sqlalchemy.exc.DBAPIError: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.ConnectionDoesNotExistError'>: connection was closed in the middle of operation
-[SQL: SELECT geocoding_cache.location_key, geocoding_cache.latitude, geocoding_cache.longitude, geocoding_cache.affiliations, geocoding_cache.created_at 
-FROM geocoding_cache 
-WHERE geocoding_cache.location_key = $1::VARCHAR]
-[parameters: ('city:Chengdu,China',)]
-(Background on this error at: https://sqlalche.me/e/20/dbapi)
-2026-01-08 15:54:01 - app.main - INFO - ================================================================================
-2026-01-08 15:54:01 - app.main - INFO - ✅ INGESTION COMPLETED - Project: 6af7ac1b6254, Run: 13092a22728c
-2026-01-08 15:54:01 - app.main - INFO -    Total PMIDs: 500
-2026-01-08 15:54:01 - app.main - INFO -    Papers parsed: 500
-2026-01-08 15:54:01 - app.main - INFO -    Authorships created: 4432
-2026-01-08 15:54:01 - app.main - INFO -    Unique affiliations: 2545
-2026-01-08 15:54:01 - app.main - INFO -    Affiliations with country: 2441
-2026-01-08 15:54:01 - app.main - INFO -    LLM calls made: 0
-2026-01-08 15:54:01 - app.main - INFO - ================================================================================
+2026-01-08 16:45:38 - app.main - INFO - ================================================================================
+2026-01-08 16:45:38 - app.main - INFO - 🚀 INGESTION STARTED - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 16:45:38 - app.main - INFO -    Force refresh: False
+2026-01-08 16:45:38 - app.main - INFO - ================================================================================
+2026-01-08 16:45:38 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:38 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Starting ingestion for run 13092a22728c
+2026-01-08 16:45:38 - app.phase2.pg_ingest - INFO -    Project ID: 6af7ac1b6254
+2026-01-08 16:45:38 - app.phase2.pg_ingest - INFO -    Force refresh: False
+2026-01-08 16:45:38 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:38 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...
+2026-01-08 16:45:39 - app.phase2.pg_ingest - INFO -    Loaded 500 unique PMIDs from run 13092a22728c
+2026-01-08 16:45:39 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 1 COMPLETE: Found 500 PMIDs
+2026-01-08 16:45:39 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:39 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 2: Fetching 500 PMIDs from PubMed...
+2026-01-08 16:45:39 - app.phase2.pubmed_fetcher - INFO - Fetching 500 PMIDs in 4 batches (batch_size=150, rate_limit=3.0 rps)
+2026-01-08 16:45:39 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-08 16:45:40 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40832215%2C32289685%2C41266624%2C27926827%2C25273279%2C35654375%2C39990331%2C39479009%2C37582062%2C38063368%2C27377299%2C27199720%2C34130614%2C30216929%2C38260011%2C28268618%2C30238924%2C35966994%2C34965874%2C29397190%2C37739786%2C30831567%2C39922365%2C34892495%2C39455254%2C27413155%2C29271713%2C34421555%2C39162748%2C37961305%2C39345158%2C25759647%2C27935031%2C27199638%2C35185491%2C29779940%2C37841873%2C37425292%2C20811093%2C25122702%2C34906982%2C21307246%2C35169837%2C32105726%2C26642090%2C28268620%2C40253415%2C29861132%2C41081527%2C25616459%2C39371161%2C25266305%2C39213665%2C40144585%2C28396294%2C30389490%2C29460482%2C26386644%2C30279650%2C40720979%2C40490003%2C38808652%2C20478745%2C34347873%2C41324025%2C37229140%2C25570199%2C32435182%2C33137575%2C38729074%2C17071238%2C40697162%2C33912122%2C23914170%2C23072156%2C27534393%2C40302941%2C40417558%2C15817517%2C30500619%2C40039596%2C29093659%2C28406383%2C37798921%2C35311092%2C41167038%2C33408621%2C35248810%2C27635975%2C30617653%2C37437189%2C22874396%2C35395633%2C9419036%2C35989149%2C39808939%2C36634533%2C38242691%2C37819985%2C24995815%2C36121939%2C30700532%2C38318272%2C29439164%2C38514133%2C19163831%2C22973215%2C37487487%2C23032488%2C27311642%2C9737437%2C39374038%2C38093008%2C17712784%2C25571558%2C40610484%2C23696279%2C26818506%2C36054730%2C39433597%2C29977189%2C31220442%2C29525721%2C27729844%2C19732923%2C32372065%2C37086161%2C34123657%2C21724424%2C31946284%2C33506209%2C38909761%2C26446212%2C29268943%2C31419636%2C40817733%2C27325763%2C37245559%2C40830488%2C25909573%2C41034198%2C41135818%2C41254404%2C31207466%2C23366629%2C40309789%2C41427281%2C29190521%2C25157216%2C39484239&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 16:45:41 - app.phase2.pubmed_fetcher - INFO - Batch 1/4 completed
+2026-01-08 16:45:41 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-08 16:45:41 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=36872854%2C31820736%2C37995287%2C24315545%2C21750369%2C41129388%2C36828156%2C21471374%2C33935673%2C34301825%2C37638314%2C40239679%2C21373361%2C35121181%2C29576436%2C23465430%2C41191764%2C18982128%2C28119593%2C37382208%2C22207857%2C29087324%2C32498058%2C32610290%2C39985774%2C26072003%2C25819402%2C40800288%2C32231340%2C19349241%2C20465359%2C28622530%2C40040033%2C39386565%2C38935898%2C20087111%2C26408491%2C30367077%2C22875868%2C31875441%2C35695785%2C26737497%2C30440349%2C29430213%2C40516665%2C27956570%2C22890647%2C33942078%2C41335998%2C41279744%2C33841081%2C28666338%2C30256217%2C36086071%2C25761260%2C21419227%2C40910467%2C34587350%2C38885688%2C31287601%2C37203491%2C17971857%2C41042753%2C35099768%2C30064321%2C24293161%2C31692177%2C24982625%2C32840483%2C30643130%2C33133815%2C38041253%2C39554006%2C30847390%2C33306299%2C33789135%2C32686761%2C33419861%2C38222047%2C38581367%2C12614397%2C38496670%2C38769115%2C32198060%2C40354107%2C35777988%2C32888480%2C40800829%2C28236761%2C39819752%2C26679420%2C24639642%2C17271737%2C24904404%2C38769157%2C29404403%2C28993231%2C21708506%2C39332803%2C31824257%2C30504559%2C32378738%2C18440570%2C29414401%2C26188384%2C37459853%2C29674950%2C37875404%2C31103409%2C26124702%2C27408803%2C38787551%2C36966852%2C25118584%2C35313351%2C38343801%2C30414541%2C33142282%2C30827578%2C41177674%2C39990398%2C32577713%2C29378977%2C26262160%2C24904069%2C29891885%2C26949710%2C21471638%2C41021378%2C37968869%2C40695313%2C26136107%2C33372958%2C24122368%2C32828921%2C29678760%2C27918346%2C25000321%2C25571555%2C17980999%2C38083559%2C34823894%2C19279495%2C37019103%2C34918613%2C39485790%2C35528322%2C30971792%2C23774120%2C27671642&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 16:45:42 - app.phase2.pubmed_fetcher - INFO - Batch 2/4 completed
+2026-01-08 16:45:42 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-08 16:45:42 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=25948269%2C23643922%2C25259669%2C33867912%2C40769034%2C38948730%2C27046113%2C41332755%2C29052465%2C21529188%2C39153482%2C30238309%2C33293456%2C24836588%2C27686506%2C38559163%2C41205609%2C35113857%2C30837823%2C40894619%2C37217308%2C41062786%2C38486966%2C36645968%2C34958951%2C41349179%2C41397373%2C28225156%2C26991386%2C40766385%2C41022986%2C32656294%2C37441880%2C32442776%2C25571556%2C20921326%2C15677998%2C34411517%2C34489664%2C38648781%2C41386385%2C41275704%2C40972658%2C25571553%2C22255402%2C37460730%2C33776668%2C27450996%2C31525179%2C39096896%2C30721879%2C27249656%2C29247963%2C40913768%2C24285843%2C37900727%2C41105453%2C38335090%2C38306217%2C38925110%2C35878727%2C34607318%2C32694561%2C39005394%2C30134167%2C38969758%2C25822912%2C38183998%2C34774771%2C26232713%2C40343020%2C39850351%2C35708911%2C39867597%2C31342677%2C15876624%2C31339411%2C28268617%2C38813793%2C30342252%2C27578414%2C35568349%2C32439539%2C39134741%2C22255777%2C28335018%2C39968245%2C34536230%2C37745380%2C35013268%2C31277857%2C35869138%2C36356309%2C30710356%2C37215328%2C37066306%2C22750156%2C35907491%2C37060887%2C37120741%2C39974103%2C28334963%2C31445890%2C35118367%2C22573665%2C34260835%2C35276657%2C40018762%2C22941838%2C28894834%2C41282818%2C33283856%2C30740659%2C27408802%2C38988764%2C34408717%2C24672012%2C39194182%2C37467739%2C41363150%2C14656066%2C24681353%2C32410969%2C40825359%2C39248654%2C30596439%2C37105171%2C33360179%2C35534226%2C36570848%2C31056408%2C27019106%2C39582595%2C41397928%2C24877680%2C38671062%2C29958109%2C36731812%2C28676308%2C28399442%2C16175856%2C24845600%2C28839071%2C28269552%2C40490093%2C30038000%2C8892373%2C26888939%2C25352799%2C26935890&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 16:45:43 - app.phase2.pubmed_fetcher - INFO - Batch 3/4 completed
+2026-01-08 16:45:43 - app.phase2.pubmed_fetcher - INFO - Fetching 50 PMIDs from PubMed...
+2026-01-08 16:45:43 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=39464426%2C39870041%2C41453123%2C40260174%2C39399739%2C41144819%2C21029784%2C40913530%2C34849596%2C31741702%2C32788249%2C23482627%2C40461573%2C22144944%2C37932250%2C27148018%2C36246502%2C27524194%2C36989073%2C31578420%2C40055549%2C37292795%2C34717248%2C15329073%2C28716965%2C38696121%2C29018336%2C29033809%2C31363096%2C27484713%2C20026224%2C28918128%2C39322094%2C39579033%2C19033707%2C25816090%2C34753819%2C23577157%2C35819528%2C30249918%2C27182530%2C22563311%2C40147418%2C16792292%2C41039113%2C25570869%2C30257858%2C36327599%2C38582333%2C32180695&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 16:45:43 - app.phase2.pubmed_fetcher - INFO - Batch 4/4 completed
+2026-01-08 16:45:43 - app.phase2.pubmed_fetcher - INFO - Fetched 4/4 batches successfully
+2026-01-08 16:45:43 - app.phase2.pubmed_fetcher - INFO - Extracted 500 PMIDs from 4 batches
+2026-01-08 16:45:43 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 2 COMPLETE: Fetched 500 PubMed XML records
+2026-01-08 16:45:43 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:43 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 3: Parsing XML into structured papers...
+2026-01-08 16:45:44 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 3 COMPLETE: Parsed 500 papers
+2026-01-08 16:45:44 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:44 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 4: Extracting affiliations via rule-based...
+2026-01-08 16:45:44 - app.phase2.pg_ingest - INFO -    Extracting 2545 affiliations via rule-based (with cache)
+2026-01-08 16:45:44 - app.phase2.rule_based_extractor - INFO -    Processing 2545 affiliations...
+2026-01-08 16:45:44 - app.phase2.rule_based_extractor - INFO -    Batch checking cache for 2545 affiliations...
+2026-01-08 16:45:44 - app.phase2.rule_based_extractor - INFO -    ✅ Batch cache check complete: 2545 hits, 0 to extract
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Cached 2545 affiliation extraction results
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Extraction complete: 2545 affiliations, 2452 with country
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 4 COMPLETE: Extracted 2545 affiliations
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2545
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    With country: 2452
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    LLM calls: 0
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 5: Writing to database...
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Clearing existing data for run 13092a22728c...
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Deleted authorships for 500 existing PMIDs
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Inserting/updating 500 papers (bulk operation)...
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Papers inserted/updated: 500
+2026-01-08 16:45:46 - app.phase2.pg_ingest - INFO -    Inserting 4432 authorships (bulk operation)...
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Authorships inserted: 4432
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Linking run 13092a22728c to 500 papers...
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Database write complete
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 5 COMPLETE: Created 4432 authorships
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO - ✅ INGESTION COMPLETE - Run: 13092a22728c
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Total PMIDs: 500
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Papers parsed: 500
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Authorships created: 4432
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2545
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    Affiliations with country: 2452
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO -    LLM calls made: 0
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:50 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...
+2026-01-08 16:45:50 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:45:50 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 13092a22728c...
+2026-01-08 16:45:51 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4432 authorships from 500 papers
+2026-01-08 16:45:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Redmond, United States' -> (47.6694141, -122.1238767)
+2026-01-08 16:45:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Mt. Pleasant, United States' -> (33.1570582, -94.9694007)
+2026-01-08 16:46:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Ferrara, Italy' -> (44.7667642, 11.827939)
+2026-01-08 16:46:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Freiburg im Breisgau, Germany' -> (47.9960901, 7.8494005)
+2026-01-08 16:46:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Calgary, Canada' -> (51.0456064, -114.057541)
+2026-01-08 16:46:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Davis, United States' -> (40.7474784, -92.3965311)
+2026-01-08 16:46:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Guangzhou, China' -> (23.1288454, 113.2590064)
+2026-01-08 16:46:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Pieve Di Soligo, Italy' -> (45.8997613, 12.1730811)
+2026-01-08 16:46:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Shaanxi, China' -> (35.5895959, 109.3013107)
+2026-01-08 16:46:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Shaanxi China, China' -> (34.1552786, 108.8866313)
+2026-01-08 16:46:36 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Japan, Andorra' (from affiliation: 3Center for Advanced Research and Education, School of Medicine, Asahikawa Medical University, Hokkaido, Japan; and. (PMID: 29271713))
+2026-01-08 16:46:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Grenoble, France' -> (45.1875602, 5.7357819)
+2026-01-08 16:46:49 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Chapel Hill, Taiwan' (from affiliation: From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill. (PMID: 34906982))
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill. eldomtoh@hotmail.com.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Department of Medical Imaging and Intervention (T.Y.S., C.H.T.) and Neuroscience Research Center, Department of Neurology, Medical Center and College of Medicine (J.-L.H.), Chang Gung University College of Medicine, and Division of Acupuncture and Moxibustion, Department of Traditional Chinese Medicine (G.-H.L.), Department of Psychiatry (S.-H.L.), Department of Pulmonary and Critical Care Medicine (N.-H.C.), Biomedical Informatics Unit, Clinical Trial Center (C.J.F.), and Department of Nephrology (J.-T.F.), Chang Gung Memorial Hospital at Linkou, Taoyuan; Graduate Institute of Mind, Brain, & Consciousness (J.-L.H.), Taipei Medical University; Brain & Consciousness Research Center (J.-L.H.), Shuang Ho Hospital, New Taipei City; School of Traditional Chinese Medicine (G.-H.L., N.-H.C.) and School of Medicine (J.-T.F.), College of Medicine (S.-H.L.), Chang Gung University; Sleep Center (G.-H.L., N.-H.C.), Chang Gung Memorial Hospital, Taoyuan, Taiwan; and Department of Radiology (M.C.), University of North Carolina School of Medicine, Chapel Hill.', country: 'Taiwan, Province of China', city: 'Chapel Hill', PMID: 34906982
+2026-01-08 16:46:53 - app.phase2.pg_geocoding - INFO - Geocoded 'P. R. China, China' -> (35.000074, 104.999927)
+2026-01-08 16:46:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Italy, Andorra' -> (43.7565933, 11.2965658)
+2026-01-08 16:46:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Chieti-Pescara, Italy' -> (42.1536142, 13.270973)
+2026-01-08 16:47:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Laurel, United States' -> (37.1000973, -84.1148273)
+2026-01-08 16:47:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Colchester, United Kingdom' -> (51.8896903, 0.8994651)
+2026-01-08 16:47:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Orlando, United States' -> (28.5421218, -81.379045)
+2026-01-08 16:47:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Irvine, United States' -> (33.6856969, -117.825981)
+2026-01-08 16:47:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Stevenage, United Kingdom' -> (51.9016663, -0.2027155)
+2026-01-08 16:47:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Newcastle upon Tyne, United Kingdom' -> (54.9738474, -1.6131572)
+2026-01-08 16:47:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Jacksonville, United States' -> (30.3321838, -81.655651)
+2026-01-08 16:47:22 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Mathematical Sciences, KAIST, Daejoen, 34141 Republic of Korea', country: 'Korea, Republic of', city: 'Daejoen', PMID: 27534393
+2026-01-08 16:47:27 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'INSERM U846, Stem Cell and Brain Research Institute, Bron Cedex, France', country: 'France', city: 'Bron Cedex', PMID: 27534393
+2026-01-08 16:47:27 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Riken Brai Science Institute, 2-1 Hirosawa, Wako, Saitama Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
+2026-01-08 16:47:27 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Riken Brai Science Institute, 2-1 Hirosawa, Wako, Saitama Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
+2026-01-08 16:47:27 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Riken Brai Science Institute, 2-1 Hirosawa, Wako, Saitama Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
+2026-01-08 16:47:27 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Riken Brai Science Institute, 2-1 Hirosawa, Wako, Saitama Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
+2026-01-08 16:47:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Taipei, Taiwan' -> (25.0375198, 121.5636796)
+2026-01-08 16:47:38 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Zanjan, Iran, Islamic Republic of' (from affiliation: Department of Physics, Institute for Advanced Studies in Basic Sciences, Zanjan, Iran (PMID: 27534393))
+2026-01-08 16:47:38 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Physics, Institute for Advanced Studies in Basic Sciences, Zanjan, Iran', country: 'Iran, Islamic Republic of', city: 'Zanjan', PMID: 27534393
+2026-01-08 16:47:42 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Dept. Musicology, Norway' (from affiliation: fourMs group, Dept. Musicology, University of Oslo, 0371 Oslo, Norway (PMID: 27534393))
+2026-01-08 16:47:46 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Aichi Japan, Japan' (from affiliation: National Institute for Physiological Sciences, Okazaki, Aichi Japan (PMID: 27534393))
+2026-01-08 16:47:49 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Tehran, Iran, Islamic Republic of' (from affiliation: School of ECE, College of Engineering, University of Tehran, Tehran, 14155-6619 Iran (PMID: 27534393))
+2026-01-08 16:47:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'RIKEN Brain Science Institute, Wako, Saitama 351-0198 Japan', country: 'Japan', city: 'Saitama Japan', PMID: 27534393
+2026-01-08 16:47:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Physics, Institute for Research in Fundamental Sciences (IPM), Tehran, 19395-5531 Iran', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 27534393
+2026-01-08 16:47:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Gwanak-gu, South Korea' -> (37.4782, 126.9518)
+2026-01-08 16:47:58 - app.phase2.pg_geocoding - INFO - Geocoded 'ROC, Taiwan' -> (22.6142518, 120.3722709)
+2026-01-08 16:48:04 - app.phase2.pg_geocoding - WARNING - Could not geocode 'The Czech Academy of Sciences, Czechia' (from affiliation: Department of Nonlinear Dynamics and Complex Systems, Institute of Computer Science, The Czech Academy of Sciences, 182 07 Prague, Czech Republic (PMID: 27534393))
+2026-01-08 16:48:04 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Nonlinear Dynamics and Complex Systems, Institute of Computer Science, The Czech Academy of Sciences, 182 07 Prague, Czech Republic', country: 'Czechia', city: 'The Czech Academy of Sciences', PMID: 27534393
+2026-01-08 16:48:08 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Ecole Polytechnique Federal de Lausanne (EPFL, Switzerland' (from affiliation: School of Life Sciences, Brain Mind Institute and School of Computer and Communication Sciences, Ecole Polytechnique Federal de Lausanne (EPFL), 1015 Lausanne, Switzerland (PMID: 27534393))
+2026-01-08 16:48:08 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Life Sciences, Brain Mind Institute and School of Computer and Communication Sciences, Ecole Polytechnique Federal de Lausanne (EPFL), 1015 Lausanne, Switzerland', country: 'Switzerland', city: 'Ecole Polytechnique Federal de Lausanne (EPFL', PMID: 27534393
+2026-01-08 16:48:08 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Life Sciences, Brain Mind Institute and School of Computer and Communication Sciences, Ecole Polytechnique Federal de Lausanne (EPFL), 1015 Lausanne, Switzerland', country: 'Switzerland', city: 'Ecole Polytechnique Federal de Lausanne (EPFL', PMID: 27534393
+2026-01-08 16:48:12 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Fraunhofer IDM @ NTU, Singapore' (from affiliation: Fraunhofer IDM @ NTU, Nanyang Technological University, Singapore, 639798 Singapore (PMID: 27534393))
+2026-01-08 16:48:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Günzburg, Germany' -> (48.4555244, 10.2766213)
+2026-01-08 16:48:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Stuttgart, Germany' -> (48.7784485, 9.1800132)
+2026-01-08 16:48:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Erfurt, Germany' -> (50.9777974, 11.0287364)
+2026-01-08 16:48:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Hannover, Germany' -> (52.3744779, 9.7385532)
+2026-01-08 16:48:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Ulm, Germany' -> (48.3984968, 9.9912458)
+2026-01-08 16:48:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Antioquia, Colombia' -> (7.0000085, -75.5000086)
+2026-01-08 16:48:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Aberdeen Proving Ground, United States' -> (39.3890776, -76.2305823)
+2026-01-08 16:48:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Victoria, Australia' -> (-36.5986096, 144.6780052)
+2026-01-08 16:48:43 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Dept. of Mathematics and Computer Science, Italy' (from affiliation: Dept. of Mathematics and Computer Science, University of Udine, Italy. vicenzo.dellamea@uniud.it (PMID: 22874396))
+2026-01-08 16:48:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Ont, Canada' -> (50.000678, -86.000977)
+2026-01-08 16:48:47 - app.phase2.pg_geocoding - INFO - Geocoded 'France, Brazil' -> (16.2649793, -61.5945856)
+2026-01-08 16:48:50 - app.phase2.pg_geocoding - WARNING - Could not geocode 'AP-HM, France' (from affiliation: Aix Marseille Univ, INSERM, INS, Inst Neurosci Syst, Marseille, France; AP-HM, Timone Hospital, Stereotactic and Functional Neurosurgery, France. (PMID: 35989149))
+2026-01-08 16:48:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Albany, China' -> (22.2777806, 114.1547996)
+2026-01-08 16:48:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Springfield, United States' -> (39.7990175, -89.6439575)
+2026-01-08 16:49:00 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Pittsburgh, Andorra' (from affiliation: Department of Neurobiology, University of Pittsburgh School of Medicine, Pittsburgh, Pennsylvania 15213, and. (PMID: 30700532))
+2026-01-08 16:49:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Urushiyama, Japan' -> (38.314412, 140.3476006)
+2026-01-08 16:49:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Royal Oak, United States' -> (42.4894801, -83.1446485)
+2026-01-08 16:49:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Leuven, Belgium' -> (50.879202, 4.7011675)
+2026-01-08 16:49:09 - app.phase2.pg_geocoding - INFO - Geocoded 'New Jersey, United States' -> (40.0757384, -74.4041622)
+2026-01-08 16:49:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Jerusalem, Israel' -> (31.7788472, 35.2257856)
+2026-01-08 16:49:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Sheffield, United Kingdom' -> (53.3806626, -1.4702278)
+2026-01-08 16:49:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Pisa, Italy' -> (43.4714722, 10.6797912)
+2026-01-08 16:49:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Milan, Italy' -> (45.4641943, 9.1896346)
+2026-01-08 16:49:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Pavia, Italy' -> (45.0368547, 9.1378251)
+2026-01-08 16:49:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Rozzano, Italy' -> (45.3829973, 9.1545305)
+2026-01-08 16:49:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Philippines' -> (12.7503486, 122.7312101)
+2026-01-08 16:49:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Richardson, United States' -> (32.9481789, -96.7297206)
+2026-01-08 16:49:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Doha, Qatar' -> (25.2856329, 51.5264162)
+2026-01-08 16:49:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Toronto, Canada' -> (43.6534817, -79.3839347)
+2026-01-08 16:49:38 - app.phase2.pg_geocoding - INFO - Geocoded 'West Lafayette, United States' -> (40.4258686, -86.9080655)
+2026-01-08 16:49:41 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Anesthesiology and Perioperative Care, Andorra' (from affiliation: Anesthesiology and Perioperative Care; and. (PMID: 25909573))
+2026-01-08 16:49:43 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Head and Neck Surgery, Poland' (from affiliation: Department of Otolaryngology, Head and Neck Surgery, Wrocław Medical University, Poland. Electronic address: karolina.dorobisz@umw.edu.pl. (PMID: 41135818))
+2026-01-08 16:49:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Poland' -> (52.215933, 19.134422)
+2026-01-08 16:49:45 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Otolaryngology, Head and Neck Surgery, Wrocław Medical University, Poland.', country: 'Poland', city: 'Head and Neck Surgery', PMID: 41135818
+2026-01-08 16:49:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Wroclaw, Poland' -> (51.1089776, 17.0326689)
+2026-01-08 16:49:51 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Molecular Biophysics and Integrated Bioimaging, United States' (from affiliation: Center for Functional Imaging, Molecular Biophysics and Integrated Bioimaging, Lawrence Berkeley National Laboratory, Berkeley, CA, USA. (PMID: 31207466))
+2026-01-08 16:49:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Trinity Ln, United Kingdom' -> (52.2063883, 0.1170947)
+2026-01-08 16:49:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Hempstead, United States' -> (40.6736812, -73.6190736)
+2026-01-08 16:50:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Alderley Park, United Kingdom' -> (53.3027551, -2.2378849)
+2026-01-08 16:50:05 - app.phase2.pg_geocoding - INFO - Geocoded 'New Cairo, Egypt' -> (30.0277688, 31.4756825)
+2026-01-08 16:50:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Jefferson, United States' -> (29.834772, -94.1704496)
+2026-01-08 16:50:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Ridgefield, United States' -> (41.2814842, -73.4981792)
+2026-01-08 16:50:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Yokohama, Japan' -> (35.4503381, 139.6343802)
+2026-01-08 16:50:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Hiroshima, Japan' -> (34.3917241, 132.4517589)
+2026-01-08 16:50:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Hachinohe, Japan' -> (40.5122388, 141.4882959)
+2026-01-08 16:50:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Mount Pleasant, United States' -> (33.1570582, -94.9694007)
+2026-01-08 16:50:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Daegu, South Korea' -> (35.8713, 128.6018)
+2026-01-08 16:50:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Belgium' -> (50.6402809, 4.6667145)
+2026-01-08 16:50:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Aurora, Colombia' -> (6.0218228, -75.1359969)
+2026-01-08 16:50:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Denver, Colombia' -> (5.3431816, -72.395988)
+2026-01-08 16:50:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Hyogo, Japan' -> (34.914934, 134.860666)
+2026-01-08 16:50:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Snekkersten, Denmark' -> (56.0107273, 12.579952)
+2026-01-08 16:50:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Smørum, Denmark' -> (55.7158721, 12.3196104)
+2026-01-08 16:50:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Bath, United Kingdom' -> (51.3813864, -2.3596963)
+2026-01-08 16:50:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Dept. of Mathematics, Italy' -> (45.479966, 9.2292682)
+2026-01-08 16:50:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Conegliano, Italy' -> (45.8862172, 12.2977566)
+2026-01-08 16:50:55 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Cognitive Sciences, Institute for Research in Fundamental Sciences (IPM), Tehran, Iran.', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 41042753
+2026-01-08 16:50:55 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Cognitive Sciences, Institute for Research in Fundamental Sciences (IPM), Tehran, Iran.', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 41042753
+2026-01-08 16:50:55 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Cognitive Sciences, Institute for Research in Fundamental Sciences (IPM), Tehran, Iran.', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 41042753
+2026-01-08 16:50:55 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'School of Cognitive Sciences, Institute for Research in Fundamental Sciences (IPM), Tehran, Iran.', country: 'Iran, Islamic Republic of', city: 'Tehran', PMID: 41042753
+2026-01-08 16:50:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Middletown, United States' -> (41.5623178, -72.6509061)
+2026-01-08 16:51:02 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Rochester, Mongolia' (from affiliation: Department of Neurology, Mayo Clinic, Rochester, MN 55905. (PMID: 30847390))
+2026-01-08 16:51:04 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Urbana-Champaign, Israel' (from affiliation: Department of Electrical and Computer Engineering, University of Illinois, Urbana-Champaign, IL 61801. (PMID: 30847390))
+2026-01-08 16:51:04 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
+2026-01-08 16:51:04 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
+2026-01-08 16:51:04 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
+2026-01-08 16:51:04 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
+2026-01-08 16:51:04 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Emory University, Atlanta, GA 30322.', country: 'Gabon', city: 'Atlanta', PMID: 30847390
+2026-01-08 16:51:05 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Electrical and Computer Engineering, University of Illinois, Urbana-Champaign, IL 61801.', country: 'Israel', city: 'Urbana-Champaign', PMID: 30847390
+2026-01-08 16:51:05 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 30847390
+2026-01-08 16:51:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Moscow, Russian Federation' -> (55.625578, 37.6063916)
+2026-01-08 16:51:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Taiwan, China' -> (23.9739374, 120.9820179)
+2026-01-08 16:51:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Ivanovo, Russian Federation' -> (56.9956855, 40.9812104)
+2026-01-08 16:51:14 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Columbia, Seychelles' (from affiliation: Speech Neuroscience Laboratory, Department of Communication Sciences and Disorders, University of South Carolina, Columbia, 29208 SC. (PMID: 33419861))
+2026-01-08 16:51:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Majadahonda, Spain' -> (40.4728425, -3.8723542)
+2026-01-08 16:51:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Camerino, Italy' -> (43.1357641, 13.0683092)
+2026-01-08 16:51:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Hoboken, United States' -> (40.7433066, -74.0323752)
+2026-01-08 16:51:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Orange, United States' -> (33.750631, -117.8722311)
+2026-01-08 16:51:30 - app.phase2.pg_geocoding - INFO - Geocoded 'New Taipei City, Taiwan' -> (25.0600269, 121.4595689)
+2026-01-08 16:51:32 - app.phase2.pg_geocoding - INFO - Geocoded 'New Brunswick, United States' -> (40.4951365, -74.4439254)
+2026-01-08 16:51:34 - app.phase2.pg_geocoding - INFO - Geocoded 'UMR, France' -> (48.8480448, 2.3467365)
+2026-01-08 16:51:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Montreal, Canada' -> (45.5031824, -73.5698065)
+2026-01-08 16:51:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Aix-en-Provence, France' -> (43.5298424, 5.4474738)
+2026-01-08 16:51:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Manhattan, United States' -> (40.7579554, -73.9855319)
+2026-01-08 16:51:49 - app.phase2.pg_geocoding - WARNING - Could not geocode 'École Polytechnique Fédérale de Lausanne Lausanne, Switzerland' (from affiliation: Helen Wills Neuroscience Institute, University of California Berkeley, CA, USA ; Department of Bioengineering, École Polytechnique Fédérale de Lausanne Lausanne, Switzerland. (PMID: 24904404))
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Emory University, Atlanta, GA 30307.', country: 'Gabon', city: 'Atlanta', PMID: 29404403
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
+2026-01-08 16:51:51 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology, Mayo Clinic, Rochester, MN 55905.', country: 'Mongolia', city: 'Rochester', PMID: 29404403
+2026-01-08 16:52:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Genoa, Italy' -> (44.40726, 8.9338624)
+2026-01-08 16:52:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Glasgow, United Kingdom' -> (55.861155, -4.2501687)
+2026-01-08 16:52:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Riyadh, Saudi Arabia' -> (23.333333, 45.333333)
+2026-01-08 16:52:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Islamabad, Pakistan' -> (33.6938118, 73.0651511)
+2026-01-08 16:52:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Universidad de San Andrés, Argentina' -> (-34.4461878, -58.5302426)
+2026-01-08 16:52:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Argentina' -> (-34.9964963, -64.9672817)
+2026-01-08 16:52:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Universidad de Buenos Aires, Argentina' -> (-34.5086718, -58.688352)
+2026-01-08 16:52:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Buenos Aires, Argentina' -> (-34.6095579, -58.3887904)
+2026-01-08 16:52:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Hefei, China' -> (31.8665676, 117.281428)
+2026-01-08 16:52:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Ghent, Belgium' -> (51.0538286, 3.7250121)
+2026-01-08 16:52:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Hvidovre, Denmark' -> (55.6644909, 12.4750154)
+2026-01-08 16:52:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Amsterdam, Netherlands' -> (52.3730796, 4.8924534)
+2026-01-08 16:52:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Braine-L'Alleud, Belgium' -> (50.6828722, 4.3692706)
+2026-01-08 16:52:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Bordeaux, France' -> (44.841225, -0.5800364)
+2026-01-08 16:52:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Uxbridge, United Kingdom' -> (51.5449509, -0.4816672)
+2026-01-08 16:52:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Leeds, United Kingdom' -> (53.7974185, -1.5437941)
+2026-01-08 16:52:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Pontedera, Italy' -> (43.6634536, 10.6354851)
+2026-01-08 16:52:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Milano, Italy' -> (45.4641943, 9.1896346)
+2026-01-08 16:52:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Manchester, United Kingdom' -> (53.4794892, -2.2451148)
+2026-01-08 16:52:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Preston, United Kingdom' -> (53.7593363, -2.6992717)
+2026-01-08 16:52:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Brain & Cognitive Sciences Department, McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA 02139.', country: 'Morocco', city: 'Cambridge', PMID: 27671642
+2026-01-08 16:52:57 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Brain & Cognitive Sciences Department, McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA 02139 evelina.fedorenko@mgh.harvard.edu ngk@mit.edu.', country: 'Morocco', city: 'Cambridge', PMID: 27671642
+2026-01-08 16:53:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Copenhagen, Denmark' -> (55.6867243, 12.5700724)
+2026-01-08 16:53:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Lyngby, Denmark' -> (55.7718649, 12.5051413)
+2026-01-08 16:53:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Denmark' -> (55.670249, 10.3333283)
+2026-01-08 16:53:10 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Durham, New Caledonia' (from affiliation: Department of Biomedical Engineering, Duke University, Durham, NC. (PMID: 40894619))
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurosurgery, Duke School of Medicine, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Biomedical Engineering, Duke University, Durham, NC.', country: 'New Caledonia', city: 'Durham', PMID: 40894619
+2026-01-08 16:53:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Gif-sur-Yvette, France' -> (48.7018823, 2.134529)
+2026-01-08 16:53:15 - app.phase2.pg_geocoding - INFO - Geocoded 'St George's, United Kingdom' -> (51.98711, -0.2217028)
+2026-01-08 16:53:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Sevilla, Spain' -> (37.3886303, -5.9953403)
+2026-01-08 16:53:19 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Cambridge and Peterborough NHS Foundation Trust UK, United Kingdom' (from affiliation: Department of Psychiatry, University of Cambridge UK; Behavioural and Clinical Neuroscience Institute, University of Cambridge UK; Cambridge and Peterborough NHS Foundation Trust UK. (PMID: 36645968))
+2026-01-08 16:53:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Ramat-Gan, Israel' -> (32.0686867, 34.8246812)
+2026-01-08 16:53:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Fujian, China' -> (26.193218, 118.2208721)
+2026-01-08 16:53:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Zhejiang, China' -> (29.0000001, 119.9999999)
+2026-01-08 16:53:31 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, China' -> (-38.9790355, -68.3566918)
+2026-01-08 16:53:33 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, Germany' -> (52.3969909, 9.6462511)
+2026-01-08 16:53:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Suita, Japan' -> (34.7594193, 135.516835)
+2026-01-08 16:53:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Kashihara, Japan' -> (34.5094067, 135.792955)
+2026-01-08 16:53:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Tianjin, China' -> (39.0844897, 117.1956724)
+2026-01-08 16:53:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Henan, China' -> (34.0000001, 113.9999999)
+2026-01-08 16:53:48 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Princeton, Israel' (from affiliation: Princeton Neuroscience Institute and Department of Psychology, Princeton University, Princeton, NJ 08544, USA; Department of Cognitive and Brain Sciences and Business School, Hebrew University, Jerusalem 9190501, Israel. (PMID: 39096896))
+2026-01-08 16:53:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Princeton Neuroscience Institute and Department of Psychology, Princeton University, Princeton, NJ 08544, USA; Faculty of Engineering, Holon Institute of Technology, Holon 5810201, Israel.', country: 'Israel', city: 'Princeton', PMID: 39096896
+2026-01-08 16:53:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Heeze, Netherlands' -> (51.3832098, 5.5715902)
+2026-01-08 16:53:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Eindhoven, Netherlands' -> (51.4392648, 5.478633)
+2026-01-08 16:53:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Varese, Italy' -> (45.8397203, 8.7541338)
+2026-01-08 16:54:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Parma, Italy' -> (44.6952006, 10.0979869)
+2026-01-08 16:54:03 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Saudi Arabia, Andorra' (from affiliation: King Fahad Medical City, KFMC Neurosciences Center, Riyadh, Saudi Arabia; and. (PMID: 38306217))
+2026-01-08 16:54:05 - app.phase2.pg_geocoding - INFO - Geocoded 'U.S.A, Morocco' -> (40.9463651, -87.4529316)
+2026-01-08 16:54:10 - app.phase2.pg_geocoding - WARNING - Could not geocode 'P.O. Box, Netherlands' (from affiliation: Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands. (PMID: 34607318))
+2026-01-08 16:54:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
+2026-01-08 16:54:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
+2026-01-08 16:54:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
+2026-01-08 16:54:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
+2026-01-08 16:54:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
+2026-01-08 16:54:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'Department of Neurology and Neurosurgery, University Medical Center Utrecht Brain Center, Utrecht University, P.O. Box 85500, 3508 GA Utrecht, The Netherlands.', country: 'Netherlands', city: 'P.O. Box', PMID: 34607318
+2026-01-08 16:54:10 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'McGovern Institute for Brain Research, Massachusetts Institute of Technology, Cambridge, MA.', country: 'Morocco', city: 'Cambridge', PMID: 39005394
+2026-01-08 16:54:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Minneapolis, United States' -> (44.9772995, -93.2654692)
+2026-01-08 16:54:17 - app.phase2.pg_geocoding - INFO - Geocoded 'China' -> (35.000074, 104.999927)
+2026-01-08 16:54:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Mexico City, Mexico' -> (19.3207722, -99.1514678)
+2026-01-08 16:54:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Hanover, United States' -> (43.7023545, -72.2892164)
+2026-01-08 16:54:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Epping, Australia' -> (-37.6523847, 145.0315487)
+2026-01-08 16:54:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Heidelberg, Australia' -> (-37.7524788, 145.0701284)
+2026-01-08 16:54:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Pennsylvania, United States' -> (40.9699889, -77.7278831)
+2026-01-08 16:54:37 - app.phase2.pg_geocoding - INFO - Geocoded 'France, United States' -> (33.8511778, -115.6029427)
+2026-01-08 16:54:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Henry Wellcome Building, United Kingdom' -> (52.623974, -1.1261792)
+2026-01-08 16:54:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Urbana, United States' -> (40.1117174, -88.207301)
+2026-01-08 16:54:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Derry, United Kingdom' -> (54.9978678, -7.3213056)
+2026-01-08 16:54:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Jordanstown, United Kingdom' -> (54.6871277, -5.8951026)
+2026-01-08 16:54:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Miyagi, Japan' -> (38.3880155, 140.9761025)
+2026-01-08 16:55:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Tel Aviv, Israel' -> (32.0852997, 34.7818064)
+2026-01-08 16:55:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Bet Shemesh, Israel' -> (31.746214, 34.9886825)
+2026-01-08 16:55:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Dammam, Saudi Arabia' -> (26.4367824, 50.1039991)
+2026-01-08 16:55:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Austria' -> (47.59397, 14.12456)
+2026-01-08 16:55:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Matsumoto, Japan' -> (36.2382047, 137.9687141)
+2026-01-08 16:55:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Nagano, Japan' -> (36.1143945, 138.0319015)
+2026-01-08 16:55:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Zhengzhou, China' -> (34.7472531, 113.619321)
+2026-01-08 16:55:22 - app.phase2.pg_geocoding - INFO - Geocoded 'SAR, Hong Kong' -> (22.2534635, 114.190975)
+2026-01-08 16:55:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Uniondale, United States' -> (40.7157545, -73.5898872)
+2026-01-08 16:55:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Linköping, Sweden' -> (58.4098135, 15.6245252)
+2026-01-08 16:55:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Cali, Colombia' -> (3.4519988, -76.5325259)
+2026-01-08 16:55:46 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Evanston, Andorra' (from affiliation: Speech Physiology Laboratory, Department of Communication Sciences and Disorders, Northwestern University, Evanston, Illinois 60208, and. (PMID: 26888939))
+2026-01-08 16:55:48 - app.phase2.pg_geocoding - WARNING - Could not geocode 'New York, Moldova, Republic of' (from affiliation: From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York. ywang154@jhu.edu. (PMID: 26935890))
+2026-01-08 16:55:48 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
+2026-01-08 16:55:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
+2026-01-08 16:55:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
+2026-01-08 16:55:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
+2026-01-08 16:55:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
+2026-01-08 16:55:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
+2026-01-08 16:55:49 - app.phase2.affiliation_validator - INFO - Geocoding cache hit with null coordinates - affiliation: 'From the Departments of Neurology (Y.W., A.K., M.C.C., D.F.B.-R., N.E.C.), Biomedical Engineering (M.S.F.), and Neurosurgery (W.S.A.), Johns Hopkins University, Baltimore, MD; Fischell Department of Bioengineering (Y.W.), University of Maryland College Park; and Department of Psychology (A.F.), New York University, New York.', country: 'Moldova, Republic of', city: 'New York', PMID: 26935890
+2026-01-08 16:55:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Wuhan, China' -> (30.5951051, 114.2999353)
+2026-01-08 16:55:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Shenyang, China' -> (41.8026095, 123.4279105)
+2026-01-08 16:56:01 - app.phase2.pg_geocoding - INFO - Geocoded 'A.F, United States' -> (37.3925331, -121.8883687)
+2026-01-08 16:56:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Hong Kong Special Administrative Region, Hong Kong' -> (22.2534635, 114.190975)
+2026-01-08 16:56:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Omaha, United States' -> (41.2587459, -95.9383758)
+2026-01-08 16:56:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Columbus, United States' -> (39.9622601, -83.0007065)
+2026-01-08 16:56:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Chicago, Japan' -> (35.7054713, 139.5771069)
+2026-01-08 16:56:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Salzburg, Austria' -> (47.7981346, 13.0464806)
+2026-01-08 16:56:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Novi Sad, Serbia' -> (45.2551338, 19.8451756)
+2026-01-08 16:56:28 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, Canada' -> (45.5020249, -73.5727413)
+2026-01-08 16:56:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Florence, Italy' -> (43.7697955, 11.2556404)
+2026-01-08 16:56:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Riverside, United States' -> (33.9824949, -117.374238)
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 2-4 COMPLETE: Geocoding validation finished
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Total authorships checked: 4432
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Cache hits (valid): 3482
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Cache misses: 189
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Nominatim successes: 163
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Nominatim failures: 26
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Unique error affiliations: 26
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Error PMIDs: 19
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 5: Fixing 26 error affiliations with LLM...
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Collecting 26 unique error affiliations for LLM fix
+2026-01-08 16:56:38 - app.phase2.affiliation_validator - INFO -    Calling LLM extractor (batch size: 20)...
+2026-01-08 16:56:38 - app.phase2.affiliation_extractor - INFO - Extracting 26 affiliations (cached: 0) in batches of 20
+2026-01-08 16:56:38 - app.phase2.affiliation_extractor - INFO - Processing batch 1/2
+2026-01-08 16:56:44 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-08 16:56:44 - app.phase2.affiliation_extractor - INFO - Processing batch 2/2
+2026-01-08 16:56:53 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-08 16:56:53 - app.phase2.affiliation_extractor - WARNING - LLM returned 9 results for 6 affiliations
+2026-01-08 16:56:53 - app.phase2.affiliation_extractor - INFO - Extraction complete: 26 affiliations processed
+2026-01-08 16:56:53 - app.phase2.affiliation_validator - INFO -    LLM extraction complete: 26 results from 2 batches
+2026-01-08 16:56:53 - app.phase2.affiliation_validator - INFO -    Updating affiliation_cache with 26 LLM results...
+2026-01-08 16:56:54 - app.phase2.affiliation_validator - INFO -    ✅ Updated affiliation_cache with 26 LLM results
+2026-01-08 16:56:54 - app.phase2.affiliation_validator - INFO -    Re-geocoding and updating authorships...
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO -    ✅ Fixed 26 affiliations
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO -    ✅ Updated 18 authorships
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO -    ✅ Re-geocoded 18 locations
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION COMPLETE - Run: 13092a22728c
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO -    Affiliations fixed: 26
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO -    Cache updates: 26
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO -    Authorship updates: 18
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO -    Geocoding updates: 18
+2026-01-08 16:56:59 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:56:59 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 6 COMPLETE: Validation and fixes completed
+2026-01-08 16:56:59 - app.phase2.pg_ingest - INFO -    Affiliations fixed: 26
+2026-01-08 16:56:59 - app.phase2.pg_ingest - INFO -    Geocoding failures found: 26
+2026-01-08 16:56:59 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 16:56:59 - app.main - INFO - ================================================================================
+2026-01-08 16:56:59 - app.main - INFO - ✅ INGESTION COMPLETED - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 16:56:59 - app.main - INFO -    Total PMIDs: 500
+2026-01-08 16:56:59 - app.main - INFO -    Papers parsed: 500
+2026-01-08 16:56:59 - app.main - INFO -    Authorships created: 4432
+2026-01-08 16:56:59 - app.main - INFO -    Unique affiliations: 2545
+2026-01-08 16:56:59 - app.main - INFO -    Affiliations with country: 2452
+2026-01-08 16:56:59 - app.main - INFO -    LLM calls made: 0
+2026-01-08 16:56:59 - app.main - INFO - ================================================================================
+2026-01-08 17:13:02 - app.main - INFO - ================================================================================
+2026-01-08 17:13:02 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 17:13:02 - app.main - INFO -    Min confidence: low
+2026-01-08 17:13:02 - app.main - INFO - ================================================================================
+2026-01-08 17:13:02 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-08 17:13:02 - app.main - INFO - ================================================================================
+2026-01-08 17:13:02 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 17:13:02 - app.main - INFO -    Min confidence: low
+2026-01-08 17:13:02 - app.main - INFO - ================================================================================
+2026-01-08 17:13:02 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-08 17:13:02 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-08 17:13:02 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-08 17:13:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Australia' -> (-24.7761086, 134.755)
+2026-01-08 17:13:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Australia' -> (-24.7761086, 134.755)
+2026-01-08 17:13:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Canada' -> (61.0666922, -107.991707)
+2026-01-08 17:13:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Canada' -> (61.0666922, -107.991707)
+2026-01-08 17:13:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Russian Federation' -> (64.6863136, 97.7453061)
+2026-01-08 17:13:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Russian Federation' -> (64.6863136, 97.7453061)
+2026-01-08 17:13:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Morocco' -> (28.3347722, -10.3713379)
+2026-01-08 17:13:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Morocco' -> (28.3347722, -10.3713379)
+2026-01-08 17:13:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Taiwan' -> (23.9739374, 120.9820179)
+2026-01-08 17:13:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Taiwan' -> (23.9739374, 120.9820179)
+2026-01-08 17:13:14 - app.phase2.pg_geocoding - INFO - Geocoded 'India' -> (22.3511148, 78.6677428)
+2026-01-08 17:13:15 - app.phase2.pg_geocoding - INFO - Geocoded 'India' -> (22.3511148, 78.6677428)
+2026-01-08 17:13:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Spain' -> (39.3260685, -4.8379791)
+2026-01-08 17:13:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Spain' -> (39.3260685, -4.8379791)
+2026-01-08 17:13:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Panama' -> (8.559559, -81.1308434)
+2026-01-08 17:13:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Colombia' -> (4.099917, -72.9088133)
+2026-01-08 17:13:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Israel' -> (30.8124247, 34.8594762)
+2026-01-08 17:13:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Panama' -> (8.559559, -81.1308434)
+2026-01-08 17:13:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Sweden' -> (59.6749712, 14.5208584)
+2026-01-08 17:13:27 - app.phase2.pg_geocoding - INFO - Geocoded 'New Caledonia' -> (-20.6378428, 161.2117626)
+2026-01-08 17:13:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Hong Kong' -> (22.3492155, 114.1857978)
+2026-01-08 17:13:34 - app.phase2.pg_geocoding - INFO - Geocoded 'New Caledonia' -> (-20.6378428, 161.2117626)
+2026-01-08 17:13:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Iran, Islamic Republic of' -> (36.2665119, 59.5999861)
+2026-01-08 17:13:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Iran, Islamic Republic of' -> (36.2665119, 59.5999861)
+2026-01-08 17:13:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Moldova, Republic of' -> (46.6745434, 29.7521996)
+2026-01-08 17:13:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Moldova, Republic of' -> (46.6745434, 29.7521996)
+2026-01-08 17:13:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Saudi Arabia' -> (25.6242618, 42.3528328)
+2026-01-08 17:13:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Saudi Arabia' -> (25.6242618, 42.3528328)
+2026-01-08 17:13:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Mongolia' -> (46.8250388, 103.8499736)
+2026-01-08 17:13:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Mongolia' -> (46.8250388, 103.8499736)
+2026-01-08 17:13:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Mexico' -> (23.6585116, -102.0077097)
+2026-01-08 17:13:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Mexico' -> (23.6585116, -102.0077097)
+2026-01-08 17:13:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Brazil' -> (-10.3333333, -53.2)
+2026-01-08 17:13:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Brazil' -> (-10.3333333, -53.2)
+2026-01-08 17:13:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Romania' -> (45.9852129, 24.6859225)
+2026-01-08 17:13:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Ireland' -> (52.865196, -7.9794599)
+2026-01-08 17:13:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Ireland' -> (52.865196, -7.9794599)
+2026-01-08 17:13:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Pakistan' -> (30.3308401, 71.247499)
+2026-01-08 17:13:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Turkey' -> (39.294076, 35.2316631)
+2026-01-08 17:13:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Pakistan' -> (30.3308401, 71.247499)
+2026-01-08 17:13:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Finland' -> (63.2467777, 25.9209164)
+2026-01-08 17:13:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Finland' -> (63.2467777, 25.9209164)
+2026-01-08 17:13:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Gabon' -> (-0.8999695, 11.6899699)
+2026-01-08 17:13:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Gabon' -> (-0.8999695, 11.6899699)
+2026-01-08 17:13:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Iran' -> (32.6475314, 54.5643516)
+2026-01-08 17:14:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Iran' -> (32.6475314, 54.5643516)
+2026-01-08 17:14:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Hungary' -> (47.1817585, 19.5060937)
+2026-01-08 17:14:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Hungary' -> (47.1817585, 19.5060937)
+2026-01-08 17:14:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Portugal' -> (39.6621648, -8.1353519)
+2026-01-08 17:14:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Portugal' -> (39.6621648, -8.1353519)
+2026-01-08 17:14:05 - app.phase2.pg_geocoding - INFO - Geocoded 'New Zealand' -> (-41.5000831, 172.8344077)
+2026-01-08 17:14:05 - app.phase2.pg_geocoding - INFO - Geocoded 'New Zealand' -> (-41.5000831, 172.8344077)
+2026-01-08 17:14:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Qatar' -> (25.3336984, 51.2295295)
+2026-01-08 17:14:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Qatar' -> (25.3336984, 51.2295295)
+2026-01-08 17:14:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Egypt' -> (26.2540493, 29.2675469)
+2026-01-08 17:17:37 - root - INFO - ================================================================================
+2026-01-08 17:17:37 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-08 17:17:37 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-08 17:17:37 - root - INFO - ================================================================================
+2026-01-08 17:17:54 - app.main - INFO - ================================================================================
+2026-01-08 17:17:54 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 17:17:54 - app.main - INFO -    Min confidence: low
+2026-01-08 17:17:54 - app.main - INFO - ================================================================================
+2026-01-08 17:17:54 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-08 17:17:54 - app.main - INFO - ================================================================================
+2026-01-08 17:17:54 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 17:17:54 - app.main - INFO -    Min confidence: low
+2026-01-08 17:17:54 - app.main - INFO - ================================================================================
+2026-01-08 17:17:54 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-08 17:17:54 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-08 17:17:54 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-08 17:17:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Serbia' -> (44.0243229, 21.0765743)
+2026-01-08 17:17:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Serbia' -> (44.0243229, 21.0765743)
+2026-01-08 17:17:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Seychelles' -> (-4.6574977, 55.4540146)
+2026-01-08 17:17:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Seychelles' -> (-4.6574977, 55.4540146)
+2026-01-08 17:18:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Czech Republic' -> (49.7439047, 15.3381061)
+2026-01-08 17:18:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Czech Republic' -> (49.7439047, 15.3381061)
+2026-01-08 17:18:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Georgia' -> (32.3293809, -83.1137366)
+2026-01-08 17:18:03 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 57 countries
+2026-01-08 17:18:03 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-08 17:18:03 - app.main - INFO -    Countries returned: 57
+2026-01-08 17:18:03 - app.main - INFO - ================================================================================
+2026-01-08 17:18:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Georgia' -> (32.3293809, -83.1137366)
+2026-01-08 17:18:04 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 57 countries
+2026-01-08 17:18:04 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-08 17:18:04 - app.main - INFO -    Countries returned: 57
+2026-01-08 17:18:04 - app.main - INFO - ================================================================================
+2026-01-08 17:19:48 - app.main - INFO - ================================================================================
+2026-01-08 17:19:48 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 17:19:48 - app.main - INFO -    Min confidence: low
+2026-01-08 17:19:48 - app.main - INFO - ================================================================================
+2026-01-08 17:19:48 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-08 17:19:48 - app.main - INFO - ================================================================================
+2026-01-08 17:19:48 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 17:19:48 - app.main - INFO -    Min confidence: low
+2026-01-08 17:19:48 - app.main - INFO - ================================================================================
+2026-01-08 17:19:48 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-08 17:19:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-08 17:19:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-08 17:19:48 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 57 countries
+2026-01-08 17:19:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-08 17:19:48 - app.main - INFO -    Countries returned: 57
+2026-01-08 17:19:48 - app.main - INFO - ================================================================================
+2026-01-08 17:19:49 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 57 countries
+2026-01-08 17:19:49 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-08 17:19:49 - app.main - INFO -    Countries returned: 57
+2026-01-08 17:19:49 - app.main - INFO - ================================================================================
+2026-01-08 17:19:59 - app.main - INFO - ================================================================================
+2026-01-08 17:19:59 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 17:19:59 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-08 17:19:59 - app.main - INFO - ================================================================================
+2026-01-08 17:19:59 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-08 17:19:59 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-08 17:19:59 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 22 cities in China
+2026-01-08 17:19:59 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-08 17:19:59 - app.main - INFO -    Cities returned: 22
+2026-01-08 17:19:59 - app.main - INFO - ================================================================================
