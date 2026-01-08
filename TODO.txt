@@ -52,10 +52,3 @@ SELECT * FROM public.authorship Where pmid='27671642' and author_name_raw='Fedor
 
 这些都是解析出错的纪录：
 SELECT * FROM public.geocoding_cache where latitude IS NULL;
-
-5，优化 ingestion 过程中的数据库插入性能：当前 papers 和 authorships 是逐个插入（循环调用 session.merge() 和 session.add()），可以通过批量操作显著提升速度。
-   优化方案：
-   - Papers 插入：使用 bulk_insert_mappings() 或 bulk_save_objects() 批量插入，对于大量 papers（1000+）可提升 2-5 倍速度
-   - Authorships 插入：批量插入影响更大，对于大量 authorships（10000+）可提升 5-10 倍或更多
-   - 实现方式：在 pg_ingest.py 的 _write_to_database 方法中，收集所有 papers 和 authorships 数据，使用 SQLAlchemy 的批量 API 一次性插入
-   - 注意事项：Papers 的 upsert 需要处理冲突（如使用 ON CONFLICT），需要先插入 papers 再插入 authorships（外键约束），批量操作仍需在事务中执行
