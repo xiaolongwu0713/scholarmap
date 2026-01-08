@@ -196,3 +196,136 @@
 2026-01-08 13:54:49 - root - INFO - Logging initialized - output to console and log.txt
 2026-01-08 13:54:49 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
 2026-01-08 13:54:49 - root - INFO - ================================================================================
+2026-01-08 14:02:57 - root - INFO - ================================================================================
+2026-01-08 14:02:57 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-08 14:02:57 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-08 14:02:57 - root - INFO - ================================================================================
+2026-01-08 14:03:02 - app.main - INFO - ================================================================================
+2026-01-08 14:03:02 - app.main - INFO - 🚀 INGESTION STARTED - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-08 14:03:02 - app.main - INFO -    Force refresh: False
+2026-01-08 14:03:02 - app.main - INFO - ================================================================================
+2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Starting ingestion for run 13092a22728c
+2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO -    Project ID: 6af7ac1b6254
+2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO -    Force refresh: False
+2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:02 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...
+2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO -    Loaded 500 unique PMIDs from run 13092a22728c
+2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 1 COMPLETE: Found 500 PMIDs
+2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:04 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 2: Fetching 500 PMIDs from PubMed...
+2026-01-08 14:03:04 - app.phase2.pubmed_fetcher - INFO - Fetching 500 PMIDs in 4 batches (batch_size=150, rate_limit=3.0 rps)
+2026-01-08 14:03:04 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-08 14:03:05 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=24904404%2C41135818%2C37460730%2C40800288%2C33912122%2C22750156%2C38885688%2C41039113%2C31741702%2C39096896%2C33142282%2C27926827%2C27450996%2C29958109%2C36121939%2C40354107%2C26232713%2C26188384%2C14656066%2C39433597%2C40343020%2C27534393%2C34347873%2C38486966%2C8892373%2C27413155%2C36731812%2C40253415%2C30342252%2C33293456%2C34892495%2C30971792%2C38582333%2C29525721%2C30414541%2C16792292%2C17071238%2C21471638%2C35313351%2C24681353%2C39374038%2C33360179%2C35528322%2C30134167%2C30710356%2C31056408%2C27918346%2C35121181%2C31363096%2C26124702%2C38925110%2C39322094%2C36966852%2C30064321%2C31103409%2C31824257%2C29033809%2C23072156%2C40610484%2C41062786%2C30038000%2C27484713%2C25616459%2C38671062%2C31277857%2C31342677%2C35819528%2C33419861%2C39153482%2C29190521%2C37292795%2C29378977%2C16175856%2C19732923%2C40461573%2C40825359%2C40913768%2C26072003%2C39922365%2C28622530%2C27671642%2C39248654%2C37745380%2C35169837%2C20478745%2C24982625%2C41177674%2C37932250%2C30500619%2C34587350%2C20811093%2C41279744%2C39485790%2C28676308%2C32686761%2C30596439%2C39479009%2C34849596%2C34823894%2C37875404%2C17971857%2C25157216%2C39162748%2C40039596%2C28399442%2C23643922%2C29678760%2C36645968%2C35654375%2C28268620%2C33408621%2C36327599%2C25761260%2C37459853%2C24995815%2C26737497%2C39399739%2C15677998%2C41205609%2C32788249%2C40055549%2C37841873%2C34906982%2C40800829%2C41167038%2C41453123%2C27046113%2C37638314%2C33506209%2C29439164%2C29861132%2C30367077%2C30256217%2C30249918%2C37900727%2C41427281%2C29430213%2C38063368%2C28119593%2C32180695%2C39808939%2C38935898%2C41386385%2C25000321%2C23366629%2C38769115%2C29404403%2C18440570%2C27729844%2C41324025&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 14:03:06 - app.phase2.pubmed_fetcher - INFO - Batch 1/4 completed
+2026-01-08 14:03:06 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-08 14:03:06 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=38183998%2C32577713%2C34774771%2C32435182%2C31692177%2C34123657%2C41191764%2C25571555%2C15817517%2C9737437%2C33137575%2C29018336%2C34260835%2C30617653%2C29674950%2C28268617%2C41282818%2C31946284%2C39985774%2C32442776%2C38318272%2C35113857%2C34717248%2C33372958%2C25571558%2C22875868%2C27182530%2C30831567%2C39990398%2C30504559%2C40720979%2C28406383%2C37968869%2C39386565%2C18982128%2C37798921%2C35248810%2C29891885%2C21029784%2C40830488%2C30389490%2C21373361%2C39134741%2C31445890%2C40910467%2C38343801%2C40490093%2C38729074%2C27524194%2C37437189%2C40309789%2C37217308%2C37467739%2C27311642%2C27325763%2C37105171%2C33133815%2C39850351%2C22973215%2C23482627%2C39968245%2C25909573%2C20921326%2C33942078%2C41081527%2C29247963%2C36989073%2C37487487%2C28894834%2C38514133%2C30257858%2C36634533%2C40417558%2C30837823%2C23774120%2C15329073%2C27408802%2C38648781%2C28236761%2C32231340%2C22874396%2C24836588%2C34301825%2C27578414%2C31578420%2C20465359%2C30238309%2C34489664%2C30700532%2C40516665%2C37229140%2C31220442%2C40832215%2C35878727%2C24904069%2C30279650%2C25122702%2C32656294%2C40490003%2C37019103%2C27686506%2C37066306%2C35013268%2C41042753%2C41332755%2C29093659%2C29414401%2C25816090%2C26642090%2C27635975%2C24845600%2C30643130%2C39582595%2C38948730%2C19163831%2C25948269%2C38813793%2C36828156%2C29779940%2C22144944%2C31875441%2C37120741%2C41144819%2C35966994%2C38306217%2C30440349%2C31207466%2C34965874%2C41397373%2C24285843%2C28918128%2C37441880%2C40769034%2C36086071%2C40697162%2C28334963%2C25352799%2C36570848%2C22573665%2C36356309%2C30740659%2C41105453%2C40817733%2C39332803%2C28268618%2C9419036%2C26949710%2C31287601%2C41266624%2C35695785&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 14:03:07 - app.phase2.pubmed_fetcher - INFO - Batch 2/4 completed
+2026-01-08 14:03:07 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-08 14:03:07 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=30216929%2C20026224%2C22563311%2C36054730%2C29576436%2C30827578%2C30847390%2C31820736%2C27249656%2C37425292%2C38083559%2C27377299%2C41363150%2C21724424%2C39345158%2C34421555%2C35395633%2C29397190%2C40695313%2C28666338%2C33935673%2C37582062%2C37060887%2C39867597%2C32610290%2C24639642%2C39213665%2C34958951%2C12614397%2C39990331%2C40018762%2C25570869%2C37819985%2C26446212%2C23914170%2C41397928%2C40147418%2C40040033%2C28716965%2C41022986%2C37203491%2C38335090%2C32888480%2C39819752%2C35099768%2C19033707%2C34536230%2C26136107%2C31525179%2C27019106%2C29460482%2C37995287%2C23032488%2C33306299%2C27408803%2C25259669%2C22255402%2C28993231%2C40913530%2C28335018%2C35708911%2C21529188%2C32372065%2C25118584%2C35989149%2C32439539%2C38988764%2C22207857%2C33867912%2C35534226%2C36246502%2C20087111%2C38969758%2C37739786%2C34130614%2C32289685%2C27199638%2C39579033%2C39870041%2C35907491%2C35869138%2C33283856%2C32410969%2C32198060%2C28839071%2C37245559%2C38808652%2C33789135%2C38909761%2C24122368%2C25759647%2C26818506%2C37961305%2C33776668%2C25571556%2C21750369%2C26262160%2C41349179%2C37382208%2C29268943%2C28225156%2C25266305%2C19349241%2C32498058%2C35118367%2C39484239%2C23696279%2C26991386%2C21708506%2C23465430%2C31339411%2C29087324%2C32105726%2C24293161%2C40766385%2C27199720%2C27935031%2C38260011%2C41335998%2C38769157%2C24315545%2C28396294%2C41275704%2C25570199%2C40239679%2C29977189%2C38787551%2C38242691%2C32694561%2C41129388%2C21419227%2C38496670%2C21307246%2C36872854%2C25571553%2C34607318%2C39455254%2C38093008%2C38041253%2C26679420%2C23577157%2C26408491%2C17712784%2C37215328%2C37086161%2C30238924%2C28269552%2C40144585%2C24877680%2C26935890&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 14:03:08 - app.phase2.pubmed_fetcher - INFO - Batch 3/4 completed
+2026-01-08 14:03:08 - app.phase2.pubmed_fetcher - INFO - Fetching 50 PMIDs from PubMed...
+2026-01-08 14:03:09 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=29052465%2C22890647%2C25819402%2C27148018%2C39974103%2C39464426%2C39554006%2C40972658%2C26888939%2C22255777%2C29271713%2C38222047%2C35311092%2C21471374%2C17271737%2C34753819%2C25822912%2C32840483%2C41254404%2C38559163%2C35276657%2C27956570%2C22941838%2C35777988%2C41034198%2C34408717%2C15876624%2C40260174%2C24672012%2C19279495%2C38581367%2C41021378%2C35185491%2C32378738%2C25273279%2C39005394%2C32828921%2C33841081%2C30721879%2C40894619%2C39371161%2C39194182%2C38696121%2C34918613%2C35568349%2C34411517%2C26386644%2C31419636%2C17980999%2C40302941&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-08 14:03:09 - app.phase2.pubmed_fetcher - INFO - Batch 4/4 completed
+2026-01-08 14:03:09 - app.phase2.pubmed_fetcher - INFO - Fetched 4/4 batches successfully
+2026-01-08 14:03:09 - app.phase2.pubmed_fetcher - INFO - Extracted 500 PMIDs from 4 batches
+2026-01-08 14:03:09 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 2 COMPLETE: Fetched 500 PubMed XML records
+2026-01-08 14:03:09 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:09 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 3: Parsing XML into structured papers...
+2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 3 COMPLETE: Parsed 500 papers
+2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 4: Extracting affiliations via rule-based...
+2026-01-08 14:03:10 - app.phase2.pg_ingest - INFO -    Extracting 2545 affiliations via rule-based (with cache)
+2026-01-08 14:03:10 - app.phase2.rule_based_extractor - INFO -    Processing 2545 affiliations...
+2026-01-08 14:03:10 - app.phase2.rule_based_extractor - INFO -    Batch checking cache for 2545 affiliations...
+2026-01-08 14:03:10 - app.phase2.rule_based_extractor - INFO -    ✅ Batch cache check complete: 2545 hits, 0 to extract
+2026-01-08 14:03:12 - app.phase2.pg_ingest - INFO -    Cached 2545 affiliation extraction results
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Extraction complete: 2545 affiliations, 2441 with country
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 4 COMPLETE: Extracted 2545 affiliations
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2545
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    With country: 2441
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    LLM calls: 0
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 5: Writing to database...
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Clearing existing data for run 13092a22728c...
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Deleted authorships for 500 existing PMIDs
+2026-01-08 14:03:13 - app.phase2.pg_ingest - INFO -    Inserting/updating 500 papers...
+2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Papers inserted/updated: 500
+2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Inserting 4432 authorships...
+2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Authorships inserted: 4432
+2026-01-08 14:03:35 - app.phase2.pg_ingest - INFO -    Linking run 13092a22728c to 500 papers...
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Database write complete
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 5 COMPLETE: Created 4432 authorships
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ✅ INGESTION COMPLETE - Run: 13092a22728c
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Total PMIDs: 500
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Papers parsed: 500
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Authorships created: 4432
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2545
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    Affiliations with country: 2441
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO -    LLM calls made: 0
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:39 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...
+2026-01-08 14:03:39 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-08 14:03:39 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 13092a22728c...
+2026-01-08 14:03:40 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4432 authorships from 500 papers
+2026-01-08 14:03:43 - app.phase2.pg_geocoding - INFO - Geocoded 'London, United Kingdom' -> (51.5074456, -0.1277653)
+2026-01-08 14:03:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Baltimore, United States' -> (39.2908816, -76.610759)
+2026-01-08 14:03:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Lyon, France' -> (45.7578137, 4.8320114)
+2026-01-08 14:04:05 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=St+Louis%2C+United+States&format=json&limit=1
+2026-01-08 14:04:07 - app.phase2.pg_geocoding - INFO - Geocoded 'St Louis, United States' -> (38.6254063, -90.190009)
+2026-01-08 14:04:12 - app.phase2.pg_geocoding - INFO - Geocoded 'New York, United States' -> (40.7127281, -74.0060152)
+2026-01-08 14:04:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Seattle, United States' -> (47.6038321, -122.330062)
+2026-01-08 14:04:20 - app.phase2.pg_geocoding - INFO - Geocoded 'California Univ, United States' -> (33.9727335, -117.3474449)
+2026-01-08 14:04:32 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=St.+Petersburg%2C+Russian+Federation&format=json&limit=1
+2026-01-08 14:04:37 - app.phase2.pg_geocoding - INFO - Geocoded 'St. Petersburg, Russian Federation' -> (59.938732, 30.316229)
+2026-01-08 14:04:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Paris, France' -> (48.8534951, 2.3483915)
+2026-01-08 14:04:52 - app.phase2.pg_geocoding - INFO - Geocoded 'United States' -> (39.7837304, -100.445882)
+2026-01-08 14:05:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Montpellier, France' -> (43.6112422, 3.8767337)
+2026-01-08 14:05:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Durham, United States' -> (35.996653, -78.9018053)
+2026-01-08 14:05:10 - app.phase2.pg_geocoding - INFO - Geocoded 'St. Louis, United States' -> (38.6254063, -90.190009)
+2026-01-08 14:05:14 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, United States' -> (37.7879363, -122.4075201)
+2026-01-08 14:05:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Salt Lake City, United States' -> (40.7596198, -111.886797)
+2026-01-08 14:05:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Norfolk, United States' -> (36.8493695, -76.2899539)
+2026-01-08 14:05:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Albany, United States' -> (42.6511674, -73.754968)
+2026-01-08 14:05:33 - app.phase2.pg_geocoding - INFO - Geocoded 'D- Bonn, Germany' -> (50.8181182, 6.8931658)
+2026-01-08 14:05:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Pittsburgh, United States' -> (40.4406968, -80.0025666)
+2026-01-08 14:05:47 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=S%C3%A3o+Paulo%2C+Brazil&format=json&limit=1
+2026-01-08 14:05:57 - urllib3.connectionpool - WARNING - Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=10)")': /search?q=S%C3%A3o+Paulo%2C+Brazil&format=json&limit=1
+2026-01-08 14:06:07 - app.phase2.pg_geocoding - INFO - Geocoded 'São Paulo, Brazil' -> (-23.5506507, -46.6333824)
+2026-01-08 14:06:16 - app.phase2.pg_geocoding - INFO - Geocoded 'and Systems Engineering, United States' -> (41.5015735, -81.6070902)
+2026-01-08 14:06:18 - app.phase2.pg_geocoding - INFO - Geocoded 'France' -> (46.603354, 1.8883335)
+2026-01-08 14:06:26 - app.phase2.pg_geocoding - INFO - Geocoded 'F- Bron, France' -> (45.7337532, 4.9092352)
+2026-01-08 14:06:29 - app.phase2.pg_geocoding - INFO - Geocoded 'F- Lyon-Bron, France' -> (45.7342872, 4.8996431)
+2026-01-08 14:06:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Udine, Italy' -> (46.0634632, 13.2358377)
+2026-01-08 14:06:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Cincinnati, United States' -> (39.1014537, -84.5124602)
+2026-01-08 14:06:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Hokkaido, Japan' -> (43.4519831, 142.8197834)
+2026-01-08 14:06:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Germany' -> (51.1638175, 10.4478313)
+2026-01-08 14:06:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Tokyo, Japan' -> (35.6768601, 139.7638947)
+2026-01-08 14:06:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Shanghai, China' -> (31.2312707, 121.4700152)
+2026-01-08 14:06:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Beijing, China' -> (40.190632, 116.412144)
+2026-01-08 14:07:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Los Angeles, United States' -> (34.0536909, -118.242766)
+2026-01-08 14:07:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Marseille, France' -> (43.2961743, 5.3699525)
+2026-01-08 14:07:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Iowa City, United States' -> (41.6612561, -91.5299106)
+2026-01-08 14:07:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Freiburg, Germany' -> (47.9960901, 7.8494005)
+2026-01-08 14:07:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Houston, United States' -> (29.7589382, -95.3676974)
+2026-01-08 14:07:28 - app.phase2.pg_geocoding - INFO - Geocoded 'USA and, United States' -> (38.8889772, -77.0090433)
+2026-01-08 14:07:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Tel-Aviv, Israel' -> (32.0852997, 34.7818064)
+2026-01-08 14:07:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Los Angeles, Israel' -> (34.1013066, -118.3492537)
+2026-01-08 14:07:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Haifa, Israel' -> (32.8191218, 34.9983856)
+2026-01-08 14:07:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Niigata, Japan' -> (37.6452283, 138.7669125)
+2026-01-08 14:07:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Nara, Japan' -> (34.6845445, 135.8048359)
+2026-01-08 14:07:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Detroit, United States' -> (42.3315509, -83.0466403)
+2026-01-08 14:07:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Detroit, Japan' -> (34.6158982, 135.0201373)
+2026-01-08 14:07:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Japan' -> (36.5748441, 139.2394179)
+2026-01-08 14:07:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Bethesda, United States' -> (38.9812726, -77.1233587)
+2026-01-08 14:08:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Chicago, United States' -> (41.8755616, -87.6244212)
+2026-01-08 14:08:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Switzerland' -> (46.7985624, 8.2319736)
+2026-01-08 14:08:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Houston, Germany' -> (31.4399019, -95.350778)
+2026-01-08 14:08:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Otto-von-Guericke-Universitat Magdeburg, Germany' -> (52.1383797, 11.6334707)
+2026-01-08 14:08:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Chapel Hill, United States' -> (35.9131542, -79.05578)
+2026-01-08 14:08:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Philadelphia, United States' -> (39.9527237, -75.1635262)
+2026-01-08 14:08:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Baltimore, Andorra' -> (39.3877661, -76.5409489)
+2026-01-08 14:08:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Atlanta, United States' -> (33.7544657, -84.3898151)
+2026-01-08 14:08:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Boston, United States' -> (42.3588336, -71.0578303)
