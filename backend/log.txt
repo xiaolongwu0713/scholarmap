@@ -500,3 +500,51 @@
 2026-01-08 17:19:59 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
 2026-01-08 17:19:59 - app.main - INFO -    Cities returned: 22
 2026-01-08 17:19:59 - app.main - INFO - ================================================================================
+2026-01-09 08:44:41 - root - INFO - ================================================================================
+2026-01-09 08:44:41 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 08:44:41 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 08:44:41 - root - INFO - ================================================================================
+2026-01-09 09:40:16 - root - INFO - ================================================================================
+2026-01-09 09:40:16 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:40:16 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:40:16 - root - INFO - ================================================================================
+2026-01-09 09:40:20 - root - INFO - ================================================================================
+2026-01-09 09:40:20 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:40:20 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:40:20 - root - INFO - ================================================================================
+2026-01-09 09:40:42 - root - INFO - ================================================================================
+2026-01-09 09:40:42 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:40:42 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:40:42 - root - INFO - ================================================================================
+2026-01-09 09:40:48 - root - INFO - ================================================================================
+2026-01-09 09:40:48 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:40:48 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:40:48 - root - INFO - ================================================================================
+2026-01-09 09:41:02 - root - INFO - ================================================================================
+2026-01-09 09:41:02 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:41:02 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:41:02 - root - INFO - ================================================================================
+2026-01-09 09:41:13 - root - INFO - ================================================================================
+2026-01-09 09:41:13 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:41:13 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:41:13 - root - INFO - ================================================================================
+2026-01-09 09:41:28 - root - INFO - ================================================================================
+2026-01-09 09:41:28 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:41:28 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:41:28 - root - INFO - ================================================================================
+2026-01-09 09:41:39 - root - INFO - ================================================================================
+2026-01-09 09:41:39 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:41:39 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:41:39 - root - INFO - ================================================================================
+2026-01-09 09:41:51 - root - INFO - ================================================================================
+2026-01-09 09:41:51 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:41:51 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:41:51 - root - INFO - ================================================================================
+2026-01-09 09:43:04 - root - INFO - ================================================================================
+2026-01-09 09:43:04 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:43:04 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:43:04 - root - INFO - ================================================================================
+2026-01-09 09:52:23 - root - INFO - ================================================================================
+2026-01-09 09:52:23 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-09 09:52:23 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-09 09:52:23 - root - INFO - ================================================================================

@@ -59,6 +59,8 @@ class AffiliationExtractor:
     def __init__(self, batch_size: int = 20) -> None:
         self.batch_size = batch_size
         self.llm_client = OpenAIClient()
+        from app.phase2.institution_matcher import InstitutionMatcher
+        self.institution_matcher = InstitutionMatcher()
     
     async def extract_batch(
         self,
@@ -209,6 +211,12 @@ class AffiliationExtractor:
                 if cached:
                     result_map[aff] = cached
                     continue
+            
+            # Try institution matcher before LLM (saves cost and time)
+            institution_match = await self.institution_matcher.match_institution(aff)
+            if institution_match:
+                result_map[aff] = institution_match
+                continue
             
             to_extract.append(aff)
         

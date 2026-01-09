@@ -193,3 +193,33 @@ class GeocodingCache(Base):
         nullable=False
     )
 
+
+class InstitutionGeo(Base):
+    """Institution geographic information (QS top 500 and major research institutions)."""
+    __tablename__ = "institution_geo"
+    
+    institution_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    primary_name: Mapped[str] = mapped_column(Text, nullable=False)  # Official institution name
+    aliases: Mapped[list[str] | None] = mapped_column(JSONB, nullable=True)  # Alternative names/variants
+    country: Mapped[str] = mapped_column(String(255), nullable=False)
+    city: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    qs_rank: Mapped[int | None] = mapped_column(Integer, nullable=True)  # QS World University Ranking
+    ror_id: Mapped[str | None] = mapped_column(String(50), nullable=True)  # Research Organization Registry ID
+    source: Mapped[str] = mapped_column(String(50), nullable=False)  # 'qs', 'ror', 'manual'
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False
+    )
+    
+    # Indexes will be created via Alembic or manually
+    # Index on primary_name for exact matching
+    # GIN index on aliases for JSONB queries
+    # Index on (country, city) for geographic queries
+

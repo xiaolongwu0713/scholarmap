@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -14,6 +14,7 @@ from app.db.models import (
     AffiliationCache,
     Authorship,
     GeocodingCache,
+    InstitutionGeo,
     Paper,
     Project,
     Run,
@@ -589,4 +590,155 @@ class GeocodingCacheRepository:
                     affiliations=affiliations_list
                 )
                 self.session.add(cache)
+
+
+class InstitutionGeoRepository:
+    """Repository for institution geographic information operations."""
+    
+    def __init__(self, session: AsyncSession):
+        self.session = session
+    
+    async def get_by_name(self, name: str) -> InstitutionGeo | None:
+        """Get institution by exact name match (primary_name or aliases)."""
+        from sqlalchemy import or_
+        
+        # Normalize name for matching
+        name_normalized = name.strip().lower()
+        
+        result = await self.session.execute(
+            select(InstitutionGeo).where(
+                or_(
+                    func.lower(InstitutionGeo.primary_name) == name_normalized,
+                    InstitutionGeo.aliases.contains([name])  # JSONB array contains
+                )
+            )
+        )
+        return result.scalar_one_or_none()
+    
+    async def search_by_name(self, name: str, similarity_threshold: float = 0.8) -> list[InstitutionGeo]:
+        """Search institutions by name (fuzzy matching).
+        
+        Args:
+            name: Institution name to search
+            similarity_threshold: Minimum similarity score (0-1)
+        
+        Returns:
+            List of matching institutions, sorted by relevance
+        """
+        from sqlalchemy import or_, func as sql_func
+        
+        # Normalize name
+        name_normalized = name.strip().lower()
+        
+        # First try exact match or contains match
+        result = await self.session.execute(
+            select(InstitutionGeo).where(
+                or_(
+                    func.lower(InstitutionGeo.primary_name).contains(name_normalized),
+                    InstitutionGeo.aliases.contains([name])  # Exact match in aliases
+                )
+            )
+        )
+        exact_matches = list(result.scalars().all())
+        
+        # For fuzzy matching, we'll do it in Python for better control
+        # This is a simple implementation - can be enhanced with pg_trgm extension
+        all_institutions = await self.session.execute(select(InstitutionGeo))
+        all_insts = list(all_institutions.scalars().all())
+        
+        # Score matches
+        scored_matches = []
+        for inst in all_insts:
+            # Check primary name
+            primary_lower = inst.primary_name.lower()
+            if name_normalized in primary_lower or primary_lower in name_normalized:
+                score = min(len(name_normalized), len(primary_lower)) / max(len(name_normalized), len(primary_lower))
+                if score >= similarity_threshold:
+                    scored_matches.append((inst, score))
+                    continue
+            
+            # Check aliases
+            if inst.aliases:
+                for alias in inst.aliases:
+                    alias_lower = alias.lower()
+                    if name_normalized in alias_lower or alias_lower in name_normalized:
+                        score = min(len(name_normalized), len(alias_lower)) / max(len(name_normalized), len(alias_lower))
+                        if score >= similarity_threshold:
+                            scored_matches.append((inst, score))
+                            break
+        
+        # Combine exact matches (score = 1.0) with fuzzy matches
+        exact_scores = [(inst, 1.0) for inst in exact_matches if inst not in [m[0] for m in scored_matches]]
+        all_scored = exact_scores + scored_matches
+        
+        # Sort by score descending
+        all_scored.sort(key=lambda x: x[1], reverse=True)
+        return [inst for inst, _ in all_scored]
+    
+    async def get_by_ror_id(self, ror_id: str) -> InstitutionGeo | None:
+        """Get institution by ROR ID."""
+        result = await self.session.execute(
+            select(InstitutionGeo).where(InstitutionGeo.ror_id == ror_id)
+        )
+        return result.scalar_one_or_none()
+    
+    async def insert_institution(
+        self,
+        primary_name: str,
+        country: str,
+        city: str | None = None,
+        aliases: list[str] | None = None,
+        qs_rank: int | None = None,
+        ror_id: str | None = None,
+        source: str = "manual"
+    ) -> InstitutionGeo:
+        """Insert a new institution."""
+        institution = InstitutionGeo(
+            primary_name=primary_name,
+            aliases=aliases,
+            country=country,
+            city=city,
+            qs_rank=qs_rank,
+            ror_id=ror_id,
+            source=source
+        )
+        self.session.add(institution)
+        await self.session.flush()
+        return institution
+    
+    async def bulk_insert_institutions(self, institutions: list[dict[str, Any]]) -> None:
+        """Bulk insert institutions.
+        
+        Args:
+            institutions: List of dicts with keys: primary_name, country, city, aliases, qs_rank, ror_id, source
+        """
+        for inst_data in institutions:
+            institution = InstitutionGeo(
+                primary_name=inst_data["primary_name"],
+                aliases=inst_data.get("aliases"),
+                country=inst_data["country"],
+                city=inst_data.get("city"),
+                qs_rank=inst_data.get("qs_rank"),
+                ror_id=inst_data.get("ror_id"),
+                source=inst_data.get("source", "manual")
+            )
+            self.session.add(institution)
+    
+    async def update_institution(self, institution_id: int, **kwargs) -> InstitutionGeo | None:
+        """Update institution fields."""
+        institution = await self.session.get(InstitutionGeo, institution_id)
+        if not institution:
+            return None
+        
+        for key, value in kwargs.items():
+            if hasattr(institution, key):
+                setattr(institution, key, value)
+        
+        await self.session.flush()
+        return institution
+    
+    async def get_all(self) -> list[InstitutionGeo]:
+        """Get all institutions."""
+        result = await self.session.execute(select(InstitutionGeo))
+        return list(result.scalars().all())
 

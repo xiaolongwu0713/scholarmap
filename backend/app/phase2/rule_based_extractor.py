@@ -525,7 +525,8 @@ class RuleBasedExtractor:
     
     def __init__(self) -> None:
         """Initialize rule-based extractor."""
-        pass
+        from app.phase2.institution_matcher import InstitutionMatcher
+        self.institution_matcher = InstitutionMatcher()
     
     async def extract_batch(
         self,
@@ -549,8 +550,20 @@ class RuleBasedExtractor:
         total = len(affiliations)
         log_interval = max(1, total // 10)  # Log every 10% progress
         
+        # Step 1: Try institution matching first
+        institution_matches = await self.institution_matcher.match_batch(affiliations)
+        institution_matched_count = len(institution_matches)
+        if institution_matched_count > 0:
+            logger.debug(f"   Institution matcher matched {institution_matched_count}/{total} affiliations")
+        
         results = []
         for idx, aff in enumerate(affiliations):
+            # Check if institution matcher found a match
+            if aff in institution_matches:
+                results.append(institution_matches[aff])
+                continue
+            
+            # Fall back to rule-based extraction
             parsed = _parse_affiliation(aff)
             
             # Determine confidence based on what we found
