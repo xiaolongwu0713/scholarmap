@@ -599,17 +599,31 @@ class InstitutionGeoRepository:
         self.session = session
     
     async def get_by_name(self, name: str) -> InstitutionGeo | None:
-        """Get institution by exact name match (primary_name or aliases)."""
+        """Get institution by exact name match (normalized_name or aliases).
+        
+        Note: Matching is done ONLY on normalized_name and aliases, NOT on primary_name.
+        The input name should be normalized before calling this method.
+        
+        Args:
+            name: Normalized institution name to match
+        
+        Returns:
+            InstitutionGeo if matched, None otherwise
+        """
+        from app.phase2.text_utils import normalize_text
         from sqlalchemy import or_
         
-        # Normalize name for matching
-        name_normalized = name.strip().lower()
+        # Normalize input name
+        name_normalized = normalize_text(name)
+        if not name_normalized:
+            return None
         
+        # Match on normalized_name or aliases (both are already normalized)
         result = await self.session.execute(
             select(InstitutionGeo).where(
                 or_(
-                    func.lower(InstitutionGeo.primary_name) == name_normalized,
-                    InstitutionGeo.aliases.contains([name])  # JSONB array contains
+                    InstitutionGeo.normalized_name == name_normalized,
+                    InstitutionGeo.aliases.contains([name_normalized])  # JSONB array contains (normalized alias)
                 )
             )
         )
@@ -618,24 +632,30 @@ class InstitutionGeoRepository:
     async def search_by_name(self, name: str, similarity_threshold: float = 0.8) -> list[InstitutionGeo]:
         """Search institutions by name (fuzzy matching).
         
+        Note: Matching is done ONLY on normalized_name and aliases, NOT on primary_name.
+        The input name should be normalized before calling this method.
+        
         Args:
-            name: Institution name to search
+            name: Institution name to search (will be normalized)
             similarity_threshold: Minimum similarity score (0-1)
         
         Returns:
             List of matching institutions, sorted by relevance
         """
+        from app.phase2.text_utils import normalize_text
         from sqlalchemy import or_, func as sql_func
         
-        # Normalize name
-        name_normalized = name.strip().lower()
+        # Normalize input name
+        name_normalized = normalize_text(name)
+        if not name_normalized:
+            return []
         
-        # First try exact match or contains match
+        # First try exact match or contains match on normalized_name
         result = await self.session.execute(
             select(InstitutionGeo).where(
                 or_(
-                    func.lower(InstitutionGeo.primary_name).contains(name_normalized),
-                    InstitutionGeo.aliases.contains([name])  # Exact match in aliases
+                    InstitutionGeo.normalized_name.contains(name_normalized),  # Partial match on normalized_name
+                    InstitutionGeo.aliases.contains([name_normalized])  # Exact match in aliases (normalized)
                 )
             )
         )
@@ -646,23 +666,26 @@ class InstitutionGeoRepository:
         all_institutions = await self.session.execute(select(InstitutionGeo))
         all_insts = list(all_institutions.scalars().all())
         
-        # Score matches
+        # Score matches based on normalized_name and aliases
         scored_matches = []
         for inst in all_insts:
-            # Check primary name
-            primary_lower = inst.primary_name.lower()
-            if name_normalized in primary_lower or primary_lower in name_normalized:
-                score = min(len(name_normalized), len(primary_lower)) / max(len(name_normalized), len(primary_lower))
+            # Skip if already in exact matches
+            if inst in exact_matches:
+                continue
+            
+            # Check normalized_name (already normalized)
+            normalized = inst.normalized_name
+            if name_normalized in normalized or normalized in name_normalized:
+                score = min(len(name_normalized), len(normalized)) / max(len(name_normalized), len(normalized))
                 if score >= similarity_threshold:
                     scored_matches.append((inst, score))
                     continue
             
-            # Check aliases
+            # Check aliases (already normalized)
             if inst.aliases:
                 for alias in inst.aliases:
-                    alias_lower = alias.lower()
-                    if name_normalized in alias_lower or alias_lower in name_normalized:
-                        score = min(len(name_normalized), len(alias_lower)) / max(len(name_normalized), len(alias_lower))
+                    if name_normalized in alias or alias in name_normalized:
+                        score = min(len(name_normalized), len(alias)) / max(len(name_normalized), len(alias))
                         if score >= similarity_threshold:
                             scored_matches.append((inst, score))
                             break
@@ -685,18 +708,36 @@ class InstitutionGeoRepository:
     async def insert_institution(
         self,
         primary_name: str,
-        country: str,
+        normalized_name: str | None = None,
+        country: str | None = None,
         city: str | None = None,
         aliases: list[str] | None = None,
         qs_rank: int | None = None,
         ror_id: str | None = None,
         source: str = "manual"
     ) -> InstitutionGeo:
-        """Insert a new institution."""
+        """Insert a new institution.
+        
+        Args:
+            primary_name: Official institution name (required)
+            normalized_name: Normalized version of primary_name (required, will be generated if not provided)
+            country: Country name (required if not provided)
+            city: City name (optional)
+            aliases: List of normalized aliases (optional)
+            qs_rank: QS ranking (optional)
+            ror_id: ROR ID (optional)
+            source: Data source (default: 'manual')
+        """
+        # Generate normalized_name if not provided
+        if normalized_name is None:
+            from app.phase2.text_utils import normalize_text
+            normalized_name = normalize_text(primary_name)
+        
         institution = InstitutionGeo(
             primary_name=primary_name,
+            normalized_name=normalized_name,
             aliases=aliases,
-            country=country,
+            country=country or "",  # Will fail if None, but keep as is for now
             city=city,
             qs_rank=qs_rank,
             ror_id=ror_id,
@@ -710,11 +751,19 @@ class InstitutionGeoRepository:
         """Bulk insert institutions.
         
         Args:
-            institutions: List of dicts with keys: primary_name, country, city, aliases, qs_rank, ror_id, source
+            institutions: List of dicts with keys: primary_name, normalized_name (optional), country, city, aliases, qs_rank, ror_id, source
         """
+        from app.phase2.text_utils import normalize_text
+        
         for inst_data in institutions:
+            primary_name = inst_data["primary_name"]
+            normalized_name = inst_data.get("normalized_name")
+            if normalized_name is None:
+                normalized_name = normalize_text(primary_name)
+            
             institution = InstitutionGeo(
-                primary_name=inst_data["primary_name"],
+                primary_name=primary_name,
+                normalized_name=normalized_name,
                 aliases=inst_data.get("aliases"),
                 country=inst_data["country"],
                 city=inst_data.get("city"),

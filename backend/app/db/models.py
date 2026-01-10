@@ -200,7 +200,8 @@ class InstitutionGeo(Base):
     
     institution_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     primary_name: Mapped[str] = mapped_column(Text, nullable=False)  # Official institution name
-    aliases: Mapped[list[str] | None] = mapped_column(JSONB, nullable=True)  # Alternative names/variants
+    normalized_name: Mapped[str] = mapped_column(Text, nullable=False, index=True)  # Normalized version of primary_name for matching
+    aliases: Mapped[list[str] | None] = mapped_column(JSONB, nullable=True)  # Alternative names/variants (normalized)
     country: Mapped[str] = mapped_column(String(255), nullable=False)
     city: Mapped[str | None] = mapped_column(String(255), nullable=True)
     qs_rank: Mapped[int | None] = mapped_column(Integer, nullable=True)  # QS World University Ranking
@@ -218,8 +219,8 @@ class InstitutionGeo(Base):
         nullable=False
     )
     
-    # Indexes will be created via Alembic or manually
-    # Index on primary_name for exact matching
-    # GIN index on aliases for JSONB queries
-    # Index on (country, city) for geographic queries
+    # Indexes:
+    # - normalized_name: index=True (for exact matching)
+    # - aliases: GIN index on JSONB (for alias matching, created via SQL script)
+    # - (country, city): composite index for geographic queries (created via SQL script)
 

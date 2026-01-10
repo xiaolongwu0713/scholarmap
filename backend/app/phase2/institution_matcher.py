@@ -8,6 +8,7 @@ from typing import Any
 from app.db.connection import db_manager
 from app.db.repository import InstitutionGeoRepository
 from app.phase2.models import GeoData
+from app.phase2.text_utils import normalize_text
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,12 @@ class InstitutionMatcher:
         """
         Match an affiliation text to a known institution.
         
+        The matching process:
+        1. Normalizes the affiliation text
+        2. Extracts potential institution names from the affiliation
+        3. Matches against normalized_name and aliases (normalized) in database
+        4. Does NOT use primary_name for matching
+        
         Args:
             affiliation_text: Raw affiliation string
         
@@ -35,8 +42,11 @@ class InstitutionMatcher:
         if not affiliation_text or not affiliation_text.strip():
             return None
         
-        # Check cache first
-        affiliation_normalized = affiliation_text.strip().lower()
+        # Check cache first (use normalized version for cache key)
+        affiliation_normalized = normalize_text(affiliation_text)
+        if not affiliation_normalized:
+            return None
+        
         if affiliation_normalized in self._cache:
             return self._cache[affiliation_normalized]
         
@@ -44,13 +54,14 @@ class InstitutionMatcher:
             async with db_manager.session() as session:
                 repo = InstitutionGeoRepository(session)
                 
-                # Strategy 1: Exact match on primary_name or aliases
+                # Strategy 1: Exact match on normalized_name or aliases
+                # repo.get_by_name() will normalize the input and match against normalized_name and aliases
                 matched = await repo.get_by_name(affiliation_text)
                 if matched:
                     geo = GeoData(
                         country=matched.country,
                         city=matched.city,
-                        institution=matched.primary_name,
+                        institution=matched.primary_name,  # Return primary_name for display
                         confidence="high"
                     )
                     self._cache[affiliation_normalized] = geo
@@ -61,12 +72,13 @@ class InstitutionMatcher:
                 potential_names = self._extract_potential_institution_names(affiliation_text)
                 
                 for name in potential_names:
+                    # repo.get_by_name() will normalize the input and match against normalized_name and aliases
                     matched = await repo.get_by_name(name)
                     if matched:
                         geo = GeoData(
                             country=matched.country,
                             city=matched.city,
-                            institution=matched.primary_name,
+                            institution=matched.primary_name,  # Return primary_name for display
                             confidence="high"
                         )
                         self._cache[affiliation_normalized] = geo
@@ -75,6 +87,7 @@ class InstitutionMatcher:
                 # Strategy 3: Fuzzy match (similarity-based)
                 # Only search if affiliation is reasonably long (likely contains institution name)
                 if len(affiliation_text) > 10:
+                    # repo.search_by_name() will normalize the input and match against normalized_name and aliases
                     matches = await repo.search_by_name(affiliation_text, similarity_threshold=0.7)
                     if matches:
                         # Use the first (highest scored) match
@@ -82,7 +95,7 @@ class InstitutionMatcher:
                         geo = GeoData(
                             country=matched.country,
                             city=matched.city,
-                            institution=matched.primary_name,
+                            institution=matched.primary_name,  # Return primary_name for display
                             confidence="medium"  # Lower confidence for fuzzy matches
                         )
                         self._cache[affiliation_normalized] = geo

@@ -20,6 +20,7 @@ sys.path.insert(0, str(backend_dir.parent))  # Add repo root to path for config
 
 from app.db.connection import db_manager
 from app.db.repository import InstitutionGeoRepository
+from app.phase2.text_utils import normalize_text, extract_abbreviation
 
 
 def load_csv(file_path: Path) -> list[dict]:
@@ -61,11 +62,32 @@ def load_csv(file_path: Path) -> list[dict]:
                 except ValueError:
                     pass
             
+            primary_name = row['primary_name'].strip()
+            
+            # Generate normalized_name from primary_name
+            normalized_name = normalize_text(primary_name)
+            
+            # Normalize aliases if they exist, and optionally extract abbreviation
+            normalized_aliases = []
+            if aliases:
+                for alias in aliases:
+                    normalized_alias = normalize_text(alias)
+                    if normalized_alias and normalized_alias not in normalized_aliases:
+                        normalized_aliases.append(normalized_alias)
+            
+            # Optionally extract abbreviation from primary_name (e.g., "MIT" from "(MIT)")
+            abbrev = extract_abbreviation(primary_name)
+            if abbrev:
+                normalized_abbrev = normalize_text(abbrev)
+                if normalized_abbrev and normalized_abbrev not in normalized_aliases:
+                    normalized_aliases.append(normalized_abbrev)
+            
             inst = {
-                'primary_name': row['primary_name'].strip(),
+                'primary_name': primary_name,
+                'normalized_name': normalized_name,
                 'country': row['country'].strip(),
                 'city': row.get('city', '').strip() or None,
-                'aliases': aliases,
+                'aliases': normalized_aliases if normalized_aliases else None,
                 'qs_rank': qs_rank,
                 'ror_id': row.get('ror_id', '').strip() or None,
                 'source': row.get('source', 'qs').strip() or 'qs'
@@ -91,9 +113,47 @@ def load_json(file_path: Path) -> list[dict]:
         },
         ...
     ]
+    
+    Returns list of dicts with normalized_name and normalized aliases added.
     """
+    institutions = []
     with open(file_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+        data = json.load(f)
+    
+    for item in data:
+        primary_name = item['primary_name'].strip()
+        
+        # Generate normalized_name from primary_name
+        normalized_name = normalize_text(primary_name)
+        
+        # Normalize aliases if they exist
+        normalized_aliases = []
+        if item.get('aliases'):
+            for alias in item['aliases']:
+                normalized_alias = normalize_text(alias)
+                if normalized_alias and normalized_alias not in normalized_aliases:
+                    normalized_aliases.append(normalized_alias)
+        
+        # Optionally extract abbreviation from primary_name
+        abbrev = extract_abbreviation(primary_name)
+        if abbrev:
+            normalized_abbrev = normalize_text(abbrev)
+            if normalized_abbrev and normalized_abbrev not in normalized_aliases:
+                normalized_aliases.append(normalized_abbrev)
+        
+        inst = {
+            'primary_name': primary_name,
+            'normalized_name': normalized_name,
+            'country': item['country'].strip(),
+            'city': item.get('city', '').strip() or None,
+            'aliases': normalized_aliases if normalized_aliases else None,
+            'qs_rank': item.get('qs_rank'),
+            'ror_id': item.get('ror_id'),
+            'source': item.get('source', 'qs')
+        }
+        institutions.append(inst)
+    
+    return institutions
 
 
 async def import_institutions(
@@ -107,7 +167,10 @@ async def import_institutions(
     if dry_run:
         logger.info(f"DRY RUN: Would import {len(institutions)} institutions")
         for inst in institutions[:5]:  # Show first 5
-            logger.info(f"  - {inst['primary_name']} ({inst['country']}, {inst.get('city', 'N/A')})")
+            logger.info(f"  - {inst['primary_name']}")
+            logger.info(f"    normalized: {inst.get('normalized_name', 'N/A')}")
+            logger.info(f"    aliases: {inst.get('aliases', [])}")
+            logger.info(f"    ({inst['country']}, {inst.get('city', 'N/A')})")
         if len(institutions) > 5:
             logger.info(f"  ... and {len(institutions) - 5} more")
         return
@@ -127,15 +190,24 @@ async def import_institutions(
         for inst in institutions:
             try:
                 # Check if already exists (by primary_name)
-                existing = await repo.get_by_name(inst['primary_name'])
+                # Use a direct query on primary_name since normalized_name might have collisions
+                from app.db.models import InstitutionGeo
+                from sqlalchemy import select
+                result = await session.execute(
+                    select(InstitutionGeo).where(
+                        InstitutionGeo.primary_name == inst['primary_name']
+                    )
+                )
+                existing = result.scalar_one_or_none()
                 if existing:
                     logger.debug(f"Skipping existing: {inst['primary_name']}")
                     skipped += 1
                     continue
                 
-                # Insert new institution
+                # Insert new institution (with normalized_name)
                 await repo.insert_institution(
                     primary_name=inst['primary_name'],
+                    normalized_name=inst['normalized_name'],
                     country=inst['country'],
                     city=inst.get('city'),
                     aliases=inst.get('aliases'),
