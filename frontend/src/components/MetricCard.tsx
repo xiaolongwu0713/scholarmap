@@ -5,6 +5,8 @@ interface MetricCardProps {
   subtitle?: string;
   color?: "blue" | "green" | "purple" | "orange" | "red";
   trend?: number;
+  onClick?: () => void;
+  isActive?: boolean;
 }
 
 export default function MetricCard({
@@ -13,7 +15,9 @@ export default function MetricCard({
   value,
   subtitle,
   color = "blue",
-  trend
+  trend,
+  onClick,
+  isActive = false
 }: MetricCardProps) {
   const colorClasses = {
     blue: "from-blue-50 to-blue-100 text-blue-600",
@@ -29,19 +33,29 @@ export default function MetricCard({
         background: `linear-gradient(135deg, ${getGradient(color)})`,
         padding: "20px",
         borderRadius: "16px",
-        boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)",
+        boxShadow: isActive ? "0 0 0 3px rgba(59, 130, 246, 0.5)" : "0 1px 3px 0 rgb(0 0 0 / 0.1)",
         transition: "all 0.2s",
-        cursor: "default",
+        cursor: onClick ? "pointer" : "default",
         flex: 1,
-        minWidth: "180px"
+        minWidth: "180px",
+        border: isActive ? "2px solid #3b82f6" : "2px solid transparent"
       }}
+      onClick={onClick}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = "0 4px 6px -1px rgb(0 0 0 / 0.1)";
+        if (onClick) {
+          e.currentTarget.style.transform = "translateY(-2px)";
+          e.currentTarget.style.boxShadow = isActive 
+            ? "0 0 0 3px rgba(59, 130, 246, 0.5), 0 4px 6px -1px rgb(0 0 0 / 0.1)" 
+            : "0 4px 6px -1px rgb(0 0 0 / 0.1)";
+        }
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 1px 3px 0 rgb(0 0 0 / 0.1)";
+        if (onClick) {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = isActive 
+            ? "0 0 0 3px rgba(59, 130, 246, 0.5)" 
+            : "0 1px 3px 0 rgb(0 0 0 / 0.1)";
+        }
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>

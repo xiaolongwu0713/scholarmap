@@ -5358,3 +5358,103 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-12 12:08:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Shanghai, China
 2026-01-12 12:08:48 - app.main - INFO -    Institutions returned: 3
 2026-01-12 12:08:48 - app.main - INFO - ================================================================================
+2026-01-12 11:08:34 - root - INFO - ================================================================================
+2026-01-12 11:08:34 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-12 11:08:34 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-12 11:08:34 - root - INFO - ================================================================================
+2026-01-12 11:10:27 - app.main - INFO - ================================================================================
+2026-01-12 11:10:27 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-12 11:10:27 - app.main - INFO -    Min confidence: low
+2026-01-12 11:10:27 - app.main - INFO - ================================================================================
+2026-01-12 11:10:27 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-12 11:10:27 - app.main - INFO - ================================================================================
+2026-01-12 11:10:27 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-12 11:10:27 - app.main - INFO -    Min confidence: low
+2026-01-12 11:10:27 - app.main - INFO - ================================================================================
+2026-01-12 11:10:27 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 13092a22728c...
+2026-01-12 11:10:28 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-12 11:10:28 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-12 11:10:28 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 51 countries
+2026-01-12 11:10:28 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-12 11:10:28 - app.main - INFO -    Countries returned: 51
+2026-01-12 11:10:28 - app.main - INFO - ================================================================================
+2026-01-12 11:10:31 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 51 countries
+2026-01-12 11:10:31 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-12 11:10:31 - app.main - INFO -    Countries returned: 51
+2026-01-12 11:10:31 - app.main - INFO - ================================================================================
+2026-01-12 11:10:33 - app.main - INFO - ================================================================================
+2026-01-12 11:10:33 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 13092a22728c
+2026-01-12 11:10:33 - app.main - INFO -    Country: Morocco, Min confidence: low
+2026-01-12 11:10:33 - app.main - INFO - ================================================================================
+2026-01-12 11:10:33 - app.phase2.pg_aggregations - INFO -    Getting country map for Morocco (normalized: Morocco)...
+2026-01-12 11:10:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-12 11:10:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Morocco
+2026-01-12 11:10:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Morocco
+2026-01-12 11:10:34 - app.main - INFO -    Cities returned: 1
+2026-01-12 11:10:34 - app.main - INFO - ================================================================================
+2026-01-12 13:06:40 - root - INFO - ================================================================================
+2026-01-12 13:06:40 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-12 13:06:40 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-12 13:06:40 - root - INFO - ================================================================================
+2026-01-12 13:06:43 - root - INFO - ================================================================================
+2026-01-12 13:06:43 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-12 13:06:43 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-12 13:06:43 - root - INFO - ================================================================================
+2026-01-12 13:07:35 - root - INFO - ================================================================================
+2026-01-12 13:07:35 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-12 13:07:35 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-12 13:07:35 - root - INFO - ================================================================================
+2026-01-12 13:13:26 - root - INFO - ================================================================================
+2026-01-12 13:13:26 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-12 13:13:26 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-12 13:13:26 - root - INFO - ================================================================================
+2026-01-12 13:29:28 - app.main - INFO - ================================================================================
+2026-01-12 13:29:28 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-12 13:29:28 - app.main - INFO -    Min confidence: low
+2026-01-12 13:29:28 - app.main - INFO - ================================================================================
+2026-01-12 13:29:28 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-12 13:29:28 - app.main - INFO - ================================================================================
+2026-01-12 13:29:28 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-12 13:29:28 - app.main - INFO -    Min confidence: low
+2026-01-12 13:29:28 - app.main - INFO - ================================================================================
+2026-01-12 13:29:28 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-12 13:29:28 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-12 13:29:28 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-12 13:29:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Russia' -> (64.6863136, 97.7453061)
+2026-01-12 13:29:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Russia' -> (64.6863136, 97.7453061)
+2026-01-12 13:29:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Czech Republic' -> (49.7439047, 15.3381061)
+2026-01-12 13:29:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Czech Republic' -> (49.7439047, 15.3381061)
+2026-01-12 13:29:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Serbia' -> (44.0243229, 21.0765743)
+2026-01-12 13:29:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Serbia' -> (44.0243229, 21.0765743)
+2026-01-12 13:29:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Zambia' -> (-14.5189121, 27.5589884)
+2026-01-12 13:29:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Zambia' -> (-14.5189121, 27.5589884)
+2026-01-12 13:29:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Chile' -> (-31.7613365, -71.3187697)
+2026-01-12 13:29:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Chile' -> (-31.7613365, -71.3187697)
+2026-01-12 13:29:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Uganda' -> (1.5333554, 32.2166578)
+2026-01-12 13:29:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Uganda' -> (1.5333554, 32.2166578)
+2026-01-12 13:29:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Slovakia' -> (48.7411522, 19.4528646)
+2026-01-12 13:29:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Slovakia' -> (48.7411522, 19.4528646)
+2026-01-12 13:29:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Brasil' -> (-10.3333333, -53.2)
+2026-01-12 13:29:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Brasil' -> (-10.3333333, -53.2)
+2026-01-12 13:29:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Greece' -> (38.9953683, 21.9877132)
+2026-01-12 13:29:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Greece' -> (38.9953683, 21.9877132)
+2026-01-12 13:29:52 - app.phase2.pg_geocoding - INFO - Geocoded 'the Netherlands' -> (52.2434979, 5.6343227)
+2026-01-12 13:29:53 - app.phase2.pg_geocoding - INFO - Geocoded 'the Netherlands' -> (52.2434979, 5.6343227)
+2026-01-12 13:29:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Peru' -> (-6.8699697, -75.0458515)
+2026-01-12 13:29:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Peru' -> (-6.8699697, -75.0458515)
+2026-01-12 13:29:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Kazakhstan' -> (48.1012954, 66.7780818)
+2026-01-12 13:29:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Kazakhstan' -> (48.1012954, 66.7780818)
+2026-01-12 13:29:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Malaysia' -> (4.5693754, 102.2656823)
+2026-01-12 13:29:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Malaysia' -> (4.5693754, 102.2656823)
+2026-01-12 13:30:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Venezuela' -> (8.0018709, -66.1109318)
+2026-01-12 13:30:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Venezuela' -> (8.0018709, -66.1109318)
+2026-01-12 13:30:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Special Administrative Region of China' -> (22.1886442, 113.5540704)
+2026-01-12 13:30:04 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-12 13:30:04 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-12 13:30:04 - app.main - INFO -    Countries returned: 52
+2026-01-12 13:30:04 - app.main - INFO - ================================================================================
+2026-01-12 13:30:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Special Administrative Region of China' -> (22.1886442, 113.5540704)
+2026-01-12 13:30:05 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-12 13:30:05 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-12 13:30:05 - app.main - INFO -    Countries returned: 52
+2026-01-12 13:30:05 - app.main - INFO - ================================================================================

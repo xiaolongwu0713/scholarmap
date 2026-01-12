@@ -384,6 +384,9 @@ export type IngestStats = {
   unique_affiliations: number;
   affiliations_with_country: number;
   llm_calls_made: number;
+  unique_authors: number;
+  unique_countries: number;
+  unique_institutions: number;
   errors: string[];
 };
 

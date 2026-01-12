@@ -931,7 +931,10 @@ async def phase2_authorship_stats(request: Request, project_id: str, run_id: str
                 func.count(func.distinct(Authorship.pmid)).label('papers_parsed'),
                 func.count().label('authorships_created'),
                 func.count(func.distinct(Authorship.affiliation_raw_joined)).label('unique_affiliations'),
-                func.sum(case((Authorship.country.isnot(None), 1), else_=0)).label('affiliations_with_country')
+                func.sum(case((Authorship.country.isnot(None), 1), else_=0)).label('affiliations_with_country'),
+                func.count(func.distinct(Authorship.author_name_raw)).label('unique_authors'),
+                func.count(func.distinct(Authorship.country)).label('unique_countries'),
+                func.count(func.distinct(Authorship.institution)).label('unique_institutions')
             ).where(
                 Authorship.pmid.in_(pmids)
             )
@@ -954,6 +957,9 @@ async def phase2_authorship_stats(request: Request, project_id: str, run_id: str
                     "unique_affiliations": stats.unique_affiliations,
                     "affiliations_with_country": stats.affiliations_with_country or 0,
                     "llm_calls_made": 0,
+                    "unique_authors": stats.unique_authors or 0,
+                    "unique_countries": stats.unique_countries or 0,
+                    "unique_institutions": stats.unique_institutions or 0,
                     "errors": []
                 }
             }
