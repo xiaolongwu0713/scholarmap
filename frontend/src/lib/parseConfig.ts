@@ -9,6 +9,9 @@
 
 import { getFrontendConfig, type FrontendConfig } from "./api";
 
+// Re-export FrontendConfig type for use in other modules
+export type { FrontendConfig };
+
 // ============================================================================
 // Configuration Cache
 // ============================================================================
