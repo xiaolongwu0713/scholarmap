@@ -133,7 +133,7 @@ export default function RegisterPage() {
       const response = await register(email.trim(), verificationCode.trim(), password, passwordRetype);
       setToken(response.access_token);
       setUser({ user_id: response.user_id, email: response.email });
-      router.push("/");
+      router.push("/projects");
     } catch (e: any) {
       setError(e.message || "Registration failed");
     } finally {

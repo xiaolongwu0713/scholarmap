@@ -1233,7 +1233,7 @@ function RunPageContent() {
   ];
 
   return (
-    <div className="stack">
+    <div className="container stack">
       {/* Header */}
       <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
         <div>

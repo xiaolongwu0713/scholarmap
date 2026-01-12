@@ -22,7 +22,7 @@ export default function LoginPage() {
       const response = await login(email.trim(), password);
       setToken(response.access_token);
       setUser({ user_id: response.user_id, email: response.email });
-      router.push("/");
+      router.push("/projects");
     } catch (e: any) {
       setError(e.message || "Login failed");
     } finally {

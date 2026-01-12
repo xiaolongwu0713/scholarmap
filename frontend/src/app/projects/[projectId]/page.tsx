@@ -33,7 +33,7 @@ function ProjectPageContent() {
   }, [projectId]);
 
   return (
-    <div className="stack">
+    <div className="container stack">
       {/* Quota Error Modal */}
       {quotaErrorModal.show && (
         <div

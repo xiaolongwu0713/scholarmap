@@ -75,7 +75,7 @@ export default function NewRunPage() {
   }
 
   return (
-    <div className="stack">
+    <div className="container stack">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <h1 style={{ margin: 0 }}>New Run</h1>
         <Link href={`/projects/${projectId}`}>
