@@ -228,7 +228,6 @@ class OpenAIClient:
         append_log("llm.complete_text.response", log_payload)
         
         return raw_content
-
     async def extract_slots(self, research_description: str, log_context: dict[str, Any] | None = None) -> Slots:
         slots_json = await self._chat_json(SLOTS_PROMPT, research_description, temperature=0.0, log_context=log_context)
         return Slots.model_validate(slots_json)

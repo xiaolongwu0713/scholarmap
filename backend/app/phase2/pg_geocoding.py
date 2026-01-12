@@ -147,22 +147,42 @@ class PostgresGeocoder:
                 cache_repo = GeocodingCacheRepository(session)
                 cached = await cache_repo.get_cached(location_key)
                 
-                if cached and cached.latitude is not None and cached.longitude is not None:
-                    logger.debug(f"Cache hit: {location_key} -> ({cached.latitude}, {cached.longitude})")
-                    # Update affiliations array if affiliation is provided (even on cache hit)
-                    if affiliation:
-                        try:
-                            await cache_repo.cache_location(
-                                location_key,
-                                cached.latitude,
-                                cached.longitude,
-                                affiliation=affiliation,
-                                max_affiliations=settings.geocoding_cache_max_affiliations
-                            )
-                            await session.commit()
-                        except Exception as e:
-                            logger.warning(f"Failed to update affiliations for {location_key}: {e}")
-                    return (cached.latitude, cached.longitude)
+                if cached:
+                    # Cache hit - return cached result (even if null, to avoid repeated API calls)
+                    if cached.latitude is not None and cached.longitude is not None:
+                        logger.debug(f"Cache hit: {location_key} -> ({cached.latitude}, {cached.longitude})")
+                        # Update affiliations array if affiliation is provided (even on cache hit)
+                        if affiliation:
+                            try:
+                                await cache_repo.cache_location(
+                                    location_key,
+                                    cached.latitude,
+                                    cached.longitude,
+                                    affiliation=affiliation,
+                                    max_affiliations=settings.geocoding_cache_max_affiliations
+                                )
+                                await session.commit()
+                            except Exception as e:
+                                logger.debug(f"Failed to update affiliations for {location_key}: {e}")
+                        return (cached.latitude, cached.longitude)
+                    else:
+                        # Cache hit but coordinates are null - previously failed geocoding
+                        # Return None immediately to avoid repeated API calls
+                        logger.debug(f"Cache hit (null coordinates): {location_key} -> None (previously failed)")
+                        # Still update affiliations array if needed
+                        if affiliation:
+                            try:
+                                await cache_repo.cache_location(
+                                    location_key,
+                                    None,
+                                    None,
+                                    affiliation=affiliation,
+                                    max_affiliations=settings.geocoding_cache_max_affiliations
+                                )
+                                await session.commit()
+                            except Exception as e:
+                                logger.debug(f"Failed to update affiliations for {location_key}: {e}")
+                        return None
         except Exception as e:
             logger.warning(f"Cache lookup failed for {location_key}: {e}, falling back to API")
         

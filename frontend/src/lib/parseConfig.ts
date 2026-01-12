@@ -1,45 +1,105 @@
 /**
  * Parse stage protection and validation configuration.
  * 
- * This module contains all configuration constants for:
- * - Text validation attempt limits
- * - LLM call attempt limits
- * - Invalid call restrictions
+ * This module now dynamically loads configuration from backend API
+ * to ensure frontend and backend always use the same limits.
  * 
- * Centralized here for easy management and fine-tuning.
+ * Configuration is cached after first load to avoid repeated API calls.
  */
 
+import { getFrontendConfig, type FrontendConfig } from "./api";
+
 // ============================================================================
-// Frontend Attempt Limits
+// Configuration Cache
+// ============================================================================
+
+let configCache: FrontendConfig | null = null;
+let configPromise: Promise<FrontendConfig> | null = null;
+
+/**
+ * Get configuration from backend (with caching).
+ * 
+ * Usage:
+ * ```typescript
+ * const config = await getConfig();
+ * console.log(config.parse_stage1_max_attempts);
+ * ```
+ */
+export async function getConfig(): Promise<FrontendConfig> {
+  // Return cached config if available
+  if (configCache) {
+    return configCache;
+  }
+
+  // If a request is already in progress, wait for it
+  if (configPromise) {
+    return configPromise;
+  }
+
+  // Fetch config from backend
+  configPromise = getFrontendConfig().then((config) => {
+    configCache = config;
+    configPromise = null;
+    return config;
+  }).catch((error) => {
+    configPromise = null;
+    console.error("Failed to load config from backend, using fallback defaults:", error);
+    
+    // Fallback to default values if API fails
+    const fallbackConfig: FrontendConfig = {
+      text_validation_max_attempts: 3,
+      parse_stage1_max_attempts: 2,
+      parse_stage2_max_total_attempts: 3,
+      parse_stage2_max_consecutive_unhelpful: 2,
+      retrieval_framework_adjust_max_attempts: 2,
+    };
+    
+    configCache = fallbackConfig;
+    return fallbackConfig;
+  });
+
+  return configPromise;
+}
+
+/**
+ * Clear the configuration cache.
+ * Useful for testing or when config needs to be reloaded.
+ */
+export function clearConfigCache(): void {
+  configCache = null;
+  configPromise = null;
+}
+
+// ============================================================================
+// Legacy exports (for backward compatibility)
 // ============================================================================
 
 /**
- * Text validation attempt limit (before calling LLM)
- * After this many failed validation attempts, the input field will be locked.
+ * @deprecated Use `getConfig()` instead to get latest backend values.
+ * These constants are fallback defaults only.
  */
 export const TEXT_VALIDATION_MAX_ATTEMPTS = 3;
 
 /**
- * Parse Stage 1 maximum attempts
- * Maximum number of times user can try to parse their research description.
+ * @deprecated Use `getConfig()` instead to get latest backend values.
+ * These constants are fallback defaults only.
  */
-export const PARSE_STAGE1_MAX_ATTEMPTS = 3;
+export const PARSE_STAGE1_MAX_ATTEMPTS = 2;
 
 /**
- * Parse Stage 2 total maximum attempts
- * Maximum total number of times user can provide additional information.
+ * @deprecated Use `getConfig()` instead to get latest backend values.
+ * These constants are fallback defaults only.
  */
-export const PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 5;
+export const PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 3;
 
 /**
- * Parse Stage 2 consecutive unhelpful responses before lockout
- * If user provides this many consecutive unhelpful responses, the service will be locked.
+ * @deprecated Use `getConfig()` instead to get latest backend values.
+ * These constants are fallback defaults only.
  */
 export const PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2;
 
 /**
- * Retrieval Framework adjustment maximum attempts
- * Maximum number of times user can adjust the retrieval framework.
+ * @deprecated Use `getConfig()` instead to get latest backend values.
+ * These constants are fallback defaults only.
  */
 export const RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS = 2;
-

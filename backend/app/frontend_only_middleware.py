@@ -14,7 +14,8 @@ from __future__ import annotations
 import re
 from typing import Callable
 
-from fastapi import Request, HTTPException, status
+from fastapi import Request, status
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
@@ -123,13 +124,15 @@ class FrontendOnlyMiddleware(BaseHTTPMiddleware):
         
         # At least one of origin or referer must be from allowed frontend
         if not (origin_allowed or referer_allowed):
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=(
-                    "Direct API calls are not allowed. "
-                    "This endpoint can only be accessed from the frontend application. "
-                    f"Origin: {origin or 'missing'}, Referer: {referer or 'missing'}"
-                ),
+                content={
+                    "detail": (
+                        "Direct API calls are not allowed. "
+                        "This endpoint can only be accessed from the frontend application. "
+                        f"Origin: {origin or 'missing'}, Referer: {referer or 'missing'}"
+                    )
+                },
             )
         
         # Optional: Check for custom header (frontend should set this)

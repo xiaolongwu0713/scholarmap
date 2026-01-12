@@ -19,13 +19,7 @@ import {
   getAuthorshipStats,
   type IngestStats
 } from "@/lib/api";
-import {
-  TEXT_VALIDATION_MAX_ATTEMPTS,
-  PARSE_STAGE1_MAX_ATTEMPTS,
-  PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
-  PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
-  RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
-} from "@/lib/parseConfig";
+import { getConfig, type FrontendConfig } from "@/lib/parseConfig";
 import dynamic from "next/dynamic";
 import MetricCard from "@/components/MetricCard";
 import ProgressSteps from "@/components/ProgressSteps";
@@ -107,6 +101,46 @@ function validateClientInput(text: string): string[] {
   if (/\d{6,}/.test(s)) issues.push("no long number strings");
   if (/(.)\1{5,}/i.test(s)) issues.push("no repeated chars");
   if (/[A-Za-z]{25,}/.test(s)) issues.push("no long letter strings");
+
+  return issues;
+}
+
+function validateFrameworkAdjustmentInput(text: string): string[] {
+  const s = text ?? "";
+  const trimmed = s.trim();
+  const issues: string[] = [];
+
+  // Basic format checks (same as regular validation)
+  if (!trimmed) issues.push("required");
+  if (trimmed.length < 50 || trimmed.length > 300) issues.push("50–300 chars");
+  const newlineCount = (s.match(/\n/g) || []).length;
+  if (newlineCount > 3) issues.push("max 3 newlines");
+  if (/<[^>]+>/.test(s)) issues.push("no HTML");
+  if (/\[[^\]]+\]\([^)]+\)/.test(s)) issues.push("no markdown links");
+  if (/(https?:\/\/|www\.)\S+/i.test(s)) issues.push("no URL");
+  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(s)) issues.push("no email");
+  if (/\b(?:\+?\d[\d\s().-]{7,}\d)\b/.test(s)) issues.push("no phone");
+  if (/\b(wechat|weixin|wxid|vx)\b/i.test(s)) issues.push("no wechat");
+  if (/[^\x00-\x7F]/.test(s)) issues.push("ASCII only");
+  if (!/[A-Za-z]/.test(s)) issues.push("must contain letters");
+  if (/\d{6,}/.test(s)) issues.push("no long number strings");
+  if (/(.)\1{5,}/i.test(s)) issues.push("no repeated chars");
+  
+  // Special handling for long letter strings in framework adjustment
+  // Allow up to 2 long letter strings, and exclude words ending in "graph" or "graphy" (e.g., electroencephalography, stereotactic)
+  const longLetterMatches = trimmed.match(/[A-Za-z]{25,}/g) || [];
+  const validLongWords = longLetterMatches.filter(word => {
+    const lower = word.toLowerCase();
+    return lower.endsWith('graph') || lower.endsWith('graphy');
+  });
+  const invalidLongWords = longLetterMatches.filter(word => {
+    const lower = word.toLowerCase();
+    return !lower.endsWith('graph') && !lower.endsWith('graphy');
+  });
+  
+  if (invalidLongWords.length > 2) {
+    issues.push(`too many long letter strings (${invalidLongWords.length} found, max 2 allowed)`);
+  }
 
   return issues;
 }
@@ -299,6 +333,15 @@ function RunPageContent() {
   const projectId = params.projectId as string;
   const runId = params.runId as string;
 
+  // Load configuration from backend (with fallback defaults)
+  const [config, setConfig] = useState<FrontendConfig>({
+    text_validation_max_attempts: 3,
+    parse_stage1_max_attempts: 2,
+    parse_stage2_max_total_attempts: 3,
+    parse_stage2_max_consecutive_unhelpful: 2,
+    retrieval_framework_adjust_max_attempts: 2,
+  });
+  
   const [busy, setBusy] = useState<
     null | "textValidate" | "parse" | "buildFramework" | "adjustFramework" | "queryBuild" | "query" | "ingest"
   >(null);
@@ -362,7 +405,7 @@ function RunPageContent() {
   const researchClientIssues = validateClientInput(researchDescription);
   const textValidateDraftClientIssues = validateClientInput(textValidateDraft);
   const parseAdditionalClientIssues = validateClientInput(parseAdditionalInfo);
-  const frameworkAdjustClientIssues = validateClientInput(frameworkAdjustInput);
+  const frameworkAdjustClientIssues = validateFrameworkAdjustmentInput(frameworkAdjustInput);
 
   async function refreshFiles() {
     try {
@@ -620,6 +663,14 @@ function RunPageContent() {
     await loadResults();
   }
 
+  // Load configuration from backend on mount
+  useEffect(() => {
+    getConfig().then(setConfig).catch((e) => {
+      console.error("Failed to load config:", e);
+      // Config will fallback to defaults in parseConfig.ts
+    });
+  }, []);
+  
   useEffect(() => {
     loadInitial().catch((e) => setError(String(e)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -631,11 +682,11 @@ function RunPageContent() {
   }, [projectId, runId, rawSelected]);
 
   async function onParseStage1(candidate: string) {
-    if (parseStage1Attempts >= PARSE_STAGE1_MAX_ATTEMPTS) {
+    if (parseStage1Attempts >= config.parse_stage1_max_attempts) {
       setParseStage1Locked(true);
       setTextValidateMessages((prev) => [
         ...prev,
-        { role: "system", content: `Parse stage1: Too many attempts (${PARSE_STAGE1_MAX_ATTEMPTS}/${PARSE_STAGE1_MAX_ATTEMPTS}). Service refused.` }
+        { role: "system", content: `Parse stage1: Too many attempts (${config.parse_stage1_max_attempts}/${config.parse_stage1_max_attempts}). Service refused.` }
       ]);
       return;
     }
@@ -668,11 +719,11 @@ function RunPageContent() {
       
       setTextValidateMessages((prev) => [...prev, ...newMessages]);
 
-      if (stage1Failed && parseStage1Attempts >= PARSE_STAGE1_MAX_ATTEMPTS) {
+      if (stage1Failed && parseStage1Attempts >= config.parse_stage1_max_attempts) {
         setParseStage1Locked(true);
         setTextValidateMessages((prev) => [
           ...prev,
-          { role: "system", content: `Parse stage1: Too many failed attempts (${PARSE_STAGE1_MAX_ATTEMPTS}/${PARSE_STAGE1_MAX_ATTEMPTS}). Service refused.` }
+          { role: "system", content: `Parse stage1: Too many failed attempts (${config.parse_stage1_max_attempts}/${config.parse_stage1_max_attempts}). Service refused.` }
         ]);
       }
     } catch (e) {
@@ -684,11 +735,11 @@ function RunPageContent() {
 
   async function onParseStage2Submit(additionalInfo: string) {
     // Check total attempts limit
-    if (parseStage2TotalAttempts >= PARSE_STAGE2_MAX_TOTAL_ATTEMPTS) {
+    if (parseStage2TotalAttempts >= config.parse_stage2_max_total_attempts) {
       setParseStage2Locked(true);
       setTextValidateMessages((prev) => [
         ...prev,
-        { role: "system", content: `Parse stage2: Maximum attempts reached (${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS}/${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS}). Service refused.` }
+        { role: "system", content: `Parse stage2: Maximum attempts reached (${config.parse_stage2_max_total_attempts}/${config.parse_stage2_max_total_attempts}). Service refused.` }
       ]);
       return;
     }
@@ -729,7 +780,7 @@ function RunPageContent() {
       }
 
       // Lock if max attempts reached
-      if (newTotalAttempts >= PARSE_STAGE2_MAX_TOTAL_ATTEMPTS) {
+      if (newTotalAttempts >= config.parse_stage2_max_total_attempts) {
         setParseStage2Locked(true);
       }
 
@@ -759,9 +810,9 @@ function RunPageContent() {
       messages.push({ role: "system", content: llmResponse });
 
       // Lock if consecutive unhelpful threshold reached (after adding the response)
-      if (!d.is_helpful && newConsecutiveFalse >= PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL) {
+      if (!d.is_helpful && newConsecutiveFalse >= config.parse_stage2_max_consecutive_unhelpful) {
         setParseStage2Locked(true);
-        messages.push({ role: "system", content: `Parse: Service refused due to ${PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL} consecutive unhelpful responses.` });
+        messages.push({ role: "system", content: `Parse: Service refused due to ${config.parse_stage2_max_consecutive_unhelpful} consecutive unhelpful responses.` });
       }
 
       if (d.plausibility_level === "A_impossible" || !d.is_research_description) {
@@ -862,7 +913,7 @@ function RunPageContent() {
       setFrameworkAdjustAttempts(prev => prev + 1);
 
       // Check if limit reached
-      if (frameworkAdjustAttempts + 1 >= RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS) {
+      if (frameworkAdjustAttempts + 1 >= config.retrieval_framework_adjust_max_attempts) {
         setFrameworkAdjustLocked(true);
       }
 
@@ -957,7 +1008,7 @@ function RunPageContent() {
         setTextValidateReason(reason);
         // 不添加到对话框，而是显示弹窗
         setValidationErrorModal({ show: true, message: userFriendlyMessage });
-        if (nextAttempts >= TEXT_VALIDATION_MAX_ATTEMPTS) {
+        if (nextAttempts >= config.text_validation_max_attempts) {
           setTextValidateLocked(true);
         }
         return;
@@ -1361,7 +1412,7 @@ function RunPageContent() {
               <div className="row" style={{ justifyContent: "space-between" }}>
                 <div className="muted">Dialogue</div>
                 <div className="muted" style={{ fontSize: 12 }}>
-                  Parse-1: {parseStage1Attempts}/{PARSE_STAGE1_MAX_ATTEMPTS} · Parse-2: {parseStage2Attempts}/{PARSE_STAGE1_MAX_ATTEMPTS}
+                  Parse-1: {parseStage1Attempts}/{config.parse_stage1_max_attempts} · Parse-2: {parseStage2Attempts}/{config.parse_stage1_max_attempts}
                 </div>
               </div>
 
@@ -1472,7 +1523,7 @@ function RunPageContent() {
                         value={parseAdditionalInfo}
                         onChange={(e) => setParseAdditionalInfo(e.target.value)}
                         disabled={parseCompleted || parseStage2Locked || busy !== null}
-                        placeholder={parseCompleted ? "Parse stage completed. Input disabled." : parseStage2Locked ? `Parse stage2 locked after ${PARSE_STAGE2_MAX_TOTAL_ATTEMPTS} attempts.` : "Add details to answer the questions..."}
+                        placeholder={parseCompleted ? "Parse stage completed. Input disabled." : parseStage2Locked ? `Parse stage2 locked after ${config.parse_stage2_max_total_attempts} attempts.` : "Add details to answer the questions..."}
                         style={{ fontSize: "14px" }}
                         maxLength={300}
                       />
@@ -1501,7 +1552,7 @@ function RunPageContent() {
                           busy !== null ||
                           !parseAdditionalInfo.trim() ||
                           parseAdditionalClientIssues.length > 0 ||
-                          parseStage2TotalAttempts >= PARSE_STAGE2_MAX_TOTAL_ATTEMPTS
+                          parseStage2TotalAttempts >= config.parse_stage2_max_total_attempts
                         }
                         className="gradient-blue"
                       >
@@ -1515,10 +1566,10 @@ function RunPageContent() {
                         color: "#666",
                         marginTop: -8 
                       }}>
-                        Attempts: {parseStage2TotalAttempts}/{PARSE_STAGE2_MAX_TOTAL_ATTEMPTS}
+                        Attempts: {parseStage2TotalAttempts}/{config.parse_stage2_max_total_attempts}
                         {parseStage2ConsecutiveFalse > 0 && (
                           <span style={{ color: "#dc2626", marginLeft: 8 }}>
-                            (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/{PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL})
+                            (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/{config.parse_stage2_max_consecutive_unhelpful})
                           </span>
                         )}
                       </div>
@@ -1552,9 +1603,9 @@ function RunPageContent() {
                         disabled={textValidateLocked || parseStage1Locked || busy !== null}
                         placeholder={
                           textValidateLocked
-                            ? `Input disabled after ${TEXT_VALIDATION_MAX_ATTEMPTS} invalid attempts.`
+                            ? `Input disabled after ${config.text_validation_max_attempts} invalid attempts.`
                             : parseStage1Locked
-                              ? `Parse stage1 locked after ${PARSE_STAGE1_MAX_ATTEMPTS} failed attempts.`
+                              ? `Parse stage1 locked after ${config.parse_stage1_max_attempts} failed attempts.`
                               : "Revise and click parse again..."
                         }
                         style={{ fontSize: "14px" }}
@@ -1664,7 +1715,7 @@ function RunPageContent() {
           </div>
             {frameworkAdjustAttempts > 0 && (
               <span className="badge" style={{ background: "#fef3c7", color: "#92400e" }}>
-                {frameworkAdjustAttempts}/{RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS} adjustments
+                {frameworkAdjustAttempts}/{config.retrieval_framework_adjust_max_attempts} adjustments
               </span>
           )}
         </div>
@@ -1749,7 +1800,7 @@ function RunPageContent() {
                       frameworkCompleted
                         ? "Framework stage completed. Input disabled."
                         : frameworkAdjustLocked
-                        ? `Input disabled after ${RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS} adjustments.`
+                        ? `Input disabled after ${config.retrieval_framework_adjust_max_attempts} adjustments.`
                         : "Enter your adjustment request..."
                     }
                     style={{ fontSize: "14px" }}
@@ -1780,14 +1831,14 @@ function RunPageContent() {
                       busy !== null ||
                       !frameworkAdjustInput.trim() ||
                       frameworkAdjustClientIssues.length > 0 ||
-                      frameworkAdjustAttempts >= RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS
+                      frameworkAdjustAttempts >= config.retrieval_framework_adjust_max_attempts
                     }
                     className="gradient-green"
                   >
                     {busy === "adjustFramework" ? "🔄 Adjusting…" : "Submit Adjustment"}
                   </button>
                   <span className="muted" style={{ fontSize: "13px" }}>
-                    {frameworkAdjustAttempts}/{RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS}
+                    {frameworkAdjustAttempts}/{config.retrieval_framework_adjust_max_attempts}
                   </span>
                 </div>
               </div>

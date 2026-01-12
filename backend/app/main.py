@@ -22,7 +22,8 @@ from pydantic import BaseModel, Field
 import httpx
 from app.core.paths import get_data_dir
 from app.db.connection import db_manager
-from app.db.repository import AuthorshipRepository, RunPaperRepository
+from app.db.repository import AuthorshipRepository, RunPaperRepository, ProjectRepository, RunRepository
+from app.db.resource_monitor_repository import ResourceMonitorRepository, UserActivityRepository
 from app.core.storage import FileStore
 from app.db.service import DatabaseStore
 from app.auth.middleware import AuthMiddleware
@@ -183,6 +184,30 @@ def healthz() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/api/config")
+def get_frontend_config() -> dict:
+    """
+    Get frontend configuration constants from backend.
+    This ensures frontend and backend always use the same limits.
+    Public endpoint - no authentication required.
+    """
+    from app.guardrail_config import (
+        TEXT_VALIDATION_MAX_ATTEMPTS,
+        PARSE_STAGE1_MAX_ATTEMPTS,
+        PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
+        PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
+        RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
+    )
+    
+    return {
+        "text_validation_max_attempts": TEXT_VALIDATION_MAX_ATTEMPTS,
+        "parse_stage1_max_attempts": PARSE_STAGE1_MAX_ATTEMPTS,
+        "parse_stage2_max_total_attempts": PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
+        "parse_stage2_max_consecutive_unhelpful": PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
+        "retrieval_framework_adjust_max_attempts": RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
+    }
+
+
 # ============================================================================
 # Authentication Endpoints
 # ============================================================================
@@ -317,6 +342,47 @@ async def login_user(req: LoginRequest) -> dict:
         }
 
 
+@app.get("/api/user/quota")
+async def get_user_quota(request: Request) -> dict:
+    """Get current user's quota information."""
+    user_id = request.state.user_id
+    
+    async with db_manager.session() as session:
+        from app.auth.repository import UserRepository
+        from app.quota import get_user_quota_summary
+        
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Get current usage
+        project_repo = ProjectRepository(session)
+        run_repo = RunRepository(session)
+        
+        projects = await project_repo.list_projects(user_id)
+        
+        # Get max runs from all projects
+        max_runs_in_project = 0
+        total_runs = 0
+        for project in projects:
+            runs_count = await run_repo.count_project_runs(project.project_id)
+            total_runs += runs_count
+            max_runs_in_project = max(max_runs_in_project, runs_count)
+        
+        current_counts = {
+            "projects": len(projects),
+            "runs": max_runs_in_project,  # Use max runs in any single project
+            "papers": 0,  # Would need to count from results
+            "ingestion_today": 0,  # Would need to track ingestion operations
+        }
+        
+        # Get quota summary
+        quota_info = get_user_quota_summary(user.email, current_counts)
+        
+        return quota_info
+
+
 @app.get("/api/projects")
 async def list_projects(request: Request) -> dict:
     user_id = request.state.user_id
@@ -327,6 +393,27 @@ async def list_projects(request: Request) -> dict:
 @app.post("/api/projects")
 async def create_project(request: Request, req: CreateProjectRequest) -> dict:
     user_id = request.state.user_id
+    
+    # Check user quota
+    async with db_manager.session() as session:
+        from app.auth.repository import UserRepository
+        from app.quota import check_can_create_project
+        
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Count current projects
+        project_repo = ProjectRepository(session)
+        current_project_count = await project_repo.count_user_projects(user_id)
+        
+        # Check quota
+        can_create, error_msg = await check_can_create_project(user.email, current_project_count)
+        if not can_create:
+            raise HTTPException(status_code=403, detail=error_msg)
+    
+    # Create project
     project = await store.create_project(user_id, req.name)
     return {"project": project.__dict__}
 
@@ -347,6 +434,26 @@ async def create_run(request: Request, project_id: str, req: CreateRunRequest) -
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Check user quota
+    async with db_manager.session() as session:
+        from app.auth.repository import UserRepository
+        from app.quota import check_can_create_run
+        
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Count current runs in this project
+        run_repo = RunRepository(session)
+        current_run_count = await run_repo.count_project_runs(project_id)
+        
+        # Check quota
+        can_create, error_msg = await check_can_create_run(user.email, project_id, current_run_count)
+        if not can_create:
+            raise HTTPException(status_code=403, detail=error_msg)
+    
     # Allow empty description when creating - user will enter it in the Run page
     # Only validate if description is provided and not empty
     if req.research_description and req.research_description.strip():
@@ -428,6 +535,8 @@ async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Execute query
     try:
         result = await step_retrieve(store, project_id, run_id)
     except FileNotFoundError:
@@ -436,6 +545,34 @@ async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
         raise HTTPException(status_code=502, detail=f"Upstream HTTP error: {e.response.status_code}") from e
     except RuntimeError as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+    # Check paper count quota after retrieval
+    async with db_manager.session() as session:
+        from app.auth.repository import UserRepository
+        from app.quota import check_quota
+        
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_id(user_id)
+        if user:
+            # Count total papers from all sources
+            total_papers = 0
+            if "pubmed" in result and "pmids" in result["pubmed"]:
+                total_papers += len(result["pubmed"]["pmids"])
+            if "semantic_scholar" in result and "papers" in result["semantic_scholar"]:
+                total_papers += len(result["semantic_scholar"]["papers"])
+            if "openalex" in result and "papers" in result["openalex"]:
+                total_papers += len(result["openalex"]["papers"])
+            
+            # Check quota
+            can_proceed, error_msg = check_quota(user.email, "max_papers_per_run", total_papers)
+            if not can_proceed:
+                # Log warning but don't block (for backward compatibility)
+                # In the future, you can raise HTTPException here
+                logger = logging.getLogger(__name__)
+                logger.warning(f"User {user.email} exceeded paper quota: {total_papers} papers retrieved")
+                # Optionally add warning to result
+                result["quota_warning"] = error_msg
+    
     return {"result": result}
 
 
@@ -1158,3 +1295,183 @@ async def phase2_map_institution(request: Request,
     except Exception as e:
         logger.error(f"❌ MAP OPERATION FAILED - Institution Scholars ({institution}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Aggregation failed: {str(e)}")
+
+
+# ============================================================
+# Admin: Resource Monitoring APIs (Super User Only)
+# ============================================================
+
+async def verify_super_user(request: Request) -> None:
+    """Verify that the current user is a super user."""
+    user_id = request.state.user_id
+    async with db_manager.session() as session:
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_id(user_id)
+        if not user or user.email != settings.super_user_email:
+            raise HTTPException(
+                status_code=403,
+                detail="Super user access required"
+            )
+
+
+@app.post("/api/admin/resource-monitor/snapshot")
+async def admin_take_snapshot(request: Request) -> dict:
+    """
+    Manually trigger a resource snapshot (super user only).
+    
+    This endpoint:
+    1. Collects table row counts (metric 1)
+    2. Collects disk sizes (metric 2)
+    3. Saves snapshot to database (UPSERT by date)
+    
+    Returns snapshot data including:
+    - Table row counts (users, runs, papers, etc.)
+    - Disk sizes (MB)
+    - Timestamp
+    """
+    await verify_super_user(request)
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        logger.info("=" * 80)
+        logger.info("📊 ADMIN: Manual resource snapshot triggered")
+        logger.info("=" * 80)
+        
+        async with db_manager.session() as session:
+            repo = ResourceMonitorRepository(session)
+            snapshot = await repo.take_snapshot()
+            
+            logger.info("✅ ADMIN: Snapshot completed")
+            logger.info(f"   Snapshot ID: {snapshot.id}")
+            logger.info(f"   Users: {snapshot.users_count}")
+            logger.info(f"   Runs: {snapshot.runs_count}")
+            logger.info(f"   Total Disk: {snapshot.total_disk_size_mb:.2f} MB")
+            logger.info("=" * 80)
+            
+            return {
+                "snapshot": {
+                    "id": snapshot.id,
+                    "snapshot_date": snapshot.snapshot_date.isoformat(),
+                    "snapshot_time": snapshot.snapshot_time.isoformat(),
+                    # Metric 1: Row counts
+                    "users_count": snapshot.users_count,
+                    "projects_count": snapshot.projects_count,
+                    "runs_count": snapshot.runs_count,
+                    "papers_count": snapshot.papers_count,
+                    "authorship_count": snapshot.authorship_count,
+                    "run_papers_count": snapshot.run_papers_count,
+                    "affiliation_cache_count": snapshot.affiliation_cache_count,
+                    "geocoding_cache_count": snapshot.geocoding_cache_count,
+                    "institution_geo_count": snapshot.institution_geo_count,
+                    # Metric 2: Disk sizes
+                    "total_disk_size_mb": snapshot.total_disk_size_mb,
+                    "users_disk_mb": snapshot.users_disk_mb,
+                    "projects_disk_mb": snapshot.projects_disk_mb,
+                    "runs_disk_mb": snapshot.runs_disk_mb,
+                    "papers_disk_mb": snapshot.papers_disk_mb,
+                    "authorship_disk_mb": snapshot.authorship_disk_mb,
+                    "run_papers_disk_mb": snapshot.run_papers_disk_mb,
+                    "affiliation_cache_disk_mb": snapshot.affiliation_cache_disk_mb,
+                    "geocoding_cache_disk_mb": snapshot.geocoding_cache_disk_mb,
+                    "institution_geo_disk_mb": snapshot.institution_geo_disk_mb,
+                }
+            }
+    except Exception as e:
+        logger.error(f"❌ ADMIN: Snapshot failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Snapshot failed: {str(e)}")
+
+
+@app.get("/api/admin/resource-monitor/stats")
+async def admin_get_stats(request: Request, days: int = 30) -> dict:
+    """
+    Get resource monitoring statistics (super user only).
+    
+    Query params:
+    - days: Number of days of history to return (default 30)
+    
+    Returns:
+    - Historical snapshots for the last N days
+    - Current day's snapshot (if exists)
+    
+    Frontend will use this data to display trend charts.
+    """
+    await verify_super_user(request)
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        logger.info(f"📊 ADMIN: Fetching resource stats (last {days} days)")
+        
+        async with db_manager.session() as session:
+            repo = ResourceMonitorRepository(session)
+            snapshots = await repo.get_snapshots(days=days)
+            
+            logger.info(f"✅ ADMIN: Stats retrieved ({len(snapshots)} snapshots)")
+            
+            return {
+                "snapshots": [
+                    {
+                        "id": s.id,
+                        "snapshot_date": s.snapshot_date.isoformat(),
+                        "snapshot_time": s.snapshot_time.isoformat(),
+                        # Metric 1: Row counts
+                        "users_count": s.users_count,
+                        "projects_count": s.projects_count,
+                        "runs_count": s.runs_count,
+                        "papers_count": s.papers_count,
+                        "authorship_count": s.authorship_count,
+                        "run_papers_count": s.run_papers_count,
+                        "affiliation_cache_count": s.affiliation_cache_count,
+                        "geocoding_cache_count": s.geocoding_cache_count,
+                        "institution_geo_count": s.institution_geo_count,
+                        # Metric 2: Disk sizes
+                        "total_disk_size_mb": s.total_disk_size_mb,
+                        "users_disk_mb": s.users_disk_mb,
+                        "projects_disk_mb": s.projects_disk_mb,
+                        "runs_disk_mb": s.runs_disk_mb,
+                        "papers_disk_mb": s.papers_disk_mb,
+                        "authorship_disk_mb": s.authorship_disk_mb,
+                        "run_papers_disk_mb": s.run_papers_disk_mb,
+                        "affiliation_cache_disk_mb": s.affiliation_cache_disk_mb,
+                        "geocoding_cache_disk_mb": s.geocoding_cache_disk_mb,
+                        "institution_geo_disk_mb": s.institution_geo_disk_mb,
+                    }
+                    for s in snapshots
+                ]
+            }
+    except Exception as e:
+        logger.error(f"❌ ADMIN: Failed to fetch stats: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to fetch stats: {str(e)}")
+
+
+@app.get("/api/admin/resource-monitor/online-users")
+async def admin_get_online_users(request: Request) -> dict:
+    """
+    Get current online user count (super user only).
+    
+    Returns:
+    - online_count: Number of users active in the last 5 minutes (metric 5)
+    - last_updated: Timestamp of query
+    """
+    await verify_super_user(request)
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        logger.info("👥 ADMIN: Fetching online user count")
+        
+        async with db_manager.session() as session:
+            repo = UserActivityRepository(session)
+            online_count = await repo.get_online_user_count(minutes=5)
+            
+            logger.info(f"✅ ADMIN: Online users: {online_count}")
+            
+            from datetime import datetime, timezone
+            return {
+                "online_count": online_count,
+                "last_updated": datetime.now(timezone.utc).isoformat(),
+            }
+    except Exception as e:
+        logger.error(f"❌ ADMIN: Failed to fetch online users: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to fetch online users: {str(e)}")

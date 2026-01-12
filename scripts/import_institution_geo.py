@@ -36,9 +36,14 @@ def load_csv(file_path: Path) -> list[dict]:
     - source (optional, default: 'qs')
     """
     institutions = []
-    with open(file_path, 'r', encoding='utf-8') as f:
+    # Use utf-8-sig to handle UTF-8 files with BOM (common in Excel exports)
+    with open(file_path, 'r', encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)
         for row in reader:
+            # Skip empty rows
+            if not row.get('primary_name') or not row.get('country'):
+                continue
+            
             # Parse aliases if present
             aliases = None
             if row.get('aliases'):

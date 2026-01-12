@@ -288,19 +288,61 @@ def _choose_institution(tokens):
                 break
     
     # Fourth pass: look for company name patterns (Co. Ltd, Inc., Corp., etc.)
+    # This pass needs to reconstruct the full company name, not just the suffix
     if not best:
-        company_patterns = [
-            r"\b(co\.?\s*ltd\.?|ltd\.?|inc\.?|corp\.?|corporation|llc|gmbh|ag|s\.a\.|s\.p\.a\.|plc|bv|nv)\b",
-            r"\b(company|companies|limited|incorporated)\b"
+        # Improved company suffix patterns to handle commas and various formats
+        company_suffix_patterns = [
+            r"co[.,]?\s*ltd[.,]?",  # Co., Ltd. / Co. Ltd / Co Ltd / Co, Ltd
+            r"co[.,]?\s*limited",   # Co., Limited / Co Limited
+            r"ltd[.,]?",            # Ltd. / Ltd
+            r"inc[.,]?",            # Inc. / Inc
+            r"corp[.,]?",           # Corp. / Corp
+            r"corporation",         # Corporation
+            r"llc",                 # LLC
+            r"gmbh",                # GmbH
+            r"ag",                  # AG
+            r"s[.,]a[.,]",          # S.A. / SA
+            r"s[.,]p[.,]a[.,]",     # S.P.A. / SPA
+            r"plc",                 # PLC
+            r"bv",                  # BV
+            r"nv",                  # NV
+            r"limited",             # Limited
+            r"incorporated",        # Incorporated
         ]
-        for t in tokens:
+        
+        # Try to find company name by looking for suffix patterns
+        for idx, t in enumerate(tokens):
             tl = _norm_token(t).lower()
-            for pattern in company_patterns:
-                if re.search(pattern, tl, re.IGNORECASE):
-                    best = _norm_token(t)
+            
+            # Check if this token contains a company suffix
+            has_company_suffix = False
+            for pattern in company_suffix_patterns:
+                if re.search(r"\b" + pattern + r"\b", tl, re.IGNORECASE):
+                    has_company_suffix = True
                     break
-            if best:
-                break
+            
+            if has_company_suffix:
+                # Found a company suffix, try to reconstruct full company name
+                # Look backwards for company name tokens
+                company_parts = []
+                
+                # Add tokens before the suffix (up to 2 tokens back, or until we hit a location)
+                for i in range(max(0, idx - 2), idx):
+                    prev_token = _norm_token(tokens[i]).lower()
+                    # Stop if we hit a location keyword
+                    if any(loc in prev_token for loc in ["city", "district", "province", "state"]):
+                        break
+                    # Stop if we hit a country name
+                    if _find_country_substring(prev_token):
+                        break
+                    company_parts.append(_norm_token(tokens[i]))
+                
+                # Add the current token with the suffix
+                company_parts.append(_norm_token(t))
+                
+                if company_parts:
+                    best = " ".join(company_parts)
+                    break
     
     return best
 
@@ -361,9 +403,26 @@ def _is_valid_city_name(city: str) -> bool:
         return False
     
     # Check if it's a company name (contains company patterns)
+    # Improved patterns to handle commas and various formats
     company_patterns = [
-        r"\b(co\.?\s*ltd\.?|ltd\.?|inc\.?|corp\.?|corporation|llc|gmbh|ag|s\.a\.|s\.p\.a\.|plc|bv|nv)\b",
-        r"\b(company|companies|limited|incorporated)\b"
+        r"\bco[.,]?\s*ltd[.,]?\b",      # Co., Ltd. / Co. Ltd / Co Ltd / Co, Ltd
+        r"\bco[.,]?\s*limited\b",       # Co., Limited / Co Limited
+        r"\bltd[.,]?\b",                # Ltd. / Ltd
+        r"\binc[.,]?\b",                # Inc. / Inc
+        r"\bcorp[.,]?\b",               # Corp. / Corp
+        r"\bcorporation\b",             # Corporation
+        r"\bllc\b",                     # LLC
+        r"\bgmbh\b",                    # GmbH
+        r"\bag\b",                      # AG
+        r"\bs[.,]a[.,]\b",              # S.A. / SA
+        r"\bs[.,]p[.,]a[.,]\b",         # S.P.A. / SPA
+        r"\bplc\b",                     # PLC
+        r"\bbv\b",                      # BV
+        r"\bnv\b",                      # NV
+        r"\blimited\b",                 # Limited
+        r"\bincorporated\b",            # Incorporated
+        r"\bcompany\b",                 # Company
+        r"\bcompanies\b",               # Companies
     ]
     for pattern in company_patterns:
         if re.search(pattern, city_lower, re.IGNORECASE):
@@ -507,7 +566,7 @@ def _parse_affiliation(affiliation_raw: str) -> dict:
     )
 
     source = "rules+pycountry" if country else "rules"
-    return {
+    result = {
         "country": country,
         "country_code": country_code,
         "region_raw": region_raw,
@@ -518,6 +577,86 @@ def _parse_affiliation(affiliation_raw: str) -> dict:
         "parse_source": source,
         "tokens": "|".join(tokens),
     }
+    
+    # Normalize country and city names (convert abbreviations to full names)
+    result = _normalize_country_city_names(result)
+    
+    return result
+
+
+def _normalize_country_city_names(geo_data: dict) -> dict:
+    """
+    Normalize country and city names from abbreviations to full names.
+    
+    This helps prevent incorrect geocoding results when abbreviated names
+    are misinterpreted (e.g., "U.S.A" as a city name, or "MA" → Morocco).
+    
+    Strategy:
+    - Convert common country abbreviations to full names
+    - If a city name is actually a country abbreviation, set it to None
+      (indicates extraction error, will trigger LLM fallback)
+    
+    Args:
+        geo_data: Dict with keys: country, city, institution, etc.
+    
+    Returns:
+        Dict with normalized country and city names
+    
+    Examples:
+        Input:  country="Morocco", city="U.S.A"
+        Output: country="Morocco", city=None  (city cleared)
+        
+        Input:  country="United States", city="Boston"
+        Output: country="United States", city="Boston"  (unchanged)
+    """
+    # Country name standardization mapping
+    # Key: abbreviation/variant, Value: standardized full name
+    COUNTRY_NORMALIZATIONS = {
+        # United States variations
+        "U.S.A": "United States",
+        "U.S.A.": "United States",
+        "USA": "United States",
+        "U.S": "United States",
+        "U.S.": "United States",
+        # "US": "United States",  # Risky: too short, might be real place name
+        
+        # United Kingdom variations
+        "U.K": "United Kingdom",
+        "U.K.": "United Kingdom",
+        "UK": "United Kingdom",
+        
+        # United Arab Emirates
+        "UAE": "United Arab Emirates",
+        "U.A.E": "United Arab Emirates",
+        "U.A.E.": "United Arab Emirates",
+        
+        # People's Republic of China
+        "PRC": "China (Mainland)",
+        "P.R.C": "China (Mainland)",
+        "P.R.C.": "China (Mainland)",
+        "PR China": "China (Mainland)",
+        
+        # Other standardizations
+        "ROC": "Taiwan",
+        "R.O.C": "Taiwan",
+        "R.O.C.": "Taiwan",
+    }
+    
+    country = geo_data.get("country")
+    city = geo_data.get("city")
+    
+    # Normalize country field
+    if country and country in COUNTRY_NORMALIZATIONS:
+        geo_data["country"] = COUNTRY_NORMALIZATIONS[country]
+    
+    # Check if city name is actually a country abbreviation (indicates extraction error)
+    if city and city in COUNTRY_NORMALIZATIONS:
+        # City name should not be a country abbreviation
+        # This indicates the extraction made an error
+        # Set city to None to trigger geocoding failure → LLM fallback
+        geo_data["city"] = None
+    
+    return geo_data
 
 
 class RuleBasedExtractor:
@@ -541,8 +680,26 @@ class RuleBasedExtractor:
         Returns:
             List of GeoData objects (same length and order as input)
         """
+        result, stats = await self.extract_batch_with_stats(affiliations)
+        return result
+    
+    async def extract_batch_with_stats(
+        self,
+        affiliations: list[str],
+        skip_institution_auto_add: bool = False
+    ) -> tuple[list[GeoData], dict[str, int]]:
+        """
+        Extract geographic data from a batch of affiliations using rules with statistics.
+        
+        Args:
+            affiliations: List of raw affiliation strings
+            skip_institution_auto_add: If True, don't auto-add to institution_geo, record as pending instead
+        
+        Returns:
+            Tuple of (list of GeoData objects, statistics dict)
+        """
         if not affiliations:
-            return []
+            return [], {"institution_geo_auto_added": 0, "pending_auto_add": []}
         
         import logging
         logger = logging.getLogger(__name__)
@@ -550,20 +707,15 @@ class RuleBasedExtractor:
         total = len(affiliations)
         log_interval = max(1, total // 10)  # Log every 10% progress
         
-        # Step 1: Try institution matching first
-        institution_matches = await self.institution_matcher.match_batch(affiliations)
-        institution_matched_count = len(institution_matches)
-        if institution_matched_count > 0:
-            logger.debug(f"   Institution matcher matched {institution_matched_count}/{total} affiliations")
+        # Statistics
+        stats = {
+            "institution_geo_auto_added": 0,
+            "pending_auto_add": []  # New: track institutions pending validation
+        }
         
         results = []
         for idx, aff in enumerate(affiliations):
-            # Check if institution matcher found a match
-            if aff in institution_matches:
-                results.append(institution_matches[aff])
-                continue
-            
-            # Fall back to rule-based extraction
+            # Fall back to rule-based extraction (institution matching already done in extract_affiliations)
             parsed = _parse_affiliation(aff)
             
             # Determine confidence based on what we found
@@ -584,26 +736,65 @@ class RuleBasedExtractor:
             )
             results.append(geo)
             
+            # Auto-add to institution_geo if extraction was successful
+            # Only add if: institution matcher failed (already checked above),
+            # and we successfully extracted country and institution
+            if geo.country and geo.institution:
+                if skip_institution_auto_add:
+                    # Don't add immediately, record as pending for validation
+                    stats["pending_auto_add"].append({
+                        "affiliation_raw": aff,
+                        "institution": geo.institution,
+                        "country": geo.country,
+                        "city": geo.city,
+                    })
+                else:
+                    # Original behavior: add immediately (backward compatible)
+                    try:
+                        from app.db.connection import db_manager
+                        async with db_manager.session() as session:
+                            from app.db.repository import InstitutionGeoRepository
+                            repo = InstitutionGeoRepository(session)
+                            
+                            # Check again if it exists (in case it was added between checks)
+                            existing = await repo.get_by_name(geo.institution)
+                            if not existing:
+                                # Auto-add the institution
+                                await repo.auto_add_institution(
+                                    institution_name=geo.institution,
+                                    country=geo.country,
+                                    city=geo.city,
+                                    affiliation_text=aff  # Pass original affiliation for alias extraction
+                                )
+                                await session.commit()
+                                stats["institution_geo_auto_added"] += 1
+                                logger.debug(f"Auto-added institution to institution_geo: {geo.institution} ({geo.country}, {geo.city})")
+                    except Exception as e:
+                        logger.warning(f"Failed to auto-add institution {geo.institution}: {e}")
+                        # Don't fail the entire extraction if auto-add fails
+            
             # Log progress periodically
             if (idx + 1) % log_interval == 0 or (idx + 1) == total:
                 logger.info(f"   Parsing progress: {idx + 1}/{total} ({100*(idx+1)//total}%)")
         
-        return results
+        return results, stats
     
     async def extract_affiliations(
         self,
         affiliations: list[str],
-        cache_lookup: Optional[Callable[[str], Optional[GeoData]]] = None
-    ) -> dict[str, GeoData]:
+        cache_lookup: Optional[Callable[[str], Optional[GeoData]]] = None,
+        skip_institution_auto_add: bool = False
+    ) -> tuple[dict[str, GeoData], dict[str, Any]]:
         """
         Extract geographic data from all unique affiliations.
         
         Args:
             affiliations: List of unique affiliation strings
             cache_lookup: Optional async function to check cache (for compatibility)
+            skip_institution_auto_add: If True, don't auto-add to institution_geo, record as pending instead
         
         Returns:
-            Dict mapping affiliation_raw -> GeoData
+            Tuple of (Dict mapping affiliation_raw -> GeoData, statistics dict)
         """
         import logging
         logger = logging.getLogger(__name__)
@@ -643,7 +834,7 @@ class RuleBasedExtractor:
             
             if is_batch_cache:
                 # Batch cache lookup - much faster!
-                logger.info(f"   Batch checking cache for {total} affiliations...")
+                logger.info(f"   Batch checking affiliation_cache table for {total} affiliations...")
                 cached_map = await cache_lookup(affiliations)
                 cache_hits = len(cached_map)
                 
@@ -653,9 +844,10 @@ class RuleBasedExtractor:
                     else:
                         to_extract.append(aff)
                 
-                logger.info(f"   ✅ Batch cache check complete: {cache_hits} hits, {len(to_extract)} to extract")
+                logger.info(f"   ✅ affiliation_cache table: {cache_hits} hits, {len(to_extract)} need extraction")
             else:
                 # Individual cache lookup (slower, but compatible)
+                logger.info(f"   Checking affiliation_cache table for {total} affiliations (individual lookup)...")
                 cache_hits = 0
                 cache_check_interval = max(1, total // 20)  # Log every 5% progress
                 
@@ -670,28 +862,76 @@ class RuleBasedExtractor:
                         cache_hits += 1
                         # Log progress periodically
                         if (idx + 1) % cache_check_interval == 0 or (idx + 1) == total:
-                            logger.info(f"   Cache check progress: {idx + 1}/{total} ({100*(idx+1)//total}%), cache hits: {cache_hits}")
+                            logger.info(f"   affiliation_cache table check progress: {idx + 1}/{total} ({100*(idx+1)//total}%), cache hits: {cache_hits}")
                         continue
                     
                     to_extract.append(aff)
                 
                 if cache_hits > 0:
-                    logger.info(f"   ✅ Cache check complete: {cache_hits} hits, {len(to_extract)} to extract")
+                    logger.info(f"   ✅ affiliation_cache table: {cache_hits} hits, {len(to_extract)} need extraction")
         else:
             # No cache lookup, extract all
             to_extract = list(affiliations)
         
+        # Statistics tracking
+        stats = {
+            "affiliation_cache_hits": len(result_map),
+            "institution_matcher_hits": 0,
+            "rule_based_extractions": 0,
+            "institution_geo_auto_added": 0,
+            "affiliation_cache_updated": 0,
+            "pending_auto_add": []  # New: track institutions pending validation
+        }
+        
         if not to_extract:
-            return result_map
+            logger.info(f"   ✅ All {total} affiliations found in affiliation_cache table")
+            return result_map, stats
         
-        # Process all at once (rule-based is fast, no need for batching)
-        logger.info(f"   Extracting {len(to_extract)} affiliations using rule-based parser...")
-        batch_results = await self.extract_batch(to_extract)
-        logger.info(f"   ✅ Rule-based extraction complete: {len(batch_results)} results")
+        # Track affiliations that were cached (from affiliation_cache table)
+        cached_affiliations = set(result_map.keys())
         
-        # Map results back to affiliations
-        for aff, geo in zip(to_extract, batch_results):
-            result_map[aff] = geo
+        # Step 1: Try institution matcher for affiliations not in cache
+        logger.info(f"   Trying institution_matcher (institution_geo table) for {len(to_extract)} affiliations...")
+        institution_matches = await self.institution_matcher.match_batch(to_extract)
+        institution_matched_count = len(institution_matches)
+        stats["institution_matcher_hits"] = institution_matched_count
         
-        return result_map
+        if institution_matched_count > 0:
+            logger.info(f"   ✅ institution_geo table: {institution_matched_count} matches found")
+            # Add institution matches to result_map
+            for aff, geo in institution_matches.items():
+                result_map[aff] = geo
+            # Remove matched affiliations from to_extract
+            to_extract = [aff for aff in to_extract if aff not in institution_matches]
+        
+        # Step 2: Rule-based extraction for remaining affiliations
+        if to_extract:
+            logger.info(f"   Extracting {len(to_extract)} affiliations using rule-based parser...")
+            batch_results, batch_stats = await self.extract_batch_with_stats(
+                to_extract,
+                skip_institution_auto_add=skip_institution_auto_add
+            )
+            stats["rule_based_extractions"] = len(to_extract)
+            stats["institution_geo_auto_added"] = batch_stats.get("institution_geo_auto_added", 0)
+            stats["pending_auto_add"] = batch_stats.get("pending_auto_add", [])
+            
+            logger.info(f"   ✅ Rule-based extraction complete: {len(batch_results)} results")
+            if stats["institution_geo_auto_added"] > 0:
+                logger.info(f"      Auto-added to institution_geo table: {stats['institution_geo_auto_added']} institutions")
+            if skip_institution_auto_add and len(stats["pending_auto_add"]) > 0:
+                logger.info(f"      Pending validation: {len(stats['pending_auto_add'])} institutions")
+            
+            # Map results back to affiliations
+            for aff, geo in zip(to_extract, batch_results):
+                result_map[aff] = geo
+            
+            # Count affiliations that will be cached (rule-based extractions that have valid data)
+            stats["affiliation_cache_updated"] = sum(
+                1 for aff, geo in zip(to_extract, batch_results) 
+                if geo and (geo.country or geo.city or geo.institution)
+            )
+        else:
+            logger.info(f"   ✅ All affiliations matched via institution_geo table")
+        
+        return result_map, stats
 

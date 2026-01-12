@@ -35,6 +35,29 @@ async function throwIfNotOk(res: Response, label: string): Promise<void> {
 }
 
 // ============================================================================
+// Configuration API (Public - no auth required)
+// ============================================================================
+
+export interface FrontendConfig {
+  text_validation_max_attempts: number;
+  parse_stage1_max_attempts: number;
+  parse_stage2_max_total_attempts: number;
+  parse_stage2_max_consecutive_unhelpful: number;
+  retrieval_framework_adjust_max_attempts: number;
+}
+
+/**
+ * Get frontend configuration from backend.
+ * This ensures frontend and backend always use the same limits.
+ * No authentication required.
+ */
+export async function getFrontendConfig(): Promise<FrontendConfig> {
+  const res = await fetch(`${baseUrl}/api/config`);
+  await throwIfNotOk(res, "getFrontendConfig");
+  return await res.json();
+}
+
+// ============================================================================
 // Authentication APIs
 // ============================================================================
 
@@ -94,6 +117,49 @@ export async function login(email: string, password: string): Promise<LoginRespo
     body: JSON.stringify({ email, password }),
   });
   await throwIfNotOk(res, "login");
+  return await res.json();
+}
+
+// ============================================================================
+// User Quota APIs
+// ============================================================================
+
+export type UserQuotaInfo = {
+  tier: string;
+  quotas: {
+    max_projects: {
+      limit: number;
+      current: number;
+      remaining: number;
+      unlimited: boolean;
+    };
+    max_runs_per_project: {
+      limit: number;
+      current: number;
+      remaining: number;
+      unlimited: boolean;
+    };
+    max_papers_per_run: {
+      limit: number;
+      current: number;
+      remaining: number;
+      unlimited: boolean;
+    };
+    max_ingestion_per_day: {
+      limit: number;
+      current: number;
+      remaining: number;
+      unlimited: boolean;
+    };
+  };
+};
+
+export async function getUserQuota(): Promise<UserQuotaInfo> {
+  const res = await fetch(`${baseUrl}/api/user/quota`, {
+    cache: "no-store",
+    headers: getDefaultHeaders(),
+  });
+  await throwIfNotOk(res, "getUserQuota");
   return await res.json();
 }
 
@@ -462,5 +528,82 @@ export async function getInstitutionScholars(
     }
   );
   await throwIfNotOk(res, "getInstitutionScholars");
+  return await res.json();
+}
+
+// ============================================================
+// Admin: Resource Monitoring APIs (Super User Only)
+// ============================================================
+
+export type ResourceSnapshot = {
+  id: number;
+  snapshot_date: string;
+  snapshot_time: string;
+  // Metric 1: Row counts
+  users_count: number;
+  projects_count: number;
+  runs_count: number;
+  papers_count: number;
+  authorship_count: number;
+  run_papers_count: number;
+  affiliation_cache_count: number;
+  geocoding_cache_count: number;
+  institution_geo_count: number;
+  // Metric 2: Disk sizes (MB)
+  total_disk_size_mb: number;
+  users_disk_mb: number;
+  projects_disk_mb: number;
+  runs_disk_mb: number;
+  papers_disk_mb: number;
+  authorship_disk_mb: number;
+  run_papers_disk_mb: number;
+  affiliation_cache_disk_mb: number;
+  geocoding_cache_disk_mb: number;
+  institution_geo_disk_mb: number;
+};
+
+export type OnlineUsersResponse = {
+  online_count: number;
+  last_updated: string;
+};
+
+/**
+ * Manually trigger a resource snapshot (super user only).
+ * Collects metrics 1-4: table row counts, disk sizes, user count, run count.
+ */
+export async function takeResourceSnapshot(): Promise<ResourceSnapshot> {
+  const res = await fetch(`${baseUrl}/api/admin/resource-monitor/snapshot`, {
+    method: "POST",
+    headers: getDefaultHeaders(),
+  });
+  await throwIfNotOk(res, "takeResourceSnapshot");
+  const json = await res.json();
+  return json.snapshot as ResourceSnapshot;
+}
+
+/**
+ * Get historical resource monitoring statistics (super user only).
+ * Returns snapshots for the last N days.
+ */
+export async function getResourceStats(days: number = 30): Promise<ResourceSnapshot[]> {
+  const res = await fetch(`${baseUrl}/api/admin/resource-monitor/stats?days=${days}`, {
+    cache: "no-store",
+    headers: getDefaultHeaders(),
+  });
+  await throwIfNotOk(res, "getResourceStats");
+  const json = await res.json();
+  return json.snapshots as ResourceSnapshot[];
+}
+
+/**
+ * Get current online user count (super user only).
+ * Returns metric 5: number of users active in the last 5 minutes.
+ */
+export async function getOnlineUsers(): Promise<OnlineUsersResponse> {
+  const res = await fetch(`${baseUrl}/api/admin/resource-monitor/online-users`, {
+    cache: "no-store",
+    headers: getDefaultHeaders(),
+  });
+  await throwIfNotOk(res, "getOnlineUsers");
   return await res.json();
 }

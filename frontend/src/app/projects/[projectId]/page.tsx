@@ -15,6 +15,9 @@ function ProjectPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [creatingRun, setCreatingRun] = useState(false);
   const [deletingRunId, setDeletingRunId] = useState<string | null>(null);
+  
+  // Quota error modal
+  const [quotaErrorModal, setQuotaErrorModal] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
 
   const sortedRuns = useMemo(() => runs, [runs]);
 
@@ -31,6 +34,56 @@ function ProjectPageContent() {
 
   return (
     <div className="stack">
+      {/* Quota Error Modal */}
+      {quotaErrorModal.show && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000
+          }}
+          onClick={() => setQuotaErrorModal({ show: false, message: "" })}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "24px",
+              maxWidth: "500px",
+              width: "90%",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
+              border: "1px solid #e5e7eb"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ marginBottom: "16px" }}>
+              <h3 style={{ margin: 0, marginBottom: "8px", color: "#dc2626", fontSize: "20px" }}>
+                ⚠️ Quota Limit Reached
+              </h3>
+              <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.5" }}>
+                {quotaErrorModal.message}
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
+              <button
+                className="primary"
+                onClick={() => setQuotaErrorModal({ show: false, message: "" })}
+                style={{ padding: "8px 16px", fontSize: "14px" }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="row" style={{ justifyContent: "space-between" }}>
         <div className="stack" style={{ gap: 4 }}>
           <h1 style={{ margin: 0 }}>{projectName || "Project"}</h1>
@@ -53,7 +106,16 @@ function ProjectPageContent() {
               const run = await createRun(projectId, "");
               router.push(`/projects/${projectId}/runs/${run.run_id}`);
             } catch (e) {
-              setError(String(e));
+              const errorMessage = String(e);
+              // Check if it's a quota error (403 with quota-related message)
+              if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
+                // Extract the error message
+                const messageMatch = errorMessage.match(/:\s*(.+?)(?:\s*$|$)/);
+                const displayMessage = messageMatch ? messageMatch[1] : "You have reached the maximum number of runs allowed for this project.";
+                setQuotaErrorModal({ show: true, message: displayMessage });
+              } else {
+                setError(errorMessage);
+              }
               setCreatingRun(false);
             }
           }}

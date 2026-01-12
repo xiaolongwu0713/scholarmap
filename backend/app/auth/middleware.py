@@ -1,7 +1,8 @@
 """Authentication middleware."""
 from __future__ import annotations
 
-from fastapi import Request, HTTPException, status
+from fastapi import Request, status
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
@@ -9,6 +10,7 @@ from starlette.responses import Response
 from app.auth.auth import decode_access_token
 from app.db.connection import db_manager
 from app.auth.repository import UserRepository
+from app.db.resource_monitor_repository import UserActivityRepository
 
 
 security = HTTPBearer()
@@ -65,23 +67,35 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # Check for authentication token
         user_id = await get_current_user_id(request)
         if not user_id:
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not authenticated",
+                content={"detail": "Not authenticated"},
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
         # Verify user exists
         user_exists = await verify_user_exists(user_id)
         if not user_exists:
-            raise HTTPException(
+            return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials",
+                content={"detail": "Invalid authentication credentials"},
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
         # Add user_id to request state
         request.state.user_id = user_id
+        
+        # Track user activity for online user monitoring
+        # This is a fire-and-forget operation - we don't wait for it to complete
+        # to avoid slowing down requests
+        try:
+            async with db_manager.session() as activity_session:
+                activity_repo = UserActivityRepository(activity_session)
+                await activity_repo.update_activity(user_id)
+        except Exception:
+            # Silently ignore errors in activity tracking
+            # We don't want to fail requests due to activity tracking issues
+            pass
         
         return await call_next(request)
 

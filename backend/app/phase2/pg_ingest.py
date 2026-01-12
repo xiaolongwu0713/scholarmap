@@ -130,32 +130,70 @@ class PostgresIngestionPipeline:
             )
             logger.info(f"✅ INGESTION STEP 5 COMPLETE: Created {stats.authorships_created} authorships")
             
+            # Collect detailed statistics from extraction
+            extractor_stats = affiliation_data.get("stats", {})
+            
             logger.info("─" * 80)
-            logger.info(f"✅ INGESTION COMPLETE - Run: {run_id}")
+            logger.info(f"✅ INGESTION COMPLETE - Project: {self.project_id}, Run: {run_id}")
             logger.info(f"   Total PMIDs: {stats.total_pmids}")
             logger.info(f"   Papers parsed: {stats.papers_parsed}")
             logger.info(f"   Authorships created: {stats.authorships_created}")
             logger.info(f"   Unique affiliations: {stats.unique_affiliations}")
             logger.info(f"   Affiliations with country: {stats.affiliations_with_country}")
-            logger.info(f"   LLM calls made: {stats.llm_calls_made}")
-            logger.info("─" * 80)
+            logger.info("")
+            logger.info("   Affiliation Processing Breakdown:")
+            logger.info(f"      ✅ affiliation_cache table hits: {extractor_stats.get('affiliation_cache_hits', 0)}")
+            logger.info(f"      ✅ institution_geo table matches: {extractor_stats.get('institution_matcher_hits', 0)}")
+            if settings.affiliation_extraction_method == "rule_based":
+                logger.info(f"      ✅ rule-based extractions: {extractor_stats.get('rule_based_extractions', 0)}")
+                logger.info(f"      ✅ institution_geo table auto-added: {extractor_stats.get('institution_geo_auto_added', 0)}")
+                logger.info(f"      ✅ affiliation_cache table updated: {extractor_stats.get('affiliation_cache_updated', 0)}")
+            else:
+                logger.info(f"      ✅ LLM extractions: {extractor_stats.get('llm_extractions', 0)}")
+                logger.info(f"      ✅ institution_geo table auto-added: {extractor_stats.get('institution_geo_auto_added', 0)}")
+                logger.info(f"      ✅ affiliation_cache table updated: {extractor_stats.get('affiliation_cache_updated', 0)}")
+                logger.info(f"      ✅ LLM calls made: {stats.llm_calls_made}")
+            logger.info("")
+            # Verify counts add up
+            total_processed = (
+                extractor_stats.get("affiliation_cache_hits", 0) +
+                extractor_stats.get("institution_matcher_hits", 0) +
+                extractor_stats.get("rule_based_extractions", 0) +
+                extractor_stats.get("llm_extractions", 0)
+            )
+            if total_processed == stats.unique_affiliations:
+                logger.info(f"   ✅ Count verification: {total_processed} = {stats.unique_affiliations} (matches)")
+            else:
+                logger.warning(f"   ⚠️  Count verification: {total_processed} ≠ {stats.unique_affiliations} (mismatch)")
+            logger.info("=" * 80)
             
             # Step 7: Validate and fix affiliation extraction errors
+            # Extract pending institutions from extractor stats
+            pending_institutions = extractor_stats.get("pending_auto_add", [])
+            if pending_institutions:
+                logger.info(f"   Pending institutions for validation: {len(pending_institutions)}")
+            
             if settings.affiliation_extraction_method == "rule_based":
-                logger.info("─" * 80)
+                logger.info("")
+                logger.info("=" * 80)
                 logger.info("📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...")
                 try:
                     from app.phase2.affiliation_validator import AffiliationValidator
                     validator = AffiliationValidator()
-                    validation_stats = await validator.validate_and_fix_run(run_id, self.project_id)
+                    validation_stats = await validator.validate_and_fix_run(
+                        run_id, 
+                        self.project_id,
+                        pending_institutions=pending_institutions
+                    )
                     logger.info("✅ INGESTION STEP 6 COMPLETE: Validation and fixes completed")
-                    logger.info(
-                        f"   Affiliations fixed: {validation_stats.get('llm_fixes', 0)}"
-                    )
-                    logger.info(
-                        f"   Geocoding failures found: {validation_stats.get('nominatim_failures', 0)}"
-                    )
-                    logger.info("─" * 80)
+                    logger.info("   Validation Statistics:")
+                    logger.info(f"      ✅ LLM fallback extractions: {validation_stats.get('llm_fixes', 0)}")
+                    logger.info(f"      ✅ affiliation_cache table updated by LLM: {validation_stats.get('affiliation_cache_updated', validation_stats.get('cache_updates', 0))}")
+                    logger.info(f"      ✅ Authorship records updated: {validation_stats.get('authorship_updates', 0)}")
+                    logger.info(f"      ✅ geocoding_cache table updated: {validation_stats.get('geocoding_updates', 0)}")
+                    logger.info(f"      ✅ institution_geo table validated and added: {validation_stats.get('institutions_added_to_geo_table', 0)}")
+                    logger.info(f"      ⚠️  Geocoding failures (null coordinates): {validation_stats.get('nominatim_failures', 0)}")
+                    logger.info("=" * 80)
                 except Exception as e:
                     logger.error(f"❌ Validation and fix failed: {e}", exc_info=True)
                     # Don't fail ingestion if validation fails
@@ -221,7 +259,7 @@ class PostgresIngestionPipeline:
         self,
         papers: list[ParsedPaper]
     ) -> dict[str, Any]:
-        """Extract geographic data from affiliations (no cache)."""
+        """Extract geographic data from affiliations (with cache and institution matching)."""
         # Collect unique affiliation strings
         unique_affiliations = set()
         for paper in papers:
@@ -230,54 +268,91 @@ class PostgresIngestionPipeline:
                     if aff:
                         unique_affiliations.add(aff)
         
+        total_unique = len(unique_affiliations)
+        
         if not unique_affiliations:
             return {
                 "geo_map": {},
                 "unique_count": 0,
                 "with_country": 0,
-                "llm_calls": 0
+                "llm_calls": 0,
+                "stats": {}
             }
         
         method_name = "rule-based" if settings.affiliation_extraction_method == "rule_based" else "LLM"
-        logger.info(f"   Extracting {len(unique_affiliations)} affiliations via {method_name} (with cache)")
+        logger.info(f"   Extracting {total_unique} unique affiliations via {method_name} method")
         
         # Extract affiliations with cache lookup
         affiliation_list = list(unique_affiliations)
         
         # Use batch cache lookup for better performance
+        # Enable skip_institution_auto_add to delay adding to institution_geo until validation
         if settings.affiliation_extraction_method == "rule_based":
             # For rule-based, use batch cache lookup
-            geo_map = await self.extractor.extract_affiliations(
+            geo_map, extractor_stats = await self.extractor.extract_affiliations(
                 affiliation_list,
-                cache_lookup=self.db.get_batch_cached_affiliations
+                cache_lookup=self.db.get_batch_cached_affiliations,
+                skip_institution_auto_add=True  # Delay institution_geo adding until validation
             )
         else:
             # For LLM, use individual cache lookup (already optimized with batching)
-            geo_map = await self.extractor.extract_affiliations(
+            geo_map, extractor_stats = await self.extractor.extract_affiliations(
                 affiliation_list,
-                cache_lookup=self.db.get_cached_affiliation
+                cache_lookup=self.db.get_cached_affiliation,
+                skip_institution_auto_add=True  # Delay institution_geo adding until validation
             )
         
         # Cache the extracted results (update cache with new extractions)
-        if geo_map:
-            await self.db.cache_affiliations(geo_map)
-            logger.info(f"   Cached {len(geo_map)} affiliation extraction results")
+        # Only cache affiliations that were newly extracted (not from affiliation_cache table)
+        # The extractor_stats already tells us how many were from cache, so we need to
+        # cache everything except those that were already in the cache
+        affiliations_to_cache = {}
+        affiliation_cache_hits = extractor_stats.get("affiliation_cache_hits", 0)
         
-        with_country = sum(1 for g in geo_map.values() if g.country)
+        # Cache all affiliations that were not from affiliation_cache table
+        # (i.e., institution matches and rule-based/LLM extractions)
+        cache_index = 0
+        for aff in affiliation_list:
+            if cache_index < affiliation_cache_hits:
+                # This affiliation was from cache, skip
+                cache_index += 1
+            else:
+                # This affiliation was extracted, cache it
+                if aff in geo_map:
+                    affiliations_to_cache[aff] = geo_map[aff]
         
-        # Calculate LLM calls (only for LLM-based extraction)
-        llm_calls = 0
-        if settings.affiliation_extraction_method == "llm":
-            # Estimate LLM calls (batch size = 20)
-            llm_calls = (len(affiliation_list) + 19) // 20
+        if affiliations_to_cache:
+            await self.db.cache_affiliations(affiliations_to_cache)
+            logger.info(f"   Cached {len(affiliations_to_cache)} new affiliation extraction results to affiliation_cache table")
         
-        logger.info(f"   Extraction complete: {len(geo_map)} affiliations, {with_country} with country")
+        with_country = sum(1 for g in geo_map.values() if g and g.country)
+        
+        # Verify counts add up
+        total_processed = (
+            extractor_stats.get("affiliation_cache_hits", 0) +
+            extractor_stats.get("institution_matcher_hits", 0) +
+            extractor_stats.get("rule_based_extractions", 0) +
+            extractor_stats.get("llm_extractions", 0)
+        )
+        
+        if total_processed != total_unique:
+            logger.warning(
+                f"   ⚠️  Count mismatch: Total unique={total_unique}, "
+                f"Processed={total_processed} "
+                f"(cache={extractor_stats.get('affiliation_cache_hits', 0)}, "
+                f"institution={extractor_stats.get('institution_matcher_hits', 0)}, "
+                f"rule_based={extractor_stats.get('rule_based_extractions', 0)}, "
+                f"llm={extractor_stats.get('llm_extractions', 0)})"
+            )
+        
+        logger.info(f"   ✅ Extraction complete: {len(geo_map)} affiliations processed, {with_country} with country")
         
         return {
             "geo_map": geo_map,
-            "unique_count": len(unique_affiliations),
+            "unique_count": total_unique,
             "with_country": with_country,
-            "llm_calls": llm_calls
+            "llm_calls": extractor_stats.get("llm_calls", 0),
+            "stats": extractor_stats
         }
     
     async def _write_to_database(

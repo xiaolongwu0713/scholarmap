@@ -8,6 +8,32 @@ This module contains all configuration constants for:
 - Quality check thresholds
 
 Centralized here for easy management and fine-tuning.
+
+Parse Stage 1 - 初次理解阶段
+功能：用户第一次输入研究描述时使用
+作用：
+ - 判断输入的是否是研究描述（而不是小说、诗歌等）
+ - 判断研究的可行性（是否荒诞/违背常识）
+ - 将用户的描述规范化、重写成可检索的英文
+ - 判断是否清晰到可以用于检索
+ - 如果不清晰，提出最多3个澄清问题
+输入：
+ - 候选研究描述（用户的原始输入）
+
+
+Parse Stage 2 - 迭代收敛阶段
+功能：用户回答了 Stage 1 的问题后，进行多轮对话优化
+作用：
+ - 融合当前描述和用户的补充信息
+ - 判断用户的补充是否有帮助（is_helpful）
+ - 生成更精确的理解
+ - 如果仍不清晰，继续提出问题
+ - 保存对话历史（最近10轮）
+输入：
+ - 当前候选描述
+ - 上一轮的问题
+ - 用户的补充信息
+
 """
 
 # ============================================================================
@@ -18,15 +44,20 @@ Centralized here for easy management and fine-tuning.
 TEXT_VALIDATION_MAX_ATTEMPTS = 3
 
 # Parse Stage 1 maximum attempts
-PARSE_STAGE1_MAX_ATTEMPTS = 3
+#用途：防止用户反复提交不合理的初始描述
+#触发：用户在 Stage 1 点击"分析"按钮3次后锁定
+#原因：初次分析应该一次性给出问题，不需要多次尝试
+PARSE_STAGE1_MAX_ATTEMPTS = 2
 
-# Parse Stage 2 total maximum attempts
+# Parse Stage 2
+#总次数限制：防止无限对话，最多3轮澄清
 PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 3
-
-# Parse Stage 2 consecutive unhelpful responses before lockout
+#连续无帮助限制：如果用户连续2次回答都没帮助（is_helpful=false），自动停止
+#例如：用户一直答非所问或提供无关信息
 PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2
 
-# Retrieval Framework adjustment maximum attempts
+# Retrieval Framework Adjustment
+# Maximum number of times user can adjust the retrieval framework
 RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS = 2
 
 # ============================================================================

@@ -47,6 +47,18 @@ export function isAuthenticated(): boolean {
 }
 
 /**
+ * Check if current user is a super user.
+ * Super users have access to admin features like resource monitoring.
+ */
+export function isSuperUser(): boolean {
+  const user = getUser();
+  if (!user) return false;
+  // Super user email from config (should match backend config.super_user_email)
+  const SUPER_USER_EMAIL = "xiaolongwu0713@gmail.com";
+  return user.email === SUPER_USER_EMAIL;
+}
+
+/**
  * Get headers with authentication token.
  */
 export function getAuthHeaders(): Record<string, string> {

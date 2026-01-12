@@ -61,6 +61,13 @@ class ProjectRepository:
         self.session.add(project)
         await self.session.flush()
         return project
+    
+    async def count_user_projects(self, user_id: str) -> int:
+        """Count total number of projects for a user."""
+        result = await self.session.execute(
+            select(func.count()).select_from(Project).where(Project.user_id == user_id)
+        )
+        return result.scalar() or 0
 
 
 class RunRepository:
@@ -125,6 +132,13 @@ class RunRepository:
         self.session.add(run)
         await self.session.flush()
         return run
+    
+    async def count_project_runs(self, project_id: str) -> int:
+        """Count total number of runs for a project."""
+        result = await self.session.execute(
+            select(func.count()).select_from(Run).where(Run.project_id == project_id)
+        )
+        return result.scalar() or 0
     
     async def update_understanding(self, run_id: str, understanding: dict[str, Any]) -> None:
         """Update run understanding."""
@@ -604,6 +618,8 @@ class InstitutionGeoRepository:
         Note: Matching is done ONLY on normalized_name and aliases, NOT on primary_name.
         The input name should be normalized before calling this method.
         
+        If multiple matches are found, returns the first one (by institution_id).
+        
         Args:
             name: Normalized institution name to match
         
@@ -619,13 +635,14 @@ class InstitutionGeoRepository:
             return None
         
         # Match on normalized_name or aliases (both are already normalized)
+        # Use order_by to ensure deterministic results, and first() to get only one result
         result = await self.session.execute(
             select(InstitutionGeo).where(
                 or_(
                     InstitutionGeo.normalized_name == name_normalized,
                     InstitutionGeo.aliases.contains([name_normalized])  # JSONB array contains (normalized alias)
                 )
-            )
+            ).order_by(InstitutionGeo.institution_id).limit(1)
         )
         return result.scalar_one_or_none()
     
@@ -790,4 +807,80 @@ class InstitutionGeoRepository:
         """Get all institutions."""
         result = await self.session.execute(select(InstitutionGeo))
         return list(result.scalars().all())
+    
+    async def auto_add_institution(
+        self,
+        institution_name: str,
+        country: str,
+        city: str | None = None,
+        affiliation_text: str | None = None
+    ) -> InstitutionGeo | None:
+        """Automatically add an institution after successful extraction.
+        
+        This is called when:
+        1. Institution matcher fails to find a match in institution_geo
+        2. Fallback extraction (rule-based or LLM) successfully extracts country, city, and institution
+        3. We want to save this new institution for future matches
+        
+        Args:
+            institution_name: Extracted institution name (will be used as primary_name)
+            country: Extracted country name (required)
+            city: Extracted city name (optional)
+            affiliation_text: Original affiliation text (optional, can be used to extract additional aliases)
+        
+        Returns:
+            InstitutionGeo if successfully added, None if failed or already exists
+        """
+        if not institution_name or not country:
+            return None
+        
+        from app.phase2.text_utils import normalize_text, extract_abbreviation
+        
+        # Generate normalized_name from institution_name
+        normalized_name = normalize_text(institution_name)
+        if not normalized_name:
+            return None
+        
+        # Check if already exists (by normalized_name or primary_name)
+        # First check by normalized_name
+        existing = await self.get_by_name(institution_name)
+        if existing:
+            # Already exists, don't add
+            return None
+        
+        # Also check by primary_name to avoid duplicates
+        result = await self.session.execute(
+            select(InstitutionGeo).where(
+                InstitutionGeo.primary_name == institution_name
+            )
+        )
+        if result.scalar_one_or_none():
+            # Already exists with same primary_name, don't add
+            return None
+        
+        # Generate aliases if affiliation_text is provided
+        aliases = None
+        if affiliation_text:
+            # Extract abbreviation from affiliation text (might be different from institution_name)
+            abbrev = extract_abbreviation(affiliation_text)
+            if abbrev:
+                normalized_abbrev = normalize_text(abbrev)
+                if normalized_abbrev and normalized_abbrev != normalized_name:
+                    aliases = [normalized_abbrev]
+        
+        # Add new institution with source='auto_added'
+        institution = InstitutionGeo(
+            primary_name=institution_name,
+            normalized_name=normalized_name,
+            aliases=aliases,
+            country=country,
+            city=city,
+            qs_rank=None,  # No QS rank for auto-added institutions
+            ror_id=None,
+            source="auto_added"  # Mark as automatically added
+        )
+        self.session.add(institution)
+        await self.session.flush()
+        
+        return institution
 

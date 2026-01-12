@@ -1,0 +1,207 @@
+========================================
+[2026-01-12 09:32:21] Starting resource snapshot cron job
+========================================
+Activating conda environment 'maker'...
+scripts/take_resource_snapshot.sh: line 41: /Users/xiaowu/miniconda3/etc/profile.d/conda.sh: No such file or directory
+========================================
+[2026-01-12 09:32:47] Starting resource snapshot cron job
+========================================
+Activating conda environment 'maker'...
+Running snapshot script...
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/scripts/take_resource_snapshot.py", line 30, in <module>
+    from app.db.connection import db_manager
+ModuleNotFoundError: No module named 'app'
+========================================
+[2026-01-12 09:33:07] Starting resource snapshot cron job
+========================================
+Activating conda environment 'maker'...
+Running snapshot script...
+Traceback (most recent call last):
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 526, in _prepare_and_execute
+    prepared_stmt, attributes = await adapt_connection._prepare(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 773, in _prepare
+    prepared_stmt = await self._connection.prepare(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/connection.py", line 638, in prepare
+    return await self._prepare(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/connection.py", line 657, in _prepare
+    stmt = await self._get_statement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/asyncpg/connection.py", line 443, in _get_statement
+    statement = await self._protocol.prepare(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 165, in prepare
+asyncpg.exceptions.UndefinedTableError: relation "resource_snapshots" does not exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.ProgrammingError: <class 'asyncpg.exceptions.UndefinedTableError'>: relation "resource_snapshots" does not exist
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/scripts/take_resource_snapshot.py", line 69, in main
+    snapshot = await repo.take_snapshot()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/resource_monitor_repository.py", line 169, in take_snapshot
+    result = await self.session.execute(stmt)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/bulk_persistence.py", line 1306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 585, in execute
+    self._adapt_connection.await_(
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 132, in await_only
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 563, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 513, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "resource_snapshots" does not exist
+[SQL: INSERT INTO resource_snapshots (snapshot_date, snapshot_time, users_count, projects_count, runs_count, papers_count, authorship_count, run_papers_count, affiliation_cache_count, geocoding_cache_count, institution_geo_count, email_verification_codes_count, total_disk_size_mb, users_disk_mb, projects_disk_mb, runs_disk_mb, papers_disk_mb, authorship_disk_mb, run_papers_disk_mb, affiliation_cache_disk_mb, geocoding_cache_disk_mb, institution_geo_disk_mb, email_verification_codes_disk_mb) VALUES ($1::TIMESTAMP WITHOUT TIME ZONE, $2::TIMESTAMP WITH TIME ZONE, $3::INTEGER, $4::INTEGER, $5::INTEGER, $6::INTEGER, $7::INTEGER, $8::INTEGER, $9::INTEGER, $10::INTEGER, $11::INTEGER, $12::INTEGER, $13::FLOAT, $14::FLOAT, $15::FLOAT, $16::FLOAT, $17::FLOAT, $18::FLOAT, $19::FLOAT, $20::FLOAT, $21::FLOAT, $22::FLOAT, $23::FLOAT) ON CONFLICT (snapshot_date) DO UPDATE SET snapshot_time = excluded.snapshot_time, users_count = excluded.users_count, projects_count = excluded.projects_count, runs_count = excluded.runs_count, papers_count = excluded.papers_count, authorship_count = excluded.authorship_count, run_papers_count = excluded.run_papers_count, affiliation_cache_count = excluded.affiliation_cache_count, geocoding_cache_count = excluded.geocoding_cache_count, institution_geo_count = excluded.institution_geo_count, email_verification_codes_count = excluded.email_verification_codes_count, total_disk_size_mb = excluded.total_disk_size_mb, users_disk_mb = excluded.users_disk_mb, projects_disk_mb = excluded.projects_disk_mb, runs_disk_mb = excluded.runs_disk_mb, papers_disk_mb = excluded.papers_disk_mb, authorship_disk_mb = excluded.authorship_disk_mb, run_papers_disk_mb = excluded.run_papers_disk_mb, affiliation_cache_disk_mb = excluded.affiliation_cache_disk_mb, geocoding_cache_disk_mb = excluded.geocoding_cache_disk_mb, institution_geo_disk_mb = excluded.institution_geo_disk_mb, email_verification_codes_disk_mb = excluded.email_verification_codes_disk_mb, updated_at = $24::TIMESTAMP WITH TIME ZONE RETURNING resource_snapshots.id, resource_snapshots.snapshot_date, resource_snapshots.snapshot_time, resource_snapshots.users_count, resource_snapshots.projects_count, resource_snapshots.runs_count, resource_snapshots.papers_count, resource_snapshots.authorship_count, resource_snapshots.run_papers_count, resource_snapshots.affiliation_cache_count, resource_snapshots.geocoding_cache_count, resource_snapshots.institution_geo_count, resource_snapshots.email_verification_codes_count, resource_snapshots.total_disk_size_mb, resource_snapshots.users_disk_mb, resource_snapshots.projects_disk_mb, resource_snapshots.runs_disk_mb, resource_snapshots.papers_disk_mb, resource_snapshots.authorship_disk_mb, resource_snapshots.run_papers_disk_mb, resource_snapshots.affiliation_cache_disk_mb, resource_snapshots.geocoding_cache_disk_mb, resource_snapshots.institution_geo_disk_mb, resource_snapshots.email_verification_codes_disk_mb, resource_snapshots.created_at, resource_snapshots.updated_at]
+[parameters: (datetime.date(2026, 1, 12), datetime.datetime(2026, 1, 12, 1, 33, 10, 117170, tzinfo=datetime.timezone.utc), 1, 2, 3, 999, 8717, 1000, 2545, 375, 1716, 1, 13.4375, 0.046875, 0.0390625, 2.9140625, 0.390625, 7.453125, 0.4140625, 1.09375, 0.1484375, 0.8828125, 0.0546875, datetime.datetime(2026, 1, 12, 1, 33, 10, 117170, tzinfo=datetime.timezone.utc))]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+================================================================================
+[2026-01-12T09:33:08.248564] Starting resource snapshot...
+================================================================================
+Collecting table row counts...
+  users: 1 rows
+  projects: 2 rows
+  runs: 3 rows
+  papers: 999 rows
+  authorship: 8,717 rows
+  run_papers: 1,000 rows
+  affiliation_cache: 2,545 rows
+  geocoding_cache: 375 rows
+  institution_geo: 1,716 rows
+  email_verification_codes: 1 rows
+
+Collecting disk sizes...
+  Total: 13.44 MB
+  affiliation_cache: 1.09 MB
+  authorship: 7.45 MB
+  email_verification_codes: 0.05 MB
+  geocoding_cache: 0.15 MB
+  institution_geo: 0.88 MB
+  papers: 0.39 MB
+  projects: 0.04 MB
+  run_papers: 0.41 MB
+  runs: 2.91 MB
+  users: 0.05 MB
+
+Saving snapshot...
+================================================================================
+❌ ERROR: Failed to take snapshot
+   ProgrammingError: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "resource_snapshots" does not exist
+[SQL: INSERT INTO resource_snapshots (snapshot_date, snapshot_time, users_count, projects_count, runs_count, papers_count, authorship_count, run_papers_count, affiliation_cache_count, geocoding_cache_count, institution_geo_count, email_verification_codes_count, total_disk_size_mb, users_disk_mb, projects_disk_mb, runs_disk_mb, papers_disk_mb, authorship_disk_mb, run_papers_disk_mb, affiliation_cache_disk_mb, geocoding_cache_disk_mb, institution_geo_disk_mb, email_verification_codes_disk_mb) VALUES ($1::TIMESTAMP WITHOUT TIME ZONE, $2::TIMESTAMP WITH TIME ZONE, $3::INTEGER, $4::INTEGER, $5::INTEGER, $6::INTEGER, $7::INTEGER, $8::INTEGER, $9::INTEGER, $10::INTEGER, $11::INTEGER, $12::INTEGER, $13::FLOAT, $14::FLOAT, $15::FLOAT, $16::FLOAT, $17::FLOAT, $18::FLOAT, $19::FLOAT, $20::FLOAT, $21::FLOAT, $22::FLOAT, $23::FLOAT) ON CONFLICT (snapshot_date) DO UPDATE SET snapshot_time = excluded.snapshot_time, users_count = excluded.users_count, projects_count = excluded.projects_count, runs_count = excluded.runs_count, papers_count = excluded.papers_count, authorship_count = excluded.authorship_count, run_papers_count = excluded.run_papers_count, affiliation_cache_count = excluded.affiliation_cache_count, geocoding_cache_count = excluded.geocoding_cache_count, institution_geo_count = excluded.institution_geo_count, email_verification_codes_count = excluded.email_verification_codes_count, total_disk_size_mb = excluded.total_disk_size_mb, users_disk_mb = excluded.users_disk_mb, projects_disk_mb = excluded.projects_disk_mb, runs_disk_mb = excluded.runs_disk_mb, papers_disk_mb = excluded.papers_disk_mb, authorship_disk_mb = excluded.authorship_disk_mb, run_papers_disk_mb = excluded.run_papers_disk_mb, affiliation_cache_disk_mb = excluded.affiliation_cache_disk_mb, geocoding_cache_disk_mb = excluded.geocoding_cache_disk_mb, institution_geo_disk_mb = excluded.institution_geo_disk_mb, email_verification_codes_disk_mb = excluded.email_verification_codes_disk_mb, updated_at = $24::TIMESTAMP WITH TIME ZONE RETURNING resource_snapshots.id, resource_snapshots.snapshot_date, resource_snapshots.snapshot_time, resource_snapshots.users_count, resource_snapshots.projects_count, resource_snapshots.runs_count, resource_snapshots.papers_count, resource_snapshots.authorship_count, resource_snapshots.run_papers_count, resource_snapshots.affiliation_cache_count, resource_snapshots.geocoding_cache_count, resource_snapshots.institution_geo_count, resource_snapshots.email_verification_codes_count, resource_snapshots.total_disk_size_mb, resource_snapshots.users_disk_mb, resource_snapshots.projects_disk_mb, resource_snapshots.runs_disk_mb, resource_snapshots.papers_disk_mb, resource_snapshots.authorship_disk_mb, resource_snapshots.run_papers_disk_mb, resource_snapshots.affiliation_cache_disk_mb, resource_snapshots.geocoding_cache_disk_mb, resource_snapshots.institution_geo_disk_mb, resource_snapshots.email_verification_codes_disk_mb, resource_snapshots.created_at, resource_snapshots.updated_at]
+[parameters: (datetime.date(2026, 1, 12), datetime.datetime(2026, 1, 12, 1, 33, 10, 117170, tzinfo=datetime.timezone.utc), 1, 2, 3, 999, 8717, 1000, 2545, 375, 1716, 1, 13.4375, 0.046875, 0.0390625, 2.9140625, 0.390625, 7.453125, 0.4140625, 1.09375, 0.1484375, 0.8828125, 0.0546875, datetime.datetime(2026, 1, 12, 1, 33, 10, 117170, tzinfo=datetime.timezone.utc))]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+================================================================================
+Database connection closed
+========================================
+[2026-01-12 09:34:01] Starting resource snapshot cron job
+========================================
+Activating conda environment 'maker'...
+Running snapshot script...
+================================================================================
+[2026-01-12T09:34:02.893012] Starting resource snapshot...
+================================================================================
+Collecting table row counts...
+  users: 1 rows
+  projects: 2 rows
+  runs: 3 rows
+  papers: 999 rows
+  authorship: 8,717 rows
+  run_papers: 1,000 rows
+  affiliation_cache: 2,545 rows
+  geocoding_cache: 375 rows
+  institution_geo: 1,716 rows
+  email_verification_codes: 1 rows
+
+Collecting disk sizes...
+  Total: 13.44 MB
+  affiliation_cache: 1.09 MB
+  authorship: 7.45 MB
+  email_verification_codes: 0.05 MB
+  geocoding_cache: 0.15 MB
+  institution_geo: 0.88 MB
+  papers: 0.39 MB
+  projects: 0.04 MB
+  run_papers: 0.41 MB
+  runs: 2.91 MB
+  users: 0.05 MB
+
+Saving snapshot...
+================================================================================
+✅ Snapshot saved successfully!
+   Snapshot ID: 1
+   Snapshot Date: 2026-01-12
+   Snapshot Time: 2026-01-12 01:34:04.932218+00:00
+   Total Users: 1
+   Total Runs: 3
+   Total Disk: 13.44 MB
+================================================================================
+Database connection closed
+[2026-01-12 09:34:06] ✅ Snapshot completed successfully
+========================================
+

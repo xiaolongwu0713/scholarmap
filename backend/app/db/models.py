@@ -206,7 +206,7 @@ class InstitutionGeo(Base):
     city: Mapped[str | None] = mapped_column(String(255), nullable=True)
     qs_rank: Mapped[int | None] = mapped_column(Integer, nullable=True)  # QS World University Ranking
     ror_id: Mapped[str | None] = mapped_column(String(50), nullable=True)  # Research Organization Registry ID
-    source: Mapped[str] = mapped_column(String(50), nullable=False)  # 'qs', 'ror', 'manual'
+    source: Mapped[str] = mapped_column(String(50), nullable=False)  # 'qs', 'ror', 'manual', 'auto_added' (automatically added during extraction)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -223,4 +223,73 @@ class InstitutionGeo(Base):
     # - normalized_name: index=True (for exact matching)
     # - aliases: GIN index on JSONB (for alias matching, created via SQL script)
     # - (country, city): composite index for geographic queries (created via SQL script)
+
+
+class ResourceSnapshot(Base):
+    """Resource snapshot for monitoring database metrics."""
+    __tablename__ = "resource_snapshots"
+    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    snapshot_date: Mapped[datetime] = mapped_column(DateTime(timezone=False), nullable=False, unique=True, index=True)  # Date only, unique per day
+    snapshot_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)  # Actual execution time
+    
+    # Metric 1: Table row counts
+    users_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    projects_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    runs_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    papers_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    authorship_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    run_papers_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    affiliation_cache_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    geocoding_cache_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    institution_geo_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    email_verification_codes_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    
+    # Metric 2: Disk space (MB)
+    total_disk_size_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    users_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    projects_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    runs_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    papers_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    authorship_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    run_papers_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    affiliation_cache_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    geocoding_cache_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    institution_geo_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    email_verification_codes_disk_mb: Mapped[float] = mapped_column(nullable=False, default=0.0)
+    
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False
+    )
+
+
+class UserActivity(Base):
+    """User activity tracking for online user monitoring."""
+    __tablename__ = "user_activity"
+    
+    user_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    last_active_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False
+    )
 

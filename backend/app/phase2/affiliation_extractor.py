@@ -9,6 +9,7 @@ from typing import Any, Protocol
 
 from app.core.audit_log import append_log
 from app.core.paths import prompts_dir
+from app.db.connection import db_manager
 from app.phase1.llm import OpenAIClient
 from app.phase2.models import GeoData
 
@@ -183,22 +184,37 @@ class AffiliationExtractor:
     async def extract_affiliations(
         self,
         affiliations: list[str],
-        cache_lookup: Any = None
-    ) -> dict[str, GeoData]:
+        cache_lookup: Any = None,
+        skip_institution_auto_add: bool = False
+    ) -> tuple[dict[str, GeoData], dict[str, int]]:
         """
         Extract geographic data from all unique affiliations.
         
         Args:
             affiliations: List of unique affiliation strings
             cache_lookup: Optional function to check cache before LLM call
+            skip_institution_auto_add: If True, don't auto-add to institution_geo, record as pending instead
         
         Returns:
-            Dict mapping affiliation_raw -> GeoData
+            Tuple of (dict mapping affiliation_raw -> GeoData, statistics dict)
         """
+        total = len(affiliations)
         result_map: dict[str, GeoData] = {}
         to_extract: list[str] = []
         
-        # Check cache first
+        # Statistics tracking
+        stats = {
+            "affiliation_cache_hits": 0,
+            "institution_matcher_hits": 0,
+            "llm_extractions": 0,
+            "institution_geo_auto_added": 0,
+            "affiliation_cache_updated": 0,
+            "llm_calls": 0,
+            "pending_auto_add": []  # New: track institutions pending validation
+        }
+        
+        # Step 1: Check affiliation_cache table first
+        logger.info(f"   Checking affiliation_cache table for {total} affiliations...")
         for aff in affiliations:
             if cache_lookup:
                 # Support both sync and async cache_lookup
@@ -210,36 +226,102 @@ class AffiliationExtractor:
                 
                 if cached:
                     result_map[aff] = cached
+                    stats["affiliation_cache_hits"] += 1
                     continue
-            
-            # Try institution matcher before LLM (saves cost and time)
-            institution_match = await self.institution_matcher.match_institution(aff)
-            if institution_match:
-                result_map[aff] = institution_match
-                continue
             
             to_extract.append(aff)
         
-        if not to_extract:
-            logger.info("All affiliations found in cache")
-            return result_map
+        if stats["affiliation_cache_hits"] > 0:
+            logger.info(f"   ✅ affiliation_cache table: {stats['affiliation_cache_hits']} hits, {len(to_extract)} need extraction")
         
+        # Step 2: Try institution_matcher for affiliations not in cache
+        if to_extract:
+            logger.info(f"   Trying institution_matcher (institution_geo table) for {len(to_extract)} affiliations...")
+            institution_matches = await self.institution_matcher.match_batch(to_extract)
+            stats["institution_matcher_hits"] = len(institution_matches)
+            
+            if stats["institution_matcher_hits"] > 0:
+                logger.info(f"   ✅ institution_geo table: {stats['institution_matcher_hits']} matches found")
+                # Add institution matches to result_map
+                for aff, geo in institution_matches.items():
+                    result_map[aff] = geo
+                # Remove matched affiliations from to_extract
+                to_extract = [aff for aff in to_extract if aff not in institution_matches]
+        
+        # Step 3: LLM extraction for remaining affiliations
+        if not to_extract:
+            logger.info(f"   ✅ All {total} affiliations found in cache/institution_geo")
+            return result_map, stats
+        
+        stats["llm_extractions"] = len(to_extract)
         logger.info(
-            f"Extracting {len(to_extract)} affiliations "
-            f"(cached: {len(result_map)}) in batches of {self.batch_size}"
+            f"   Extracting {len(to_extract)} affiliations via LLM "
+            f"(affiliation_cache: {stats['affiliation_cache_hits']}, institution_geo: {stats['institution_matcher_hits']}) "
+            f"in batches of {self.batch_size}"
         )
         
         # Process in batches
+        total_batches = (len(to_extract) + self.batch_size - 1) // self.batch_size
         for i in range(0, len(to_extract), self.batch_size):
             batch = to_extract[i:i + self.batch_size]
-            logger.info(f"Processing batch {i//self.batch_size + 1}/{(len(to_extract)-1)//self.batch_size + 1}")
+            batch_num = i // self.batch_size + 1
+            logger.info(f"   Processing LLM batch {batch_num}/{total_batches} ({len(batch)} affiliations)")
             
             batch_results = await self.extract_batch(batch)
+            stats["llm_calls"] += 1
             
-            # Map results back to affiliations
+            # Map results back to affiliations and auto-add successful extractions to institution_geo
             for aff, geo in zip(batch, batch_results):
                 result_map[aff] = geo
+                
+                # Auto-add to institution_geo if extraction was successful
+                # Only add if: institution matcher failed (already checked above), 
+                # and we successfully extracted country, city, and institution
+                if geo.country and geo.institution:
+                    if skip_institution_auto_add:
+                        # Don't add immediately, record as pending for validation
+                        stats["pending_auto_add"].append({
+                            "affiliation_raw": aff,
+                            "institution": geo.institution,
+                            "country": geo.country,
+                            "city": geo.city,
+                        })
+                    else:
+                        # Original behavior: add immediately (backward compatible)
+                        try:
+                            async with db_manager.session() as session:
+                                from app.db.repository import InstitutionGeoRepository
+                                repo = InstitutionGeoRepository(session)
+                                
+                                # Check again if it exists (in case it was added between checks)
+                                existing = await repo.get_by_name(geo.institution)
+                                if not existing:
+                                    # Auto-add the institution
+                                    await repo.auto_add_institution(
+                                        institution_name=geo.institution,
+                                        country=geo.country,
+                                        city=geo.city,
+                                        affiliation_text=aff  # Pass original affiliation for alias extraction
+                                    )
+                                    await session.commit()
+                                    stats["institution_geo_auto_added"] += 1
+                                    logger.debug(f"Auto-added institution to institution_geo: {geo.institution} ({geo.country}, {geo.city})")
+                        except Exception as e:
+                            logger.warning(f"Failed to auto-add institution {geo.institution}: {e}")
+                            # Don't fail the entire extraction if auto-add fails
         
-        logger.info(f"Extraction complete: {len(result_map)} affiliations processed")
-        return result_map
+        # Count affiliations that will be cached (LLM extractions that are not None)
+        stats["affiliation_cache_updated"] = sum(
+            1 for aff in to_extract 
+            if aff in result_map and result_map[aff] and 
+            (result_map[aff].country or result_map[aff].city or result_map[aff].institution)
+        )
+        
+        logger.info(f"   ✅ LLM extraction complete: {len(to_extract)} affiliations processed")
+        if stats["institution_geo_auto_added"] > 0:
+            logger.info(f"      Auto-added to institution_geo table: {stats['institution_geo_auto_added']} institutions")
+        if skip_institution_auto_add and len(stats["pending_auto_add"]) > 0:
+            logger.info(f"      Pending validation: {len(stats['pending_auto_add'])} institutions")
+        
+        return result_map, stats
 
