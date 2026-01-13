@@ -5498,3 +5498,558 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-12 17:29:27 - root - INFO - Logging initialized - output to console and log.txt
 2026-01-12 17:29:27 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
 2026-01-12 17:29:27 - root - INFO - ================================================================================
+2026-01-13 08:55:42 - root - INFO - ================================================================================
+2026-01-13 08:55:42 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 08:55:42 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-13 08:55:42 - root - INFO - ================================================================================
+2026-01-13 08:58:28 - app.main - INFO - ================================================================================
+2026-01-13 08:58:28 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 08:58:28 - app.main - INFO -    Min confidence: low
+2026-01-13 08:58:28 - app.main - INFO - ================================================================================
+2026-01-13 08:58:28 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-13 08:58:29 - app.main - INFO - ================================================================================
+2026-01-13 08:58:29 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 08:58:29 - app.main - INFO -    Min confidence: low
+2026-01-13 08:58:29 - app.main - INFO - ================================================================================
+2026-01-13 08:58:29 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-13 08:58:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 08:58:30 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 08:58:31 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-13 08:58:31 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-13 08:58:31 - app.main - INFO -    Countries returned: 52
+2026-01-13 08:58:31 - app.main - INFO - ================================================================================
+2026-01-13 08:58:31 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-13 08:58:31 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-13 08:58:31 - app.main - INFO -    Countries returned: 52
+2026-01-13 08:58:31 - app.main - INFO - ================================================================================
+2026-01-13 08:58:38 - app.main - INFO - ================================================================================
+2026-01-13 08:58:38 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 08:58:38 - app.main - INFO -    Country: Uganda, Min confidence: low
+2026-01-13 08:58:38 - app.main - INFO - ================================================================================
+2026-01-13 08:58:38 - app.phase2.pg_aggregations - INFO -    Getting country map for Uganda (normalized: Uganda)...
+2026-01-13 08:58:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 08:58:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Ishaka, Uganda' -> (-0.5433369, 30.1372286)
+2026-01-13 08:58:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Masaka, Uganda' -> (-0.483142, 31.8318895)
+2026-01-13 08:58:44 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Uganda
+2026-01-13 08:58:44 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Uganda
+2026-01-13 08:58:44 - app.main - INFO -    Cities returned: 2
+2026-01-13 08:58:44 - app.main - INFO - ================================================================================
+2026-01-13 11:28:05 - app.main - INFO - 👥 ADMIN: Fetching online user count
+2026-01-13 11:28:05 - app.main - INFO - ✅ ADMIN: Online users: 1
+2026-01-13 11:35:56 - root - INFO - ================================================================================
+2026-01-13 11:35:56 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 11:35:56 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-13 11:35:56 - root - INFO - ================================================================================
+2026-01-13 11:36:18 - root - INFO - ================================================================================
+2026-01-13 11:36:18 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 11:36:18 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-13 11:36:18 - root - INFO - ================================================================================
+2026-01-13 11:41:22 - app.main - INFO - ================================================================================
+2026-01-13 11:41:22 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:41:22 - app.main - INFO -    Min confidence: low
+2026-01-13 11:41:22 - app.main - INFO - ================================================================================
+2026-01-13 11:41:22 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-13 11:41:22 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:41:22 - app.main - INFO - ================================================================================
+2026-01-13 11:41:22 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:41:22 - app.main - INFO -    Min confidence: low
+2026-01-13 11:41:22 - app.main - INFO - ================================================================================
+2026-01-13 11:41:22 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-13 11:41:23 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:41:23 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-13 11:41:23 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-13 11:41:23 - app.main - INFO -    Countries returned: 52
+2026-01-13 11:41:23 - app.main - INFO - ================================================================================
+2026-01-13 11:41:24 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-13 11:41:24 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-13 11:41:24 - app.main - INFO -    Countries returned: 52
+2026-01-13 11:41:24 - app.main - INFO - ================================================================================
+2026-01-13 11:41:30 - app.main - INFO - ================================================================================
+2026-01-13 11:41:30 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:41:30 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-13 11:41:30 - app.main - INFO - ================================================================================
+2026-01-13 11:41:30 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-13 11:41:30 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:41:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Xi'an, China' -> (34.261004, 108.9423363)
+2026-01-13 11:41:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Nanjing, China' -> (32.0438284, 118.7788631)
+2026-01-13 11:41:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Ningbo, China' -> (29.8622194, 121.6203873)
+2026-01-13 11:41:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Hong Kong, China' -> (22.2792968, 114.1628907)
+2026-01-13 11:41:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Xinxiang, China' -> (35.3021133, 113.9202062)
+2026-01-13 11:41:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Nanchang, China' -> (28.6472124, 116.0348483)
+2026-01-13 11:41:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Jiaxing, China' -> (30.7474425, 120.7510971)
+2026-01-13 11:41:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Shijiazhuang, China' -> (38.0429742, 114.5088385)
+2026-01-13 11:41:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Taiyuan, China' -> (37.8699921, 112.5437075)
+2026-01-13 11:41:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Dalian, China' -> (38.9130495, 121.6098013)
+2026-01-13 11:41:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Changzhou, China' -> (31.8122623, 119.9691539)
+2026-01-13 11:41:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Kunming, China' -> (25.0399353, 102.7169061)
+2026-01-13 11:41:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Kowloon, China' -> (22.3049255, 114.1616003)
+2026-01-13 11:41:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Suzhou, China' -> (31.311123, 120.6212881)
+2026-01-13 11:41:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Taizhou, China' -> (28.6581723, 121.4163876)
+2026-01-13 11:41:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Yixing, China' -> (31.3495972, 119.817253)
+2026-01-13 11:41:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Lanzhou, China' -> (36.474436, 103.733224)
+2026-01-13 11:41:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Hung Hom, China' -> (22.3068983, 114.1863163)
+2026-01-13 11:41:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Baotou, China' -> (40.6174777, 109.944912)
+2026-01-13 11:41:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Jinzhou, China' -> (41.494444, 121.615278)
+2026-01-13 11:42:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Lishui, China' -> (28.4704064, 119.9184297)
+2026-01-13 11:42:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Meishan, China' -> (29.9866838, 103.7790009)
+2026-01-13 11:42:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Hefei 230000, China' -> (31.8665676, 117.281428)
+2026-01-13 11:42:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Ganzhou, China' -> (25.703866, 115.348216)
+2026-01-13 11:42:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Pokfulam, China' -> (22.2613585, 114.1368109)
+2026-01-13 11:42:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Shatin, China' -> (22.3815527, 114.1904697)
+2026-01-13 11:42:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Yangjiang, China' -> (22.0958223, 111.7831393)
+2026-01-13 11:42:13 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-13 11:42:13 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-13 11:42:13 - app.main - INFO -    Cities returned: 47
+2026-01-13 11:42:13 - app.main - INFO - ================================================================================
+2026-01-13 11:42:28 - app.main - INFO - ================================================================================
+2026-01-13 11:42:28 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:42:28 - app.main - INFO -    Country: China, City: Beijing, Min confidence: low
+2026-01-13 11:42:28 - app.main - INFO - ================================================================================
+2026-01-13 11:42:28 - app.phase2.pg_aggregations - INFO -    Getting city map for Beijing, China...
+2026-01-13 11:42:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:42:29 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 31 institutions in Beijing, China
+2026-01-13 11:42:29 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Beijing, China
+2026-01-13 11:42:29 - app.main - INFO -    Institutions returned: 31
+2026-01-13 11:42:29 - app.main - INFO - ================================================================================
+2026-01-13 11:43:19 - app.main - INFO - ================================================================================
+2026-01-13 11:43:19 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:43:19 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-13 11:43:19 - app.main - INFO - ================================================================================
+2026-01-13 11:43:19 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-13 11:43:20 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:43:20 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-13 11:43:20 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-13 11:43:20 - app.main - INFO -    Cities returned: 47
+2026-01-13 11:43:20 - app.main - INFO - ================================================================================
+2026-01-13 11:43:27 - app.main - INFO - ================================================================================
+2026-01-13 11:43:27 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:43:27 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-13 11:43:27 - app.main - INFO - ================================================================================
+2026-01-13 11:43:27 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-13 11:43:27 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:43:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Austin, United States' -> (30.2711286, -97.7436995)
+2026-01-13 11:43:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Glen Oaks, United States' -> (34.4430807, -112.5485052)
+2026-01-13 11:43:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Tucson, United States' -> (32.2228765, -110.974847)
+2026-01-13 11:43:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Stratford, United States' -> (36.3361403, -102.072119)
+2026-01-13 11:43:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Bethlehem, United States' -> (40.6178915, -75.3786521)
+2026-01-13 11:43:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Palo Alto, United States' -> (37.4443293, -122.1598465)
+2026-01-13 11:43:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Tulsa, United States' -> (36.1563122, -95.9927516)
+2026-01-13 11:43:41 - app.phase2.pg_geocoding - INFO - Geocoded 'St Louis, United States' -> (38.6254063, -90.190009)
+2026-01-13 11:43:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Coral Gables, United States' -> (25.7331105, -80.2585107)
+2026-01-13 11:43:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Denton, United States' -> (33.1838787, -97.1413417)
+2026-01-13 11:43:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Kenilworth, United States' -> (42.0894728, -87.7149295)
+2026-01-13 11:43:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Plano, United States' -> (33.0136764, -96.6925096)
+2026-01-13 11:43:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Salt Lake City, United States' -> (40.7596198, -111.886797)
+2026-01-13 11:43:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Spokane, United States' -> (47.6571934, -117.42351)
+2026-01-13 11:43:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Norman, United States' -> (35.2225717, -97.4394816)
+2026-01-13 11:43:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Grand Forks, United States' -> (47.9252104, -97.0306325)
+2026-01-13 11:43:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Urbana, United States' -> (40.1117174, -88.207301)
+2026-01-13 11:43:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Glassboro, United States' -> (39.7027677, -75.1119434)
+2026-01-13 11:43:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Irvine, United States' -> (33.6856969, -117.825981)
+2026-01-13 11:43:59 - app.phase2.pg_geocoding - INFO - Geocoded 'East Providence, United States' -> (41.8194081, -71.376257)
+2026-01-13 11:44:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Belmont, United States' -> (40.0057737, -81.0097516)
+2026-01-13 11:44:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Honolulu, United States' -> (21.304547, -157.855676)
+2026-01-13 11:44:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Pomona, United States' -> (34.0553813, -117.7517496)
+2026-01-13 11:44:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Richmond, United States' -> (37.5385087, -77.43428)
+2026-01-13 11:44:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Riverside, United States' -> (33.9824949, -117.374238)
+2026-01-13 11:44:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Del Mar, United States' -> (32.9594891, -117.2653146)
+2026-01-13 11:44:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Bozeman, United States' -> (45.6794293, -111.044047)
+2026-01-13 11:44:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Storrs, United States' -> (41.8056456, -72.2541329)
+2026-01-13 11:44:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Iowa City, United States' -> (41.6612561, -91.5299106)
+2026-01-13 11:44:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Hartford, United States' -> (41.764582, -72.6908547)
+2026-01-13 11:44:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Augusta, United States' -> (33.4709714, -81.9748429)
+2026-01-13 11:44:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Manhattan, United States' -> (40.7579554, -73.9855319)
+2026-01-13 11:44:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Newark, United States' -> (40.735657, -74.1723667)
+2026-01-13 11:44:21 - app.phase2.pg_geocoding - INFO - Geocoded 'North Bethesda, United States' -> (39.04065, -77.1233873)
+2026-01-13 11:44:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Fairfax, United States' -> (38.8462236, -77.3063733)
+2026-01-13 11:44:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Elkins Park, United States' -> (40.0770553, -75.1268413)
+2026-01-13 11:44:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Plymouth, United States' -> (42.7369124, -96.2213607)
+2026-01-13 11:44:29 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 74 cities in United States
+2026-01-13 11:44:29 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-13 11:44:29 - app.main - INFO -    Cities returned: 74
+2026-01-13 11:44:29 - app.main - INFO - ================================================================================
+2026-01-13 11:45:13 - app.main - INFO - ================================================================================
+2026-01-13 11:45:13 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:45:13 - app.main - INFO -    Country: United States, City: Boston, Min confidence: low
+2026-01-13 11:45:13 - app.main - INFO - ================================================================================
+2026-01-13 11:45:13 - app.phase2.pg_aggregations - INFO -    Getting city map for Boston, United States...
+2026-01-13 11:45:13 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:45:13 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 22 institutions in Boston, United States
+2026-01-13 11:45:13 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Boston, United States
+2026-01-13 11:45:13 - app.main - INFO -    Institutions returned: 22
+2026-01-13 11:45:13 - app.main - INFO - ================================================================================
+2026-01-13 11:45:43 - app.main - INFO - ================================================================================
+2026-01-13 11:45:43 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:45:43 - app.main - INFO -    Country: Italy, Min confidence: low
+2026-01-13 11:45:43 - app.main - INFO - ================================================================================
+2026-01-13 11:45:43 - app.phase2.pg_aggregations - INFO -    Getting country map for Italy (normalized: Italy)...
+2026-01-13 11:45:44 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:45:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Chieti, Italy' -> (42.1026929, 14.4159053)
+2026-01-13 11:45:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Pozzilli, Italy' -> (41.511422, 14.062517)
+2026-01-13 11:45:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Rovereto, Italy' -> (45.886548, 11.0452369)
+2026-01-13 11:45:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Sassari, Italy' -> (40.7234746, 8.5612674)
+2026-01-13 11:45:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Padua, Italy' -> (45.4077172, 11.8734455)
+2026-01-13 11:45:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Roma, Italy' -> (41.8933203, 12.4829321)
+2026-01-13 11:45:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Trento, Italy' -> (46.0664228, 11.1257601)
+2026-01-13 11:45:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Verona, Italy' -> (45.4424977, 10.9857377)
+2026-01-13 11:45:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Catania, Italy' -> (37.5023612, 15.0873718)
+2026-01-13 11:45:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Cefalù, Italy' -> (38.034957, 14.0244562)
+2026-01-13 11:46:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Cesena, Italy' -> (44.136352, 12.2422442)
+2026-01-13 11:46:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Messina, Italy' -> (38.1937571, 15.5542082)
+2026-01-13 11:46:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Pescara, Italy' -> (42.3102619, 13.9575901)
+2026-01-13 11:46:04 - app.phase2.pg_geocoding - INFO - Geocoded 'L'Aquila, Italy' -> (42.1368853, 13.610341)
+2026-01-13 11:46:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Treviso, Italy' -> (45.8066913, 12.2063158)
+2026-01-13 11:46:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Trieste, Italy' -> (45.6496485, 13.7772781)
+2026-01-13 11:46:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Cagliari, Italy' -> (39.2171994, 9.113311)
+2026-01-13 11:46:10 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 30 cities in Italy
+2026-01-13 11:46:10 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Italy
+2026-01-13 11:46:10 - app.main - INFO -    Cities returned: 30
+2026-01-13 11:46:10 - app.main - INFO - ================================================================================
+2026-01-13 11:46:45 - app.main - INFO - ================================================================================
+2026-01-13 11:46:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:46:45 - app.main - INFO -    Country: Germany, Min confidence: low
+2026-01-13 11:46:45 - app.main - INFO - ================================================================================
+2026-01-13 11:46:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Germany (normalized: Germany)...
+2026-01-13 11:46:45 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:46:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Magdeburg, Germany' -> (52.1314783, 11.6400789)
+2026-01-13 11:46:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Kiel, Germany' -> (54.3227085, 10.135555)
+2026-01-13 11:46:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Aachen, Germany' -> (50.776351, 6.083862)
+2026-01-13 11:46:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Neubiberg, Germany' -> (48.0769935, 11.6615136)
+2026-01-13 11:46:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Lübeck, Germany' -> (53.866444, 10.684738)
+2026-01-13 11:46:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Tubingen, Germany' -> (48.5203263, 9.053596)
+2026-01-13 11:46:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Mainz, Germany' -> (49.9995205, 8.2736253)
+2026-01-13 11:46:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Münster, Germany' -> (51.9625101, 7.6251879)
+2026-01-13 11:46:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Dortmund, Germany' -> (51.5142273, 7.4652789)
+2026-01-13 11:46:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Burgau, Germany' -> (48.4312893, 10.4065009)
+2026-01-13 11:47:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Nuremberg, Germany' -> (49.453872, 11.077298)
+2026-01-13 11:47:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Wurzburg, Germany' -> (49.7780356, 9.9434769)
+2026-01-13 11:47:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Düren, Germany' -> (50.8031684, 6.4820806)
+2026-01-13 11:47:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Rostock, Germany' -> (54.0886707, 12.1400211)
+2026-01-13 11:47:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Halle (Saale), Germany' -> (51.4824354, 11.9712985)
+2026-01-13 11:47:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Plau am See, Germany' -> (53.4600943, 12.2631689)
+2026-01-13 11:47:09 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Frankfurt am Main; Cologne; Jülich, Germany' (from affiliation: Department of Neurology, University Hospital Frankfurt, Goethe University, Frankfurt am Main, Germany; Medical Faculty, University of Cologne, and Department of Neurology, University Hospital Cologne, Cologne, Germany; Cognitive Neuroscience, Institute of Neuroscience and Medicine (INM-3), Research Centre Jülich, Jülich, Germany. Electronic address: Grefkes-hermann@em.uni-frankfurt.de.)
+2026-01-13 11:47:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Freiburg im Breisgau, Germany' -> (47.9960901, 7.8494005)
+2026-01-13 11:47:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Mannheim, Germany' -> (49.4892913, 8.4673098)
+2026-01-13 11:47:13 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 38 cities in Germany
+2026-01-13 11:47:13 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Germany
+2026-01-13 11:47:13 - app.main - INFO -    Cities returned: 38
+2026-01-13 11:47:13 - app.main - INFO - ================================================================================
+2026-01-13 11:47:37 - app.main - INFO - ================================================================================
+2026-01-13 11:47:37 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:47:37 - app.main - INFO -    Country: United Kingdom, Min confidence: low
+2026-01-13 11:47:37 - app.main - INFO - ================================================================================
+2026-01-13 11:47:37 - app.phase2.pg_aggregations - INFO -    Getting country map for United Kingdom (normalized: United Kingdom)...
+2026-01-13 11:47:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:47:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Newcastle Upon Tyne, United Kingdom' -> (54.9738474, -1.6131572)
+2026-01-13 11:47:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Colchester, United Kingdom' -> (51.8896903, 0.8994651)
+2026-01-13 11:47:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Stirling, United Kingdom' -> (56.1181242, -3.9360012)
+2026-01-13 11:47:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Guildford, United Kingdom' -> (51.2356068, -0.5732063)
+2026-01-13 11:47:44 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 13 cities in United Kingdom
+2026-01-13 11:47:44 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United Kingdom
+2026-01-13 11:47:44 - app.main - INFO -    Cities returned: 13
+2026-01-13 11:47:44 - app.main - INFO - ================================================================================
+2026-01-13 11:47:52 - app.main - INFO - ================================================================================
+2026-01-13 11:47:52 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:47:52 - app.main - INFO -    Country: Spain, Min confidence: low
+2026-01-13 11:47:52 - app.main - INFO - ================================================================================
+2026-01-13 11:47:52 - app.phase2.pg_aggregations - INFO -    Getting country map for Spain (normalized: Spain)...
+2026-01-13 11:47:52 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:47:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Cadiz, Spain' -> (36.5297438, -6.2928976)
+2026-01-13 11:47:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Torrent, Spain' -> (39.436668, -0.4656213)
+2026-01-13 11:47:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Valladolid, Spain' -> (41.6521807, -4.728605)
+2026-01-13 11:47:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Badalona, Spain' -> (41.4493539, 2.248254)
+2026-01-13 11:48:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Pozuelo de Alarcón, Spain' -> (40.4346528, -3.814834)
+2026-01-13 11:48:02 - app.phase2.pg_geocoding - INFO - Geocoded 'A Coruña, Spain' -> (43.3709703, -8.3959425)
+2026-01-13 11:48:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Cádiz, Spain' -> (36.5297438, -6.2928976)
+2026-01-13 11:48:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Toledo, Spain' -> (39.8558913, -4.024265)
+2026-01-13 11:48:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Palma de Mallorca, Spain' -> (39.5695818, 2.6500745)
+2026-01-13 11:48:07 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Spain
+2026-01-13 11:48:07 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Spain
+2026-01-13 11:48:07 - app.main - INFO -    Cities returned: 11
+2026-01-13 11:48:07 - app.main - INFO - ================================================================================
+2026-01-13 11:48:29 - app.main - INFO - ================================================================================
+2026-01-13 11:48:29 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:48:29 - app.main - INFO -    Country: Switzerland, Min confidence: low
+2026-01-13 11:48:29 - app.main - INFO - ================================================================================
+2026-01-13 11:48:29 - app.phase2.pg_aggregations - INFO -    Getting country map for Switzerland (normalized: Switzerland)...
+2026-01-13 11:48:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:48:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Sion, Switzerland' -> (46.2311749, 7.3588795)
+2026-01-13 11:48:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Crans-Montana, Switzerland' -> (46.3304899, 7.5264358)
+2026-01-13 11:48:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Berne, Switzerland' -> (46.9484742, 7.4521749)
+2026-01-13 11:48:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 8 cities in Switzerland
+2026-01-13 11:48:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Switzerland
+2026-01-13 11:48:34 - app.main - INFO -    Cities returned: 8
+2026-01-13 11:48:34 - app.main - INFO - ================================================================================
+2026-01-13 11:48:45 - app.main - INFO - ================================================================================
+2026-01-13 11:48:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:48:45 - app.main - INFO -    Country: Spain, Min confidence: low
+2026-01-13 11:48:45 - app.main - INFO - ================================================================================
+2026-01-13 11:48:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Spain (normalized: Spain)...
+2026-01-13 11:48:45 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:48:45 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Spain
+2026-01-13 11:48:46 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Spain
+2026-01-13 11:48:46 - app.main - INFO -    Cities returned: 11
+2026-01-13 11:48:46 - app.main - INFO - ================================================================================
+2026-01-13 11:48:50 - app.main - INFO - ================================================================================
+2026-01-13 11:48:50 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:48:50 - app.main - INFO -    Country: Portugal, Min confidence: low
+2026-01-13 11:48:50 - app.main - INFO - ================================================================================
+2026-01-13 11:48:50 - app.phase2.pg_aggregations - INFO -    Getting country map for Portugal (normalized: Portugal)...
+2026-01-13 11:48:51 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:48:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Oeiras, Portugal' -> (38.6925777, -9.3123076)
+2026-01-13 11:48:53 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Portugal
+2026-01-13 11:48:53 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Portugal
+2026-01-13 11:48:53 - app.main - INFO -    Cities returned: 5
+2026-01-13 11:48:53 - app.main - INFO - ================================================================================
+2026-01-13 11:48:58 - app.main - INFO - ================================================================================
+2026-01-13 11:48:58 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:48:58 - app.main - INFO -    Country: Iran, Min confidence: low
+2026-01-13 11:48:58 - app.main - INFO - ================================================================================
+2026-01-13 11:48:58 - app.phase2.pg_aggregations - INFO -    Getting country map for Iran (normalized: Iran)...
+2026-01-13 11:48:59 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:49:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Sari, Iran' -> (36.5537458, 53.0602761)
+2026-01-13 11:49:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Isfahan, Iran' -> (32.6707877, 51.6650002)
+2026-01-13 11:49:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Tabriz, Iran' -> (38.0738612, 46.2978789)
+2026-01-13 11:49:04 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Iran
+2026-01-13 11:49:05 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Iran
+2026-01-13 11:49:05 - app.main - INFO -    Cities returned: 5
+2026-01-13 11:49:05 - app.main - INFO - ================================================================================
+2026-01-13 11:49:13 - app.main - INFO - ================================================================================
+2026-01-13 11:49:13 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:49:13 - app.main - INFO -    Country: Israel, Min confidence: low
+2026-01-13 11:49:13 - app.main - INFO - ================================================================================
+2026-01-13 11:49:13 - app.phase2.pg_aggregations - INFO -    Getting country map for Israel (normalized: Israel)...
+2026-01-13 11:49:13 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:49:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Tel Hashomer, Israel' -> (32.0468815, 34.8447686)
+2026-01-13 11:49:16 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Beer-Yaacov, Israel' (from affiliation: QuantalX Neuroscience, Beer-Yaacov, Israel.)
+2026-01-13 11:49:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Beer Sheba, Israel' -> (31.2457442, 34.7925181)
+2026-01-13 11:49:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Kfar-Saba, Israel' -> (32.1802349, 34.9180542)
+2026-01-13 11:49:20 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Zerifin, Israel' (from affiliation: Sagol Center for Hyperbaric Medicine and Research, Shamir Medical Center, Zerifin, Israel.)
+2026-01-13 11:49:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Beer Sheva, Israel' -> (31.2457442, 34.7925181)
+2026-01-13 11:49:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Hod-Hasharon, Israel' -> (32.1561974, 34.8930354)
+2026-01-13 11:49:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Herzliya, Israel' -> (32.1676842, 34.8308279)
+2026-01-13 11:49:25 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 15 cities in Israel
+2026-01-13 11:49:25 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Israel
+2026-01-13 11:49:25 - app.main - INFO -    Cities returned: 15
+2026-01-13 11:49:25 - app.main - INFO - ================================================================================
+2026-01-13 11:49:32 - app.main - INFO - ================================================================================
+2026-01-13 11:49:32 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:49:32 - app.main - INFO -    Country: Finland, Min confidence: low
+2026-01-13 11:49:32 - app.main - INFO - ================================================================================
+2026-01-13 11:49:32 - app.phase2.pg_aggregations - INFO -    Getting country map for Finland (normalized: Finland)...
+2026-01-13 11:49:33 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:49:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Kuopio, Finland' -> (62.8924641, 27.6783597)
+2026-01-13 11:49:35 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Finland
+2026-01-13 11:49:35 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Finland
+2026-01-13 11:49:35 - app.main - INFO -    Cities returned: 2
+2026-01-13 11:49:35 - app.main - INFO - ================================================================================
+2026-01-13 11:49:41 - app.main - INFO - ================================================================================
+2026-01-13 11:49:41 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:49:41 - app.main - INFO -    Country: Iran, Min confidence: low
+2026-01-13 11:49:41 - app.main - INFO - ================================================================================
+2026-01-13 11:49:41 - app.phase2.pg_aggregations - INFO -    Getting country map for Iran (normalized: Iran)...
+2026-01-13 11:49:42 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:49:42 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Iran
+2026-01-13 11:49:42 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Iran
+2026-01-13 11:49:42 - app.main - INFO -    Cities returned: 5
+2026-01-13 11:49:42 - app.main - INFO - ================================================================================
+2026-01-13 11:49:47 - app.main - INFO - ================================================================================
+2026-01-13 11:49:47 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:49:47 - app.main - INFO -    Country: India, Min confidence: low
+2026-01-13 11:49:47 - app.main - INFO - ================================================================================
+2026-01-13 11:49:47 - app.phase2.pg_aggregations - INFO -    Getting country map for India (normalized: India)...
+2026-01-13 11:49:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:49:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Ranchi, India' -> (23.3700501, 85.3250387)
+2026-01-13 11:49:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Chandigarh, India' -> (30.7334421, 76.7797143)
+2026-01-13 11:49:51 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in India
+2026-01-13 11:49:51 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: India
+2026-01-13 11:49:51 - app.main - INFO -    Cities returned: 5
+2026-01-13 11:49:51 - app.main - INFO - ================================================================================
+2026-01-13 11:49:59 - app.main - INFO - ================================================================================
+2026-01-13 11:49:59 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:49:59 - app.main - INFO -    Country: Australia, Min confidence: low
+2026-01-13 11:49:59 - app.main - INFO - ================================================================================
+2026-01-13 11:49:59 - app.phase2.pg_aggregations - INFO -    Getting country map for Australia (normalized: Australia)...
+2026-01-13 11:49:59 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:50:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Camberwell, Australia' -> (-37.8384623, 145.0740767)
+2026-01-13 11:50:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Burwood, Australia' -> (-33.8858088, 151.1024805)
+2026-01-13 11:50:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Callaghan, Australia' -> (-32.8927988, 151.7011832)
+2026-01-13 11:50:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Clayton, Australia' -> (-37.9158025, 145.1313859)
+2026-01-13 11:50:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Randwick, Australia' -> (-33.9455167, 151.2440302)
+2026-01-13 11:50:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Parkville, Australia' -> (-37.7871148, 144.9515533)
+2026-01-13 11:50:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Canberra, Australia' -> (-35.2975906, 149.1012676)
+2026-01-13 11:50:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Sippy Downs, Australia' -> (-26.7257935, 153.0783709)
+2026-01-13 11:50:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Sydney; Canberra, Australia' -> (-33.7685689, 150.7881201)
+2026-01-13 11:50:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Camperdown, Australia' -> (-33.8896116, 151.1800986)
+2026-01-13 11:50:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Malvern, Australia' -> (-37.8576088, 145.0350666)
+2026-01-13 11:50:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Morayfield, Australia' -> (-27.1102549, 152.948924)
+2026-01-13 11:50:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Newcastle, Australia' -> (-32.9272881, 151.7812534)
+2026-01-13 11:50:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Acton, Australia' -> (-35.2852323, 149.1129681)
+2026-01-13 11:50:21 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 18 cities in Australia
+2026-01-13 11:50:21 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Australia
+2026-01-13 11:50:21 - app.main - INFO -    Cities returned: 18
+2026-01-13 11:50:21 - app.main - INFO - ================================================================================
+2026-01-13 11:50:30 - app.main - INFO - ================================================================================
+2026-01-13 11:50:30 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:50:30 - app.main - INFO -    Country: Russia, Min confidence: low
+2026-01-13 11:50:30 - app.main - INFO - ================================================================================
+2026-01-13 11:50:30 - app.phase2.pg_aggregations - INFO -    Getting country map for Russia (normalized: Russia)...
+2026-01-13 11:50:30 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:50:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Moscow, Russia' -> (55.625578, 37.6063916)
+2026-01-13 11:50:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Novosibirsk, Russia' -> (55.0288307, 82.9226887)
+2026-01-13 11:50:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Russia
+2026-01-13 11:50:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Russia
+2026-01-13 11:50:34 - app.main - INFO -    Cities returned: 2
+2026-01-13 11:50:34 - app.main - INFO - ================================================================================
+2026-01-13 11:50:40 - app.main - INFO - ================================================================================
+2026-01-13 11:50:40 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:50:40 - app.main - INFO -    Country: Canada, Min confidence: low
+2026-01-13 11:50:40 - app.main - INFO - ================================================================================
+2026-01-13 11:50:40 - app.phase2.pg_aggregations - INFO -    Getting country map for Canada (normalized: Canada)...
+2026-01-13 11:50:40 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:50:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Surrey, Canada' -> (49.1913033, -122.849143)
+2026-01-13 11:50:42 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Canada
+2026-01-13 11:50:42 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Canada
+2026-01-13 11:50:42 - app.main - INFO -    Cities returned: 11
+2026-01-13 11:50:42 - app.main - INFO - ================================================================================
+2026-01-13 11:50:48 - app.main - INFO - ================================================================================
+2026-01-13 11:50:48 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:50:48 - app.main - INFO -    Country: Brasil, Min confidence: low
+2026-01-13 11:50:48 - app.main - INFO - ================================================================================
+2026-01-13 11:50:48 - app.phase2.pg_aggregations - INFO -    Getting country map for Brasil (normalized: Brasil)...
+2026-01-13 11:50:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:50:51 - app.phase2.pg_geocoding - INFO - Geocoded 'São Paulo, Brasil' -> (-23.5506507, -46.6333824)
+2026-01-13 11:50:52 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Brasil
+2026-01-13 11:50:52 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Brasil
+2026-01-13 11:50:52 - app.main - INFO -    Cities returned: 1
+2026-01-13 11:50:52 - app.main - INFO - ================================================================================
+2026-01-13 11:50:56 - app.main - INFO - ================================================================================
+2026-01-13 11:50:56 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:50:56 - app.main - INFO -    Country: Zambia, Min confidence: low
+2026-01-13 11:50:56 - app.main - INFO - ================================================================================
+2026-01-13 11:50:56 - app.phase2.pg_aggregations - INFO -    Getting country map for Zambia (normalized: Zambia)...
+2026-01-13 11:50:56 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:50:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Chipata, Zambia' -> (-13.6391314, 32.6458437)
+2026-01-13 11:50:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Lusaka, Zambia' -> (-15.4163395, 28.2818414)
+2026-01-13 11:51:00 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Zambia
+2026-01-13 11:51:00 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Zambia
+2026-01-13 11:51:00 - app.main - INFO -    Cities returned: 2
+2026-01-13 11:51:00 - app.main - INFO - ================================================================================
+2026-01-13 11:51:11 - app.main - INFO - ================================================================================
+2026-01-13 11:51:11 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:51:11 - app.main - INFO -    Country: Portugal, Min confidence: low
+2026-01-13 11:51:11 - app.main - INFO - ================================================================================
+2026-01-13 11:51:11 - app.phase2.pg_aggregations - INFO -    Getting country map for Portugal (normalized: Portugal)...
+2026-01-13 11:51:11 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:51:12 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Portugal
+2026-01-13 11:51:12 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Portugal
+2026-01-13 11:51:12 - app.main - INFO -    Cities returned: 5
+2026-01-13 11:51:12 - app.main - INFO - ================================================================================
+2026-01-13 11:51:32 - app.main - INFO - ================================================================================
+2026-01-13 11:51:32 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:51:32 - app.main - INFO -    Country: Austria, Min confidence: low
+2026-01-13 11:51:32 - app.main - INFO - ================================================================================
+2026-01-13 11:51:32 - app.phase2.pg_aggregations - INFO -    Getting country map for Austria (normalized: Austria)...
+2026-01-13 11:51:32 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:51:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Innsbruck, Austria' -> (47.2654296, 11.3927685)
+2026-01-13 11:51:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Linz, Austria' -> (48.3059078, 14.286198)
+2026-01-13 11:51:36 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Austria
+2026-01-13 11:51:36 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Austria
+2026-01-13 11:51:36 - app.main - INFO -    Cities returned: 5
+2026-01-13 11:51:36 - app.main - INFO - ================================================================================
+2026-01-13 11:51:42 - app.main - INFO - ================================================================================
+2026-01-13 11:51:42 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:51:42 - app.main - INFO -    Country: Switzerland, Min confidence: low
+2026-01-13 11:51:42 - app.main - INFO - ================================================================================
+2026-01-13 11:51:42 - app.phase2.pg_aggregations - INFO -    Getting country map for Switzerland (normalized: Switzerland)...
+2026-01-13 11:51:42 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:51:42 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 8 cities in Switzerland
+2026-01-13 11:51:43 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Switzerland
+2026-01-13 11:51:43 - app.main - INFO -    Cities returned: 8
+2026-01-13 11:51:43 - app.main - INFO - ================================================================================
+2026-01-13 11:51:51 - app.main - INFO - ================================================================================
+2026-01-13 11:51:51 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:51:51 - app.main - INFO -    Country: Denmark, Min confidence: low
+2026-01-13 11:51:51 - app.main - INFO - ================================================================================
+2026-01-13 11:51:51 - app.phase2.pg_aggregations - INFO -    Getting country map for Denmark (normalized: Denmark)...
+2026-01-13 11:51:51 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:51:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Hammel, Denmark' -> (56.2526132, 9.8610556)
+2026-01-13 11:51:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Silkeborg, Denmark' -> (56.169453, 9.5495141)
+2026-01-13 11:51:55 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Denmark
+2026-01-13 11:51:55 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Denmark
+2026-01-13 11:51:55 - app.main - INFO -    Cities returned: 6
+2026-01-13 11:51:55 - app.main - INFO - ================================================================================
+2026-01-13 11:52:17 - app.main - INFO - ================================================================================
+2026-01-13 11:52:17 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:52:17 - app.main - INFO -    Country: Sweden, Min confidence: low
+2026-01-13 11:52:17 - app.main - INFO - ================================================================================
+2026-01-13 11:52:17 - app.phase2.pg_aggregations - INFO -    Getting country map for Sweden (normalized: Sweden)...
+2026-01-13 11:52:17 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:52:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Mölndal, Sweden' -> (57.6564918, 12.0153085)
+2026-01-13 11:52:20 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 3 cities in Sweden
+2026-01-13 11:52:20 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Sweden
+2026-01-13 11:52:20 - app.main - INFO -    Cities returned: 3
+2026-01-13 11:52:20 - app.main - INFO - ================================================================================
+2026-01-13 11:52:26 - app.main - INFO - ================================================================================
+2026-01-13 11:52:26 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:52:26 - app.main - INFO -    Country: Japan, Min confidence: low
+2026-01-13 11:52:26 - app.main - INFO - ================================================================================
+2026-01-13 11:52:26 - app.phase2.pg_aggregations - INFO -    Getting country map for Japan (normalized: Japan)...
+2026-01-13 11:52:27 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:52:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Yokosuka City, Japan' -> (35.2817446, 139.6714498)
+2026-01-13 11:52:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Chiba, Japan' -> (35.549399, 140.2647303)
+2026-01-13 11:52:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Fukushima, Japan' -> (37.760777, 140.4745807)
+2026-01-13 11:52:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Kawasaki, Japan' -> (35.5306639, 139.7037668)
+2026-01-13 11:52:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Japan
+2026-01-13 11:52:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Japan
+2026-01-13 11:52:34 - app.main - INFO -    Cities returned: 6
+2026-01-13 11:52:34 - app.main - INFO - ================================================================================
+2026-01-13 11:52:43 - app.main - INFO - ================================================================================
+2026-01-13 11:52:43 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:52:43 - app.main - INFO -    Country: Mexico, Min confidence: low
+2026-01-13 11:52:43 - app.main - INFO - ================================================================================
+2026-01-13 11:52:43 - app.phase2.pg_aggregations - INFO -    Getting country map for Mexico (normalized: Mexico)...
+2026-01-13 11:52:44 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:52:44 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Mexico
+2026-01-13 11:52:44 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Mexico
+2026-01-13 11:52:44 - app.main - INFO -    Cities returned: 1
+2026-01-13 11:52:44 - app.main - INFO - ================================================================================
+2026-01-13 11:53:06 - app.main - INFO - ================================================================================
+2026-01-13 11:53:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:53:06 - app.main - INFO -    Country: Romania, Min confidence: low
+2026-01-13 11:53:06 - app.main - INFO - ================================================================================
+2026-01-13 11:53:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Romania (normalized: Romania)...
+2026-01-13 11:53:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:53:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Suceava, Romania' -> (47.647001, 26.2522599)
+2026-01-13 11:53:08 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Romania
+2026-01-13 11:53:08 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Romania
+2026-01-13 11:53:08 - app.main - INFO -    Cities returned: 2
+2026-01-13 11:53:08 - app.main - INFO - ================================================================================
+2026-01-13 11:53:22 - app.main - INFO - ================================================================================
+2026-01-13 11:53:22 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:53:22 - app.main - INFO -    Country: Brasil, Min confidence: low
+2026-01-13 11:53:22 - app.main - INFO - ================================================================================
+2026-01-13 11:53:22 - app.phase2.pg_aggregations - INFO -    Getting country map for Brasil (normalized: Brasil)...
+2026-01-13 11:53:22 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:53:22 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Brasil
+2026-01-13 11:53:22 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Brasil
+2026-01-13 11:53:22 - app.main - INFO -    Cities returned: 1
+2026-01-13 11:53:22 - app.main - INFO - ================================================================================
+2026-01-13 11:53:30 - app.main - INFO - ================================================================================
+2026-01-13 11:53:30 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-13 11:53:30 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-13 11:53:30 - app.main - INFO - ================================================================================
+2026-01-13 11:53:30 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-13 11:53:30 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-13 11:53:30 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 74 cities in United States
+2026-01-13 11:53:30 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-13 11:53:30 - app.main - INFO -    Cities returned: 74
+2026-01-13 11:53:30 - app.main - INFO - ================================================================================
+2026-01-13 12:11:02 - root - INFO - ================================================================================
+2026-01-13 12:11:02 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 12:11:02 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-13 12:11:02 - root - INFO - ================================================================================
+2026-01-13 12:17:27 - root - INFO - ================================================================================
+2026-01-13 12:17:27 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 12:17:27 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-13 12:17:27 - root - INFO - ================================================================================

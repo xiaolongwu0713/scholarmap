@@ -2,65 +2,25 @@
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12">
+    <footer id="contact" className="bg-gray-900 text-gray-300 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8 mb-8">
-          {/* Logo & Description */}
-          <div className="col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <svg
-                className="w-8 h-8 text-blue-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
+        {/* Contact Section */}
+        <div className="text-center mb-12 pb-8 border-b border-gray-800">
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Get in Touch
+          </h2>
+          <p className="text-lg text-gray-400 mb-6 max-w-2xl mx-auto">
+            Have questions or feedback? We'd love to hear from you.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex items-center gap-3 text-gray-300">
+              <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <span className="text-xl font-semibold text-white">ScholarMap</span>
+              <a href="mailto:contact@scholarmap.com" className="hover:text-blue-400 transition-colors">
+                contact@scholarmap.com
+              </a>
             </div>
-            <p className="text-sm text-gray-400 max-w-sm">
-              Visualize global research distribution with AI-powered search and
-              interactive 3D mapping. Discover academic networks worldwide.
-            </p>
-          </div>
-
-          {/* Product */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Product</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#features" className="hover:text-blue-400 transition-colors">
-                  Features
-                </a>
-              </li>
-              <li>
-                <a href="#how-it-works" className="hover:text-blue-400 transition-colors">
-                  How It Works
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Resources</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="/auth/login" className="hover:text-blue-400 transition-colors">
-                  Sign In
-                </a>
-              </li>
-              <li>
-                <a href="/auth/register" className="hover:text-blue-400 transition-colors">
-                  Register
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
 

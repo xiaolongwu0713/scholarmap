@@ -61,10 +61,15 @@ class DatabaseStore:
             ]
     
     async def get_project(self, project_id: str, user_id: str) -> ProjectDTO | None:
-        """Get project by ID for a user. Super users can access any project."""
-        # Check if user is super user
-        if await is_super_user(user_id):
-            # Super user: don't filter by user_id
+        """Get project by ID for a user. Super users and demo users can access any project."""
+        # Demo project ID that is publicly accessible
+        DEMO_PROJECT_ID = "6af7ac1b6254"
+        
+        # Check if user is super user or demo user accessing demo project
+        is_demo_access = (user_id == "demo_user" and project_id == DEMO_PROJECT_ID)
+        
+        if await is_super_user(user_id) or is_demo_access:
+            # Super user or demo user: don't filter by user_id
             async with db_manager.session() as session:
                 repo = ProjectRepository(session)
                 project = await repo.get_project(project_id, None)

@@ -74,7 +74,7 @@ export function HowItWorks() {
   };
 
   return (
-    <section id="how-it-works" style={{ paddingTop: "6rem", paddingBottom: "6rem", background: "linear-gradient(to bottom right, #f9fafb, #eff6ff)" }}>
+    <section id="how-it-works" style={{ paddingTop: "6rem", paddingBottom: "6rem", background: "linear-gradient(to bottom right, #f9fafb, #eff6ff)", scrollMarginTop: "80px" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <h2 style={{ fontSize: "3rem", fontWeight: "700", marginBottom: "1rem", color: "#111827" }}>

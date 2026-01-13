@@ -54,6 +54,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/auth/password-requirements",
     }
     
+    # Demo run that is publicly accessible (read-only)
+    DEMO_PROJECT_ID = "6af7ac1b6254"
+    DEMO_RUN_ID = "53e099cdb74e"
+    
     async def dispatch(self, request: Request, call_next) -> Response:
         # Skip OPTIONS requests (CORS preflight)
         if request.method == "OPTIONS":
@@ -62,6 +66,13 @@ class AuthMiddleware(BaseHTTPMiddleware):
         # Skip authentication for public paths
         path = request.url.path
         if path in self.PUBLIC_PATHS or path.startswith("/docs") or path.startswith("/openapi"):
+            return await call_next(request)
+        
+        # Check if this is a request to the demo run (read-only access)
+        # Allow GET requests to demo run endpoints without authentication
+        if request.method == "GET" and self.DEMO_PROJECT_ID in path and self.DEMO_RUN_ID in path:
+            # Use a special demo user ID for tracking purposes
+            request.state.user_id = "demo_user"
             return await call_next(request)
         
         # Check for authentication token

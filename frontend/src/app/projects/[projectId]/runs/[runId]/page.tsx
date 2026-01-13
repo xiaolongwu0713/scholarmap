@@ -2062,6 +2062,17 @@ function RunPageContent() {
 }
 
 export default function RunPage() {
+  const params = useParams();
+  const projectId = params.projectId as string;
+  const runId = params.runId as string;
+  
+  // Allow public access to demo run
+  const isDemoRun = projectId === "6af7ac1b6254" && runId === "53e099cdb74e";
+  
+  if (isDemoRun) {
+    return <RunPageContent />;
+  }
+  
   return (
     <AuthGuard>
       <RunPageContent />

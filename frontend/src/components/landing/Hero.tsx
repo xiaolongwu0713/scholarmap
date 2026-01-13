@@ -73,8 +73,8 @@ export function Hero() {
             className="secondary"
             style={{ fontSize: "16px", padding: "12px 28px" }}
             onClick={() => {
-              // Placeholder for demo video
-              alert("Demo video coming soon!");
+              // Open demo run in new tab
+              window.open("/projects/6af7ac1b6254/runs/53e099cdb74e", "_blank");
             }}
           >
             Watch Demo
@@ -85,9 +85,9 @@ export function Hero() {
         <div className="relative max-w-5xl mx-auto">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
             <img
-              src="https://images.unsplash.com/photo-1570106413982-7f2897b8d0c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnbG9iYWwlMjBuZXR3b3JrJTIwd29ybGQlMjBtYXB8ZW58MXx8fHwxNzY4MTg0NjUyfDA&ixlib=rb-4.1.0&q=80&w=1080"
+              src="/landing_page_figures/0.png"
               alt="Global research network visualization"
-              className="w-full h-auto mix-blend-luminosity opacity-80"
+              className="w-full h-auto"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
           </div>

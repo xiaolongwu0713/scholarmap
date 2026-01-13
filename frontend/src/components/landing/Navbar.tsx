@@ -1,8 +1,21 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
 export function Navbar() {
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+
+  const linkStyle = (linkName: string) => ({
+    fontSize: "16px",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    fontWeight: "500",
+    backgroundColor: hoveredLink === linkName ? "#eff6ff" : "transparent",
+    color: hoveredLink === linkName ? "#2563eb" : "#374151",
+    transition: "all 0.2s ease"
+  });
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,33 +38,37 @@ export function Navbar() {
             <span className="text-xl font-semibold">ScholarMap</span>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* Navigation Links */}
+          <div className="flex items-center gap-6 md:gap-10">
+            <a
+              href="#about"
+              style={linkStyle("about")}
+              onMouseEnter={() => setHoveredLink("about")}
+              onMouseLeave={() => setHoveredLink(null)}
+            >
+              About
+            </a>
             <a
               href="#features"
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-              style={{ fontSize: "15px" }}
+              style={linkStyle("features")}
+              onMouseEnter={() => setHoveredLink("features")}
+              onMouseLeave={() => setHoveredLink(null)}
             >
               Features
             </a>
             <a
               href="#how-it-works"
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-              style={{ fontSize: "15px" }}
+              style={linkStyle("how-it-works")}
+              onMouseEnter={() => setHoveredLink("how-it-works")}
+              onMouseLeave={() => setHoveredLink(null)}
             >
               How It Works
             </a>
             <a
-              href="#about"
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-              style={{ fontSize: "15px" }}
-            >
-              About
-            </a>
-            <a
               href="#contact"
-              className="text-gray-700 hover:text-blue-600 transition-colors"
-              style={{ fontSize: "15px" }}
+              style={linkStyle("contact")}
+              onMouseEnter={() => setHoveredLink("contact")}
+              onMouseLeave={() => setHoveredLink(null)}
             >
               Contact
             </a>

@@ -85,7 +85,7 @@ export function Features() {
   ];
 
   return (
-    <section id="features" style={{ paddingTop: "6rem", paddingBottom: "6rem", backgroundColor: "white" }}>
+    <section id="features" style={{ paddingTop: "6rem", paddingBottom: "6rem", backgroundColor: "white", scrollMarginTop: "80px" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <h2 
