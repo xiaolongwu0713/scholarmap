@@ -41,12 +41,12 @@ export function Navbar() {
           {/* Navigation Links */}
           <div className="flex items-center gap-6 md:gap-10">
             <a
-              href="#about"
-              style={linkStyle("about")}
-              onMouseEnter={() => setHoveredLink("about")}
+              href="#what-it-is"
+              style={linkStyle("what-it-is")}
+              onMouseEnter={() => setHoveredLink("what-it-is")}
               onMouseLeave={() => setHoveredLink(null)}
             >
-              About
+              What It Is
             </a>
             <a
               href="#features"
@@ -63,14 +63,6 @@ export function Navbar() {
               onMouseLeave={() => setHoveredLink(null)}
             >
               How It Works
-            </a>
-            <a
-              href="#contact"
-              style={linkStyle("contact")}
-              onMouseEnter={() => setHoveredLink("contact")}
-              onMouseLeave={() => setHoveredLink(null)}
-            >
-              Contact
             </a>
           </div>
 

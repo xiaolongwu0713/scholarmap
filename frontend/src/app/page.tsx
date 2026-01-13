@@ -1,8 +1,8 @@
 "use client";
 
-import { Navbar } from "@/components/landing/Navbar";
+import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 import { Hero } from "@/components/landing/Hero";
-import { About } from "@/components/landing/About";
+import { WhatItIs } from "@/components/landing/WhatItIs";
 import { Features } from "@/components/landing/Features";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Footer } from "@/components/landing/Footer";
@@ -10,9 +10,9 @@ import { Footer } from "@/components/landing/Footer";
 export default function LandingPage() {
   return (
     <div className="min-h-screen" style={{ scrollBehavior: "smooth" }}>
-      <Navbar />
+      <UnifiedNavbar variant="landing" />
       <Hero />
-      <About />
+      <WhatItIs />
       <Features />
       <HowItWorks />
       <Footer />

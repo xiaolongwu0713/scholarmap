@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getProject, createRun, deleteRun, type Run } from "@/lib/api";
 import AuthGuard from "@/components/AuthGuard";
+import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
 function ProjectPageContent() {
   const params = useParams();
@@ -33,7 +34,9 @@ function ProjectPageContent() {
   }, [projectId]);
 
   return (
-    <div className="container stack">
+    <>
+      <UnifiedNavbar variant="app" />
+      <div className="container stack" style={{ paddingTop: "80px" }}>
       {/* Quota Error Modal */}
       {quotaErrorModal.show && (
         <div
@@ -174,7 +177,8 @@ function ProjectPageContent() {
           </div>
         ))}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

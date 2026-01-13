@@ -24,6 +24,7 @@ import dynamic from "next/dynamic";
 import MetricCard from "@/components/MetricCard";
 import ProgressSteps from "@/components/ProgressSteps";
 import AuthGuard from "@/components/AuthGuard";
+import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
 const MapModal = dynamic(() => import("@/components/MapModal"), { ssr: false });
 
@@ -1233,9 +1234,11 @@ function RunPageContent() {
   ];
 
   return (
-    <div className="container stack">
-      {/* Header */}
-      <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
+    <>
+      <UnifiedNavbar variant="app" />
+      <div className="container stack" style={{ paddingTop: "80px" }}>
+        {/* Header */}
+        <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
         <div>
           <h1 style={{ margin: 0, marginBottom: "4px" }} className="text-gradient">
             Run {runId}
@@ -2057,7 +2060,8 @@ function RunPageContent() {
       )}
 
       {showMap && <MapModal projectId={projectId} runId={runId} onClose={() => setShowMap(false)} />}
-    </div>
+      </div>
+    </>
   );
 }
 

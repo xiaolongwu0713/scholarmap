@@ -15,6 +15,7 @@ import {
 import { getUser, removeToken, isSuperUser } from "@/lib/auth";
 import AuthGuard from "@/components/AuthGuard";
 import QuotaDisplay from "@/components/QuotaDisplay";
+import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
 function ProjectsPageContent() {
   const router = useRouter();
@@ -109,25 +110,17 @@ function ProjectsPageContent() {
   }
 
   return (
-    <div className="container stack">
-      <div className="card">
-        <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+    <>
+      <UnifiedNavbar variant="app" />
+      <div className="container stack" style={{ paddingTop: "80px" }}>
+        <div className="card">
           <div>
-            <h1 style={{ margin: 0 }}>ScholarMap</h1>
+            <h1 style={{ margin: 0 }}>My Projects</h1>
             <p className="muted" style={{ margin: "0.5rem 0 0 0" }}>
               Create a project, then run searches from a research description.
             </p>
           </div>
-          <div className="stack" style={{ gap: "0.5rem", alignItems: "flex-end" }}>
-            {user && (
-              <div style={{ fontSize: "0.9rem", color: "var(--muted)" }}>{user.email}</div>
-            )}
-            <button onClick={handleLogout} className="secondary" style={{ fontSize: "0.9rem" }}>
-              Logout
-            </button>
-          </div>
         </div>
-      </div>
 
       {/* Quota Error Modal */}
       {quotaErrorModal.show && (
@@ -286,7 +279,8 @@ function ProjectsPageContent() {
           )}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 

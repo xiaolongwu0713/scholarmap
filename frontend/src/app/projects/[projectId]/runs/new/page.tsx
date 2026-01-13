@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createRun, textValidate } from "@/lib/api";
+import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
 function validateClientInput(text: string): string[] {
   const s = text ?? "";
@@ -75,9 +76,11 @@ export default function NewRunPage() {
   }
 
   return (
-    <div className="container stack">
-      <div className="row" style={{ justifyContent: "space-between" }}>
-        <h1 style={{ margin: 0 }}>New Run</h1>
+    <>
+      <UnifiedNavbar variant="app" />
+      <div className="container stack" style={{ paddingTop: "80px" }}>
+        <div className="row" style={{ justifyContent: "space-between" }}>
+          <h1 style={{ margin: 0 }}>New Run</h1>
         <Link href={`/projects/${projectId}`}>
           <button className="secondary">Back</button>
         </Link>
@@ -136,7 +139,8 @@ export default function NewRunPage() {
         </div>
         {error ? <div style={{ color: "#dc2626", fontSize: 14 }}>Error: {error}</div> : null}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

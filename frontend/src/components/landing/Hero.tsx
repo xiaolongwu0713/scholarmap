@@ -29,19 +29,25 @@ export function Hero() {
           <span>AI-Powered Research Mapping</span>
         </div>
 
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <h1 className="text-5xl md:text-7xl font-bold mb-12 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
           Discover Global Research
           <br />
           Distribution in 3D
         </h1>
 
-        <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
-          Visualize the global distribution of scholars and research papers on an
-          interactive 3D map. Powered by advanced LLM technology to understand
-          your research queries and map academic networks worldwide.
-        </p>
+        {/* Hero Image/Visual */}
+        <div className="relative max-w-5xl mx-auto mb-8">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+            <img
+              src="/landing_page_figures/0.png"
+              alt="Global research network visualization"
+              className="w-full h-auto"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+          </div>
+        </div>
 
-        <div style={{ display: "flex", flexDirection: "row", gap: "16px", justifyContent: "center", alignItems: "center", marginBottom: "4rem" }}>
+        <div style={{ display: "flex", flexDirection: "row", gap: "16px", justifyContent: "center", alignItems: "center" }}>
           <Link href="/auth/register">
             <button
               className="group"
@@ -79,18 +85,6 @@ export function Hero() {
           >
             Watch Demo
           </button>
-        </div>
-
-        {/* Hero Image/Visual */}
-        <div className="relative max-w-5xl mx-auto">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
-            <img
-              src="/landing_page_figures/0.png"
-              alt="Global research network visualization"
-              className="w-full h-auto"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
-          </div>
         </div>
       </div>
     </section>

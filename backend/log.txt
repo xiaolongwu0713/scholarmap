@@ -6053,3 +6053,15 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-13 12:17:27 - root - INFO - Logging initialized - output to console and log.txt
 2026-01-13 12:17:27 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
 2026-01-13 12:17:27 - root - INFO - ================================================================================
+2026-01-13 09:01:59 - root - INFO - ================================================================================
+2026-01-13 09:01:59 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 09:01:59 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-13 09:01:59 - root - INFO - ================================================================================
+2026-01-13 12:25:09 - root - INFO - ================================================================================
+2026-01-13 12:25:09 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 12:25:09 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-13 12:25:09 - root - INFO - ================================================================================
+2026-01-13 12:48:36 - root - INFO - ================================================================================
+2026-01-13 12:48:36 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-13 12:48:36 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-13 12:48:36 - root - INFO - ================================================================================
