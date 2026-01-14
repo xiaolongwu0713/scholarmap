@@ -10,35 +10,35 @@ export function HowItWorks() {
     {
       image: "/landing_page_figures/1.png",
       title: "Step 1",
-      description: "Define your research by iteratively chatting with the system.",
+      description: "Step 1: Define your research by iteratively chatting with the system.",
       accent: "#60a5fa",
       accentShadow: "rgba(96, 165, 250, 0.35)"
     },
     {
       image: "/landing_page_figures/2.png",
       title: "Step 2",
-      description: "Review the generated retrieval framework and tell the system what to change.",
+      description: "Step 2: Review the generated retrieval framework and tell the system what to change.",
       accent: "#34d399",
       accentShadow: "rgba(52, 211, 153, 0.35)"
     },
     {
       image: "/landing_page_figures/3.png",
       title: "Step 3",
-      description: "Validate the final database queries the system prepares for each source (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
+      description: "Step 3: Validate the final database queries the system prepares for each source (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
       accent: "#a78bfa",
       accentShadow: "rgba(84, 36, 229, 0.35)"
     },
     {
       image: "/landing_page_figures/4.png",
       title: "Step 4",
-      description: "Execute the search and inspect the retrieved papers across databases (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
+      description: "Step 4: Execute the search and inspect the retrieved papers across databases (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
       accent: "#fbbf24",
       accentShadow: "rgba(251, 191, 36, 0.35)"
     },
     {
       image: "/landing_page_figures/5.png",
       title: "Step 5",
-      description: "Process and aggregate author by institution/city/country.",
+      description: "Step 5: Process and aggregate author by institution/city/country.",
       accent: "#f472b6",
       accentShadow: "rgba(244, 114, 182, 0.35)"
     }
@@ -48,28 +48,28 @@ export function HowItWorks() {
     {
       image: "/landing_page_figures/6.png",
       title: "Extract",
-      description: "Country distribution of scholars.",
+      description: "Step 1: Country distribution of scholars.",
       accent: "#38bdf8",
       accentShadow: "rgba(56, 189, 248, 0.35)"
     },
     {
       image: "/landing_page_figures/7.png",
       title: "Geocode",
-      description: "City distribution of scholars.",
+      description: "Step 2: City distribution of scholars.",
       accent: "#4ade80",
       accentShadow: "rgba(74, 222, 128, 0.35)"
     },
     {
       image: "/landing_page_figures/8.png",
       title: "Aggregate",
-      description: "Institution distribution of scholars.",
+      description: "Step 3: Institution distribution of scholars.",
       accent: "#f59e0b",
       accentShadow: "rgba(245, 158, 11, 0.35)"
     },
     {
       image: "/landing_page_figures/9.png",
       title: "Visualize",
-      description: "List all scholars from one particular institution of interest.",
+      description: "Step 4: List all scholars from one particular institution of interest.",
       accent: "#fb7185",
       accentShadow: "rgba(251, 113, 133, 0.35)"
     }
@@ -296,7 +296,7 @@ export function HowItWorks() {
             {/* Caption */}
             <div style={{
               position: "absolute",
-              bottom: "10px",
+              bottom: "-40px",
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 100,
@@ -306,7 +306,7 @@ export function HowItWorks() {
               <div style={{
                 backgroundColor: "white",
                 borderRadius: "999px",
-                border: "1px solid #bfdbfe",
+                border: "2px solid #bfdbfe",
                 padding: "14px 24px",
                 fontSize: "1.25rem",
                 fontWeight: "700",
@@ -513,7 +513,7 @@ export function HowItWorks() {
             {/* Caption */}
             <div style={{
               position: "absolute",
-              bottom: "10px",
+              bottom: "-30px",
               left: "50%",
               transform: "translateX(-50%)",
               zIndex: 100,
@@ -523,7 +523,7 @@ export function HowItWorks() {
               <div style={{
                 backgroundColor: "white",
                 borderRadius: "999px",
-                border: "1px solid #bfdbfe",
+                border: "2px solid #bfdbfe",
                 padding: "14px 24px",
                 fontSize: "1.25rem",
                 fontWeight: "700",

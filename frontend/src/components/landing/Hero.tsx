@@ -24,9 +24,7 @@ export function Hero() {
       key: "hero",
       heading: (
         <h1 className="text-5xl md:text-7xl font-bold mb-12 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-          Display Your Research Distribution
-          <br />
-          On 3D Global Map
+          Let research lead you to your dream country, city, and institution.
         </h1>
       ),
       image: (
@@ -56,7 +54,7 @@ export function Hero() {
             backgroundClip: "text"
           }}
         >
-          Discover global research opportunities—mapped by field, city, and institution, all in one place.
+          Discover global research opportunities—grouped by country, city, and institution.
         </h2>
       ),
       image: (
