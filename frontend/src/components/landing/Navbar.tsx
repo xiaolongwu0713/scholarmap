@@ -49,14 +49,6 @@ export function Navbar() {
               What It Is
             </a>
             <a
-              href="#features"
-              style={linkStyle("features")}
-              onMouseEnter={() => setHoveredLink("features")}
-              onMouseLeave={() => setHoveredLink(null)}
-            >
-              Features
-            </a>
-            <a
               href="#how-it-works"
               style={linkStyle("how-it-works")}
               onMouseEnter={() => setHoveredLink("how-it-works")}
@@ -87,4 +79,3 @@ export function Navbar() {
     </nav>
   );
 }
-

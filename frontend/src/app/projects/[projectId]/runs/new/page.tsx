@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { createRun, textValidate } from "@/lib/api";
+import { createRun, textValidate, getUserQuota } from "@/lib/api";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
 function validateClientInput(text: string): string[] {
@@ -24,6 +24,7 @@ function validateClientInput(text: string): string[] {
   if (/\b(wechat|weixin|wxid|vx)\b/i.test(s)) issues.push("no wechat");
   if (/[^\x00-\x7F]/.test(s)) issues.push("ASCII only");
   if (!/[A-Za-z]/.test(s)) issues.push("must contain letters");
+  if (/[^A-Za-z0-9 _\-\n]/.test(s)) issues.push("letters/numbers/spaces/-/_ only");
   if (/\d{6,}/.test(s)) issues.push("no long number strings");
   if (/(.)\1{5,}/i.test(s)) issues.push("no repeated chars");
   if (/[A-Za-z]{25,}/.test(s)) issues.push("no long letter strings");
@@ -69,7 +70,25 @@ export default function NewRunPage() {
       const run = await createRun(projectId, trimmed);
       router.push(`/projects/${projectId}/runs/${run.run_id}`);
     } catch (e) {
-      setError(String(e));
+      const errorMessage = String(e);
+      if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
+        let displayMessage = "You can only create a limited number of projects and runs per project. Upgrade to increase your quota.";
+        try {
+          const quota = await getUserQuota();
+          const projectsLimit = quota.quotas.max_projects.unlimited || quota.quotas.max_projects.limit === -1
+            ? "Unlimited"
+            : quota.quotas.max_projects.limit.toString();
+          const runsLimit = quota.quotas.max_runs_per_project.unlimited || quota.quotas.max_runs_per_project.limit === -1
+            ? "Unlimited"
+            : quota.quotas.max_runs_per_project.limit.toString();
+          displayMessage = `You can only create ${projectsLimit} projects, and ${runsLimit} runs per project. Upgrade to increase your quota.`;
+        } catch {
+          // Keep fallback message if quota lookup fails.
+        }
+        setError(displayMessage);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setBusy(false);
     }
@@ -143,4 +162,3 @@ export default function NewRunPage() {
     </>
   );
 }
-

@@ -80,14 +80,6 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   What It Is
                 </a>
                 <a
-                  href="#features"
-                  style={linkStyle("features")}
-                  onMouseEnter={() => setHoveredLink("features")}
-                  onMouseLeave={() => setHoveredLink(null)}
-                >
-                  Features
-                </a>
-                <a
                   href="#how-it-works"
                   style={linkStyle("how-it-works")}
                   onMouseEnter={() => setHoveredLink("how-it-works")}
@@ -104,18 +96,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   Contact
                 </a>
               </>
-            ) : (
-              <>
-                <Link
-                  href="/projects"
-                  style={linkStyle("projects")}
-                  onMouseEnter={() => setHoveredLink("projects")}
-                  onMouseLeave={() => setHoveredLink(null)}
-                >
-                  Projects
-                </Link>
-              </>
-            )}
+            ) : null}
           </div>
 
           {/* Right side: Sign In button or User Menu */}
@@ -143,22 +124,22 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                     gap: "8px",
                     padding: "8px 16px",
                     borderRadius: "8px",
-                    border: "1px solid #e5e7eb",
-                    backgroundColor: showUserMenu ? "#eff6ff" : "white",
+                    border: "1px solid #e2e8f0",
+                    background: showUserMenu ? "#dfe7fb" : "#e6efff",
                     cursor: "pointer",
                     transition: "all 0.2s ease",
                     fontSize: "14px",
                     fontWeight: "500",
-                    color: "#374151"
+                    color: "#475569"
                   }}
                   onMouseEnter={(e) => {
                     if (!showUserMenu) {
-                      e.currentTarget.style.backgroundColor = "#f9fafb";
+                      e.currentTarget.style.background = "#d9e3fb";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!showUserMenu) {
-                      e.currentTarget.style.backgroundColor = "white";
+                      e.currentTarget.style.background = "#e6efff";
                     }
                   }}
                 >
@@ -167,11 +148,11 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                       width: "32px",
                       height: "32px",
                       borderRadius: "50%",
-                      backgroundColor: "#dbeafe",
+                      backgroundColor: "#e8f0ff",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "#2563eb",
+                      color: "#3b82f6",
                       fontSize: "14px",
                       fontWeight: "600"
                     }}
@@ -290,4 +271,3 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
     </nav>
   );
 }
-

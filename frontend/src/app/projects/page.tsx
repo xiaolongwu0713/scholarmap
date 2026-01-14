@@ -9,6 +9,7 @@ import {
   type Project,
   takeResourceSnapshot,
   getOnlineUsers,
+  getUserQuota,
   type ResourceSnapshot,
   type OnlineUsersResponse,
 } from "@/lib/api";
@@ -52,10 +53,25 @@ function ProjectsPageContent() {
     refresh().catch((e) => setError(String(e)));
   }, []);
 
+  function validateProjectName(text: string): string[] {
+    const trimmed = text.trim();
+    const issues: string[] = [];
+
+    if (!trimmed) issues.push("required");
+    if (trimmed.length < 3 || trimmed.length > 50) issues.push("3–50 chars");
+    if (/[^A-Za-z0-9 _-]/.test(trimmed)) issues.push("letters/numbers/spaces/-/_ only");
+
+    return issues;
+  }
+
   async function onCreate() {
     setError(null);
     const trimmed = name.trim();
-    if (!trimmed) return;
+    const nameIssues = validateProjectName(trimmed);
+    if (nameIssues.length > 0) {
+      setError(`Invalid project name: ${nameIssues.join(", ")}`);
+      return;
+    }
     
     try {
       await createProject(trimmed);
@@ -65,9 +81,19 @@ function ProjectsPageContent() {
       const errorMessage = String(e);
       // Check if it's a quota error (403 with quota-related message)
       if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
-        // Extract the error message
-        const messageMatch = errorMessage.match(/:\s*(.+?)(?:\s*$|$)/);
-        const displayMessage = messageMatch ? messageMatch[1] : "You have reached the maximum number of projects allowed for your account.";
+        let displayMessage = "You can only create a limited number of projects and runs per project. Upgrade to increase your quota.";
+        try {
+          const quota = await getUserQuota();
+          const projectsLimit = quota.quotas.max_projects.unlimited || quota.quotas.max_projects.limit === -1
+            ? "Unlimited"
+            : quota.quotas.max_projects.limit.toString();
+          const runsLimit = quota.quotas.max_runs_per_project.unlimited || quota.quotas.max_runs_per_project.limit === -1
+            ? "Unlimited"
+            : quota.quotas.max_runs_per_project.limit.toString();
+          displayMessage = `You can only create ${projectsLimit} projects, and ${runsLimit} runs per project. Upgrade to increase your quota.`;
+        } catch {
+          // Keep fallback message if quota lookup fails.
+        }
         setQuotaErrorModal({ show: true, message: displayMessage });
       } else {
         setError(errorMessage);
@@ -113,14 +139,6 @@ function ProjectsPageContent() {
     <>
       <UnifiedNavbar variant="app" />
       <div className="container stack" style={{ paddingTop: "80px" }}>
-        <div className="card">
-          <div>
-            <h1 style={{ margin: 0 }}>My Projects</h1>
-            <p className="muted" style={{ margin: "0.5rem 0 0 0" }}>
-              Create a project, then run searches from a research description.
-            </p>
-          </div>
-        </div>
 
       {/* Quota Error Modal */}
       {quotaErrorModal.show && (
@@ -172,17 +190,61 @@ function ProjectsPageContent() {
         </div>
       )}
 
-      {/* User Quota Display (non-super users) */}
-      {!isSuper && <QuotaDisplay />}
+      <div
+        className="row"
+        style={{
+          gap: "1.5rem",
+          flexWrap: "wrap",
+          alignItems: "stretch"
+        }}
+      >
+        <div className="card" style={{ flex: "1 1 420px", maxWidth: "640px" }}>
+          <div>
+            <h1 style={{ margin: 0 }}>My Projects</h1>
+            <p className="muted" style={{ margin: "0.5rem 0 0 0" }}>
+              Create a project, then run searches from a research description.
+            </p>
+          </div>
+        </div>
+
+        {!isSuper && (
+          <div style={{ flex: "1 1 320px", maxWidth: "460px" }}>
+            <QuotaDisplay />
+          </div>
+        )}
+      </div>
 
       <div className="card stack">
         <div className="row">
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Project name"
-          />
-          <button onClick={onCreate}>Create</button>
+          <div style={{ position: "relative", flex: 1 }}>
+            {validateProjectName(name).length > 0 && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 8,
+                  right: 10,
+                  zIndex: 1,
+                  fontSize: 12,
+                  color: "#b91c1c",
+                  background: "#fee2e2",
+                  border: "1px solid #fecaca",
+                  borderRadius: 999,
+                  padding: "2px 8px"
+                }}
+              >
+                {validateProjectName(name).join(" · ")}
+              </div>
+            )}
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Project name"
+              maxLength={50}
+            />
+          </div>
+          <button onClick={onCreate} disabled={validateProjectName(name).length > 0}>
+            Create
+          </button>
         </div>
         {error ? <div className="muted">Error: {error}</div> : null}
       </div>
@@ -291,4 +353,3 @@ export default function ProjectsPage() {
     </AuthGuard>
   );
 }
-

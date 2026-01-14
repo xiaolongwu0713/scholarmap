@@ -10,27 +10,37 @@ export function HowItWorks() {
     {
       image: "/landing_page_figures/1.png",
       title: "Step 1",
-      description: "Describe your research"
+      description: "Define your research by iteratively chatting with the system.",
+      accent: "#60a5fa",
+      accentShadow: "rgba(96, 165, 250, 0.35)"
     },
     {
       image: "/landing_page_figures/2.png",
       title: "Step 2",
-      description: "AI understands your query"
+      description: "Review the generated retrieval framework and tell the system what to change.",
+      accent: "#34d399",
+      accentShadow: "rgba(52, 211, 153, 0.35)"
     },
     {
       image: "/landing_page_figures/3.png",
       title: "Step 3",
-      description: "Build retrieval framework"
+      description: "Validate the final database queries the system prepares for each source (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
+      accent: "#a78bfa",
+      accentShadow: "rgba(84, 36, 229, 0.35)"
     },
     {
       image: "/landing_page_figures/4.png",
       title: "Step 4",
-      description: "Generate database queries"
+      description: "Execute the search and inspect the retrieved papers across databases (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
+      accent: "#fbbf24",
+      accentShadow: "rgba(251, 191, 36, 0.35)"
     },
     {
       image: "/landing_page_figures/5.png",
       title: "Step 5",
-      description: "Execute and retrieve papers"
+      description: "Process and aggregate author by institution/city/country.",
+      accent: "#f472b6",
+      accentShadow: "rgba(244, 114, 182, 0.35)"
     }
   ];
 
@@ -38,22 +48,30 @@ export function HowItWorks() {
     {
       image: "/landing_page_figures/6.png",
       title: "Extract",
-      description: "Extract author affiliations"
+      description: "Country distribution of scholars.",
+      accent: "#38bdf8",
+      accentShadow: "rgba(56, 189, 248, 0.35)"
     },
     {
       image: "/landing_page_figures/7.png",
       title: "Geocode",
-      description: "Convert to coordinates"
+      description: "City distribution of scholars.",
+      accent: "#4ade80",
+      accentShadow: "rgba(74, 222, 128, 0.35)"
     },
     {
       image: "/landing_page_figures/8.png",
       title: "Aggregate",
-      description: "Aggregate by location"
+      description: "Institution distribution of scholars.",
+      accent: "#f59e0b",
+      accentShadow: "rgba(245, 158, 11, 0.35)"
     },
     {
       image: "/landing_page_figures/9.png",
       title: "Visualize",
-      description: "Explore on 3D globe"
+      description: "List all scholars from one particular institution of interest.",
+      accent: "#fb7185",
+      accentShadow: "rgba(251, 113, 133, 0.35)"
     }
   ];
 
@@ -133,32 +151,34 @@ export function HowItWorks() {
                 position: "absolute",
                 left: "20px",
                 zIndex: 100,
-                width: "60px",
-                height: "60px",
-                backgroundColor: "white",
-                borderRadius: "50%",
-                border: "3px solid #e5e7eb",
+                width: "64px",
+                height: "64px",
+                backgroundColor: "transparent",
+                background: "transparent",
+                borderRadius: "0",
+                border: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                boxShadow: "none",
+                padding: 0,
+                lineHeight: 0,
+                appearance: "none",
                 transition: "all 0.2s",
-                color: "#3b82f6"
+                color: "#f97316"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#3b82f6";
-                e.currentTarget.style.borderColor = "#3b82f6";
-                e.currentTarget.style.color = "white";
+                e.currentTarget.style.transform = "scale(1.05)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.borderColor = "#e5e7eb";
-                e.currentTarget.style.color = "#3b82f6";
+                e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="#f97316" viewBox="0 0 32 32" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M22 6l-10 10 10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M28 6l-10 10 10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 6l-10 10 10 10" />
               </svg>
             </button>
 
@@ -217,8 +237,8 @@ export function HowItWorks() {
                       backgroundColor: "white",
                       borderRadius: "1rem",
                       overflow: "hidden",
-                      boxShadow: isActive ? "0 20px 25px -5px rgba(0, 0, 0, 0.2)" : "0 4px 6px rgba(0,0,0,0.1)",
-                      border: "1px solid #e5e7eb"
+                      boxShadow: isActive ? `0 20px 30px -12px ${card.accentShadow}` : `0 10px 16px -14px ${card.accentShadow}`,
+                      border: `1px solid ${card.accent}`
                     }}>
                       <img
                         src={card.image}
@@ -242,60 +262,60 @@ export function HowItWorks() {
                 position: "absolute",
                 right: "20px",
                 zIndex: 100,
-                width: "60px",
-                height: "60px",
-                backgroundColor: "white",
-                borderRadius: "50%",
-                border: "3px solid #e5e7eb",
+                width: "64px",
+                height: "64px",
+                backgroundColor: "transparent",
+                background: "transparent",
+                borderRadius: "0",
+                border: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                boxShadow: "none",
+                padding: 0,
+                lineHeight: 0,
+                appearance: "none",
                 transition: "all 0.2s",
-                color: "#3b82f6"
+                color: "#f97316"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#3b82f6";
-                e.currentTarget.style.borderColor = "#3b82f6";
-                e.currentTarget.style.color = "white";
+                e.currentTarget.style.transform = "scale(1.05)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.borderColor = "#e5e7eb";
-                e.currentTarget.style.color = "#3b82f6";
+                e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="#f97316" viewBox="0 0 32 32" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6l10 10-10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6l10 10-10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 6l10 10-10 10" />
               </svg>
             </button>
 
-            {/* Indicators */}
+            {/* Caption */}
             <div style={{
               position: "absolute",
-              bottom: "20px",
+              bottom: "10px",
               left: "50%",
               transform: "translateX(-50%)",
-              display: "flex",
-              gap: "8px",
-              zIndex: 100
+              zIndex: 100,
+              width: "calc(100% - 220px)",
+              maxWidth: "780px"
             }}>
-              {phase1Cards.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActivePhase1Index(index)}
-                  style={{
-                    width: index === activePhase1Index ? "32px" : "8px",
-                    height: "8px",
-                    borderRadius: "4px",
-                    backgroundColor: index === activePhase1Index ? "#3b82f6" : "#d1d5db",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "all 0.3s"
-                  }}
-                />
-              ))}
+              <div style={{
+                backgroundColor: "white",
+                borderRadius: "999px",
+                border: "1px solid #bfdbfe",
+                padding: "14px 24px",
+                fontSize: "1.25rem",
+                fontWeight: "700",
+                color: "#940ce3",
+                textAlign: "center",
+                boxShadow: "0 6px 12px rgba(0,0,0,0.08)"
+              }}>
+                {phase1Cards[activePhase1Index].description}
+              </div>
             </div>
           </div>
         </div>
@@ -348,32 +368,34 @@ export function HowItWorks() {
                 position: "absolute",
                 left: "20px",
                 zIndex: 100,
-                width: "60px",
-                height: "60px",
-                backgroundColor: "white",
-                borderRadius: "50%",
-                border: "3px solid #e5e7eb",
+                width: "64px",
+                height: "64px",
+                backgroundColor: "transparent",
+                background: "transparent",
+                borderRadius: "0",
+                border: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                boxShadow: "none",
+                padding: 0,
+                lineHeight: 0,
+                appearance: "none",
                 transition: "all 0.2s",
-                color: "#3b82f6"
+                color: "#f97316"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#3b82f6";
-                e.currentTarget.style.borderColor = "#3b82f6";
-                e.currentTarget.style.color = "white";
+                e.currentTarget.style.transform = "scale(1.05)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.borderColor = "#e5e7eb";
-                e.currentTarget.style.color = "#3b82f6";
+                e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="#f97316" viewBox="0 0 32 32" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M22 6l-10 10 10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M28 6l-10 10 10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 6l-10 10 10 10" />
               </svg>
             </button>
 
@@ -432,8 +454,8 @@ export function HowItWorks() {
                       backgroundColor: "white",
                       borderRadius: "1rem",
                       overflow: "hidden",
-                      boxShadow: isActive ? "0 20px 25px -5px rgba(0, 0, 0, 0.2)" : "0 4px 6px rgba(0,0,0,0.1)",
-                      border: "1px solid #e5e7eb"
+                      boxShadow: isActive ? `0 20px 30px -12px ${card.accentShadow}` : `0 10px 16px -14px ${card.accentShadow}`,
+                      border: `1px solid ${card.accent}`
                     }}>
                       <img
                         src={card.image}
@@ -457,60 +479,60 @@ export function HowItWorks() {
                 position: "absolute",
                 right: "20px",
                 zIndex: 100,
-                width: "60px",
-                height: "60px",
-                backgroundColor: "white",
-                borderRadius: "50%",
-                border: "3px solid #e5e7eb",
+                width: "64px",
+                height: "64px",
+                backgroundColor: "transparent",
+                background: "transparent",
+                borderRadius: "0",
+                border: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                boxShadow: "none",
+                padding: 0,
+                lineHeight: 0,
+                appearance: "none",
                 transition: "all 0.2s",
-                color: "#3b82f6"
+                color: "#f97316"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#3b82f6";
-                e.currentTarget.style.borderColor = "#3b82f6";
-                e.currentTarget.style.color = "white";
+                e.currentTarget.style.transform = "scale(1.05)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.borderColor = "#e5e7eb";
-                e.currentTarget.style.color = "#3b82f6";
+                e.currentTarget.style.transform = "scale(1)";
               }}
             >
-              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="#f97316" viewBox="0 0 32 32" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6l10 10-10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6l10 10-10 10" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 6l10 10-10 10" />
               </svg>
             </button>
 
-            {/* Indicators */}
+            {/* Caption */}
             <div style={{
               position: "absolute",
-              bottom: "20px",
+              bottom: "10px",
               left: "50%",
               transform: "translateX(-50%)",
-              display: "flex",
-              gap: "8px",
-              zIndex: 100
+              zIndex: 100,
+              width: "calc(100% - 220px)",
+              maxWidth: "780px"
             }}>
-              {phase2Cards.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setActivePhase2Index(index)}
-                  style={{
-                    width: index === activePhase2Index ? "32px" : "8px",
-                    height: "8px",
-                    borderRadius: "4px",
-                    backgroundColor: index === activePhase2Index ? "#3b82f6" : "#d1d5db",
-                    border: "none",
-                    cursor: "pointer",
-                    transition: "all 0.3s"
-                  }}
-                />
-              ))}
+              <div style={{
+                backgroundColor: "white",
+                borderRadius: "999px",
+                border: "1px solid #bfdbfe",
+                padding: "14px 24px",
+                fontSize: "1.25rem",
+                fontWeight: "700",
+                color: "#940ce3",
+                textAlign: "center",
+                boxShadow: "0 6px 12px rgba(0,0,0,0.08)"
+              }}>
+                {phase2Cards[activePhase2Index].description}
+              </div>
             </div>
           </div>
         </div>
@@ -518,4 +540,3 @@ export function HowItWorks() {
     </section>
   );
 }
-

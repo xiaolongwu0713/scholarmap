@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { getProject, createRun, deleteRun, type Run } from "@/lib/api";
+import { getProject, createRun, deleteRun, getUserQuota, type Run } from "@/lib/api";
 import AuthGuard from "@/components/AuthGuard";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
@@ -92,8 +92,8 @@ function ProjectPageContent() {
           <h1 style={{ margin: 0 }}>{projectName || "Project"}</h1>
           <div className="muted">{projectId}</div>
         </div>
-        <Link href="/">
-          <button className="secondary">Back</button>
+        <Link href="/projects">
+          <button className="secondary">Back to Profile</button>
         </Link>
       </div>
 
@@ -112,9 +112,19 @@ function ProjectPageContent() {
               const errorMessage = String(e);
               // Check if it's a quota error (403 with quota-related message)
               if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
-                // Extract the error message
-                const messageMatch = errorMessage.match(/:\s*(.+?)(?:\s*$|$)/);
-                const displayMessage = messageMatch ? messageMatch[1] : "You have reached the maximum number of runs allowed for this project.";
+                let displayMessage = "You can only create a limited number of projects and runs per project. Upgrade to increase your quota.";
+                try {
+                  const quota = await getUserQuota();
+                  const projectsLimit = quota.quotas.max_projects.unlimited || quota.quotas.max_projects.limit === -1
+                    ? "Unlimited"
+                    : quota.quotas.max_projects.limit.toString();
+                  const runsLimit = quota.quotas.max_runs_per_project.unlimited || quota.quotas.max_runs_per_project.limit === -1
+                    ? "Unlimited"
+                    : quota.quotas.max_runs_per_project.limit.toString();
+                  displayMessage = `You can only create ${projectsLimit} projects, and ${runsLimit} runs per project. Upgrade to increase your quota.`;
+                } catch {
+                  // Keep fallback message if quota lookup fails.
+                }
                 setQuotaErrorModal({ show: true, message: displayMessage });
               } else {
                 setError(errorMessage);

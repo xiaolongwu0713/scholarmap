@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -333,6 +333,7 @@ function RunPageContent() {
   const params = useParams();
   const projectId = params.projectId as string;
   const runId = params.runId as string;
+  const isDemoRun = projectId === "6af7ac1b6254" && runId === "53e099cdb74e";
 
   // Load configuration from backend (with fallback defaults)
   const [config, setConfig] = useState<FrontendConfig>({
@@ -353,6 +354,17 @@ function RunPageContent() {
   const [ingestStats, setIngestStats] = useState<IngestStats | null>(null);
   const [ingestionCompleted, setIngestionCompleted] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const showDemoLoading = isDemoRun && !ingestStats;
+  const [showDemoReadyModal, setShowDemoReadyModal] = useState(false);
+  const hasShownDemoReady = useRef(false);
+
+  useEffect(() => {
+    if (!isDemoRun) return;
+    if (ingestStats && !hasShownDemoReady.current) {
+      hasShownDemoReady.current = true;
+      setShowDemoReadyModal(true);
+    }
+  }, [ingestStats, isDemoRun]);
 
   const [researchDescription, setResearchDescription] = useState("");
   const [textValidateMode, setTextValidateMode] = useState(false);
@@ -1245,9 +1257,11 @@ function RunPageContent() {
           </h1>
           <div className="muted">Scholar paper retrieval and analysis pipeline</div>
         </div>
-        <Link href={`/projects/${projectId}`}>
-          <button className="secondary">← Back to Project</button>
-        </Link>
+        {!isDemoRun && (
+          <Link href={`/projects/${projectId}`}>
+            <button className="secondary">← Back to Project</button>
+          </Link>
+        )}
       </div>
 
       {/* Progress Steps */}
@@ -1309,6 +1323,101 @@ function RunPageContent() {
               <button
                 className="primary"
                 onClick={() => setValidationErrorModal({ show: false, message: "" })}
+                style={{ padding: "8px 16px", fontSize: "14px" }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDemoLoading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(15, 23, 42, 0.45)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1100
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "28px 32px",
+              maxWidth: "520px",
+              width: "90%",
+              boxShadow: "0 16px 40px rgba(0, 0, 0, 0.2)",
+              border: "1px solid #e5e7eb",
+              textAlign: "center"
+            }}
+          >
+            <div
+              style={{
+                width: "44px",
+                height: "44px",
+                borderRadius: "50%",
+                border: "4px solid #c7d2fe",
+                borderTopColor: "#6366f1",
+                margin: "0 auto 16px",
+                animation: "spin 0.9s linear infinite"
+              }}
+            />
+            <h3 style={{ margin: 0, marginBottom: "8px", color: "#111827", fontSize: "20px" }}>
+              Loading demo data…
+            </h3>
+            <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.5" }}>
+              Please wait while we prepare the run. This will complete when the “Open Interactive Map” button becomes available.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDemoReadyModal && !showDemoLoading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(15, 23, 42, 0.35)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1100
+          }}
+          onClick={() => setShowDemoReadyModal(false)}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "24px",
+              maxWidth: "540px",
+              width: "90%",
+              boxShadow: "0 16px 40px rgba(0, 0, 0, 0.2)",
+              border: "1px solid #e5e7eb"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ margin: 0, marginBottom: "8px", color: "#111827", fontSize: "20px" }}>
+              Demo ready
+            </h3>
+            <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.6" }}>
+              You can scroll down to the bottom and click “Open Interactive Map” to explore the global distribution of scholars.
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
+              <button
+                className="primary"
+                onClick={() => setShowDemoReadyModal(false)}
                 style={{ padding: "8px 16px", fontSize: "14px" }}
               >
                 OK
@@ -2060,6 +2169,13 @@ function RunPageContent() {
       )}
 
       {showMap && <MapModal projectId={projectId} runId={runId} onClose={() => setShowMap(false)} />}
+      <style jsx>{`
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
       </div>
     </>
   );
