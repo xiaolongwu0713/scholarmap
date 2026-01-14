@@ -96,11 +96,9 @@ export function HowItWorks() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <h2 style={{ fontSize: "3rem", fontWeight: "700", marginBottom: "1rem", color: "#111827" }}>
-            How It Works
+            How It Works (in two simple phases)
           </h2>
-          <p style={{ fontSize: "1.125rem", color: "#4b5563", maxWidth: "48rem", margin: "0 auto" }}>
-            From your research question to global visualization in two simple phases
-          </p>
+
         </div>
 
         {/* Phase 1: Carousel */}
@@ -134,10 +132,10 @@ export function HowItWorks() {
             </div>
             <div>
               <h3 style={{ fontSize: "1.875rem", fontWeight: "700", color: "#111827", margin: 0 }}>
-                Smart Query & Data Retrieval
+                Smart Paper Retrieval & Author Aggregation
               </h3>
               <p style={{ fontSize: "1rem", color: "#6b7280", margin: "0.25rem 0 0 0" }}>
-                From research description to comprehensive paper collection
+                From research understanding to geographic organization
               </p>
             </div>
           </div>
@@ -351,10 +349,10 @@ export function HowItWorks() {
             </div>
             <div>
               <h3 style={{ fontSize: "1.875rem", fontWeight: "700", color: "#111827", margin: 0 }}>
-                Geographic Analysis & Visualization
+                Browse Result
               </h3>
               <p style={{ fontSize: "1rem", color: "#6b7280", margin: "0.25rem 0 0 0" }}>
-                From paper collection to interactive global map
+                Zoom from country to city to institution.
               </p>
             </div>
           </div>
