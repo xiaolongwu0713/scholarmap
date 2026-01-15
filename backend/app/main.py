@@ -198,6 +198,7 @@ def get_frontend_config() -> dict:
         PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
         RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
     )
+    from config import settings
     
     return {
         "text_validation_max_attempts": TEXT_VALIDATION_MAX_ATTEMPTS,
@@ -205,6 +206,7 @@ def get_frontend_config() -> dict:
         "parse_stage2_max_total_attempts": PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
         "parse_stage2_max_consecutive_unhelpful": PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
         "retrieval_framework_adjust_max_attempts": RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
+        "share_run_auth_check_enabled": settings.share_run_auth_check_enabled,
     }
 
 

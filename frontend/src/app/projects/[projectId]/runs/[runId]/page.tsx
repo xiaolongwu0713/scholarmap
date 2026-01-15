@@ -81,6 +81,28 @@ type ParseResult = {
   }>;
 };
 
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  if (navigator?.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch {
+    copied = false;
+  }
+  document.body.removeChild(textarea);
+  return copied;
+}
+
 function validateClientInput(text: string): string[] {
   const s = text ?? "";
   const trimmed = s.trim();
@@ -342,6 +364,7 @@ function RunPageContent() {
     parse_stage2_max_total_attempts: 3,
     parse_stage2_max_consecutive_unhelpful: 2,
     retrieval_framework_adjust_max_attempts: 2,
+    share_run_auth_check_enabled: true,
   });
   
   const [busy, setBusy] = useState<
@@ -357,6 +380,7 @@ function RunPageContent() {
   const showDemoLoading = isDemoRun && !ingestStats;
   const [showDemoReadyModal, setShowDemoReadyModal] = useState(false);
   const hasShownDemoReady = useRef(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   useEffect(() => {
     if (!isDemoRun) return;
@@ -419,6 +443,15 @@ function RunPageContent() {
   const textValidateDraftClientIssues = validateClientInput(textValidateDraft);
   const parseAdditionalClientIssues = validateClientInput(parseAdditionalInfo);
   const frameworkAdjustClientIssues = validateFrameworkAdjustmentInput(frameworkAdjustInput);
+
+  async function handleShare() {
+    const url = `${window.location.origin}/projects/${projectId}/runs/${runId}`;
+    const copied = await copyTextToClipboard(url);
+    if (copied) {
+      setShareCopied(true);
+      window.setTimeout(() => setShareCopied(false), 1500);
+    }
+  }
 
   async function refreshFiles() {
     try {
@@ -1250,18 +1283,38 @@ function RunPageContent() {
       <UnifiedNavbar variant="app" />
       <div className="container stack" style={{ paddingTop: "80px" }}>
         {/* Header */}
-        <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
+        <div
+          className="row"
+          style={{
+            justifyContent: "space-between",
+            marginBottom: "8px",
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center"
+          }}
+        >
         <div>
           <h1 style={{ margin: 0, marginBottom: "4px" }} className="text-gradient">
             Run {runId}
           </h1>
           <div className="muted">Scholar paper retrieval and analysis pipeline</div>
         </div>
-        {!isDemoRun && (
-          <Link href={`/projects/${projectId}`}>
-            <button className="secondary">← Back to Project</button>
-          </Link>
-        )}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <button
+            className="secondary"
+            onClick={handleShare}
+            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
+          >
+            {shareCopied ? "Copied!" : "Share"}
+          </button>
+        </div>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          {!isDemoRun && (
+            <Link href={`/projects/${projectId}`}>
+              <button className="secondary">← Back to Project</button>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Progress Steps */}
@@ -2185,11 +2238,30 @@ export default function RunPage() {
   const params = useParams();
   const projectId = params.projectId as string;
   const runId = params.runId as string;
-  
+  const [shareAuthCheckEnabled, setShareAuthCheckEnabled] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    getConfig()
+      .then((cfg) => setShareAuthCheckEnabled(cfg.share_run_auth_check_enabled))
+      .catch(() => setShareAuthCheckEnabled(true));
+  }, []);
+
   // Allow public access to demo run
   const isDemoRun = projectId === "6af7ac1b6254" && runId === "53e099cdb74e";
   
   if (isDemoRun) {
+    return <RunPageContent />;
+  }
+
+  if (shareAuthCheckEnabled === null) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <div className="muted">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!shareAuthCheckEnabled) {
     return <RunPageContent />;
   }
   

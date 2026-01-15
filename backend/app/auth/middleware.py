@@ -1,6 +1,8 @@
 """Authentication middleware."""
 from __future__ import annotations
 
+import re
+
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -11,6 +13,7 @@ from app.auth.auth import decode_access_token
 from app.db.connection import db_manager
 from app.auth.repository import UserRepository
 from app.db.resource_monitor_repository import UserActivityRepository
+from config import settings
 
 
 security = HTTPBearer()
@@ -48,6 +51,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/openapi.json",
         "/redoc",
         "/health",
+        "/api/config",
         "/api/auth/register",
         "/api/auth/login",
         "/api/auth/send-verification-code",
@@ -57,6 +61,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     # Demo run that is publicly accessible (read-only)
     DEMO_PROJECT_ID = "6af7ac1b6254"
     DEMO_RUN_ID = "53e099cdb74e"
+    PUBLIC_SHARE_USER_ID = "public_share_user"
     
     async def dispatch(self, request: Request, call_next) -> Response:
         # Skip OPTIONS requests (CORS preflight)
@@ -73,6 +78,15 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.method == "GET" and self.DEMO_PROJECT_ID in path and self.DEMO_RUN_ID in path:
             # Use a special demo user ID for tracking purposes
             request.state.user_id = "demo_user"
+            return await call_next(request)
+
+        # Check if public share access is enabled for run pages (read-only)
+        if (
+            not settings.share_run_auth_check_enabled
+            and request.method == "GET"
+            and re.match(r"^/api/projects/[^/]+/runs/[^/]+(?:/|$)", path)
+        ):
+            request.state.user_id = self.PUBLIC_SHARE_USER_ID
             return await call_next(request)
         
         # Check for authentication token
@@ -109,4 +123,3 @@ class AuthMiddleware(BaseHTTPMiddleware):
             pass
         
         return await call_next(request)
-

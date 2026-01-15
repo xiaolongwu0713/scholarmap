@@ -56,6 +56,11 @@ class Settings(BaseSettings):
     # Super users can access any project and run, bypassing ownership checks
     super_user_email: str = "xiaolongwu0713@gmail.com"
     super_user_password: str = "xiaowu"
+
+    # Run sharing access control
+    # True: require login + ownership for run access
+    # False: allow public read-only access to run pages and data
+    share_run_auth_check_enabled: bool = False
     
     # ============================================================================
     # User Quotas and Limits

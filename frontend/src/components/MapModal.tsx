@@ -22,6 +22,28 @@ type Props = {
   onClose: () => void;
 };
 
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  if (navigator?.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch {
+    copied = false;
+  }
+  document.body.removeChild(textarea);
+  return copied;
+}
+
 // Country center coordinates
 const COUNTRY_COORDS: Record<string, [number, number]> = {
   "United States": [-95.7129, 37.0902],
@@ -176,6 +198,7 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
 
   // Data for each level
   const [worldData, setWorldData] = useState<WorldMapData[]>([]);
@@ -205,6 +228,15 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
   } | null>(null);
 
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
+
+  async function handleShare() {
+    const url = `${window.location.origin}/projects/${projectId}/runs/${runId}`;
+    const copied = await copyTextToClipboard(url);
+    if (copied) {
+      setShareCopied(true);
+      window.setTimeout(() => setShareCopied(false), 1500);
+    }
+  }
 
   // Load world data on mount
   useEffect(() => {
@@ -869,8 +901,8 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
             padding: "20px 24px",
             borderBottom: "2px solid #e5e7eb",
             background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
-            display: "flex",
-            justifyContent: "space-between",
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
             alignItems: "center"
           }}
         >
@@ -887,9 +919,25 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
             </h2>
             {renderBreadcrumbs()}
           </div>
-          <button className="secondary" onClick={onClose} style={{ fontSize: "15px" }}>
-            ✕ Close
-          </button>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <button
+              className="secondary"
+              onClick={handleShare}
+              style={{
+                fontSize: "15px",
+                background: "#5a0760",
+                color: "#fff",
+                borderColor: "#5a0760"
+              }}
+            >
+              {shareCopied ? "Copied!" : "Share"}
+            </button>
+          </div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <button className="secondary" onClick={onClose} style={{ fontSize: "15px" }}>
+              ✕ Close
+            </button>
+          </div>
         </div>
 
         {/* Content */}
@@ -1101,4 +1149,3 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
     </div>
   );
 }
-
