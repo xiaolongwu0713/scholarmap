@@ -1408,13 +1408,13 @@ function RunPageContent() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ margin: 0, marginBottom: "8px", color: "#111827", fontSize: "20px" }}>
+            <h3 style={{ margin: 0, marginBottom: "8px", color: "#111827", fontSize: "20px", textAlign: "center" }}>
               Demo ready
             </h3>
             <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.6" }}>
               You can scroll down to the bottom and click “Open Interactive Map” to explore the global distribution of scholars.
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "16px" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
               <button
                 className="primary"
                 onClick={() => setShowDemoReadyModal(false)}

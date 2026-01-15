@@ -48,28 +48,28 @@ export function HowItWorks() {
     {
       image: "/landing_page_figures/6.png",
       title: "Extract",
-      description: "Step 1: Country Distribution of Scholars.",
+      description: "Option 1: Country Distribution of Scholars.",
       accent: "#38bdf8",
       accentShadow: "rgba(56, 189, 248, 0.35)"
     },
     {
       image: "/landing_page_figures/7.png",
       title: "Geocode",
-      description: "Step 2: City Distribution of Scholars.",
+      description: "Option 2: City Distribution of Scholars.",
       accent: "#4ade80",
       accentShadow: "rgba(74, 222, 128, 0.35)"
     },
     {
       image: "/landing_page_figures/8.png",
       title: "Aggregate",
-      description: "Step 3: Institution Distribution of Scholars.",
+      description: "Option 3: Institution Distribution of Scholars.",
       accent: "#f59e0b",
       accentShadow: "rgba(245, 158, 11, 0.35)"
     },
     {
       image: "/landing_page_figures/9.png",
       title: "Visualize",
-      description: "Step 4: Scholars List From an Institution of Interest.",
+      description: "Option 4: Scholars List From an Institution of Interest.",
       accent: "#fb7185",
       accentShadow: "rgba(251, 113, 133, 0.35)"
     }
@@ -132,7 +132,7 @@ export function HowItWorks() {
             </div>
             <div>
               <h3 style={{ fontSize: "1.875rem", fontWeight: "700", color: "#111827", margin: 0 }}>
-                Smart Paper Retrieval & Author Aggregation
+                Smart Paper Retrieval & Author Aggregation (5 Steps)
               </h3>
               <p style={{ fontSize: "1rem", color: "#6b7280", margin: "0.25rem 0 0 0" }}>
                 From research understanding to geographic organization
@@ -349,7 +349,7 @@ export function HowItWorks() {
             </div>
             <div>
               <h3 style={{ fontSize: "1.875rem", fontWeight: "700", color: "#111827", margin: 0 }}>
-                Browse Result
+                Browse Result (4 Options)
               </h3>
               <p style={{ fontSize: "1rem", color: "#6b7280", margin: "0.25rem 0 0 0" }}>
                 Zoom from country to city to institution.

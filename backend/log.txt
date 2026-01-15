@@ -6172,3 +6172,23 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-15 11:27:41 - app.main - INFO -    Runs: 5
 2026-01-15 11:27:41 - app.main - INFO -    Total Disk: 18.66 MB
 2026-01-15 11:27:41 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:35:25 - app.main - INFO -    Min confidence: low
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:35:25 - app.main - INFO -    Min confidence: low
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:35:26 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-15 11:35:26 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 11:35:26 - app.main - INFO -    Countries returned: 52
+2026-01-15 11:35:26 - app.main - INFO - ================================================================================
+2026-01-15 11:35:26 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-15 11:35:26 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 11:35:26 - app.main - INFO -    Countries returned: 52
+2026-01-15 11:35:26 - app.main - INFO - ================================================================================
