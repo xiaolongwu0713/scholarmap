@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Suspense } from "react";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 export const metadata: Metadata = {
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
       </head>
       <body suppressHydrationWarning>
-        <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
+        <Suspense fallback={null}>
+          <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
+        </Suspense>
         {children}
       </body>
     </html>
