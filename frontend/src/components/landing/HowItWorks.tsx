@@ -10,35 +10,35 @@ export function HowItWorks() {
     {
       image: "/landing_page_figures/1.png",
       title: "Step 1",
-      description: "Step 1: Define your research by iteratively chatting with the system.",
+      description: "Step 1: Define Your Research by Chatting With the System.",
       accent: "#60a5fa",
       accentShadow: "rgba(96, 165, 250, 0.35)"
     },
     {
       image: "/landing_page_figures/2.png",
       title: "Step 2",
-      description: "Step 2: Review the generated retrieval framework and tell the system what to change.",
+      description: "Step 2: Review the Generated Retrieval Framework.",
       accent: "#34d399",
       accentShadow: "rgba(52, 211, 153, 0.35)"
     },
     {
       image: "/landing_page_figures/3.png",
       title: "Step 3",
-      description: "Step 3: Validate the final database queries the system prepares for each source (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
+      description: "Step 3: Review the Generated Database Queries (PubMed / Web of Science).",
       accent: "#a78bfa",
       accentShadow: "rgba(84, 36, 229, 0.35)"
     },
     {
       image: "/landing_page_figures/4.png",
       title: "Step 4",
-      description: "Step 4: Execute the search and inspect the retrieved papers across databases (PubMed / Semantic Scholar / OpenAlex / Web of Science).",
+      description: "Step 4: Query the Databases.",
       accent: "#fbbf24",
       accentShadow: "rgba(251, 191, 36, 0.35)"
     },
     {
       image: "/landing_page_figures/5.png",
       title: "Step 5",
-      description: "Step 5: Process and aggregate author by institution/city/country.",
+      description: "Step 5: Process and Aggregate Author by Institution/City/Country.",
       accent: "#f472b6",
       accentShadow: "rgba(244, 114, 182, 0.35)"
     }
@@ -48,28 +48,28 @@ export function HowItWorks() {
     {
       image: "/landing_page_figures/6.png",
       title: "Extract",
-      description: "Step 1: Country distribution of scholars.",
+      description: "Step 1: Country Distribution of Scholars.",
       accent: "#38bdf8",
       accentShadow: "rgba(56, 189, 248, 0.35)"
     },
     {
       image: "/landing_page_figures/7.png",
       title: "Geocode",
-      description: "Step 2: City distribution of scholars.",
+      description: "Step 2: City Distribution of Scholars.",
       accent: "#4ade80",
       accentShadow: "rgba(74, 222, 128, 0.35)"
     },
     {
       image: "/landing_page_figures/8.png",
       title: "Aggregate",
-      description: "Step 3: Institution distribution of scholars.",
+      description: "Step 3: Institution Distribution of Scholars.",
       accent: "#f59e0b",
       accentShadow: "rgba(245, 158, 11, 0.35)"
     },
     {
       image: "/landing_page_figures/9.png",
       title: "Visualize",
-      description: "Step 4: List all scholars from one particular institution of interest.",
+      description: "Step 4: Scholars List From an Institution of Interest.",
       accent: "#fb7185",
       accentShadow: "rgba(251, 113, 133, 0.35)"
     }

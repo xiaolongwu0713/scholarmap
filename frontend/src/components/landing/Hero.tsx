@@ -24,7 +24,7 @@ export function Hero() {
       key: "hero",
       heading: (
         <h1 className="text-5xl md:text-7xl font-bold mb-12 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
-          Let research lead you to your dream country, city, and institution.
+          Let Research Lead You To Your Dream Country, City, and Institution.
         </h1>
       ),
       image: (
