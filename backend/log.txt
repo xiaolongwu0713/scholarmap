@@ -6117,3 +6117,78 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-14 15:37:50 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Shanghai, China
 2026-01-14 15:37:50 - app.main - INFO -    Institutions returned: 3
 2026-01-14 15:37:50 - app.main - INFO - ================================================================================
+2026-01-15 11:15:08 - root - INFO - ================================================================================
+2026-01-15 11:15:08 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-15 11:15:08 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-15 11:15:08 - root - INFO - ================================================================================
+2026-01-15 11:19:04 - app.main - INFO - ================================================================================
+2026-01-15 11:19:04 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:19:04 - app.main - INFO -    Min confidence: low
+2026-01-15 11:19:04 - app.main - INFO - ================================================================================
+2026-01-15 11:19:04 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-15 11:19:04 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:19:04 - app.main - INFO - ================================================================================
+2026-01-15 11:19:04 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:19:04 - app.main - INFO -    Min confidence: low
+2026-01-15 11:19:04 - app.main - INFO - ================================================================================
+2026-01-15 11:19:04 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-15 11:19:04 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:19:05 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-15 11:19:05 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 11:19:05 - app.main - INFO -    Countries returned: 52
+2026-01-15 11:19:05 - app.main - INFO - ================================================================================
+2026-01-15 11:19:05 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-15 11:19:05 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 11:19:05 - app.main - INFO -    Countries returned: 52
+2026-01-15 11:19:05 - app.main - INFO - ================================================================================
+2026-01-15 11:19:09 - app.main - INFO - ================================================================================
+2026-01-15 11:19:09 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:19:09 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-15 11:19:09 - app.main - INFO - ================================================================================
+2026-01-15 11:19:09 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-15 11:19:09 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:19:09 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-15 11:19:09 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-15 11:19:09 - app.main - INFO -    Cities returned: 47
+2026-01-15 11:19:09 - app.main - INFO - ================================================================================
+2026-01-15 11:19:17 - app.main - INFO - ================================================================================
+2026-01-15 11:19:17 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:19:17 - app.main - INFO -    Country: China, City: Chengdu, Min confidence: low
+2026-01-15 11:19:17 - app.main - INFO - ================================================================================
+2026-01-15 11:19:17 - app.phase2.pg_aggregations - INFO -    Getting city map for Chengdu, China...
+2026-01-15 11:19:17 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:19:17 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 7 institutions in Chengdu, China
+2026-01-15 11:19:17 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Chengdu, China
+2026-01-15 11:19:17 - app.main - INFO -    Institutions returned: 7
+2026-01-15 11:19:17 - app.main - INFO - ================================================================================
+2026-01-15 11:27:35 - app.main - INFO - 👥 ADMIN: Fetching online user count
+2026-01-15 11:27:35 - app.main - INFO - ✅ ADMIN: Online users: 1
+2026-01-15 11:27:39 - app.main - INFO - ================================================================================
+2026-01-15 11:27:39 - app.main - INFO - 📊 ADMIN: Manual resource snapshot triggered
+2026-01-15 11:27:39 - app.main - INFO - ================================================================================
+2026-01-15 11:27:41 - app.main - INFO - ✅ ADMIN: Snapshot completed
+2026-01-15 11:27:41 - app.main - INFO -    Snapshot ID: 12
+2026-01-15 11:27:41 - app.main - INFO -    Users: 3
+2026-01-15 11:27:41 - app.main - INFO -    Runs: 5
+2026-01-15 11:27:41 - app.main - INFO -    Total Disk: 18.66 MB
+2026-01-15 11:27:41 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:35:25 - app.main - INFO -    Min confidence: low
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-15 11:35:25 - app.main - INFO -    Min confidence: low
+2026-01-15 11:35:25 - app.main - INFO - ================================================================================
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:35:25 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-15 11:35:26 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-15 11:35:26 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 11:35:26 - app.main - INFO -    Countries returned: 52
+2026-01-15 11:35:26 - app.main - INFO - ================================================================================
+2026-01-15 11:35:26 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-15 11:35:26 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 11:35:26 - app.main - INFO -    Countries returned: 52
+2026-01-15 11:35:26 - app.main - INFO - ================================================================================
