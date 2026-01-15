@@ -6362,3 +6362,51 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-15 15:38:22 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
 2026-01-15 15:38:22 - app.main - INFO -    Countries returned: 23
 2026-01-15 15:38:22 - app.main - INFO - ================================================================================
+2026-01-15 15:54:37 - app.main - INFO - ================================================================================
+2026-01-15 15:54:37 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 2098072fb7af, Run: 87cd3ae67453
+2026-01-15 15:54:37 - app.main - INFO -    Min confidence: low
+2026-01-15 15:54:37 - app.main - INFO - ================================================================================
+2026-01-15 15:54:37 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 87cd3ae67453...
+2026-01-15 15:54:38 - app.phase2.pg_aggregations - INFO -    Found 93 PMIDs
+2026-01-15 15:54:38 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 23 countries
+2026-01-15 15:54:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 15:54:38 - app.main - INFO -    Countries returned: 23
+2026-01-15 15:54:38 - app.main - INFO - ================================================================================
+2026-01-15 15:55:20 - root - INFO - ================================================================================
+2026-01-15 15:55:20 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-15 15:55:20 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-15 15:55:20 - root - INFO - ================================================================================
+2026-01-15 15:55:37 - app.main - INFO - ================================================================================
+2026-01-15 15:55:37 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 2098072fb7af, Run: 87cd3ae67453
+2026-01-15 15:55:37 - app.main - INFO -    Min confidence: low
+2026-01-15 15:55:37 - app.main - INFO - ================================================================================
+2026-01-15 15:55:37 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 87cd3ae67453...
+2026-01-15 15:55:37 - app.phase2.pg_aggregations - INFO -    Found 93 PMIDs
+2026-01-15 15:55:38 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 23 countries
+2026-01-15 15:55:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 15:55:38 - app.main - INFO -    Countries returned: 23
+2026-01-15 15:55:38 - app.main - INFO - ================================================================================
+2026-01-15 16:06:35 - root - INFO - ================================================================================
+2026-01-15 16:06:35 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-15 16:06:35 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-15 16:06:35 - root - INFO - ================================================================================
+2026-01-15 16:06:47 - app.main - INFO - ================================================================================
+2026-01-15 16:06:47 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 2098072fb7af, Run: 87cd3ae67453
+2026-01-15 16:06:47 - app.main - INFO -    Min confidence: low
+2026-01-15 16:06:47 - app.main - INFO - ================================================================================
+2026-01-15 16:06:47 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 87cd3ae67453...
+2026-01-15 16:06:48 - app.phase2.pg_aggregations - INFO -    Found 93 PMIDs
+2026-01-15 16:06:48 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 23 countries
+2026-01-15 16:06:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 16:06:48 - app.main - INFO -    Countries returned: 23
+2026-01-15 16:06:48 - app.main - INFO - ================================================================================
+2026-01-15 16:13:35 - app.main - INFO - ================================================================================
+2026-01-15 16:13:35 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 2098072fb7af, Run: 87cd3ae67453
+2026-01-15 16:13:35 - app.main - INFO -    Min confidence: low
+2026-01-15 16:13:35 - app.main - INFO - ================================================================================
+2026-01-15 16:13:35 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 87cd3ae67453...
+2026-01-15 16:13:35 - app.phase2.pg_aggregations - INFO -    Found 93 PMIDs
+2026-01-15 16:13:35 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 23 countries
+2026-01-15 16:13:35 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-15 16:13:35 - app.main - INFO -    Countries returned: 23
+2026-01-15 16:13:35 - app.main - INFO - ================================================================================

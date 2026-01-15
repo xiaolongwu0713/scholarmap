@@ -17,6 +17,8 @@ import {
   adjustRetrievalFramework,
   runIngest,
   getAuthorshipStats,
+  getWorldMap,
+  type WorldMapData,
   type IngestStats
 } from "@/lib/api";
 import { getConfig, type FrontendConfig } from "@/lib/parseConfig";
@@ -25,6 +27,7 @@ import MetricCard from "@/components/MetricCard";
 import ProgressSteps from "@/components/ProgressSteps";
 import AuthGuard from "@/components/AuthGuard";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
+import Map, { Layer, Source, type MapRef } from "react-map-gl";
 
 const MapModal = dynamic(() => import("@/components/MapModal"), { ssr: false });
 
@@ -80,6 +83,36 @@ type ParseResult = {
     question: string;
   }>;
 };
+
+function ExportMessageList({ title, messages }: { title: string; messages: ChatMessage[] }) {
+  return (
+    <div className="stack" style={{ gap: 12 }}>
+      <h3 style={{ margin: 0 }}>{title}</h3>
+      {messages.length === 0 ? (
+        <div className="muted">No history available.</div>
+      ) : (
+        messages.map((message, idx) => (
+          <div
+            key={`${message.role}-${idx}`}
+            style={{
+              padding: "12px 14px",
+              borderRadius: "12px",
+              border: "1px solid #e5e7eb",
+              background: message.role === "user" ? "#f8fafc" : "#ffffff"
+            }}
+          >
+            <div style={{ fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.06em", color: "#6b7280" }}>
+              {message.role === "user" ? "User" : "System"}
+            </div>
+            <div style={{ whiteSpace: "pre-wrap", fontSize: "14px", marginTop: 6 }}>
+              {message.content}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
   if (navigator?.clipboard?.writeText) {
@@ -381,6 +414,14 @@ function RunPageContent() {
   const [showDemoReadyModal, setShowDemoReadyModal] = useState(false);
   const hasShownDemoReady = useRef(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [isExportMode, setIsExportMode] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportTriggered, setExportTriggered] = useState(false);
+  const [exportMapReady, setExportMapReady] = useState(false);
+  const [exportWorldData, setExportWorldData] = useState<WorldMapData[]>([]);
+  const [exportMapImage, setExportMapImage] = useState<string | null>(null);
+  const exportMapRef = useRef<MapRef | null>(null);
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
   useEffect(() => {
     if (!isDemoRun) return;
@@ -450,6 +491,27 @@ function RunPageContent() {
     if (copied) {
       setShareCopied(true);
       window.setTimeout(() => setShareCopied(false), 1500);
+    }
+  }
+
+  async function handleExport() {
+    if (exportLoading) return;
+    setExportTriggered(false);
+    setExportMapReady(false);
+    setExportMapImage(null);
+    setExportLoading(true);
+    setIsExportMode(true);
+    try {
+      if (ingestStats) {
+        const data = await getWorldMap(projectId, runId);
+        setExportWorldData(data);
+      } else {
+        setExportWorldData([]);
+      }
+    } catch {
+      setExportWorldData([]);
+    } finally {
+      setExportLoading(false);
     }
   }
 
@@ -721,6 +783,26 @@ function RunPageContent() {
     loadInitial().catch((e) => setError(String(e)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, runId]);
+
+  useEffect(() => {
+    if (!isExportMode) return;
+    const handleAfterPrint = () => {
+      setIsExportMode(false);
+      setExportTriggered(false);
+    };
+    window.addEventListener("afterprint", handleAfterPrint);
+    return () => window.removeEventListener("afterprint", handleAfterPrint);
+  }, [isExportMode]);
+
+  useEffect(() => {
+    if (!isExportMode || exportLoading || exportTriggered) return;
+    if (mapboxToken && ingestStats && !exportMapReady) return;
+    const timer = window.setTimeout(() => {
+      setExportTriggered(true);
+      window.print();
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [isExportMode, exportLoading, exportTriggered, exportMapReady, mapboxToken, ingestStats]);
 
 
   async function onParseStage1(candidate: string) {
@@ -1269,6 +1351,7 @@ function RunPageContent() {
   const hasQuery = !!pubmedQueryText;
   const hasResults = (pubmed?.length || 0) > 0 || (s2?.length || 0) > 0 || (oa?.length || 0) > 0;
   const hasAuthorship = !!ingestStats;
+  const exportMaxCount = exportWorldData.reduce((max, item) => Math.max(max, item.scholar_count), 1);
 
   const pipelineSteps = [
     { label: "Parse", status: hasFramework ? ("completed" as const) : ("pending" as const) },
@@ -1280,6 +1363,7 @@ function RunPageContent() {
 
   return (
     <>
+      <div className="screen-only" style={{ display: isExportMode ? "none" : "block" }}>
       <UnifiedNavbar variant="app" />
       <div className="container stack" style={{ paddingTop: "80px" }}>
         {/* Header */}
@@ -1299,13 +1383,21 @@ function RunPageContent() {
           </h1>
           <div className="muted">Scholar paper retrieval and analysis pipeline</div>
         </div>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
           <button
             className="secondary"
             onClick={handleShare}
             style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
           >
             {shareCopied ? "Copied!" : "Share"}
+          </button>
+          <button
+            className="secondary"
+            onClick={handleExport}
+            disabled={exportLoading}
+            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
+          >
+            {exportLoading ? "Exporting..." : "Export"}
           </button>
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -2222,14 +2314,274 @@ function RunPageContent() {
       )}
 
       {showMap && <MapModal projectId={projectId} runId={runId} onClose={() => setShowMap(false)} />}
+      </div>
+      </div>
+
+      {isExportMode && (
+      <div className="export-only" style={{ display: "block" }}>
+        <div className="container stack export-page">
+          <div className="card stack">
+            <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <h1 style={{ margin: 0 }} className="text-gradient">
+                  Run {runId}
+                </h1>
+                <div className="muted">Exported on {new Date().toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="card stack">
+            <h2 style={{ margin: 0 }}>🧾 Research Description</h2>
+            <div className="muted">Original input and parsing history</div>
+            <div
+              style={{
+                background: "#f8fafc",
+                border: "1px solid #e5e7eb",
+                borderRadius: "12px",
+                padding: "12px 14px",
+                whiteSpace: "pre-wrap"
+              }}
+            >
+              {researchDescription || "No research description available."}
+            </div>
+            <ExportMessageList title="Parse Details" messages={textValidateMessages} />
+          </div>
+
+          <div className="card stack">
+            <h2 style={{ margin: 0 }}>🧩 Retrieval Framework</h2>
+            <div className="muted">Framework output and adjustment history</div>
+            <div
+              style={{
+                background: "#f8fafc",
+                border: "1px solid #e5e7eb",
+                borderRadius: "12px",
+                padding: "12px 14px",
+                whiteSpace: "pre-wrap"
+              }}
+            >
+              {frameworkText || "No retrieval framework available."}
+            </div>
+            <ExportMessageList title="Adjustment Details" messages={frameworkAdjustMessages} />
+          </div>
+
+          <div className="card stack">
+            <h2 style={{ margin: 0 }}>🧪 Database Queries</h2>
+            <div className="muted">Full query strings for each source</div>
+            <div className="stack" style={{ gap: 12 }}>
+              <div>
+                <div style={{ fontWeight: 600 }}>PubMed</div>
+                <pre className="export-pre">{queriesObj?.pubmed_full || queriesObj?.pubmed || "N/A"}</pre>
+              </div>
+              <div>
+                <div style={{ fontWeight: 600 }}>Semantic Scholar</div>
+                <pre className="export-pre">{queriesObj?.semantic_scholar || "N/A"}</pre>
+              </div>
+              <div>
+                <div style={{ fontWeight: 600 }}>OpenAlex</div>
+                <pre className="export-pre">{queriesObj?.openalex || "N/A"}</pre>
+              </div>
+            </div>
+          </div>
+
+          <div className="card stack">
+            <h2 style={{ margin: 0 }}>📊 Paper Statistics</h2>
+            <div className="muted">Counts by data source</div>
+            <div className="row">
+              <MetricCard icon="📄" label="PubMed" value={pubmed?.length ?? 0} color="blue" />
+              <MetricCard icon="📚" label="Semantic Scholar" value={s2?.length ?? 0} color="green" />
+              <MetricCard icon="🌐" label="OpenAlex" value={oa?.length ?? 0} color="purple" />
+              <MetricCard icon="✨" label="Aggregated" value={agg?.length ?? 0} color="orange" subtitle="Deduped by DOI" />
+            </div>
+          </div>
+
+          <div className="card stack">
+            <h2 style={{ margin: 0 }}>👥 Authorship & Geographic Mapping</h2>
+            <div className="muted">Summary metrics and mapping status</div>
+            {ingestStats ? (
+              <>
+                <div className="row" style={{ marginBottom: "16px" }}>
+                  <MetricCard icon="📄" label="Papers" value={ingestStats.papers_parsed} subtitle="Analyzed" color="blue" />
+                  <MetricCard icon="👤" label="Author" value={ingestStats.unique_authors} subtitle="Unique authors" color="purple" />
+                  <MetricCard icon="🌍" label="Country" value={ingestStats.unique_countries} subtitle="Countries" color="green" />
+                  <MetricCard icon="🏛️" label="Institution" value={ingestStats.unique_institutions} subtitle="Institutions" color="orange" />
+                </div>
+                {ingestStats.errors.length > 0 && (
+                  <div
+                    style={{
+                      marginTop: 16,
+                      padding: "12px 16px",
+                      background: "#fee2e2",
+                      border: "1px solid #fecaca",
+                      borderRadius: "12px"
+                    }}
+                  >
+                    <div style={{ color: "#dc2626", fontWeight: "bold", marginBottom: "8px" }}>
+                      ⚠️ Errors Encountered:
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: 20, color: "#dc2626" }}>
+                      {ingestStats.errors.map((err, i) => (
+                        <li key={i}>{err}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="muted">No authorship data available.</div>
+            )}
+          </div>
+
+          <div className="card stack">
+            <h2 style={{ margin: 0 }}>🗺️ 2D Scholar Map (Mercator)</h2>
+            <div className="muted">Flat projection with scholar counts</div>
+            <div style={{ height: 420, borderRadius: 12, overflow: "hidden", border: "1px solid #e5e7eb" }}>
+              {mapboxToken ? (
+                ingestStats ? (
+                  exportMapImage ? (
+                    <img
+                      src={exportMapImage}
+                      alt="2D Scholar Map"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <Map
+                      ref={exportMapRef}
+                      initialViewState={{ longitude: 0, latitude: 0, zoom: 0.9, pitch: 0, bearing: 0 }}
+                      style={{ width: "100%", height: "100%" }}
+                      mapStyle="mapbox://styles/mapbox/light-v11"
+                      mapboxAccessToken={mapboxToken}
+                      interactive={false}
+                      preserveDrawingBuffer
+                      projection={{ name: "mercator" }}
+                      onLoad={() => {
+                        const map = exportMapRef.current?.getMap();
+                        if (!map) {
+                          setExportMapReady(true);
+                          return;
+                        }
+                        map.fitBounds([[-180, -60], [180, 85]], { padding: 40, duration: 0 });
+                        map.once("idle", () => {
+                          const canvas = map.getCanvas();
+                          try {
+                            const dataUrl = canvas.toDataURL("image/png");
+                            setExportMapImage(dataUrl);
+                          } catch {
+                            setExportMapImage(null);
+                          } finally {
+                            setExportMapReady(true);
+                          }
+                        });
+                      }}
+                    >
+                      <Source
+                        id="export-world-source"
+                        type="geojson"
+                        data={{
+                          type: "FeatureCollection",
+                          features: exportWorldData
+                            .filter((country) => country.latitude !== null && country.longitude !== null)
+                            .map((country) => ({
+                              type: "Feature",
+                              properties: {
+                                count: country.scholar_count,
+                                country: country.country
+                              },
+                              geometry: {
+                                type: "Point",
+                                coordinates: [country.longitude, country.latitude]
+                              }
+                            }))
+                        }}
+                      >
+                        <Layer
+                          id="export-world-circles"
+                          type="circle"
+                          paint={{
+                            "circle-color": "#2563eb",
+                            "circle-opacity": 0.9,
+                            "circle-stroke-color": "#1d4ed8",
+                            "circle-stroke-width": 1,
+                            "circle-radius": [
+                              "interpolate",
+                              ["linear"],
+                              ["get", "count"],
+                              1,
+                              6,
+                              exportMaxCount,
+                              28
+                            ]
+                          }}
+                        />
+                        <Layer
+                          id="export-world-labels"
+                          type="symbol"
+                          layout={{
+                            "text-field": ["get", "count"],
+                            "text-size": [
+                              "interpolate",
+                              ["linear"],
+                              ["get", "count"],
+                              1,
+                              10,
+                              exportMaxCount,
+                              16
+                            ],
+                            "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+                            "text-allow-overlap": true,
+                            "text-ignore-placement": true
+                          }}
+                          paint={{
+                            "text-color": "#ffffff"
+                          }}
+                        />
+                      </Source>
+                    </Map>
+                  )
+                ) : (
+                  <div className="muted" style={{ padding: 20 }}>
+                    No map data available.
+                  </div>
+                )
+              ) : (
+                <div className="muted" style={{ padding: 20 }}>
+                  Map requires NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN in .env
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      )}
       <style jsx>{`
         @keyframes spin {
           to {
             transform: rotate(360deg);
           }
         }
+        .export-only {
+          display: none;
+        }
+        .export-pre {
+          background: #f8fafc;
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
+          padding: 12px 14px;
+          white-space: pre-wrap;
+          font-size: 13px;
+        }
+        @media print {
+          .screen-only {
+            display: none !important;
+          }
+          .export-only {
+            display: block !important;
+          }
+          .export-page {
+            padding-top: 24px;
+          }
+        }
       `}</style>
-      </div>
     </>
   );
 }
