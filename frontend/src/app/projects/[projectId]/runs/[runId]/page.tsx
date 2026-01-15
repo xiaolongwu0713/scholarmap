@@ -421,6 +421,7 @@ function RunPageContent() {
   const [exportWorldData, setExportWorldData] = useState<WorldMapData[]>([]);
   const [exportMapImage, setExportMapImage] = useState<string | null>(null);
   const exportMapRef = useRef<MapRef | null>(null);
+  const [exportMapLoaded, setExportMapLoaded] = useState(false);
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
   useEffect(() => {
@@ -803,6 +804,44 @@ function RunPageContent() {
     }, 300);
     return () => window.clearTimeout(timer);
   }, [isExportMode, exportLoading, exportTriggered, exportMapReady, mapboxToken, ingestStats]);
+
+  useEffect(() => {
+    if (!isExportMode || exportLoading || exportMapImage || !exportMapLoaded) return;
+    if (!ingestStats || exportWorldData.length === 0) {
+      setExportMapReady(true);
+      return;
+    }
+    const map = exportMapRef.current?.getMap();
+    if (!map) return;
+    const capture = () => {
+      const canvas = map.getCanvas();
+      try {
+        const dataUrl = canvas.toDataURL("image/png");
+        setExportMapImage(dataUrl);
+      } catch {
+        setExportMapImage(null);
+      } finally {
+        setExportMapReady(true);
+      }
+    };
+    map.fitBounds([[-180, -60], [180, 85]], { padding: 40, duration: 0 });
+    if (map.isStyleLoaded() && map.areTilesLoaded?.() && map.isSourceLoaded?.("export-world-source")) {
+      window.setTimeout(capture, 200);
+      return;
+    }
+    let settled = false;
+    const onIdle = () => {
+      if (settled) return;
+      settled = true;
+      capture();
+    };
+    map.once("idle", onIdle);
+    window.setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      capture();
+    }, 1200);
+  }, [isExportMode, exportLoading, exportMapImage, exportMapLoaded, exportWorldData, ingestStats]);
 
 
   async function onParseStage1(candidate: string) {
@@ -2444,6 +2483,10 @@ function RunPageContent() {
                       alt="2D Scholar Map"
                       style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
+                  ) : exportWorldData.length === 0 ? (
+                    <div className="muted" style={{ padding: 20 }}>
+                      No map data available.
+                    </div>
                   ) : (
                     <Map
                       ref={exportMapRef}
@@ -2454,25 +2497,7 @@ function RunPageContent() {
                       interactive={false}
                       preserveDrawingBuffer
                       projection={{ name: "mercator" }}
-                      onLoad={() => {
-                        const map = exportMapRef.current?.getMap();
-                        if (!map) {
-                          setExportMapReady(true);
-                          return;
-                        }
-                        map.fitBounds([[-180, -60], [180, 85]], { padding: 40, duration: 0 });
-                        map.once("idle", () => {
-                          const canvas = map.getCanvas();
-                          try {
-                            const dataUrl = canvas.toDataURL("image/png");
-                            setExportMapImage(dataUrl);
-                          } catch {
-                            setExportMapImage(null);
-                          } finally {
-                            setExportMapReady(true);
-                          }
-                        });
-                      }}
+                      onLoad={() => setExportMapLoaded(true)}
                     >
                       <Source
                         id="export-world-source"
