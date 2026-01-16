@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://scholarmap-frontend.onrender.com/sitemap.xml
