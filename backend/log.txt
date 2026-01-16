@@ -6518,3 +6518,11 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-16 12:32:52 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
 2026-01-16 12:32:52 - app.main - INFO -    Countries returned: 52
 2026-01-16 12:32:52 - app.main - INFO - ================================================================================
+2026-01-16 12:21:48 - root - INFO - ================================================================================
+2026-01-16 12:21:48 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-16 12:21:48 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-16 12:21:48 - root - INFO - ================================================================================
+2026-01-16 12:23:17 - root - INFO - ================================================================================
+2026-01-16 12:23:17 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-16 12:23:17 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-16 12:23:17 - root - INFO - ================================================================================

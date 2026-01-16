@@ -4,14 +4,14 @@ const cards = [
   {
     title: "Auto-build literature queries",
     description:
-      "Write a short research description and get a full-strength retrieval script with broader coverage than manual search.",
+      "Describe your research in natural language and get a full-strength retrieval script with broader coverage than manual search.",
     accent: "#2563eb",
     icon: "🧠"
   },
   {
     title: "Map global research fit",
     description:
-      "See where your topic is active worldwide to identify ideal countries and cities for future work.",
+      "Know your opportunities and discover your dream country/city/institution.",
     accent: "#059669",
     icon: "🌍"
   },
@@ -25,7 +25,7 @@ const cards = [
   {
     title: "Share and export in one click",
     description:
-      "Share runs instantly and export the workflow as a PDF for reporting or team review.",
+      "Share and export the workflow as a PDF for reporting or distributing to your team.",
     accent: "#c2410c",
     icon: "📤"
   }

@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getConfig } from "@/lib/parseConfig";
 
 export function HowItWorks() {
+  const [simpleMode, setSimpleMode] = useState(false);
   const [activePhase1Index, setActivePhase1Index] = useState(0);
   const [activePhase2Index, setActivePhase2Index] = useState(0);
+
+  useEffect(() => {
+    getConfig()
+      .then((cfg) => setSimpleMode(cfg.simple_how_it_works))
+      .catch(() => setSimpleMode(false));
+  }, []);
 
   const phase1Cards = [
     {
@@ -75,6 +83,28 @@ export function HowItWorks() {
     }
   ];
 
+  const simpleCards = [
+    {
+      image: "/landing_page_figures/1.png",
+      description: "Step 1 – Describe your research in natural language."
+    },
+    {
+      image: "/landing_page_figures/5.png",
+      description: "Step 2 – Map the global landscape by grouped scholars by country, city, and institution."
+    },
+    {
+      image: "/landing_page_figures/6.png",
+      description: "Step 3 – Explore & decide. Compare locations, find collaborators, and plan your next move."
+    }
+  ];
+  const exploreCards = [
+    { image: "/landing_page_figures/6.png" },
+    { image: "/landing_page_figures/7.png" },
+    { image: "/landing_page_figures/8.png" },
+    { image: "/landing_page_figures/9.png" }
+  ];
+  const [activeExploreIndex, setActiveExploreIndex] = useState(0);
+
   const handlePhase1Prev = () => {
     setActivePhase1Index((prev) => (prev === 0 ? phase1Cards.length - 1 : prev - 1));
   };
@@ -90,6 +120,226 @@ export function HowItWorks() {
   const handlePhase2Next = () => {
     setActivePhase2Index((prev) => (prev === phase2Cards.length - 1 ? 0 : prev + 1));
   };
+
+  if (simpleMode) {
+    return (
+      <section
+        id="how-it-works"
+        style={{
+          paddingTop: "6rem",
+          paddingBottom: "6rem",
+          background: "linear-gradient(to bottom right, #f9fafb, #eff6ff)",
+          scrollMarginTop: "80px"
+        }}
+      >
+        <div style={{ maxWidth: "1100px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <h2 style={{ fontSize: "3rem", fontWeight: "700", marginBottom: "0.75rem", color: "#111827" }}>
+              How It Works
+            </h2>
+            <p style={{ color: "#64748b", fontSize: "1.05rem" }}>
+              Three clear steps to go from idea to action.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            {simpleCards.slice(0, 2).map((card, index) => (
+              <div
+                key={card.image}
+                style={{
+                  padding: "28px",
+                  borderRadius: "24px",
+                  border: "1px solid #e5e7eb",
+                  background: "white",
+                  boxShadow: "0 18px 40px rgba(15, 23, 42, 0.12)"
+                }}
+              >
+                <div style={{ fontSize: "1.2rem", fontWeight: 600, color: "#0f172a", textAlign: "center", marginBottom: "18px" }}>
+                  {card.description}
+                </div>
+                <div
+                  style={{
+                    width: "100%",
+                    maxWidth: "980px",
+                    height: "460px",
+                    borderRadius: "18px",
+                    border: "1px solid #e2e8f0",
+                    overflow: "hidden",
+                    background: "#ffffff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto"
+                  }}
+                >
+                  <img
+                    src={card.image}
+                    alt={`Step ${index + 1}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain"
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+            <div
+              style={{
+                padding: "28px",
+                borderRadius: "24px",
+                border: "1px solid #e5e7eb",
+                background: "white",
+                boxShadow: "0 18px 40px rgba(15, 23, 42, 0.12)"
+              }}
+            >
+              <div style={{ fontSize: "1.2rem", fontWeight: 600, color: "#0f172a", textAlign: "center", marginBottom: "18px" }}>
+                {simpleCards[2].description}
+              </div>
+              <div
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  borderRadius: "18px",
+                  border: "1px solid #e2e8f0",
+                  background: "#ffffff"
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    transition: "transform 0.4s ease",
+                    transform: `translateX(-${activeExploreIndex * 100}%)`
+                  }}
+                >
+                  {exploreCards.map((card, idx) => (
+                    <div
+                      key={card.image}
+                      style={{
+                        minWidth: "100%",
+                        padding: "18px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "100%",
+                          maxWidth: "980px",
+                          height: "460px",
+                          borderRadius: "16px",
+                          border: "1px solid #e2e8f0",
+                          overflow: "hidden",
+                          background: "#ffffff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center"
+                        }}
+                      >
+                        <img
+                          src={card.image}
+                          alt={`Step 3 detail ${idx + 1}`}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain"
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() =>
+                    setActiveExploreIndex((prev) => (prev === 0 ? exploreCards.length - 1 : prev - 1))
+                  }
+                  style={{
+                    position: "absolute",
+                    left: "20px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 100,
+                    width: "64px",
+                    height: "64px",
+                    backgroundColor: "transparent",
+                    background: "transparent",
+                    borderRadius: "0",
+                    border: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    boxShadow: "none",
+                    padding: 0,
+                    lineHeight: 0,
+                    appearance: "none",
+                    transition: "all 0.2s",
+                    color: "#f97316"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-50%) scale(1.05)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                  }}
+                  aria-label="Previous step 3 card"
+                >
+                  <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="#f97316" viewBox="0 0 32 32" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M22 6l-10 10 10 10" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M28 6l-10 10 10 10" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 6l-10 10 10 10" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() =>
+                    setActiveExploreIndex((prev) => (prev === exploreCards.length - 1 ? 0 : prev + 1))
+                  }
+                  style={{
+                    position: "absolute",
+                    right: "20px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 100,
+                    width: "64px",
+                    height: "64px",
+                    backgroundColor: "transparent",
+                    background: "transparent",
+                    borderRadius: "0",
+                    border: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    boxShadow: "none",
+                    padding: 0,
+                    lineHeight: 0,
+                    appearance: "none",
+                    transition: "all 0.2s",
+                    color: "#f97316"
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-50%) scale(1.05)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+                  }}
+                  aria-label="Next step 3 card"
+                >
+                  <svg style={{ width: "44px", height: "44px" }} fill="none" stroke="#f97316" viewBox="0 0 32 32" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 6l10 10-10 10" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6l10 10-10 10" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 6l10 10-10 10" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="how-it-works" style={{ paddingTop: "6rem", paddingBottom: "6rem", background: "linear-gradient(to bottom right, #f9fafb, #eff6ff)", scrollMarginTop: "80px" }}>
