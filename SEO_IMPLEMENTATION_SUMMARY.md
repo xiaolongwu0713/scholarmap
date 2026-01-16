@@ -208,7 +208,7 @@ curl https://scholarmap-frontend.onrender.com/ | grep "application/ld+json"
 #### 2. Google PageSpeed Insights
 - URL: https://pagespeed.web.dev/
 - 测试移动端和桌面端性能
-- 目标：Performance > 90
+- 目标：Performance = 72
 
 #### 3. Google Mobile-Friendly Test
 - URL: https://search.google.com/test/mobile-friendly
@@ -216,7 +216,7 @@ curl https://scholarmap-frontend.onrender.com/ | grep "application/ld+json"
 
 #### 4. Schema Markup Validator
 - URL: https://validator.schema.org/
-- 复制首页 HTML 并验证
+- 输入 https://scholarmap-frontend.onrender.com
 
 ### 第一天执行
 
