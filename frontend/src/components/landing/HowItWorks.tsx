@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getConfig } from "@/lib/parseConfig";
+import Image from "next/image";
 
 export function HowItWorks() {
   const [simpleMode, setSimpleMode] = useState(false);
@@ -172,9 +173,14 @@ export function HowItWorks() {
                     margin: "0 auto"
                   }}
                 >
-                  <img
+                  <Image
                     src={card.image}
                     alt={`Step ${index + 1}`}
+                    width={980}
+                    height={460}
+                    quality={75}
+                    loading="lazy"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 980px"
                     style={{
                       width: "100%",
                       height: "100%",
@@ -237,9 +243,14 @@ export function HowItWorks() {
                           justifyContent: "center"
                         }}
                       >
-                        <img
+                        <Image
                           src={card.image}
                           alt={`Step 3 detail ${idx + 1}`}
+                          width={600}
+                          height={400}
+                          quality={75}
+                          loading="lazy"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 600px"
                           style={{
                             width: "100%",
                             height: "100%",
@@ -488,9 +499,14 @@ export function HowItWorks() {
                       boxShadow: isActive ? `0 20px 30px -12px ${card.accentShadow}` : `0 10px 16px -14px ${card.accentShadow}`,
                       border: `1px solid ${card.accent}`
                     }}>
-                      <img
+                      <Image
                         src={card.image}
                         alt={card.title}
+                        width={600}
+                        height={400}
+                        quality={75}
+                        loading="lazy"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 600px"
                         style={{
                           width: "100%",
                           height: "100%",
@@ -705,9 +721,14 @@ export function HowItWorks() {
                       boxShadow: isActive ? `0 20px 30px -12px ${card.accentShadow}` : `0 10px 16px -14px ${card.accentShadow}`,
                       border: `1px solid ${card.accent}`
                     }}>
-                      <img
+                      <Image
                         src={card.image}
                         alt={card.title}
+                        width={600}
+                        height={400}
+                        quality={75}
+                        loading="lazy"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 600px"
                         style={{
                           width: "100%",
                           height: "100%",

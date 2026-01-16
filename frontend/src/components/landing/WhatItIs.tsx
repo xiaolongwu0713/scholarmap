@@ -28,7 +28,9 @@ export function WhatItIs() {
             alt="ScholarMap use case"
             width={1100}
             height={1000}
-            quality={80}
+            quality={75}
+            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1100px"
             style={{
               width: "100%",
               maxWidth: "1100px",

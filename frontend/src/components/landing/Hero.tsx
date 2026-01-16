@@ -37,7 +37,8 @@ export function Hero() {
               width={1200}
               height={630}
               priority
-              quality={85}
+              quality={80}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
               className="w-full h-auto"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
@@ -68,7 +69,9 @@ export function Hero() {
           alt="ScholarMap use case"
           width={1030}
           height={940}
-          quality={80}
+          quality={75}
+          loading="lazy"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1030px"
           style={{
             width: "100%",
             maxWidth: "1030px",
