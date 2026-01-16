@@ -80,6 +80,14 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   What It Is
                 </a>
                 <a
+                  href="#what-you-can-do"
+                  style={linkStyle("what-you-can-do")}
+                  onMouseEnter={() => setHoveredLink("what-you-can-do")}
+                  onMouseLeave={() => setHoveredLink(null)}
+                >
+                  Capabilities
+                </a>
+                <a
                   href="#how-it-works"
                   style={linkStyle("how-it-works")}
                   onMouseEnter={() => setHoveredLink("how-it-works")}

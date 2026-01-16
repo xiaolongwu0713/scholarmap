@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 import { Hero } from "@/components/landing/Hero";
+import { WhatYouCanDo } from "@/components/landing/WhatYouCanDo";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Footer } from "@/components/landing/Footer";
 import { isAuthenticated } from "@/lib/auth";
@@ -74,6 +75,7 @@ export default function LandingPage() {
           </button>
         </div>
       </section>
+      <WhatYouCanDo />
       <HowItWorks />
       <Footer />
     </div>
