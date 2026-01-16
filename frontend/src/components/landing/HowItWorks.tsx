@@ -96,7 +96,7 @@ export function HowItWorks() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "4rem" }}>
           <h2 style={{ fontSize: "3rem", fontWeight: "700", marginBottom: "1rem", color: "#111827" }}>
-            How It Works (in two simple phases)
+            How It Works (Two phases)
           </h2>
 
         </div>
@@ -132,10 +132,10 @@ export function HowItWorks() {
             </div>
             <div>
               <h3 style={{ fontSize: "1.875rem", fontWeight: "700", color: "#111827", margin: 0 }}>
-                Smart Paper Retrieval & Author Aggregation (5 Steps)
+                Define Your Research & Aggregate Global Scholars By Location
               </h3>
               <p style={{ fontSize: "1rem", color: "#6b7280", margin: "0.25rem 0 0 0" }}>
-                From research understanding to geographic organization
+                5 Steps From Research Understanding to Geographic Organization
               </p>
             </div>
           </div>
@@ -349,10 +349,10 @@ export function HowItWorks() {
             </div>
             <div>
               <h3 style={{ fontSize: "1.875rem", fontWeight: "700", color: "#111827", margin: 0 }}>
-                Browse Result (4 Options)
+                Explore Results On Map
               </h3>
               <p style={{ fontSize: "1rem", color: "#6b7280", margin: "0.25rem 0 0 0" }}>
-                Zoom from country to city to institution.
+                4 Viewing Options: Country, City, Institution, Author.
               </p>
             </div>
           </div>
