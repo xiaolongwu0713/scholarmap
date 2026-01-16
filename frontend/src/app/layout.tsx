@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     description: "Map global research opportunities by country, city, and institution. Find collaborators and discover your dream research destination.",
     images: [
       {
-        url: "/landing_page_figures/0.png",
+        url: "/landing_page_figures_optimized/0.webp",
         width: 1200,
         height: 630,
         alt: "ScholarMap - Global Research Network Visualization",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "ScholarMap - Discover Global Research Opportunities",
     description: "Map global research opportunities by country, city, and institution. Find collaborators and discover your dream research destination.",
-    images: ["/landing_page_figures/0.png"],
+    images: ["/landing_page_figures_optimized/0.webp"],
     creator: "@scholarmap",
   },
   robots: {

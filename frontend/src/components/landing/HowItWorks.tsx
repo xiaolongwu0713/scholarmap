@@ -16,35 +16,35 @@ export function HowItWorks() {
 
   const phase1Cards = [
     {
-      image: "/landing_page_figures/1.png",
+      image: "/landing_page_figures_optimized/1-md.webp",
       title: "Step 1",
       description: "Step 1: Define Your Research by Chatting With the System.",
       accent: "#60a5fa",
       accentShadow: "rgba(96, 165, 250, 0.35)"
     },
     {
-      image: "/landing_page_figures/2.png",
+      image: "/landing_page_figures_optimized/2-md.webp",
       title: "Step 2",
       description: "Step 2: Review the Generated Retrieval Framework.",
       accent: "#34d399",
       accentShadow: "rgba(52, 211, 153, 0.35)"
     },
     {
-      image: "/landing_page_figures/3.png",
+      image: "/landing_page_figures_optimized/3-md.webp",
       title: "Step 3",
       description: "Step 3: Review the Generated Database Queries (PubMed / Web of Science).",
       accent: "#a78bfa",
       accentShadow: "rgba(84, 36, 229, 0.35)"
     },
     {
-      image: "/landing_page_figures/4.png",
+      image: "/landing_page_figures_optimized/4-md.webp",
       title: "Step 4",
       description: "Step 4: Query the Databases.",
       accent: "#fbbf24",
       accentShadow: "rgba(251, 191, 36, 0.35)"
     },
     {
-      image: "/landing_page_figures/5.png",
+      image: "/landing_page_figures_optimized/5-md.webp",
       title: "Step 5",
       description: "Step 5: Process and Aggregate Author by Institution/City/Country.",
       accent: "#f472b6",
@@ -54,28 +54,28 @@ export function HowItWorks() {
 
   const phase2Cards = [
     {
-      image: "/landing_page_figures/6.png",
+      image: "/landing_page_figures_optimized/6-md.webp",
       title: "Extract",
       description: "Option 1: Country Distribution of Scholars.",
       accent: "#38bdf8",
       accentShadow: "rgba(56, 189, 248, 0.35)"
     },
     {
-      image: "/landing_page_figures/7.png",
+      image: "/landing_page_figures_optimized/7-md.webp",
       title: "Geocode",
       description: "Option 2: City Distribution of Scholars.",
       accent: "#4ade80",
       accentShadow: "rgba(74, 222, 128, 0.35)"
     },
     {
-      image: "/landing_page_figures/8.png",
+      image: "/landing_page_figures_optimized/8-md.webp",
       title: "Aggregate",
       description: "Option 3: Institution Distribution of Scholars.",
       accent: "#f59e0b",
       accentShadow: "rgba(245, 158, 11, 0.35)"
     },
     {
-      image: "/landing_page_figures/9.png",
+      image: "/landing_page_figures_optimized/9-md.webp",
       title: "Visualize",
       description: "Option 4: Scholars List From an Institution of Interest.",
       accent: "#fb7185",
@@ -85,23 +85,23 @@ export function HowItWorks() {
 
   const simpleCards = [
     {
-      image: "/landing_page_figures/1.png",
+      image: "/landing_page_figures_optimized/1-md.webp",
       description: "Step 1 – Describe your research in natural language."
     },
     {
-      image: "/landing_page_figures/5.png",
+      image: "/landing_page_figures_optimized/5-md.webp",
       description: "Step 2 – Map the global landscape by grouped scholars by country, city, and institution."
     },
     {
-      image: "/landing_page_figures/6.png",
+      image: "/landing_page_figures_optimized/6-md.webp",
       description: "Step 3 – Explore & decide. Compare locations, find collaborators, and plan your next move."
     }
   ];
   const exploreCards = [
-    { image: "/landing_page_figures/6.png" },
-    { image: "/landing_page_figures/7.png" },
-    { image: "/landing_page_figures/8.png" },
-    { image: "/landing_page_figures/9.png" }
+    { image: "/landing_page_figures_optimized/6-md.webp" },
+    { image: "/landing_page_figures_optimized/7-md.webp" },
+    { image: "/landing_page_figures_optimized/8-md.webp" },
+    { image: "/landing_page_figures_optimized/9-md.webp" }
   ];
   const [activeExploreIndex, setActiveExploreIndex] = useState(0);
 

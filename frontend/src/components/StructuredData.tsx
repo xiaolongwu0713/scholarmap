@@ -20,7 +20,7 @@ export const organizationSchema = {
   "@type": "Organization",
   "name": "ScholarMap",
   "url": "https://scholarmap-frontend.onrender.com",
-  "logo": "https://scholarmap-frontend.onrender.com/landing_page_figures/0.png",
+  "logo": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/0.webp",
   "description": "Map global research opportunities by country, city, and institution. Auto-build literature queries, find collaborators, and discover your dream research destination.",
   "email": "contact@scholarmap.com",
   "foundingDate": "2026",
@@ -41,7 +41,7 @@ export const webApplicationSchema = {
     "priceCurrency": "USD"
   },
   "description": "Research mapping platform that helps scholars discover global research opportunities, build literature queries, and find collaborators across countries, cities, and institutions.",
-  "screenshot": "https://scholarmap-frontend.onrender.com/landing_page_figures/0.png",
+  "screenshot": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/0.webp",
   "featureList": [
     "Auto-build literature queries from natural language",
     "Map global research fit by country, city, and institution",
@@ -78,8 +78,8 @@ export const softwareApplicationSchema = {
   "description": "ScholarMap is a research mapping platform that transforms research descriptions into comprehensive literature queries and visualizes global research opportunities by geographic location and institution.",
   "url": "https://scholarmap-frontend.onrender.com",
   "screenshot": [
-    "https://scholarmap-frontend.onrender.com/landing_page_figures/0.png",
-    "https://scholarmap-frontend.onrender.com/landing_page_figures/10.png"
+    "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/0.webp",
+    "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/10.webp"
   ],
   "featureList": [
     "Natural language research query construction",
@@ -160,7 +160,7 @@ export const howToSchema = {
   "@type": "HowTo",
   "name": "How to Use ScholarMap to Discover Research Opportunities",
   "description": "Learn how to use ScholarMap to map global research opportunities and find collaborators",
-  "image": "https://scholarmap-frontend.onrender.com/landing_page_figures/0.png",
+  "image": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/0.webp",
   "totalTime": "PT10M",
   "step": [
     {
@@ -168,35 +168,35 @@ export const howToSchema = {
       "position": 1,
       "name": "Define Your Research",
       "text": "Describe your research in natural language by chatting with the system. The AI will understand your research focus and goals.",
-      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures/1.png"
+      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/1.webp"
     },
     {
       "@type": "HowToStep",
       "position": 2,
       "name": "Auto-Generate Literature Queries",
       "text": "The system automatically builds comprehensive PubMed queries based on your research description, covering broader topics than manual searches.",
-      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures/2.png"
+      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/2.webp"
     },
     {
       "@type": "HowToStep",
       "position": 3,
       "name": "Retrieve and Parse Affiliations",
       "text": "ScholarMap retrieves relevant papers from PubMed and extracts author affiliation information from the literature.",
-      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures/3.png"
+      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/3.webp"
     },
     {
       "@type": "HowToStep",
       "position": 4,
       "name": "Geocode Institutions",
       "text": "The system geocodes institution affiliations to map them to specific countries, cities, and coordinates.",
-      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures/4.png"
+      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/4.webp"
     },
     {
       "@type": "HowToStep",
       "position": 5,
       "name": "Explore the Map",
       "text": "View your results on an interactive 3D map, with options to explore by country, city, institution, or individual author. Identify research hotspots and potential collaboration opportunities.",
-      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures/0.png"
+      "image": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/0.webp"
     }
   ]
 };

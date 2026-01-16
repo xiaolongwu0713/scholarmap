@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export function WhatItIs() {
   return (
     <section id="what-it-is" style={{ paddingTop: "6rem", paddingBottom: "6rem", backgroundColor: "white", scrollMarginTop: "80px" }}>
@@ -21,9 +23,12 @@ export function WhatItIs() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <img
-            src="/landing_page_figures/10.png"
+          <Image
+            src="/landing_page_figures_optimized/10.webp"
             alt="ScholarMap use case"
+            width={1100}
+            height={1000}
+            quality={80}
             style={{
               width: "100%",
               maxWidth: "1100px",

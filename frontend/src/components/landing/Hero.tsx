@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 export function Hero() {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
@@ -30,9 +31,13 @@ export function Hero() {
       image: (
         <div className="relative max-w-5xl mx-auto w-full">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
-            <img
-              src="/landing_page_figures/0.png"
+            <Image
+              src="/landing_page_figures_optimized/0.webp"
               alt="Global research network visualization"
+              width={1200}
+              height={630}
+              priority
+              quality={85}
               className="w-full h-auto"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
@@ -58,9 +63,12 @@ export function Hero() {
         </h2>
       ),
       image: (
-        <img
-          src="/landing_page_figures/10.png"
+        <Image
+          src="/landing_page_figures_optimized/10.webp"
           alt="ScholarMap use case"
+          width={1030}
+          height={940}
+          quality={80}
           style={{
             width: "100%",
             maxWidth: "1030px",
