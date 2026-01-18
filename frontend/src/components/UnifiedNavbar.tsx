@@ -72,7 +72,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
             {variant === "landing" ? (
               <>
                 <a
-                  href="#what-it-is"
+                  href={pathname === "/" ? "#what-it-is" : "/#what-it-is"}
                   style={linkStyle("what-it-is")}
                   onMouseEnter={() => setHoveredLink("what-it-is")}
                   onMouseLeave={() => setHoveredLink(null)}
@@ -80,7 +80,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   What It Is
                 </a>
                 <a
-                  href="#what-you-can-do"
+                  href={pathname === "/" ? "#what-you-can-do" : "/#what-you-can-do"}
                   style={linkStyle("what-you-can-do")}
                   onMouseEnter={() => setHoveredLink("what-you-can-do")}
                   onMouseLeave={() => setHoveredLink(null)}
@@ -88,7 +88,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   Capabilities
                 </a>
                 <a
-                  href="#how-it-works"
+                  href={pathname === "/" ? "#how-it-works" : "/#how-it-works"}
                   style={linkStyle("how-it-works")}
                   onMouseEnter={() => setHoveredLink("how-it-works")}
                   onMouseLeave={() => setHoveredLink(null)}
@@ -96,7 +96,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   How It Works
                 </a>
                 <a
-                  href="#contact"
+                  href={pathname === "/" ? "#contact" : "/#contact"}
                   style={linkStyle("contact")}
                   onMouseEnter={() => setHoveredLink("contact")}
                   onMouseLeave={() => setHoveredLink(null)}

@@ -6526,3 +6526,221 @@ DETAIL:  Key (location_key)=(country:India) already exists.
 2026-01-16 12:23:17 - root - INFO - Logging initialized - output to console and log.txt
 2026-01-16 12:23:17 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
 2026-01-16 12:23:17 - root - INFO - ================================================================================
+2026-01-18 11:17:27 - root - INFO - ================================================================================
+2026-01-18 11:17:27 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 11:17:27 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 11:17:27 - root - INFO - ================================================================================
+2026-01-18 11:26:51 - app.main - INFO - ================================================================================
+2026-01-18 11:26:51 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 11:26:51 - app.main - INFO -    Min confidence: low
+2026-01-18 11:26:51 - app.main - INFO - ================================================================================
+2026-01-18 11:26:51 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 11:26:51 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 11:26:52 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 11:26:52 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 11:26:52 - app.main - INFO -    Countries returned: 52
+2026-01-18 11:26:52 - app.main - INFO - ================================================================================
+2026-01-18 11:31:01 - root - INFO - ================================================================================
+2026-01-18 11:31:01 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 11:31:01 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 11:31:01 - root - INFO - ================================================================================
+2026-01-18 11:32:47 - app.main - INFO - ================================================================================
+2026-01-18 11:32:47 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 11:32:47 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-18 11:32:47 - app.main - INFO - ================================================================================
+2026-01-18 11:32:47 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-18 11:32:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 11:32:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-18 11:32:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-18 11:32:48 - app.main - INFO -    Cities returned: 47
+2026-01-18 11:32:48 - app.main - INFO - ================================================================================
+2026-01-18 11:36:31 - app.main - INFO - ================================================================================
+2026-01-18 11:36:31 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 11:36:31 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-18 11:36:31 - app.main - INFO - ================================================================================
+2026-01-18 11:36:31 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-18 11:36:31 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 11:36:32 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 74 cities in United States
+2026-01-18 11:36:32 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-18 11:36:32 - app.main - INFO -    Cities returned: 74
+2026-01-18 11:36:32 - app.main - INFO - ================================================================================
+2026-01-18 12:17:40 - root - INFO - ================================================================================
+2026-01-18 12:17:40 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 12:17:40 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 12:17:40 - root - INFO - ================================================================================
+2026-01-18 12:19:43 - root - INFO - ================================================================================
+2026-01-18 12:19:43 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 12:19:43 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 12:19:43 - root - INFO - ================================================================================
+2026-01-18 12:22:09 - root - INFO - ================================================================================
+2026-01-18 12:22:09 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 12:22:09 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 12:22:09 - root - INFO - ================================================================================
+2026-01-18 12:28:27 - root - INFO - ================================================================================
+2026-01-18 12:28:27 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 12:28:27 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 12:28:27 - root - INFO - ================================================================================
+2026-01-18 12:30:46 - root - INFO - ================================================================================
+2026-01-18 12:30:46 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 12:30:46 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 12:30:46 - root - INFO - ================================================================================
+2026-01-18 12:31:23 - app.main - INFO - ================================================================================
+2026-01-18 12:31:23 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:31:23 - app.main - INFO -    Min confidence: low
+2026-01-18 12:31:23 - app.main - INFO - ================================================================================
+2026-01-18 12:31:23 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:31:23 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:31:24 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:31:24 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:31:24 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:31:24 - app.main - INFO - ================================================================================
+2026-01-18 12:31:39 - app.main - INFO - ================================================================================
+2026-01-18 12:31:39 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:31:39 - app.main - INFO -    Min confidence: low
+2026-01-18 12:31:39 - app.main - INFO - ================================================================================
+2026-01-18 12:31:39 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:31:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:31:40 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:31:40 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:31:40 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:31:40 - app.main - INFO - ================================================================================
+2026-01-18 12:31:47 - app.main - INFO - ================================================================================
+2026-01-18 12:31:47 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:31:47 - app.main - INFO -    Min confidence: low
+2026-01-18 12:31:47 - app.main - INFO - ================================================================================
+2026-01-18 12:31:47 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:31:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:31:47 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:31:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:31:48 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:31:48 - app.main - INFO - ================================================================================
+2026-01-18 12:33:02 - app.main - INFO - ================================================================================
+2026-01-18 12:33:02 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:33:02 - app.main - INFO -    Min confidence: low
+2026-01-18 12:33:02 - app.main - INFO - ================================================================================
+2026-01-18 12:33:02 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:33:02 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:33:03 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:33:03 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:33:03 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:33:03 - app.main - INFO - ================================================================================
+2026-01-18 12:33:34 - app.main - INFO - ================================================================================
+2026-01-18 12:33:34 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:33:34 - app.main - INFO -    Min confidence: low
+2026-01-18 12:33:34 - app.main - INFO - ================================================================================
+2026-01-18 12:33:34 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:33:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:33:34 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:33:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:33:34 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:33:34 - app.main - INFO - ================================================================================
+2026-01-18 12:43:10 - root - INFO - ================================================================================
+2026-01-18 12:43:10 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 12:43:10 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 12:43:10 - root - INFO - ================================================================================
+2026-01-18 12:43:26 - app.main - INFO - ================================================================================
+2026-01-18 12:43:26 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:43:26 - app.main - INFO -    Min confidence: low
+2026-01-18 12:43:26 - app.main - INFO - ================================================================================
+2026-01-18 12:43:26 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:43:27 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:43:27 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:43:27 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:43:27 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:43:27 - app.main - INFO - ================================================================================
+2026-01-18 12:44:25 - root - INFO - ================================================================================
+2026-01-18 12:44:25 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-18 12:44:25 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-18 12:44:25 - root - INFO - ================================================================================
+2026-01-18 12:45:11 - app.main - INFO - ================================================================================
+2026-01-18 12:45:11 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:45:11 - app.main - INFO -    Min confidence: low
+2026-01-18 12:45:11 - app.main - INFO - ================================================================================
+2026-01-18 12:45:11 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:45:11 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:45:12 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:45:12 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:45:12 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:45:12 - app.main - INFO - ================================================================================
+2026-01-18 12:45:29 - app.main - INFO - ================================================================================
+2026-01-18 12:45:29 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:45:29 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-18 12:45:29 - app.main - INFO - ================================================================================
+2026-01-18 12:45:29 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-18 12:45:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:45:30 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-18 12:45:30 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-18 12:45:30 - app.main - INFO -    Cities returned: 47
+2026-01-18 12:45:30 - app.main - INFO - ================================================================================
+2026-01-18 12:51:36 - app.main - INFO - ================================================================================
+2026-01-18 12:51:36 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:51:36 - app.main - INFO -    Min confidence: low
+2026-01-18 12:51:36 - app.main - INFO - ================================================================================
+2026-01-18 12:51:36 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:51:36 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:51:36 - app.main - INFO - ================================================================================
+2026-01-18 12:51:36 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:51:36 - app.main - INFO -    Min confidence: low
+2026-01-18 12:51:36 - app.main - INFO - ================================================================================
+2026-01-18 12:51:36 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:51:36 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:51:36 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:51:36 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:51:36 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:51:36 - app.main - INFO - ================================================================================
+2026-01-18 12:51:37 - app.main - INFO - ================================================================================
+2026-01-18 12:51:37 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:51:37 - app.main - INFO -    Min confidence: low
+2026-01-18 12:51:37 - app.main - INFO - ================================================================================
+2026-01-18 12:51:37 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:51:37 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:51:37 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:51:37 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:51:37 - app.main - INFO - ================================================================================
+2026-01-18 12:51:37 - app.main - INFO - ================================================================================
+2026-01-18 12:51:37 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:51:37 - app.main - INFO -    Min confidence: low
+2026-01-18 12:51:37 - app.main - INFO - ================================================================================
+2026-01-18 12:51:37 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-18 12:51:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:51:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:51:37 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:51:37 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:51:37 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:51:37 - app.main - INFO - ================================================================================
+2026-01-18 12:51:38 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-18 12:51:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-18 12:51:38 - app.main - INFO -    Countries returned: 52
+2026-01-18 12:51:38 - app.main - INFO - ================================================================================
+2026-01-18 12:52:56 - app.main - INFO - ================================================================================
+2026-01-18 12:52:56 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 12:52:56 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-18 12:52:56 - app.main - INFO - ================================================================================
+2026-01-18 12:52:56 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-18 12:52:56 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 12:52:57 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 74 cities in United States
+2026-01-18 12:52:57 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-18 12:52:57 - app.main - INFO -    Cities returned: 74
+2026-01-18 12:52:57 - app.main - INFO - ================================================================================
+2026-01-18 13:06:17 - app.main - INFO - ================================================================================
+2026-01-18 13:06:17 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 13:06:17 - app.main - INFO -    Country: Poland, Min confidence: low
+2026-01-18 13:06:17 - app.main - INFO - ================================================================================
+2026-01-18 13:06:17 - app.phase2.pg_aggregations - INFO -    Getting country map for Poland (normalized: Poland)...
+2026-01-18 13:06:17 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 13:06:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Kraków, Poland' -> (50.0469432, 19.9971534)
+2026-01-18 13:06:21 - app.phase2.pg_geocoding - INFO - Geocoded 'Krakow, Poland' -> (50.0619474, 19.9368564)
+2026-01-18 13:06:22 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Poland
+2026-01-18 13:06:22 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Poland
+2026-01-18 13:06:22 - app.main - INFO -    Cities returned: 2
+2026-01-18 13:06:22 - app.main - INFO - ================================================================================
+2026-01-18 13:32:21 - app.main - INFO - ================================================================================
+2026-01-18 13:32:21 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-18 13:32:21 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-18 13:32:21 - app.main - INFO - ================================================================================
+2026-01-18 13:32:21 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-18 13:32:21 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-18 13:32:22 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-18 13:32:22 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-18 13:32:22 - app.main - INFO -    Cities returned: 47
+2026-01-18 13:32:22 - app.main - INFO - ================================================================================

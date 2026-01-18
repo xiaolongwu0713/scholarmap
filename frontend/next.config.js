@@ -24,8 +24,8 @@ const nextConfig = {
   // Compression
   compress: true,
 
-  // Enable SWC minification
-  swcMinify: true,
+  // SWC minification is enabled by default in Next.js 15+
+  // swcMinify: true, // Removed - deprecated in Next.js 15
 
   // Headers for better SEO and security
   async headers() {
