@@ -40,24 +40,24 @@ export function CountryCardsGrid({ countries }: CountryCardsGridProps) {
               href={`/research-jobs/country/${slug}`}
               className="block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-4 border border-gray-200 hover:border-blue-400 hover:-translate-y-1"
             >
-              <h3 className="text-base font-semibold text-gray-900 mb-3 line-clamp-2 min-h-[3rem]">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 min-h-[3rem]">
                 {country.country}
               </h3>
-              <div className="space-y-1.5 text-xs text-gray-600">
+              <div className="space-y-1.5 text-sm text-gray-600">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-500">Scholars:</span>
-                  <span className="font-bold text-blue-600">
+                  <span className="font-bold text-blue-600 text-base">
                     {country.scholar_count.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-500">Institutions:</span>
-                  <span className="font-semibold text-gray-700">
+                  <span className="font-semibold text-gray-700 text-base">
                     {country.institution_count.toLocaleString()}
                   </span>
                 </div>
               </div>
-              <div className="mt-3 text-blue-600 hover:text-blue-700 font-medium text-xs">
+              <div className="mt-3 text-blue-600 hover:text-blue-700 font-medium text-sm">
                 Explore →
               </div>
             </Link>

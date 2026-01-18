@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { fetchWorldMap } from '@/lib/seoApi';
+import { fetchCountryMap, fetchWorldMap } from '@/lib/seoApi';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { CountryCardsGrid } from '@/components/CountryCardsGrid';
@@ -35,6 +35,10 @@ export default async function ResearchJobsLanding() {
   // Statistics
   const totalScholars = countries.reduce((sum, c) => sum + c.scholar_count, 0);
   const totalInstitutions = countries.reduce((sum, c) => sum + c.institution_count, 0);
+  const cityCounts = await Promise.all(
+    countries.map((country) => fetchCountryMap(country.country).then((cities) => cities.length))
+  );
+  const totalCities = cityCounts.reduce((sum, count) => sum + count, 0);
 
   return (
     <>
@@ -77,36 +81,37 @@ export default async function ResearchJobsLanding() {
 
           {/* Page Header */}
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-4xl font-bold text-gray-900 mb-6">
-              You Have a Dream Country, City, or Institution — What’s the Next Step?
+            <h1 className="text-4xl md:text-4xl font-bold text-gray-900 mb-6 text-center">
+              You Have a Dream Country, City, or Institution
+              <br />
+              What's the Next Step?
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              In this example research area (Neural Modulation), you can explore research activity across <strong>{countries.length} countries</strong> with{' '}
-              <strong>{totalScholars.toLocaleString()} scholars</strong>.
+              In this example research area (Neural Modulation), you can explore research activity across{' '}
+              <strong>{countries.length} countries</strong>, <strong>{totalCities.toLocaleString()} cities</strong> and{' '}
+              <strong>{totalInstitutions.toLocaleString()} institutions</strong>.
             </p>
           </div>
 
           {/* Overview Text */}
-          <div className="max-w-4xl mx-auto mb-16 prose prose-lg">
+          <div className="max-w-5xl mx-auto mb-16 prose prose-lg text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Your Gateway to Global Academic Opportunities
             </h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              Whether you're a PhD student seeking postdoctoral positions, an established researcher 
-              looking for international collaborations, or an academic professional exploring new 
-              career opportunities, our comprehensive research map helps you discover and connect 
-              with researchers at Your Dream Country, City, or Institution.
+              Whether you're a PhD student seeking postdoctoral positions, an established researcher looking for international collaborations, or an academic professional exploring new career opportunities, our comprehensive research map helps you discover and connect with researchers at Your Dream Country, City, or Institution.
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
               Each country page provides detailed insights into the local research landscape, including:
             </p>
-            <ul className="list-disc list-inside text-gray-700 space-y-2 mb-6">
-              <li>Number of active researchers and research output</li>
-              <li>Major research cities and their academic strengths</li>
-              <li>Leading institutions and research centers</li>
-              <li>Interactive visualization of the research community</li>
-              <li>Direct links to explore scholars and institutions</li>
-            </ul>
+            <div className="flex justify-center mb-6">
+              <ul className="inline-block list-disc list-outside text-gray-700 space-y-2 pl-6 text-left">
+                <li>Number of active researchers and research output</li>
+                <li>Major research cities and their academic strengths</li>
+                <li>Leading institutions and research centers</li>
+                <li>Interactive visualization of the research community</li>
+              </ul>
+            </div>
           </div>
 
           {/* Countries Grid - Card Layout with Expand/Collapse */}

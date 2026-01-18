@@ -26,7 +26,7 @@ export function generateCountryContent(stats: CountryStats): {
   
   return {
     introduction: `
-${country} hosts a vibrant research community with ${scholar_count.toLocaleString()} scholars in our example 
+For this example research area (Neural Modulation), ${country} hosts a vibrant research community with ${scholar_count.toLocaleString()} scholars in our example 
 dataset, spanning ${city_count} major cities and ${institution_count.toLocaleString()} research institutions. 
 From world-renowned universities to specialized research centers, ${country} offers diverse opportunities 
 for academic collaboration and career development.

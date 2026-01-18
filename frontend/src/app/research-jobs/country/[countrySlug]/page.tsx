@@ -13,6 +13,7 @@ import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
 import { CitiesGrid } from '@/components/CitiesGrid';
+import { CityStatsBarChart } from '@/components/CityStatsBarChart';
 
 // This will be used later when we enable static generation for all countries
 // For now, we'll just do dynamic rendering
@@ -79,6 +80,31 @@ export default async function CountryPage({ params }: PageProps) {
   }
 
   const content = generateCountryContent(stats);
+  const introductionParagraphs = content.introduction
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.replace(/\s*\n\s*/g, ' ').trim())
+    .filter(Boolean);
+  const researchLandscapeParagraphs = content.researchLandscape
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.replace(/\s*\n\s*/g, ' ').trim())
+    .filter(Boolean);
+  const opportunitiesParagraphs = content.opportunities
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.replace(/\s*\n\s*/g, ' ').trim())
+    .filter(Boolean);
+  const howToConnectBlocks = content.howToConnect
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => {
+      const lines = block.split('\n').map((line) => line.trim()).filter(Boolean);
+      const listItems = lines.filter((line) => line.startsWith('- ')).map((line) => line.slice(2).trim());
+      if (listItems.length > 0) {
+        const introLines = lines.filter((line) => !line.startsWith('- '));
+        return { type: 'list' as const, intro: introLines.join(' '), items: listItems };
+      }
+      return { type: 'paragraph' as const, text: lines.join(' ') };
+    });
   const faqs = generateCountryFAQs(countryName, stats);
   const demoRunUrl = getDemoRunUrl({ country: countryName });
 
@@ -184,7 +210,7 @@ export default async function CountryPage({ params }: PageProps) {
           {/* Page Header */}
           <header className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Research Opportunities in {countryName}
+              Example Research Opportunities in {countryName}
             </h1>
 
             {/* Statistics Cards - Compact Card Layout */}
@@ -221,20 +247,24 @@ export default async function CountryPage({ params }: PageProps) {
             {/* Introduction */}
             <section className="mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                About Research in {countryName}
+                About Research in {countryName} (Neural Modulation As An Example)
               </h2>
-              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
-                {content.introduction}
+              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed text-justify space-y-8 prose-p:my-0">
+                {introductionParagraphs.map((paragraph, index) => (
+                  <p key={`${countrySlug}-intro-${index}`}>{paragraph}</p>
+                ))}
               </div>
             </section>
 
             {/* Research Landscape */}
             <section className="mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Research Landscape
+                Research Landscape (Neural Modulation As An Example)
               </h2>
-              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
-                {content.researchLandscape}
+              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed space-y-8 prose-p:my-0">
+                {researchLandscapeParagraphs.map((paragraph, index) => (
+                  <p key={`${countrySlug}-landscape-${index}`}>{paragraph}</p>
+                ))}
               </div>
             </section>
 
@@ -243,9 +273,11 @@ export default async function CountryPage({ params }: PageProps) {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 Top Research Cities in {countryName}
               </h2>
-              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line mb-8">
-                {content.topCities}
-              </div>
+              <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                Compare the top research hubs by scholar and institution counts in our sample dataset.
+              </p>
+
+              <CityStatsBarChart cities={stats.top_cities} maxCities={5} />
 
               {/* Cities Grid with Expand/Collapse */}
               <div className="mt-8">
@@ -258,8 +290,10 @@ export default async function CountryPage({ params }: PageProps) {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 Research Opportunities and Career Paths
               </h2>
-              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
-                {content.opportunities}
+              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed space-y-8 prose-p:my-0">
+                {opportunitiesParagraphs.map((paragraph, index) => (
+                  <p key={`${countrySlug}-opportunities-${index}`}>{paragraph}</p>
+                ))}
               </div>
             </section>
 
@@ -268,8 +302,24 @@ export default async function CountryPage({ params }: PageProps) {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 How to Connect with Researchers
               </h2>
-              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
-                {content.howToConnect}
+              <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed space-y-8 prose-p:my-0">
+                {howToConnectBlocks.map((block, index) => {
+                  if (block.type === 'list') {
+                    return (
+                      <div key={`${countrySlug}-connect-${index}`} className="space-y-4">
+                        {block.intro ? <p>{block.intro}</p> : null}
+                        <div className="space-y-2">
+                          {block.items.map((item, itemIndex) => (
+                            <p key={`${countrySlug}-connect-item-${index}-${itemIndex}`} className="pl-6">
+                              - {item}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return <p key={`${countrySlug}-connect-${index}`}>{block.text}</p>;
+                })}
               </div>
             </section>
 
