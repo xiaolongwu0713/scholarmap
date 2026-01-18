@@ -276,15 +276,15 @@ export default async function CountryPage({ params }: PageProps) {
             {/* CTA to Interactive Map */}
             <section className="mb-12">
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border-2 border-blue-200 shadow-lg">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
                   See How the Interactive Map Works
                 </h3>
-                <p className="text-gray-700 mb-6 leading-relaxed">
+                <p className="text-gray-700 mb-6 leading-relaxed text-center">
                   Explore our example dataset showing {stats.scholar_count.toLocaleString()} scholars across{' '}
                   {countryName}. The interactive map lets you filter by city, explore institutions,
                   and discover researchers. <strong>Create your free account</strong> to map scholars in your specific research area.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <Link
                     href={demoRunUrl}
                     className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-blue-700 font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg border-2 border-blue-300"
