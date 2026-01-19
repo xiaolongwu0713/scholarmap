@@ -2,28 +2,28 @@
 
 const cards = [
   {
-    title: "Auto-build literature queries",
+    title: "LLM-generated literature queries",
     description:
       "Describe your research in natural language and get a full-strength retrieval script with broader coverage than manual search.",
     accent: "#2563eb",
     icon: "🧠"
   },
   {
-    title: "Map global research fit",
+    title: "Global research fit map",
     description:
       "Know your opportunities and discover your dream country/city/institution.",
     accent: "#059669",
     icon: "🌍"
   },
   {
-    title: "Find collaborators fast",
+    title: "Collaborator discovery",
     description:
       "List all scholars in a target institution to discover potential collaborators in your field.",
     accent: "#7c3aed",
     icon: "🤝"
   },
   {
-    title: "Share and export in one click",
+    title: "Share and export",
     description:
       "Share and export the workflow as a PDF for reporting or distributing to your team.",
     accent: "#c2410c",

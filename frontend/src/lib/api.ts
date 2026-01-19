@@ -45,7 +45,6 @@ export interface FrontendConfig {
   parse_stage2_max_consecutive_unhelpful: number;
   retrieval_framework_adjust_max_attempts: number;
   share_run_auth_check_enabled: boolean;
-  simple_how_it_works: boolean;
 }
 
 /**

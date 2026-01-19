@@ -56,7 +56,6 @@ export async function getConfig(): Promise<FrontendConfig> {
     parse_stage2_max_consecutive_unhelpful: 2,
     retrieval_framework_adjust_max_attempts: 2,
     share_run_auth_check_enabled: true,
-    simple_how_it_works: false,
   };
     
     configCache = fallbackConfig;

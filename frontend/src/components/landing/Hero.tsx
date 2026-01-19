@@ -24,24 +24,23 @@ export function Hero() {
     {
       key: "hero",
       heading: (
-        <h1 className="text-5xl md:text-7xl font-bold mb-12 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+        <h1 className="text-5xl md:text-6xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Let Research Lead You To Your Dream Country, City, and Institution.
         </h1>
       ),
       image: (
-        <div className="relative max-w-5xl mx-auto w-full">
+        <div className="relative max-w-4xl mx-auto w-full">
           <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
             <Image
               src="/landing_page_figures_optimized/0.webp"
               alt="Global research network visualization"
-              width={1200}
-              height={630}
+              width={1000}
+              height={700}
               priority
               quality={80}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
               className="w-full h-auto"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
           </div>
         </div>
       )
@@ -49,42 +48,25 @@ export function Hero() {
     {
       key: "discover",
       heading: (
-        <h2
-          style={{
-            fontSize: "3rem",
-            fontWeight: "700",
-            marginBottom: "1rem",
-            background: "linear-gradient(to right, #2563eb, #9333ea)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text"
-          }}
-        >
-          Discover global research opportunities—grouped by country, city, and institution.
-        </h2>
+        <h1 className="text-5xl md:text-6xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Where Your Work Matters — Explore Global Opportunities by Location.
+        </h1>
       ),
       image: (
-        <Image
-          src="/landing_page_figures_optimized/10.webp"
-          alt="ScholarMap use case"
-          width={1030}
-          height={940}
-          quality={75}
-          loading="lazy"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1030px"
-          style={{
-            width: "100%",
-            maxWidth: "1030px",
-            maxHeight: "940px",
-            marginBottom: "4rem",
-            marginTop: "2rem",
-            height: "auto",
-            display: "block",
-            borderRadius: "0.75rem",
-            objectFit: "cover",
-            background: "linear-gradient(to right, #2563eb, #9333ea)",
-          }}
-        />
+        <div className="relative max-w-4xl mx-auto w-full">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+            <Image
+              src="/landing_page_figures_optimized/10.webp"
+              alt="ScholarMap use case"
+              width={1000}
+              height={700}
+              quality={75}
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
       )
     }
   ];

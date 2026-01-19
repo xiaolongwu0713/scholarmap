@@ -62,12 +62,6 @@ class Settings(BaseSettings):
     # False: allow public read-only access to run pages and data
     share_run_auth_check_enabled: bool = False
 
-    # Landing page configuration
-    #Two versions of 'how it works' section:
-    # 1. Simple: 3 steps, no phase.
-    # 2. Detailed: 5 steps (Phase 1) + 4 steps (Phase 2)
-    simple_how_it_works: bool = True
-    
     # ============================================================================
     # User Quotas and Limits
     # ============================================================================

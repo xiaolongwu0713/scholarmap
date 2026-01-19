@@ -13847,3 +13847,17 @@ sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, con
 2026-01-19 01:09:54 - root - INFO - Logging initialized - output to console and log.txt
 2026-01-19 01:09:54 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
 2026-01-19 01:09:54 - root - INFO - ================================================================================
+2026-01-19 07:42:05 - root - INFO - ================================================================================
+2026-01-19 07:42:05 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-19 07:42:05 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-19 07:42:05 - root - INFO - ================================================================================
+2026-01-19 09:35:13 - root - INFO - ================================================================================
+2026-01-19 09:35:13 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-19 09:35:13 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-19 09:35:13 - root - INFO - ================================================================================
+2026-01-19 09:39:08 - root - INFO - ================================================================================
+2026-01-19 09:39:08 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-19 09:39:08 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-19 09:39:08 - root - INFO - ================================================================================
+2026-01-19 09:40:06 - app.main - INFO - 👥 ADMIN: Fetching online user count
+2026-01-19 09:40:06 - app.main - INFO - ✅ ADMIN: Online users: 1
