@@ -3,13 +3,10 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
-declare global {
-  interface Window {
-    gtag: (command: string, ...args: any[]) => void;
-    dataLayer: any[];
-  }
-}
-
+/**
+ * Google Analytics component for tracking page views
+ * Note: gtag types are defined globally in src/types/gtag.d.ts
+ */
 export default function GoogleAnalytics({ measurementId }: { measurementId: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();

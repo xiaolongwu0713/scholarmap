@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { fetchCountryStats, getDemoRunUrl } from '@/lib/seoApi';
+import { fetchCountryStats, fetchWorldMap, getDemoRunUrl } from '@/lib/seoApi';
 import { countryToSlug, slugToCountryName, cityToSlug } from '@/lib/geoSlugs';
 import {
   generateCountryContent,
@@ -14,22 +14,28 @@ import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
 import { CitiesGrid } from '@/components/CitiesGrid';
 import { CityStatsBarChart } from '@/components/CityStatsBarChart';
+import { SEOPageTracker } from '@/components/SEOPageTracker';
+import { TrackedLink } from '@/components/TrackedLink';
 
-// This will be used later when we enable static generation for all countries
-// For now, we'll just do dynamic rendering
-export const dynamic = 'force-dynamic';
+// Enable ISR with 24 hour revalidation
+export const revalidate = 86400;
 
-// Future: Generate static params for top countries
-// export async function generateStaticParams() {
-//   const countries = await fetchWorldMap();
-//   const topCountries = countries
-//     .sort((a, b) => b.scholar_count - a.scholar_count)
-//     .slice(0, 100);
-//   
-//   return topCountries.map((country) => ({
-//     countrySlug: countryToSlug(country.country),
-//   }));
-// }
+// Generate static params for top 100 countries
+export async function generateStaticParams() {
+  try {
+    const countries = await fetchWorldMap();
+    const topCountries = countries
+      .sort((a, b) => b.scholar_count - a.scholar_count)
+      .slice(0, 100);
+    
+    return topCountries.map((country) => ({
+      countrySlug: countryToSlug(country.country),
+    }));
+  } catch (error) {
+    console.error('Error generating static params for country pages:', error);
+    return [];
+  }
+}
 
 interface PageProps {
   params: Promise<{
@@ -165,6 +171,7 @@ export default async function CountryPage({ params }: PageProps) {
       <StructuredData data={placeSchema} />
       <StructuredData data={breadcrumbSchema} />
       <StructuredData data={faqSchema} />
+      <SEOPageTracker pageName="country_page" location={countryName} />
 
       <UnifiedNavbar variant="landing" />
 
@@ -335,24 +342,30 @@ export default async function CountryPage({ params }: PageProps) {
                   and discover researchers. <strong>Create your free account</strong> to map scholars in your specific research area.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                  <Link
+                  <TrackedLink
                     href={demoRunUrl}
+                    trackingType="demo"
+                    trackingSource="country_page"
+                    country={countryName}
                     className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-blue-700 font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg border-2 border-blue-300"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
                     View Example Map ({countryName})
-                  </Link>
-                  <Link
+                  </TrackedLink>
+                  <TrackedLink
                     href="/auth/register"
+                    trackingType="signup"
+                    trackingSource="country_page"
+                    country={countryName}
                     className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg transition-colors duration-300 shadow-md hover:shadow-lg"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                     Create Your Own Map (Free)
-                  </Link>
+                  </TrackedLink>
                 </div>
               </div>
             </section>
@@ -385,18 +398,24 @@ export default async function CountryPage({ params }: PageProps) {
               >
                 ← Browse All Countries
               </Link>
-              <Link
+              <TrackedLink
                 href={demoRunUrl}
+                trackingType="demo"
+                trackingSource="country_page_footer"
+                country={countryName}
                 className="block text-blue-600 hover:text-blue-700 font-medium"
               >
                 View {countryName} on Interactive Map →
-              </Link>
-              <Link
+              </TrackedLink>
+              <TrackedLink
                 href="/auth/register"
+                trackingType="signup"
+                trackingSource="country_page_footer"
+                country={countryName}
                 className="block text-blue-600 hover:text-blue-700 font-medium"
               >
                 Create Your Research Map →
-              </Link>
+              </TrackedLink>
             </div>
           </div>
         </div>

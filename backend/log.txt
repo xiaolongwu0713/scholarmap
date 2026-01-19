@@ -13861,3 +13861,1739 @@ sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, con
 2026-01-19 09:39:08 - root - INFO - ================================================================================
 2026-01-19 09:40:06 - app.main - INFO - 👥 ADMIN: Fetching online user count
 2026-01-19 09:40:06 - app.main - INFO - ✅ ADMIN: Online users: 1
+2026-01-19 09:42:45 - app.main - INFO - ================================================================================
+2026-01-19 09:42:45 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 09:42:45 - app.main - INFO -    Min confidence: low
+2026-01-19 09:42:45 - app.main - INFO - ================================================================================
+2026-01-19 09:42:45 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-19 09:42:45 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 09:42:45 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-19 09:42:45 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-19 09:42:45 - app.main - INFO -    Countries returned: 52
+2026-01-19 09:42:45 - app.main - INFO - ================================================================================
+2026-01-19 11:27:01 - app.main - INFO - ================================================================================
+2026-01-19 11:27:01 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:01 - app.main - INFO -    Min confidence: low
+2026-01-19 11:27:01 - app.main - INFO - ================================================================================
+2026-01-19 11:27:01 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-19 11:27:01 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:02 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-19 11:27:02 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-19 11:27:02 - app.main - INFO -    Countries returned: 52
+2026-01-19 11:27:02 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Serbia, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Serbia (normalized: Serbia)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: South Korea, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for South Korea (normalized: South Korea)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: India, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for India (normalized: India)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Germany, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Germany (normalized: Germany)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Egypt, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Egypt (normalized: Egypt)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Chile, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Chile (normalized: Chile)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Zambia, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Zambia (normalized: Zambia)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Peru, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Peru (normalized: Peru)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Uganda, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Uganda (normalized: Uganda)...
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:05 - app.main - INFO -    Country: Greece, Min confidence: low
+2026-01-19 11:27:05 - app.main - INFO - ================================================================================
+2026-01-19 11:27:05 - app.phase2.pg_aggregations - INFO -    Getting country map for Greece (normalized: Greece)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Kazakhstan, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Kazakhstan (normalized: Kazakhstan)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Italy, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Italy (normalized: Italy)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Colombia, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Colombia (normalized: Colombia)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Ireland, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Ireland (normalized: Ireland)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Denmark, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Denmark (normalized: Denmark)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Hungary, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Hungary (normalized: Hungary)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Romania, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Romania (normalized: Romania)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Turkey, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Turkey (normalized: Turkey)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Brasil, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Brasil (normalized: Brasil)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Finland, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Finland (normalized: Finland)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: the Netherlands, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for the Netherlands (normalized: the Netherlands)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Norway, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Norway (normalized: Norway)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Portugal, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Portugal (normalized: Portugal)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Canada, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Canada (normalized: Canada)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: United Kingdom, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for United Kingdom (normalized: United Kingdom)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Japan, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Japan (normalized: Japan)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Poland, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Poland (normalized: Poland)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Israel, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Israel (normalized: Israel)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Switzerland, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Switzerland (normalized: Switzerland)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Brazil, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Brazil (normalized: Brazil)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Australia, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Australia (normalized: Australia)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Slovakia, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Slovakia (normalized: Slovakia)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Iran, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Iran (normalized: Iran)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Netherlands, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Netherlands (normalized: Netherlands)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Spain, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Spain (normalized: Spain)...
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Taiwan, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Taiwan (normalized: Taiwan)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Belgium, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Belgium (normalized: Belgium)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Türkiye, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Türkiye (normalized: Türkiye)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Hong Kong, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Hong Kong (normalized: Hong Kong)...
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Russia, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Russia (normalized: Russia)...
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Czech Republic, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Czech Republic (normalized: Czech Republic)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Sweden, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Sweden (normalized: Sweden)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Czechia, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Czechia (normalized: Czechia)...
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Malaysia, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Malaysia (normalized: Malaysia)...
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: New Zealand, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for New Zealand (normalized: New Zealand)...
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: France, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for France (normalized: France)...
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:06 - app.main - INFO -    Country: Special Administrative Region of China, Min confidence: low
+2026-01-19 11:27:06 - app.main - INFO - ================================================================================
+2026-01-19 11:27:06 - app.phase2.pg_aggregations - INFO -    Getting country map for Special Administrative Region of China (normalized: Special Administrative Region of China)...
+2026-01-19 11:27:07 - app.main - INFO - ================================================================================
+2026-01-19 11:27:07 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:07 - app.main - INFO -    Country: Austria, Min confidence: low
+2026-01-19 11:27:07 - app.main - INFO - ================================================================================
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Getting country map for Austria (normalized: Austria)...
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.main - INFO - ================================================================================
+2026-01-19 11:27:07 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:07 - app.main - INFO -    Country: Venezuela, Min confidence: low
+2026-01-19 11:27:07 - app.main - INFO - ================================================================================
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Getting country map for Venezuela (normalized: Venezuela)...
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 0 cities in South Korea
+2026-01-19 11:27:07 - app.main - INFO - ================================================================================
+2026-01-19 11:27:07 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:27:07 - app.main - INFO -    Country: Mexico, Min confidence: low
+2026-01-19 11:27:07 - app.main - INFO - ================================================================================
+2026-01-19 11:27:07 - app.phase2.pg_aggregations - INFO -    Getting country map for Mexico (normalized: Mexico)...
+2026-01-19 11:27:08 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:08 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:08 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: South Korea
+2026-01-19 11:27:08 - app.main - INFO -    Cities returned: 0
+2026-01-19 11:27:08 - app.main - INFO - ================================================================================
+2026-01-19 11:27:08 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:08 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:08 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:08 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Colombia
+2026-01-19 11:27:08 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 0 cities in the Netherlands
+2026-01-19 11:27:09 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Colombia
+2026-01-19 11:27:09 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:09 - app.main - INFO - ================================================================================
+2026-01-19 11:27:09 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: the Netherlands
+2026-01-19 11:27:09 - app.main - INFO -    Cities returned: 0
+2026-01-19 11:27:09 - app.main - INFO - ================================================================================
+2026-01-19 11:27:09 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:09 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:09 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Israel): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Iran): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Netherlands): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Spain): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Taiwan): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Belgium): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Türkiye): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Hong Kong): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Russia): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Czech Republic): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Sweden): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Czechia): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Malaysia): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (New Zealand): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Greece): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 244, in get_country_map
+    cached_items = await cache_repo.get_batch_cached(city_keys)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/repository.py", line 492, in get_batch_cached
+    result = await self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:36 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Special Administrative Region of China): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 184, in get_country_map
+    pmids = await self._get_run_pmids(session, run_id)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 460, in _get_run_pmids
+    result = await session.execute(query)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:37 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Zambia): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 244, in get_country_map
+    cached_items = await cache_repo.get_batch_cached(city_keys)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/repository.py", line 492, in get_batch_cached
+    result = await self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:37 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (India): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 244, in get_country_map
+    cached_items = await cache_repo.get_batch_cached(city_keys)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/repository.py", line 492, in get_batch_cached
+    result = await self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:37 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Egypt): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 244, in get_country_map
+    cached_items = await cache_repo.get_batch_cached(city_keys)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/repository.py", line 492, in get_batch_cached
+    result = await self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:37 - app.main - ERROR - ❌ MAP OPERATION FAILED - Country Map (Chile): QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+Traceback (most recent call last):
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/main.py", line 1175, in phase2_map_country
+    data = await aggregator.get_country_map(run_id, country, min_confidence)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/phase2/pg_aggregations.py", line 244, in get_country_map
+    cached_items = await cache_repo.get_batch_cached(city_keys)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/local_code/scholarmap/backend/app/db/repository.py", line 492, in get_batch_cached
+    result = await self.session.execute(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 449, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3285, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3309, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 447, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 711, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/xiaowu/opt/miniconda3/envs/maker/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 166, in _do_get
+    raise exc.TimeoutError(
+sqlalchemy.exc.TimeoutError: QueuePool limit of size 10 overflow 20 reached, connection timed out, timeout 30.00 (Background on this error at: https://sqlalche.me/e/20/3o7r)
+2026-01-19 11:27:37 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Peru
+2026-01-19 11:27:37 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Serbia
+2026-01-19 11:27:37 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Serbia
+2026-01-19 11:27:37 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:37 - app.main - INFO - ================================================================================
+2026-01-19 11:27:37 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Peru
+2026-01-19 11:27:37 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:27:37 - app.main - INFO - ================================================================================
+2026-01-19 11:27:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Kazakhstan
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Kazakhstan
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Finland
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 74 cities in United States
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Finland
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 74
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Denmark
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Uganda
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Denmark
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 6
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Uganda
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Turkey
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 30 cities in Italy
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Italy
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 30
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Brasil
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Turkey
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Brasil
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Ireland
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Norway
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Ireland
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Norway
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Romania
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Portugal
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Hungary
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 8 cities in Switzerland
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Romania
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Canada
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Hungary
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Portugal
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 5
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 47
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Japan
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Switzerland
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 8
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 13 cities in United Kingdom
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Canada
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 11
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Poland
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Japan
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 6
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United Kingdom
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 13
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Slovakia
+2026-01-19 11:27:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Poland
+2026-01-19 11:27:38 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:27:38 - app.main - INFO - ================================================================================
+2026-01-19 11:27:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 18 cities in Australia
+2026-01-19 11:27:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Venezuela
+2026-01-19 11:27:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Mexico
+2026-01-19 11:27:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 7 cities in France
+2026-01-19 11:27:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Slovakia
+2026-01-19 11:27:39 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:39 - app.main - INFO - ================================================================================
+2026-01-19 11:27:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Austria
+2026-01-19 11:27:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Brazil
+2026-01-19 11:27:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Australia
+2026-01-19 11:27:39 - app.main - INFO -    Cities returned: 18
+2026-01-19 11:27:39 - app.main - INFO - ================================================================================
+2026-01-19 11:27:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Mexico
+2026-01-19 11:27:39 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:39 - app.main - INFO - ================================================================================
+2026-01-19 11:27:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Venezuela
+2026-01-19 11:27:39 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:27:39 - app.main - INFO - ================================================================================
+2026-01-19 11:27:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Austria
+2026-01-19 11:27:39 - app.main - INFO -    Cities returned: 5
+2026-01-19 11:27:39 - app.main - INFO - ================================================================================
+2026-01-19 11:27:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: France
+2026-01-19 11:27:39 - app.main - INFO -    Cities returned: 7
+2026-01-19 11:27:39 - app.main - INFO - ================================================================================
+2026-01-19 11:27:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Brazil
+2026-01-19 11:27:39 - app.main - INFO -    Cities returned: 11
+2026-01-19 11:27:39 - app.main - INFO - ================================================================================
+2026-01-19 11:27:40 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Frankfurt am Main; Cologne; Jülich, Germany' (from affiliation: Department of Neurology, University Hospital Frankfurt, Goethe University, Frankfurt am Main, Germany; Medical Faculty, University of Cologne, and Department of Neurology, University Hospital Cologne, Cologne, Germany; Cognitive Neuroscience, Institute of Neuroscience and Medicine (INM-3), Research Centre Jülich, Jülich, Germany. Electronic address: Grefkes-hermann@em.uni-frankfurt.de.)
+2026-01-19 11:27:40 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 38 cities in Germany
+2026-01-19 11:27:40 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Germany
+2026-01-19 11:27:40 - app.main - INFO -    Cities returned: 38
+2026-01-19 11:27:40 - app.main - INFO - ================================================================================
+2026-01-19 11:30:18 - root - INFO - ================================================================================
+2026-01-19 11:30:18 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-19 11:30:18 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-19 11:30:18 - root - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: Hong Kong, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Hong Kong (normalized: Hong Kong)...
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: Czechia, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Czechia (normalized: Czechia)...
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: Taiwan, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Taiwan (normalized: Taiwan)...
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: Malaysia, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Malaysia (normalized: Malaysia)...
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: India, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for India (normalized: India)...
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: Egypt, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Egypt (normalized: Egypt)...
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: New Zealand, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for New Zealand (normalized: New Zealand)...
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:45 - app.main - INFO -    Country: Türkiye, Min confidence: low
+2026-01-19 11:30:45 - app.main - INFO - ================================================================================
+2026-01-19 11:30:45 - app.phase2.pg_aggregations - INFO -    Getting country map for Türkiye (normalized: Türkiye)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Special Administrative Region of China, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Special Administrative Region of China (normalized: Special Administrative Region of China)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Zambia, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Zambia (normalized: Zambia)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Iran, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Iran (normalized: Iran)...
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Russia, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Russia (normalized: Russia)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Chile, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Chile (normalized: Chile)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Spain, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Spain (normalized: Spain)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Israel, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Israel (normalized: Israel)...
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Belgium, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Belgium (normalized: Belgium)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Sweden, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Sweden (normalized: Sweden)...
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Greece, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Greece (normalized: Greece)...
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Netherlands, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Netherlands (normalized: Netherlands)...
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-19 11:30:46 - app.main - INFO -    Country: Czech Republic, Min confidence: low
+2026-01-19 11:30:46 - app.main - INFO - ================================================================================
+2026-01-19 11:30:46 - app.phase2.pg_aggregations - INFO -    Getting country map for Czech Republic (normalized: Czech Republic)...
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Czechia
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:47 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Czechia
+2026-01-19 11:30:47 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:30:47 - app.main - INFO - ================================================================================
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Hong Kong
+2026-01-19 11:30:47 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Hong Kong
+2026-01-19 11:30:47 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:30:47 - app.main - INFO - ================================================================================
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Malaysia
+2026-01-19 11:30:47 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Malaysia
+2026-01-19 11:30:47 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:30:47 - app.main - INFO - ================================================================================
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Taiwan
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in India
+2026-01-19 11:30:47 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Taiwan
+2026-01-19 11:30:47 - app.main - INFO -    Cities returned: 5
+2026-01-19 11:30:47 - app.main - INFO - ================================================================================
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Greece
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Russia
+2026-01-19 11:30:47 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Zambia
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: India
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 5
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Russia
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Greece
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Iran
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Zambia
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Special Administrative Region of China
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Iran
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 5
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Egypt
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Spain
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Spain
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 11
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Special Administrative Region of China
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Chile
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Egypt
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Chile
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in New Zealand
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Türkiye
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: New Zealand
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 2
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Belgium
+2026-01-19 11:30:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Belgium
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 6
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:48 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Türkiye
+2026-01-19 11:30:48 - app.main - INFO -    Cities returned: 1
+2026-01-19 11:30:48 - app.main - INFO - ================================================================================
+2026-01-19 11:30:49 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 3 cities in Sweden
+2026-01-19 11:30:49 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Sweden
+2026-01-19 11:30:49 - app.main - INFO -    Cities returned: 3
+2026-01-19 11:30:49 - app.main - INFO - ================================================================================
+2026-01-19 11:30:49 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 9 cities in Netherlands
+2026-01-19 11:30:49 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Netherlands
+2026-01-19 11:30:49 - app.main - INFO -    Cities returned: 9
+2026-01-19 11:30:49 - app.main - INFO - ================================================================================
+2026-01-19 11:30:49 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 4 cities in Czech Republic
+2026-01-19 11:30:49 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Czech Republic
+2026-01-19 11:30:49 - app.main - INFO -    Cities returned: 4
+2026-01-19 11:30:49 - app.main - INFO - ================================================================================
+2026-01-19 11:30:50 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Beer-Yaacov, Israel' (from affiliation: QuantalX Neuroscience, Beer-Yaacov, Israel.)
+2026-01-19 11:30:51 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Zerifin, Israel' (from affiliation: Sagol Center for Hyperbaric Medicine and Research, Shamir Medical Center, Zerifin, Israel.)
+2026-01-19 11:30:52 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 15 cities in Israel
+2026-01-19 11:30:52 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Israel
+2026-01-19 11:30:52 - app.main - INFO -    Cities returned: 15
+2026-01-19 11:30:52 - app.main - INFO - ================================================================================
+2026-01-19 11:52:08 - root - INFO - ================================================================================
+2026-01-19 11:52:08 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-19 11:52:08 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-19 11:52:08 - root - INFO - ================================================================================
