@@ -908,7 +908,8 @@ export default function CountryPage({ params }) {
 - ✅ Tracked components (`SEOPageTracker`, `TrackedLink`)
 - ✅ Full integration in country pages and landing page
 - ✅ Completion checklist created
-- GA4的两个转化漏斗（一个全部4步，一个简单2步）都没有数据显示。
+- GA4的两个转化漏斗（一个全部4步，一个简单2步）都没有数据显示。但是具体的事件被成功统计上了。
+- GSC里的sitemap目前index的网页还是只有5个，没有刷新或重新抓取按钮，应该需要等待google。
 **Next**: Testing and validation (see `PHASE1_COMPLETION_CHECKLIST.md`)
 
 ---
