@@ -6,7 +6,7 @@ export function LandingNavbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col items-center">
             <Link href="/" style={{ textDecoration: "none" }}>
               <div className="flex items-center gap-2 cursor-pointer">
                 <svg
@@ -27,7 +27,7 @@ export function LandingNavbar() {
                 </span>
               </div>
             </Link>
-            <span className="text-xs sm:text-sm font-semibold text-emerald-600">
+            <span className="text-xs sm:text-sm font-semibold text-emerald-600 text-center">
               For Biomedical and Life Sciences Research
             </span>
           </div>

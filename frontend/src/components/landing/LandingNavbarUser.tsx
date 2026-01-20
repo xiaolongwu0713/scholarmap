@@ -10,6 +10,12 @@ export function LandingNavbarUser() {
   const [user, setUser] = useState<{ user_id: string; email: string } | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const displayName = (() => {
+    if (!user?.email) return "User";
+    const localPart = user.email.split("@")[0] || user.email;
+    const maxLength = 12;
+    return localPart.length > maxLength ? `${localPart.slice(0, maxLength)}...` : localPart;
+  })();
 
   useEffect(() => {
     const currentUser = getUser();
@@ -92,7 +98,7 @@ export function LandingNavbarUser() {
                 whiteSpace: "nowrap"
               }}
             >
-              {user?.email || "User"}
+              {displayName}
             </span>
             <svg
               style={{
