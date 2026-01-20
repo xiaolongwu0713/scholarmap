@@ -234,7 +234,7 @@ export function HowItWorks() {
     <section
       id="how-it-works"
       style={{
-        paddingTop: "6rem",
+        paddingTop: "4rem",
         paddingBottom: "6rem",
         background: "linear-gradient(to bottom right, #f9fafb, #eff6ff)",
         scrollMarginTop: "80px"

@@ -43,7 +43,7 @@ export function LandingNavbar() {
               href="#what-you-can-do"
               className="text-sm md:text-base px-4 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
             >
-              Capabilities
+              Who It's For
             </a>
             <a
               href="#how-it-works"

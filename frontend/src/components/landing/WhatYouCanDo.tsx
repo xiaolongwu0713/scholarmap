@@ -36,7 +36,7 @@ export function WhatYouCanDo() {
     <section
       id="what-you-can-do"
       style={{
-        paddingTop: "6rem",
+        paddingTop: "4rem",
         paddingBottom: "6rem",
         background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
         scrollMarginTop: "80px"
