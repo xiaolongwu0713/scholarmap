@@ -2,6 +2,13 @@
 
 const cards = [
   {
+    title: "Built for biomedical and life science scholars",
+    description:
+      "ScholarMap focuses on biomedical and life science research, so the insights and discovery workflows fit your field.",
+    accent: "#0ea5e9",
+    icon: "🧬"
+  },
+  {
     title: "LLM-generated literature queries",
     description:
       "Describe your research in natural language and get a full-strength retrieval script with broader coverage than manual search.",
@@ -9,18 +16,11 @@ const cards = [
     icon: "🧠"
   },
   {
-    title: "Global research fit map",
+    title: "Global fit and collaborator discovery",
     description:
-      "Know your opportunities and discover your dream country/city/institution.",
+      "Find your best-fit country, city, or institution and list scholars there to discover potential collaborators in your field.",
     accent: "#059669",
     icon: "🌍"
-  },
-  {
-    title: "Collaborator discovery",
-    description:
-      "List all scholars in a target institution to discover potential collaborators in your field.",
-    accent: "#7c3aed",
-    icon: "🤝"
   },
   {
     title: "Share and export",
@@ -44,22 +44,6 @@ export function WhatYouCanDo() {
     >
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "6px 14px",
-              borderRadius: "999px",
-              background: "#e0f2fe",
-              color: "#0369a1",
-              fontWeight: 600,
-              fontSize: "0.9rem",
-              marginBottom: "1rem"
-            }}
-          >
-            What You Can Do
-          </div>
           <h2 style={{ fontSize: "2.6rem", fontWeight: 700, color: "#0f172a", marginBottom: "0.75rem" }}>
             Know in 10 seconds if ScholarMap is worth your time
           </h2>

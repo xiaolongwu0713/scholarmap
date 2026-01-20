@@ -8,23 +8,29 @@ import { CanonicalURL } from "@/components/CanonicalURL";
 export const metadata: Metadata = {
   metadataBase: new URL('https://scholarmap-frontend.onrender.com'),
   title: {
-    default: "ScholarMap - Discover Global Research Opportunities",
+    default: "ScholarMap - Global Biomedical Research Network",
     template: "%s | ScholarMap"
   },
-  description: "Map global research opportunities by country, city, and institution. Auto-build literature queries, find collaborators, and discover your dream research destination in seconds.",
+  description: "Map biomedical research opportunities worldwide. Find life sciences researchers, collaborators, and academic institutions by country and city. Based on PubMed data covering medicine, biology, neuroscience, and health sciences.",
   keywords: [
-    "research opportunities",
+    // Field-specific keywords
+    "biomedical research opportunities",
+    "life sciences research",
+    "medical research collaboration",
+    "PubMed researchers",
+    "biomedical institutions",
+    "neuroscience research network",
+    "pharmacology research",
+    "public health researchers",
+    "clinical research opportunities",
+    "biology research mapping",
+    "medical research visualization",
+    // Keep relevant general terms
     "academic collaboration",
     "literature search",
     "research mapping",
-    "global scholars",
-    "academic institutions",
-    "research collaboration",
     "PubMed search",
     "scholar discovery",
-    "research visualization",
-    "academic networking",
-    "institution ranking"
   ],
   authors: [{ name: "ScholarMap Team" }],
   creator: "ScholarMap",
@@ -39,8 +45,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://scholarmap-frontend.onrender.com",
     siteName: "ScholarMap",
-    title: "ScholarMap - Discover Global Research Opportunities",
-    description: "Map global research opportunities by country, city, and institution. Find collaborators and discover your dream research destination.",
+    title: "ScholarMap - Global Biomedical Research Network",
+    description: "Map biomedical research opportunities worldwide. Find life sciences researchers and academic institutions in medicine, biology, and health sciences.",
     images: [
       {
         url: "/landing_page_figures_optimized/0.webp",
@@ -52,8 +58,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ScholarMap - Discover Global Research Opportunities",
-    description: "Map global research opportunities by country, city, and institution. Find collaborators and discover your dream research destination.",
+    title: "ScholarMap - Global Biomedical Research Network",
+    description: "Map biomedical research opportunities worldwide. Find life sciences researchers and institutions in medicine, biology, and health sciences.",
     images: ["/landing_page_figures_optimized/0.webp"],
     creator: "@scholarmap",
   },

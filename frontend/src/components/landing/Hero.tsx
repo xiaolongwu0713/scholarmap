@@ -24,8 +24,8 @@ export function Hero() {
     {
       key: "hero",
       heading: (
-        <h1 className="text-5xl md:text-6xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Let Research Lead You To Your Dream Country, City, and Institution.
+        <h1 className="text-4xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Biomedical and Life Sciences Research Opportunities by Country, City, and Institution.
         </h1>
       ),
       image: (
@@ -48,7 +48,7 @@ export function Hero() {
     {
       key: "discover",
       heading: (
-        <h1 className="text-5xl md:text-6xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-5xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Where Your Work Matters — Explore Global Opportunities by Location.
         </h1>
       ),

@@ -59,19 +59,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const keywords = generateCountryKeywords(countryName);
 
   return {
-    title: `${countryName} Research Opportunities - ${stats.scholar_count.toLocaleString()} Scholars | ScholarMap`,
-    description,
-    keywords,
+    title: `${countryName} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | ScholarMap`,
+    description: `Explore biomedical and life sciences research in ${countryName}. ${stats.scholar_count.toLocaleString()} PubMed researchers across ${stats.city_count} cities in medicine, biology, neuroscience, and health sciences. Find postdoc positions and research collaborations.`,
+    keywords: [
+      `biomedical research ${countryName}`,
+      `life sciences ${countryName}`,
+      `medical research ${countryName}`,
+      `PubMed researchers ${countryName}`,
+      `neuroscience postdoc ${countryName}`,
+      `clinical research opportunities ${countryName}`,
+      `pharmacology research ${countryName}`,
+      `biology institutions ${countryName}`,
+      `health sciences ${countryName}`,
+      `biomedical collaboration ${countryName}`,
+    ],
     openGraph: {
-      title: `Research Opportunities in ${countryName}`,
-      description: `${stats.scholar_count.toLocaleString()} active researchers across ${stats.city_count} cities`,
+      title: `Biomedical Research in ${countryName}`,
+      description: `${stats.scholar_count.toLocaleString()} life sciences researchers across ${stats.city_count} cities in medicine, biology, and health sciences`,
       images: ['/landing_page_figures_optimized/0.webp'],
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `Research Map: ${countryName}`,
-      description: `${stats.scholar_count.toLocaleString()} scholars | ${stats.institution_count.toLocaleString()} institutions`,
+      title: `Biomedical Research Map: ${countryName}`,
+      description: `${stats.scholar_count.toLocaleString()} PubMed researchers | ${stats.institution_count.toLocaleString()} institutions | Medicine, Biology, Neuroscience`,
     },
   };
 }
@@ -190,6 +201,25 @@ export default async function CountryPage({ params }: PageProps) {
             <span className="text-gray-900 font-medium">{countryName}</span>
           </nav>
 
+          {/* Field Scope Banner */}
+          <div className="mb-8">
+            <div className="bg-gradient-to-r from-green-50 to-teal-50 border-l-4 border-green-600 rounded-r-lg p-4 shadow-sm">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                  </svg>
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm text-green-900">
+                    <strong className="font-semibold">Biomedical Research Data:</strong>{' '}
+                    Showing life sciences and medical research in {countryName} from PubMed database (medicine, biology, neuroscience, health sciences).
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Data Disclaimer Banner */}
           <div className="mb-8">
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-r-lg p-4 shadow-sm">
@@ -201,13 +231,13 @@ export default async function CountryPage({ params }: PageProps) {
                 </div>
                 <div className="ml-3 flex-1">
                   <p className="text-sm text-blue-800">
-                    <strong className="font-semibold">Sample Data:</strong> This page shows example Neural Modulation research for {countryName}. 
+                    <strong className="font-semibold">Sample Data:</strong> This page shows example biomedical research (Neural Modulation) for {countryName}. 
                     The actual distribution in your specific field may differ.{' '}
                     
                     <Link href="/auth/register" className="underline hover:text-blue-900 font-medium">
                       Create your free account
                     </Link>{' '}
-                    to explore scholars in your research area.
+                    to explore scholars in your biomedical research area.
                   </p>
                 </div>
               </div>
@@ -217,7 +247,7 @@ export default async function CountryPage({ params }: PageProps) {
           {/* Page Header */}
           <header className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Example Research Opportunities in {countryName}
+              Biomedical Research Opportunities in {countryName}
             </h1>
 
             {/* Statistics Cards - Compact Card Layout */}
@@ -254,7 +284,7 @@ export default async function CountryPage({ params }: PageProps) {
             {/* Introduction */}
             <section className="mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                About Research in {countryName} (Neural Modulation As An Example)
+                About Biomedical Research in {countryName}
               </h2>
               <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed text-justify space-y-8 prose-p:my-0">
                 {introductionParagraphs.map((paragraph, index) => (
@@ -266,7 +296,7 @@ export default async function CountryPage({ params }: PageProps) {
             {/* Research Landscape */}
             <section className="mb-12">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Research Landscape (Neural Modulation As An Example)
+                Biomedical Research Landscape
               </h2>
               <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed space-y-8 prose-p:my-0">
                 {researchLandscapeParagraphs.map((paragraph, index) => (

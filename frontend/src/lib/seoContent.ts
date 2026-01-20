@@ -26,33 +26,34 @@ export function generateCountryContent(stats: CountryStats): {
   
   return {
     introduction: `
-For this example research area (Neural Modulation), ${country} hosts a vibrant research community with ${scholar_count.toLocaleString()} scholars in our example 
-dataset, spanning ${city_count} major cities and ${institution_count.toLocaleString()} research institutions. 
-From world-renowned universities to specialized research centers, ${country} offers diverse opportunities 
-for academic collaboration and career development.
+${country} is a significant contributor to global biomedical and life sciences research, with ${scholar_count.toLocaleString()} active researchers 
+in our PubMed database spanning ${city_count} major cities and ${institution_count.toLocaleString()} research institutions. 
+From world-renowned medical schools and research hospitals to specialized institutes in neuroscience, pharmacology, and public health, 
+${country} offers diverse opportunities for biomedical researchers at all career stages.
 
-Whether you're a PhD student exploring postdoctoral positions, an established researcher seeking international 
-collaborations, or an academic professional planning your next career move, understanding the geographic 
-distribution of research activity can help you identify the right opportunities. This page provides insights 
-into the research landscape of ${country} based on sample data, illustrating how ScholarMap can help you 
-discover and connect with institutions in your field.
+This data covers medical research, biological sciences, neuroscience, pharmacology, public health, and related health sciences fields 
+indexed in PubMed. Whether you're a PhD student exploring postdoctoral positions in life sciences, a medical researcher seeking 
+international collaborations, or a biomedical professional planning your next career move, understanding the geographic distribution 
+of biomedical research activity can help you identify the right opportunities. This page provides insights into the biomedical research 
+landscape of ${country}, illustrating how ScholarMap can help you discover and connect with institutions in medicine, biology, and health sciences.
     `.trim(),
     
     researchLandscape: `
-The research ecosystem in ${country} is characterized by its breadth and depth across multiple disciplines. 
-With ${scholar_count.toLocaleString()} active researchers publishing in peer-reviewed journals, ${country} 
-contributes significantly to global scientific knowledge. The ${institution_count.toLocaleString()} research 
-institutions in ${country} range from large research universities with comprehensive programs to specialized 
-institutes focusing on specific fields.
+The biomedical research ecosystem in ${country} is characterized by its breadth and depth across life sciences and health sciences. 
+With ${scholar_count.toLocaleString()} active researchers publishing in PubMed-indexed journals, ${country} contributes significantly 
+to global biomedical knowledge in fields such as medicine, biology, neuroscience, pharmacology, and public health. The 
+${institution_count.toLocaleString()} research institutions in ${country} range from large medical schools with comprehensive programs 
+to specialized research institutes focusing on specific biomedical areas.
 
-Research activity in ${country} is distributed across ${city_count} cities, each offering unique strengths 
-and opportunities. Major research centers include ${topCityNames}, which collectively host the majority of 
-the country's research output. These cities provide access to state-of-the-art facilities, collaborative 
-networks, and funding opportunities that support cutting-edge research.
+Biomedical research activity in ${country} is distributed across ${city_count} cities, each offering unique strengths in different 
+areas of life sciences and medical research. Major biomedical research centers include ${topCityNames}, which collectively host the 
+majority of the country's health sciences research output. These cities provide access to state-of-the-art medical facilities, 
+research hospitals, collaborative networks, and funding opportunities that support cutting-edge biomedical research.
 
-The academic job market in ${country} encompasses various positions including postdoctoral fellowships, 
-research scientist positions, faculty appointments, and visiting scholar programs. Many institutions actively 
-recruit international talent, making ${country} an attractive destination for researchers from around the world.
+The academic job market in ${country} for biomedical researchers encompasses various positions including postdoctoral fellowships 
+in life sciences, research scientist positions in medical centers, faculty appointments in health sciences departments, and visiting 
+scholar programs. Many institutions actively recruit international talent in medicine, biology, and related fields, making ${country} 
+an attractive destination for biomedical researchers from around the world.
     `.trim(),
     
     topCities: `
@@ -71,48 +72,51 @@ emerging research areas.
     `.trim(),
     
     opportunities: `
-Researchers interested in ${country} can explore various types of opportunities:
+Biomedical researchers interested in ${country} can explore various types of opportunities in life sciences and medical research:
 
-**Postdoctoral Positions**: Many institutions in ${country} offer postdoctoral fellowships with competitive 
-funding. These positions typically provide 2-3 years of research time, allowing early-career researchers to 
-establish their independent research programs while benefiting from mentorship and institutional resources.
+**Postdoctoral Positions in Life Sciences**: Many medical schools, research hospitals, and biomedical institutes in ${country} 
+offer postdoctoral fellowships in areas such as neuroscience, molecular biology, pharmacology, and clinical research. These positions 
+typically provide 2-3 years of research time with competitive funding, allowing early-career biomedical researchers to establish 
+their independent research programs while benefiting from mentorship and access to state-of-the-art medical facilities.
 
-**Research Collaborations**: The ${scholar_count.toLocaleString()} researchers in ${country} are actively 
-engaged in international collaborations. Connecting with researchers in your field can lead to joint 
-publications, grant applications, and exchange programs.
+**Biomedical Research Collaborations**: The ${scholar_count.toLocaleString()} biomedical researchers in ${country} are actively 
+engaged in international collaborations across medicine, biology, and health sciences. Connecting with researchers in your specific 
+biomedical field can lead to joint publications, collaborative grant applications, clinical trials, and research exchange programs.
 
-**Faculty Positions**: Universities and research institutes regularly hire tenure-track faculty and research 
-scientists. Academic positions in ${country} often come with research startup packages, access to graduate 
-students, and collaborative funding opportunities.
+**Faculty Positions in Health Sciences**: Medical schools, universities, and research institutes regularly hire tenure-track faculty 
+in biomedical departments including medicine, biology, neuroscience, pharmacology, and public health. Academic positions in ${country} 
+often come with research startup packages, access to graduate students and postdocs, and collaborative funding opportunities for 
+biomedical research.
 
-**Visiting Scholar Programs**: Many institutions offer visiting scholar positions, ranging from short-term 
-visits (1-3 months) to year-long appointments. These programs facilitate knowledge exchange and can lead to 
-longer-term collaborations.
+**Visiting Scholar Programs**: Many biomedical institutions offer visiting scholar positions for life sciences researchers, ranging 
+from short-term research visits (1-3 months) to year-long appointments in medical centers and research hospitals. These programs 
+facilitate knowledge exchange in specialized biomedical areas and can lead to longer-term collaborations.
 
-The research environment in ${country} supports interdisciplinary work, with many institutions encouraging 
-collaboration across traditional departmental boundaries. This creates opportunities for researchers working 
-at the intersection of multiple fields.
+The biomedical research environment in ${country} supports interdisciplinary work across life sciences, with many institutions 
+encouraging collaboration between basic biology, clinical medicine, and translational research. This creates opportunities for 
+researchers working at the intersection of multiple biomedical fields.
     `.trim(),
     
     howToConnect: `
-To explore research opportunities in ${country}, start by understanding the geographic distribution of research 
-activity. Our interactive research map provides a powerful way to visualize scholars, institutions, and their 
-research output across ${city_count} cities in ${country}.
+To explore biomedical research opportunities in ${country}, start by understanding the geographic distribution of life sciences 
+research activity. Our interactive research map provides a powerful way to visualize biomedical scholars, medical institutions, 
+and their research output across ${city_count} cities in ${country}.
 
-Using ScholarMap, you can:
-- Browse researchers by city and institution in your specific field
-- Explore publication patterns and collaboration networks  
-- Identify potential mentors or collaborators
-- Discover institutional strengths and emerging research areas
+Using ScholarMap for biomedical research, you can:
+- Browse life sciences researchers by city and institution in your specific biomedical field
+- Explore PubMed publication patterns and collaboration networks in medicine and biology
+- Identify potential mentors or collaborators in neuroscience, pharmacology, or other health sciences
+- Discover institutional strengths in specific biomedical areas and emerging research fields
 
-The example map shows ${scholar_count.toLocaleString()} scholars across ${institution_count.toLocaleString()} 
-institutions in ${country}. When you create your free account, you can generate a similar map for your specific 
-research interest, allowing you to discover exactly which institutions and cities are most active in your field.
+The example map shows ${scholar_count.toLocaleString()} biomedical scholars across ${institution_count.toLocaleString()} 
+institutions in ${country} based on PubMed data. When you create your free account, you can generate a similar map for your 
+specific biomedical research interest, allowing you to discover exactly which medical schools, research hospitals, and 
+biomedical institutes are most active in your field.
 
-The geographic visualization helps you make informed decisions about where to apply for positions, which 
-institutions to contact for collaborations, and how research activity in your field is distributed globally. 
-Whether you're planning a postdoc application, seeking research partners, or exploring faculty positions, 
-understanding this geographic landscape is invaluable for your academic career planning.
+The geographic visualization helps you make informed decisions about where to apply for postdoc positions in life sciences, 
+which medical institutions to contact for collaborations, and how biomedical research activity in your field is distributed 
+globally. Whether you're planning a postdoc application in neuroscience, seeking clinical research partners, or exploring 
+faculty positions in health sciences, understanding this geographic landscape is invaluable for your biomedical career planning.
     `.trim(),
   };
 }
@@ -126,20 +130,24 @@ export function generateCountryFAQs(country: string, stats: CountryStats): Array
 }> {
   return [
     {
-      question: `What data is shown for ${country}?`,
-      answer: `The data shown represents an example research area with ${stats.scholar_count.toLocaleString()} scholars across ${stats.institution_count.toLocaleString()} institutions in ${country}. When you create a free ScholarMap account, you can generate a similar map for your specific research field.`,
+      question: `What biomedical research data is shown for ${country}?`,
+      answer: `The data shown represents biomedical and life sciences research from PubMed, with ${stats.scholar_count.toLocaleString()} researchers across ${stats.institution_count.toLocaleString()} institutions in ${country}. This covers medicine, biology, neuroscience, pharmacology, public health, and related health sciences. When you create a free ScholarMap account, you can generate a similar map for your specific biomedical research field.`,
     },
     {
-      question: `What are the major research cities in ${country}?`,
-      answer: `In our example dataset, the top research cities in ${country} include ${stats.top_cities.slice(0, 5).map(c => c.city).join(', ')}. The actual distribution in your field may differ. Use ScholarMap to discover the geographic distribution of scholars in your specific research area.`,
+      question: `What research fields does ScholarMap cover?`,
+      answer: `ScholarMap uses PubMed data, covering biomedical and life sciences research including medicine, biology, neuroscience, pharmacology, public health, genetics, immunology, and related health sciences. It does not include social sciences, economics, engineering (except biomedical), or humanities.`,
     },
     {
-      question: `How can ScholarMap help me find opportunities in ${country}?`,
-      answer: `ScholarMap creates an interactive geographic visualization of scholars in your research field. By mapping publication data, you can discover which cities and institutions in ${country} are most active in your area, helping you identify postdoc opportunities, collaboration partners, and faculty positions.`,
+      question: `What are the major biomedical research cities in ${country}?`,
+      answer: `In our PubMed dataset, the top biomedical research cities in ${country} include ${stats.top_cities.slice(0, 5).map(c => c.city).join(', ')}. These cities host major medical schools, research hospitals, and biomedical institutes. Use ScholarMap to discover the geographic distribution of researchers in your specific life sciences area.`,
+    },
+    {
+      question: `How can ScholarMap help me find biomedical opportunities in ${country}?`,
+      answer: `ScholarMap creates an interactive geographic visualization of biomedical researchers in your field using PubMed data. You can discover which cities and medical institutions in ${country} are most active in your area of life sciences, helping you identify postdoc opportunities, clinical research collaborations, and faculty positions in health sciences.`,
     },
     {
       question: `Is ScholarMap free to use?`,
-      answer: `Yes! You can create a free account to generate research maps for your specific field of interest. Simply describe your research area, and ScholarMap will analyze publication data to show you the geographic distribution of active scholars and institutions worldwide, including in ${country}.`,
+      answer: `Yes! You can create a free account to generate biomedical research maps for your specific field of interest in medicine, biology, or health sciences. Simply describe your research area, and ScholarMap will analyze PubMed publication data to show you the geographic distribution of active biomedical scholars and institutions worldwide, including in ${country}.`,
     },
   ];
 }
@@ -148,7 +156,7 @@ export function generateCountryFAQs(country: string, stats: CountryStats): Array
  * Generate meta description for country page
  */
 export function generateCountryMetaDescription(country: string, stats: CountryStats): string {
-  return `Discover research opportunities in ${country} with our interactive map tool. See example data showing ${stats.scholar_count.toLocaleString()} scholars across ${stats.city_count} cities. Create your free map for your research field.`;
+  return `Explore biomedical research opportunities in ${country}. ${stats.scholar_count.toLocaleString()} PubMed researchers across ${stats.city_count} cities in medicine, biology, neuroscience, and health sciences. Find postdoc positions and collaborations.`;
 }
 
 /**
@@ -156,15 +164,15 @@ export function generateCountryMetaDescription(country: string, stats: CountrySt
  */
 export function generateCountryKeywords(country: string): string[] {
   return [
-    `research opportunities ${country}`,
-    `postdoc positions ${country}`,
-    `academic jobs ${country}`,
-    `PhD positions ${country}`,
-    `research collaborations ${country}`,
-    `universities ${country}`,
-    `research institutions ${country}`,
-    `scholars ${country}`,
-    `academic careers ${country}`,
-    `postdoctoral fellowships ${country}`,
+    `biomedical research opportunities ${country}`,
+    `life sciences postdoc ${country}`,
+    `medical research ${country}`,
+    `PubMed researchers ${country}`,
+    `neuroscience research ${country}`,
+    `clinical research opportunities ${country}`,
+    `pharmacology postdoc ${country}`,
+    `biology research institutions ${country}`,
+    `health sciences ${country}`,
+    `biomedical collaboration ${country}`,
   ];
 }

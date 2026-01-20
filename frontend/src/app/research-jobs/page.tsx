@@ -8,21 +8,23 @@ import { SEOPageTracker } from '@/components/SEOPageTracker';
 import { TrackedLink } from '@/components/TrackedLink';
 
 export const metadata: Metadata = {
-  title: 'Global Research Opportunities by Country | ScholarMap',
-  description: 'Browse research jobs, postdoc positions, and academic collaborations across 150+ countries. Interactive map of global scholars and research institutions.',
+  title: 'Global Biomedical Research Opportunities by Country | ScholarMap',
+  description: 'Explore biomedical and life sciences research opportunities across 150+ countries. Find PubMed researchers, medical institutions, and academic collaborations in medicine, biology, neuroscience, and health sciences.',
   keywords: [
-    'research opportunities worldwide',
-    'postdoc positions',
-    'academic jobs',
-    'research collaborations',
-    'global scholars',
-    'research institutions',
-    'academic careers',
-    'PhD positions',
+    'biomedical research opportunities worldwide',
+    'life sciences postdoc positions',
+    'medical research collaborations',
+    'PubMed global researchers',
+    'neuroscience research network',
+    'clinical research opportunities',
+    'biomedical academic jobs',
+    'pharmacology research positions',
+    'public health researchers',
+    'biology research institutions',
   ],
   openGraph: {
-    title: 'Global Research Opportunities by Country',
-    description: 'Explore research activity in 150+ countries. Find postdoc positions and academic collaborations.',
+    title: 'Global Biomedical Research Opportunities by Country',
+    description: 'Explore biomedical research in 150+ countries. Find life sciences researchers and collaborations in medicine, biology, and health sciences.',
     images: ['/landing_page_figures_optimized/0.webp'],
   },
 };
@@ -59,6 +61,27 @@ export default async function ResearchJobsLanding() {
             <span className="text-gray-900 font-medium">Research Jobs by Country</span>
           </nav>
 
+          {/* Field Scope Banner */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="bg-gradient-to-r from-green-50 to-teal-50 border-l-4 border-green-600 rounded-r-lg p-5 shadow-sm">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg className="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                  </svg>
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm text-green-900">
+                    <strong className="font-semibold">Biomedical & Life Sciences Focus:</strong>{' '}
+                    ScholarMap uses PubMed data, covering biomedical research including medicine, 
+                    biology, neuroscience, pharmacology, public health, and related fields. 
+                    Not suitable for economics, social sciences, or non-biomedical engineering.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Data Disclaimer Banner */}
           <div className="max-w-4xl mx-auto mb-8">
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-r-lg p-4 shadow-sm">
@@ -90,7 +113,7 @@ export default async function ResearchJobsLanding() {
               What's the Next Step?
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              In this example research area (Neural Modulation), you can explore research activity across{' '}
+              In this example biomedical research area (Neural Modulation), you can explore research activity across{' '}
               <strong>{countries.length} countries</strong>, <strong>{totalCities.toLocaleString()} cities</strong> and{' '}
               <strong>{totalInstitutions.toLocaleString()} institutions</strong>.
             </p>
@@ -102,7 +125,7 @@ export default async function ResearchJobsLanding() {
               Your Gateway to Global Academic Opportunities
             </h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              Whether you're a PhD student seeking postdoctoral positions, an established researcher looking for international collaborations, or an academic professional exploring new career opportunities, our comprehensive research map helps you discover and connect with researchers at Your Dream Country, City, or Institution.
+              Whether you're a PhD student seeking postdoctoral positions in life sciences, a medical researcher looking for international collaborations, or a biomedical professional exploring new career opportunities, our comprehensive research map helps you discover and connect with researchers in medicine, biology, neuroscience, and health sciences at your dream country, city, or institution.
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
               Each country page provides detailed insights into the local research landscape, including:
