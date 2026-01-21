@@ -2349,6 +2349,11 @@ function RunPageContent() {
             {busy === "ingest" ? "🔄 Mapping..." : ingestionCompleted ? "✓ Mapping Completed" : "⚡ Run Mapping Pipeline"}
           </button>
         </div>
+        {busy === "ingest" && (
+          <div className="muted" style={{ textAlign: "center", marginTop: 8 }}>
+            The mapping will take roughly 2 minutes.
+          </div>
+        )}
 
         {ingestStats && (
           <div style={{ marginTop: 20 }}>

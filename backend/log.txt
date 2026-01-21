@@ -18478,3 +18478,14 @@ DETAIL:  Consistent recovery state has not been yet reached.
 2026-01-21 12:42:31 - root - INFO - Logging initialized - output to console and log.txt
 2026-01-21 12:42:31 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
 2026-01-21 12:42:31 - root - INFO - ================================================================================
+2026-01-21 13:09:37 - app.main - INFO - 👥 ADMIN: Fetching online user count
+2026-01-21 13:09:37 - app.main - INFO - ✅ ADMIN: Online users: 1
+2026-01-21 13:09:41 - app.main - INFO - ================================================================================
+2026-01-21 13:09:41 - app.main - INFO - 📊 ADMIN: Manual resource snapshot triggered
+2026-01-21 13:09:41 - app.main - INFO - ================================================================================
+2026-01-21 13:09:42 - app.main - INFO - ✅ ADMIN: Snapshot completed
+2026-01-21 13:09:42 - app.main - INFO -    Snapshot ID: 15
+2026-01-21 13:09:42 - app.main - INFO -    Users: 7
+2026-01-21 13:09:42 - app.main - INFO -    Runs: 13
+2026-01-21 13:09:42 - app.main - INFO -    Total Disk: 41.80 MB
+2026-01-21 13:09:42 - app.main - INFO - ================================================================================
