@@ -443,6 +443,7 @@ function RunPageContent() {
   const [showMap, setShowMap] = useState(false);
   const showDemoLoading = isDemoRun && !ingestStats;
   const [showDemoReadyModal, setShowDemoReadyModal] = useState(false);
+  const [showMappingNotice, setShowMappingNotice] = useState(false);
   const hasShownDemoReady = useRef(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [isExportMode, setIsExportMode] = useState(false);
@@ -1379,6 +1380,7 @@ function RunPageContent() {
 
 
   async function onIngest() {
+    setShowMappingNotice(true);
     setBusy("ingest");
     setError(null);
     try {
@@ -1401,6 +1403,7 @@ function RunPageContent() {
       setError(String(e));
     } finally {
       setBusy(null);
+      setShowMappingNotice(false);
     }
   }
 
@@ -1425,7 +1428,7 @@ function RunPageContent() {
               <tr>
                 <th style={{ width: "50%" }}>Title</th>
                 <th style={{ width: "10%" }}>Year</th>
-                <th style={{ width: "20%" }}>Venue</th>
+                <th style={{ width: "20%" }}>Journal</th>
                 <th style={{ width: "20%" }}>DOI</th>
               </tr>
             </thead>
@@ -1478,7 +1481,7 @@ function RunPageContent() {
             <tr>
               <th style={{ width: "50%" }}>Title</th>
               <th style={{ width: "10%" }}>Year</th>
-              <th style={{ width: "20%" }}>Venue</th>
+              <th style={{ width: "20%" }}>Journal</th>
               <th style={{ width: "20%" }}>DOI</th>
             </tr>
           </thead>
@@ -1700,6 +1703,47 @@ function RunPageContent() {
                 OK
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showMappingNotice && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.35)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "14px",
+              padding: "20px 24px",
+              maxWidth: "420px",
+              width: "90%",
+              boxShadow: "0 8px 28px rgba(0, 0, 0, 0.2)",
+              border: "1px solid #e5e7eb",
+              textAlign: "center"
+            }}
+          >
+            <div style={{ fontSize: "15px", color: "#374151", lineHeight: 1.5, marginBottom: 16 }}>
+              The mapping will take roughly 2 minutes.
+            </div>
+            <button
+              className="primary"
+              onClick={() => setShowMappingNotice(false)}
+              style={{ padding: "8px 16px", fontSize: "14px" }}
+            >
+              OK
+            </button>
           </div>
         </div>
       )}
@@ -2154,9 +2198,9 @@ function RunPageContent() {
           )}
         </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignItems: "stretch" }}>
             {/* Left: Dialogue */}
-            <div className="stack" style={{ gap: 12, display: "flex", flexDirection: "column" }}>
+            <div className="stack" style={{ gap: 12, display: "flex", flexDirection: "column", height: 640 }}>
               <div
                 style={{
                   flex: 1,
@@ -2278,8 +2322,8 @@ function RunPageContent() {
             </div>
 
             {/* Right: Framework History */}
-            <div className="stack" style={{ gap: 12, display: "flex", flexDirection: "column" }}>
-              <div className="muted" style={{ fontSize: 13 }}>Latest Retrieval Framework</div>
+            <div className="stack" style={{ gap: 12, display: "flex", flexDirection: "column", height: 640 }}>
+              <div className="muted" style={{ fontSize: 13, textAlign: "center" }}>Generated Retrieval Framework</div>
               <div style={{ flex: 1, overflow: "auto", minHeight: 400, maxHeight: 500 }}>
                 {frameworkAdjustHistory.length > 0 ? (
                   <div className="stack" style={{ gap: 12 }}>
@@ -2304,7 +2348,7 @@ function RunPageContent() {
                   <div className="muted">No framework yet.</div>
                 )}
               </div>
-        <div className="row" style={{ justifyContent: "center" }}>
+        <div className="row" style={{ justifyContent: "center", marginTop: "auto" }}>
                 <button onClick={onUseFramework} disabled={frameworkCompleted || busy !== null || !frameworkText.trim()} className="gradient-green">
                   {busy === "queryBuild" ? "Generating Query ..." : "Use the current framework"}
                 </button>
@@ -2345,11 +2389,6 @@ function RunPageContent() {
             <h2 style={{ margin: 0 }}>⚙️ Generated Query For Each Academic Database.</h2>
             <div className="muted">Instructions: Search and retrieve papers by clicking 'Execute Query'.</div>
           </div>
-          {pubmedQueryText && (
-            <span className="badge" style={{ background: "#f3e8ff", color: "#7c3aed" }}>
-              ✓ Ready
-            </span>
-          )}
         </div>
         <textarea
           rows={8}
@@ -2445,11 +2484,6 @@ function RunPageContent() {
             {busy === "ingest" ? "🔄 Mapping..." : ingestionCompleted ? "✓ Mapping Completed" : "⚡ Run Mapping Pipeline"}
           </button>
         </div>
-        {busy === "ingest" && (
-          <div className="muted" style={{ textAlign: "center", marginTop: 8 }}>
-            The mapping will take roughly 2 minutes.
-          </div>
-        )}
 
         {ingestStats && (
           <div style={{ marginTop: 20 }}>
