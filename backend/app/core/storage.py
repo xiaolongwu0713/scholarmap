@@ -136,6 +136,7 @@ class FileStore:
         understanding = {
             "created_at": created_at,
             "research_description": research_description,
+            "initial_research_description": research_description,
             "clarification_rounds": [],
             "final_interpretation": "",
             "slots_raw": {

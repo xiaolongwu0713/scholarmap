@@ -103,6 +103,14 @@ async def parse_stage1(store: FileStore, project_id: str, run_id: str, candidate
     )
 
     understanding = await store.read_run_file(project_id, run_id, "understanding.json")
+    if not understanding.get("initial_research_description"):
+        understanding["initial_research_description"] = candidate_description
+    parse_stage1_payload = {
+        "updated_at": _utc_now_iso(),
+        "prompt_file": str(prompt_path),
+        "result": data,
+    }
+    understanding["parse_stage1"] = parse_stage1_payload
     understanding["parse"] = {
         "stage": "stage1",
         "current_description": candidate_description,
@@ -114,7 +122,7 @@ async def parse_stage1(store: FileStore, project_id: str, run_id: str, candidate
         project_id,
         run_id,
         "parse_stage1.json",
-        {"updated_at": _utc_now_iso(), "prompt_file": str(prompt_path), "result": data},
+        parse_stage1_payload,
     )
 
     return data

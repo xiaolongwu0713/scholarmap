@@ -548,6 +548,14 @@ function RunPageContent() {
   async function loadInitial() {
     await refreshFiles();
     const u = await getRunFile(projectId, runId, "understanding.json");
+    let stage1Snapshot: { result?: ParseResult } | null = null;
+    let stage1Result: ParseResult | null = null;
+    try {
+      stage1Snapshot = await getRunFile(projectId, runId, "parse_stage1.json");
+    } catch {
+      stage1Snapshot = null;
+    }
+    stage1Result = stage1Snapshot?.result || u?.parse_stage1?.result || null;
     // Load description (empty string will show placeholder)
     setResearchDescription(u?.research_description || "");
     setQuestions((u?.clarification_questions as string[]) || []);
@@ -593,6 +601,7 @@ function RunPageContent() {
         }
       } else {
         // Initialize messages even without history
+        setFrameworkAdjustHistory([String(u.retrieval_framework)]);
         setFrameworkAdjustMessages([{
           role: "system",
           content: "The right is the current Retrieval Framework which will be used to generate the search query for literature databases. You can talk to system to make adjustment, or you can use the current framework.",
@@ -605,6 +614,50 @@ function RunPageContent() {
     // Load parse history and normalized understandings
     const messages: ChatMessage[] = [];
     let consecutiveFalse = 0;
+    const historySnapshot = Array.isArray(u?.parse?.history) ? u.parse.history : [];
+    const firstHistoryDescription = historySnapshot.find((item: any) => item?.current_description)?.current_description;
+    const normalizedUnderstanding = String(u?.parse?.result?.normalized_understanding || "").trim();
+    const initialFromRecord = String(
+      u?.initial_research_description ||
+      u?.original_research_description ||
+      ""
+    ).trim();
+    const parseCurrentDescription = String(u?.parse?.current_description || "").trim();
+    const researchDescription = String(u?.research_description || "").trim();
+    const isSameAsNormalized = (value: string) =>
+      Boolean(value) && Boolean(normalizedUnderstanding) && value === normalizedUnderstanding;
+    const initialDescription = [
+      initialFromRecord && !isSameAsNormalized(initialFromRecord) ? initialFromRecord : "",
+      parseCurrentDescription && !isSameAsNormalized(parseCurrentDescription) ? parseCurrentDescription : "",
+      firstHistoryDescription && !isSameAsNormalized(String(firstHistoryDescription).trim())
+        ? String(firstHistoryDescription).trim()
+        : "",
+      researchDescription && !isSameAsNormalized(researchDescription) ? researchDescription : ""
+    ]
+      .find((value) => Boolean(value)) || "";
+    if (initialDescription) {
+      messages.push({ role: "user", content: initialDescription });
+    }
+    let stage1Added = false;
+    if (stage1Result) {
+      const systemUnderstanding = formatSystemUnderstanding(stage1Result, false);
+      if (systemUnderstanding) {
+        messages.push(systemUnderstanding);
+      }
+      const llmResponse = formatParseResultAsMessage(stage1Result);
+      messages.push({
+        role: "system",
+        content: llmResponse
+      });
+      stage1Added = true;
+    }
+    if (!stage1Added && u?.parse?.stage === "stage2") {
+      messages.push({
+        role: "system",
+        content: "Initial system understanding is unavailable for this run."
+      });
+      stage1Added = true;
+    }
     
     // Rebuild messages from parse result and history
     if (u?.parse?.result) {
@@ -612,7 +665,7 @@ function RunPageContent() {
       const result = u.parse.result as ParseResult;
       
       // If stage1, add stage1 messages
-      if (parseStage === "stage1") {
+      if (parseStage === "stage1" && !stage1Added) {
         const systemUnderstanding = formatSystemUnderstanding(result, false);
         if (systemUnderstanding) {
           messages.push(systemUnderstanding);
@@ -622,7 +675,8 @@ function RunPageContent() {
           role: "system",
           content: llmResponse
         });
-    }
+        stage1Added = true;
+      }
       
       // Load parse result
       setParseResult(result);
@@ -643,8 +697,8 @@ function RunPageContent() {
     }
     
     // Add stage2 history messages
-    if (u?.parse?.history) {
-      const history = u.parse.history as Array<{ 
+    if (historySnapshot.length > 0 || stage1Result?.normalized_understanding) {
+      const history = historySnapshot as Array<{ 
         current_description?: string;
         user_additional_info?: string;
         result?: ParseResult;
@@ -653,7 +707,11 @@ function RunPageContent() {
         .map((h) => h.result?.normalized_understanding)
         .filter((u): u is string => Boolean(u));
       setNormalizedUnderstandingsHistory((prev) => {
-        const combined = [...prev, ...understandings];
+        const combined = [
+          ...prev,
+          ...(stage1Result?.normalized_understanding ? [stage1Result.normalized_understanding] : []),
+          ...understandings
+        ];
         // Remove duplicates while preserving order
         return Array.from(new Set(combined));
       });
@@ -688,12 +746,6 @@ function RunPageContent() {
             consecutiveFalse = 0;
           }
         }
-      }
-      
-      // Restore parseAdditionalInfo from last history item
-      const lastHistoryItem = history[history.length - 1];
-      if (lastHistoryItem?.user_additional_info) {
-        setParseAdditionalInfo(lastHistoryItem.user_additional_info);
       }
       
       // Enable textValidateMode if there's parse history
@@ -1265,7 +1317,18 @@ function RunPageContent() {
     setError(null);
     try {
       const stats = await runIngest(projectId, runId, false);
-      setIngestStats(stats);
+      let nextStats = stats;
+      try {
+        const refreshed = await getAuthorshipStats(projectId, runId);
+        if (refreshed) {
+          nextStats = refreshed;
+        }
+      } catch {
+        // Keep stats from ingest if refresh fails.
+      }
+      if (nextStats) {
+        setIngestStats(nextStats);
+      }
       // Mark ingestion as completed on success
       setIngestionCompleted(true);
     } catch (e) {
@@ -1637,7 +1700,7 @@ function RunPageContent() {
         {!textValidateMode ? (
           <>
             <div style={{ position: "relative" }}>
-              {researchClientIssues.length ? (
+              {researchClientIssues.length && !parseCompleted ? (
                 <div
                   style={{
                     position: "absolute",
@@ -1676,7 +1739,7 @@ function RunPageContent() {
                   padding: "2px 8px"
                 }}
               >
-                {charLimitHint(researchDescription)}
+                {!parseCompleted ? charLimitHint(researchDescription) : ""}
               </div>
             </div>
             <div className="row" style={{ justifyContent: "center" }}>
@@ -1693,16 +1756,21 @@ function RunPageContent() {
             </div>
           </>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <div className="stack" style={{ gap: 10 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "stretch" }}>
+            <div
+              className="stack"
+              style={{ gap: 0, display: "flex", flexDirection: "column", alignSelf: "stretch" }}
+            >
               <div
                 style={{
                   border: "1px solid rgba(0,0,0,0.08)",
                   borderRadius: 12,
                   padding: 12,
                   background: "rgba(255,255,255,0.6)",
-                  maxHeight: 220,
-                  overflow: "auto"
+                  flex: "1 1 240px",
+                  minHeight: 240,
+                  overflow: "auto",
+                  minHeight: 0
                 }}
               >
                 {textValidateMessages.length ? (
@@ -1757,7 +1825,7 @@ function RunPageContent() {
               </div>
 
 
-              <div className="stack" style={{ gap: 8 }}>
+              <div className="stack" style={{ gap: 8, display: "flex", flexDirection: "column" }}>
                 {parseResult?.plausibility_level === "B_plausible" && parseResult.is_clear_for_search ? (
                   <div className="row" style={{ justifyContent: "center" }}>
                     <button 
@@ -1776,9 +1844,9 @@ function RunPageContent() {
                 ) : parseResult?.plausibility_level === "B_plausible" &&
                   parseResult.is_research_description &&
                   !parseResult.is_clear_for_search ? (
-                  <>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     <div style={{ position: "relative" }}>
-                      {parseAdditionalClientIssues.length ? (
+                      {parseAdditionalClientIssues.length && !parseCompleted ? (
                         <div
                           style={{
                             position: "absolute",
@@ -1818,45 +1886,42 @@ function RunPageContent() {
                           padding: "2px 8px"
                         }}
                       >
-                        {charLimitHint(parseAdditionalInfo)}
+                        {!parseCompleted ? charLimitHint(parseAdditionalInfo) : ""}
                       </div>
                     </div>
-                    <div className="row" style={{ justifyContent: "center", gap: 12 }}>
-                      <button
-                        onClick={() => onParseStage2Submit(parseAdditionalInfo.trim())}
-                        disabled={
-                          parseCompleted ||
-                          parseStage2Locked ||
-                          busy !== null ||
-                          !parseAdditionalInfo.trim() ||
-                          parseAdditionalClientIssues.length > 0 ||
-                          parseStage2TotalAttempts >= config.parse_stage2_max_total_attempts
-                        }
-                        className="gradient-blue"
-                      >
-                        {busy === "parse" ? "🔄 Parsing…" : "submit"}
-                      </button>
-                    </div>
-                    {parseStage2TotalAttempts > 0 && (
-                      <div style={{ 
-                        textAlign: "center", 
-                        fontSize: 12, 
-                        color: "#666",
-                        marginTop: -8 
-                      }}>
-                        Attempts: {parseStage2TotalAttempts}/{config.parse_stage2_max_total_attempts}
-                        {parseStage2ConsecutiveFalse > 0 && (
-                          <span style={{ color: "#dc2626", marginLeft: 8 }}>
-                            (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/{config.parse_stage2_max_consecutive_unhelpful})
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+                      <div className="row" style={{ justifyContent: "center", gap: 12, alignItems: "center" }}>
+                        <button
+                          onClick={() => onParseStage2Submit(parseAdditionalInfo.trim())}
+                          disabled={
+                            parseCompleted ||
+                            parseStage2Locked ||
+                            busy !== null ||
+                            !parseAdditionalInfo.trim() ||
+                            parseAdditionalClientIssues.length > 0 ||
+                            parseStage2TotalAttempts >= config.parse_stage2_max_total_attempts
+                          }
+                          className="gradient-blue"
+                        >
+                          {busy === "parse" ? "🔄 Parsing…" : "submit"}
+                        </button>
+                        {parseStage2TotalAttempts > 0 && (
+                          <span style={{ fontSize: 12, color: "#666" }}>
+                            Attempts: {parseStage2TotalAttempts}/{config.parse_stage2_max_total_attempts}
                           </span>
                         )}
                       </div>
-                    )}
-                  </>
+                      {parseStage2ConsecutiveFalse > 0 && (
+                        <div style={{ fontSize: 12, color: "#dc2626", textAlign: "center" }}>
+                          (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/{config.parse_stage2_max_consecutive_unhelpful})
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 ) : (
-                  <>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     <div style={{ position: "relative" }}>
-                      {textValidateDraftClientIssues.length ? (
+                      {textValidateDraftClientIssues.length && !parseCompleted ? (
                         <div
                           style={{
                             position: "absolute",
@@ -1902,7 +1967,7 @@ function RunPageContent() {
                           padding: "2px 8px"
                         }}
                       >
-                        {charLimitHint(textValidateDraft)}
+                        {!parseCompleted ? charLimitHint(textValidateDraft) : ""}
                       </div>
                     </div>
                     <div className="row" style={{ justifyContent: "center" }}>
@@ -1920,7 +1985,7 @@ function RunPageContent() {
                         {busy === "textValidate" ? "🔄 Checking…" : busy === "parse" ? "🔄 Parsing…" : "parse"}
                       </button>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </div>
@@ -1963,7 +2028,7 @@ function RunPageContent() {
                   className="gradient-green"
                   style={{ width: "100%" }}
                 >
-                  {busy === "buildFramework" ? "🔄 Building…" : "Use the current understanding"}
+                  {busy === "buildFramework" ? "Generating Retrieval Framework ..." : "Use the current understanding"}
                 </button>
               )}
             </div>
@@ -2051,7 +2116,7 @@ function RunPageContent() {
 
               <div className="stack" style={{ gap: 8 }}>
                 <div style={{ position: "relative" }}>
-                  {frameworkAdjustClientIssues.length ? (
+                  {frameworkAdjustClientIssues.length && !frameworkCompleted ? (
                     <div
                       style={{
                         position: "absolute",
@@ -2097,7 +2162,7 @@ function RunPageContent() {
                       padding: "2px 8px"
                     }}
                   >
-                    {charLimitHint(frameworkAdjustInput)}
+                    {!frameworkCompleted ? charLimitHint(frameworkAdjustInput) : ""}
                   </div>
                 </div>
                 <div className="row" style={{ justifyContent: "center", gap: 12, alignItems: "center" }}>
@@ -2151,8 +2216,8 @@ function RunPageContent() {
               </div>
         <div className="row" style={{ justifyContent: "center" }}>
                 <button onClick={onUseFramework} disabled={frameworkCompleted || busy !== null || !frameworkText.trim()} className="gradient-green">
-                  Use the current framework
-          </button>
+                  {busy === "queryBuild" ? "Generating Query ..." : "Use the current framework"}
+                </button>
         </div>
       </div>
           </div>

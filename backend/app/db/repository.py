@@ -103,6 +103,7 @@ class RunRepository:
             understanding={
                 "created_at": now.isoformat(),
                 "research_description": description,
+                "initial_research_description": description,
                 "clarification_rounds": [],
                 "final_interpretation": "",
                 "slots_raw": {
@@ -883,4 +884,3 @@ class InstitutionGeoRepository:
         await self.session.flush()
         
         return institution
-
