@@ -1759,7 +1759,7 @@ function RunPageContent() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, alignItems: "stretch" }}>
             <div
               className="stack"
-              style={{ gap: 0, display: "flex", flexDirection: "column", alignSelf: "stretch" }}
+              style={{ gap: 8, display: "flex", flexDirection: "column", alignSelf: "stretch" }}
             >
               <div
                 style={{
