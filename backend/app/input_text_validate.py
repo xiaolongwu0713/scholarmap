@@ -8,8 +8,8 @@ from spellchecker import SpellChecker
 from wordfreq import zipf_frequency
 
 from app.guardrail_config import (
-    TEXT_MIN_LENGTH,
-    TEXT_MAX_LENGTH,
+    TEXT_MIN_WORDS,
+    TEXT_MAX_WORDS,
     TEXT_MAX_LINE_BREAKS,
     QUALITY_CHECK_WORD_COUNT_THRESHOLD,
     QUALITY_UNKNOWN_RATIO_THRESHOLD_10PLUS,
@@ -273,8 +273,9 @@ def input_text_validate(text: str) -> dict[str, Any]:
         return {"ok": False, "reason": "Input is empty."}
 
     # Double-check critical format rules as defense in depth
-    if len(s) < TEXT_MIN_LENGTH or len(s) > TEXT_MAX_LENGTH:
-        return {"ok": False, "reason": f"Length must be {TEXT_MIN_LENGTH}–{TEXT_MAX_LENGTH} characters."}
+    word_count = len(WORD_RE.findall(s))
+    if word_count < TEXT_MIN_WORDS or word_count > TEXT_MAX_WORDS:
+        return {"ok": False, "reason": f"Word count must be {TEXT_MIN_WORDS}–{TEXT_MAX_WORDS} words."}
 
     if s.count("\n") > TEXT_MAX_LINE_BREAKS:
         return {"ok": False, "reason": f"Too many line breaks (max {TEXT_MAX_LINE_BREAKS})."}
@@ -378,8 +379,9 @@ def input_text_validate_for_adjustment(text: str) -> dict[str, Any]:
         return {"ok": False, "reason": "Input is empty."}
 
     # Double-check critical format rules as defense in depth
-    if len(s) < TEXT_MIN_LENGTH or len(s) > TEXT_MAX_LENGTH:
-        return {"ok": False, "reason": f"Length must be {TEXT_MIN_LENGTH}–{TEXT_MAX_LENGTH} characters."}
+    word_count = len(WORD_RE.findall(s))
+    if word_count < TEXT_MIN_WORDS or word_count > TEXT_MAX_WORDS:
+        return {"ok": False, "reason": f"Word count must be {TEXT_MIN_WORDS}–{TEXT_MAX_WORDS} words."}
 
     if s.count("\n") > TEXT_MAX_LINE_BREAKS:
         return {"ok": False, "reason": f"Too many line breaks (max {TEXT_MAX_LINE_BREAKS})."}

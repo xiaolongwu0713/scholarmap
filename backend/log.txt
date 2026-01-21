@@ -18489,3 +18489,18 @@ DETAIL:  Consistent recovery state has not been yet reached.
 2026-01-21 13:09:42 - app.main - INFO -    Runs: 13
 2026-01-21 13:09:42 - app.main - INFO -    Total Disk: 41.80 MB
 2026-01-21 13:09:42 - app.main - INFO - ================================================================================
+2026-01-21 14:42:35 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-21 16:30:22 - root - INFO - ================================================================================
+2026-01-21 16:30:22 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-21 16:30:22 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-21 16:30:22 - root - INFO - ================================================================================
+2026-01-21 16:57:42 - root - INFO - ================================================================================
+2026-01-21 16:57:42 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-21 16:57:42 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-21 16:57:42 - root - INFO - ================================================================================
+2026-01-21 16:58:05 - root - INFO - ================================================================================
+2026-01-21 16:58:05 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-21 16:58:05 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-21 16:58:05 - root - INFO - ================================================================================
+2026-01-21 16:59:32 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-21 17:03:04 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

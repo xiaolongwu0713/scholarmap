@@ -109,9 +109,9 @@ MAX_CONCURRENT_PARSE_PER_RUN = 1
 # Text Format Validation
 # ============================================================================
 
-# Text length limits (characters)
-TEXT_MIN_LENGTH = 50
-TEXT_MAX_LENGTH = 300
+# Text length limits (words)
+TEXT_MIN_WORDS = 5
+TEXT_MAX_WORDS = 30
 
 # Maximum number of line breaks allowed
 TEXT_MAX_LINE_BREAKS = 3
@@ -186,4 +186,3 @@ PASSWORD_REQUIRE_SPECIAL = True  # Require at least one special character
 
 # Allowed special characters (including @, #, *)
 PASSWORD_SPECIAL_CHARS = "@#*!$%^&*(),.?\":{}|<>"
-

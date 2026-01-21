@@ -136,6 +136,33 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
   return copied;
 }
 
+function countEnglishWords(text: string): number {
+  return (text.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g) || []).length;
+}
+
+function validationRulesSummary(): string {
+  return [
+    "5–30 English words",
+    "max 3 newlines",
+    "no HTML",
+    "no markdown links",
+    "no URL",
+    "no email",
+    "no phone",
+    "no wechat",
+    "English only",
+    "no long number strings",
+    "no repeated chars",
+    "no long letter strings"
+  ].join(" · ");
+}
+
+function containsUrl(text: string): boolean {
+  if (!text) return false;
+  if (/(https?:\/\/|www\.)\S+/i.test(text)) return true;
+  return /\b[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:\/\S*)?/i.test(text);
+}
+
 function validateClientInput(text: string): string[] {
   const s = text ?? "";
   const trimmed = s.trim();
@@ -143,17 +170,17 @@ function validateClientInput(text: string): string[] {
 
   // Basic format checks (frontend can easily do these)
   if (!trimmed) issues.push("required");
-  if (trimmed.length < 50 || trimmed.length > 300) issues.push("50–300 chars");
+  const wordCount = countEnglishWords(s);
+  if (wordCount < 5 || wordCount > 30) issues.push("5–30 English words");
   const newlineCount = (s.match(/\n/g) || []).length;
   if (newlineCount > 3) issues.push("max 3 newlines");
   if (/<[^>]+>/.test(s)) issues.push("no HTML");
   if (/\[[^\]]+\]\([^)]+\)/.test(s)) issues.push("no markdown links");
-  if (/(https?:\/\/|www\.)\S+/i.test(s)) issues.push("no URL");
+  if (containsUrl(s)) issues.push("no URL");
   if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(s)) issues.push("no email");
   if (/\b(?:\+?\d[\d\s().-]{7,}\d)\b/.test(s)) issues.push("no phone");
   if (/\b(wechat|weixin|wxid|vx)\b/i.test(s)) issues.push("no wechat");
   if (/[^\x00-\x7F]/.test(s)) issues.push("ASCII only");
-  if (!/[A-Za-z]/.test(s)) issues.push("must contain letters");
   if (/\d{6,}/.test(s)) issues.push("no long number strings");
   if (/(.)\1{5,}/i.test(s)) issues.push("no repeated chars");
   if (/[A-Za-z]{25,}/.test(s)) issues.push("no long letter strings");
@@ -168,17 +195,17 @@ function validateFrameworkAdjustmentInput(text: string): string[] {
 
   // Basic format checks (same as regular validation)
   if (!trimmed) issues.push("required");
-  if (trimmed.length < 50 || trimmed.length > 300) issues.push("50–300 chars");
+  const wordCount = countEnglishWords(s);
+  if (wordCount < 5 || wordCount > 30) issues.push("5–30 English words");
   const newlineCount = (s.match(/\n/g) || []).length;
   if (newlineCount > 3) issues.push("max 3 newlines");
   if (/<[^>]+>/.test(s)) issues.push("no HTML");
   if (/\[[^\]]+\]\([^)]+\)/.test(s)) issues.push("no markdown links");
-  if (/(https?:\/\/|www\.)\S+/i.test(s)) issues.push("no URL");
+  if (containsUrl(s)) issues.push("no URL");
   if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(s)) issues.push("no email");
   if (/\b(?:\+?\d[\d\s().-]{7,}\d)\b/.test(s)) issues.push("no phone");
   if (/\b(wechat|weixin|wxid|vx)\b/i.test(s)) issues.push("no wechat");
   if (/[^\x00-\x7F]/.test(s)) issues.push("ASCII only");
-  if (!/[A-Za-z]/.test(s)) issues.push("must contain letters");
   if (/\d{6,}/.test(s)) issues.push("no long number strings");
   if (/(.)\1{5,}/i.test(s)) issues.push("no repeated chars");
   
@@ -201,9 +228,9 @@ function validateFrameworkAdjustmentInput(text: string): string[] {
   return issues;
 }
 
-function charLimitHint(text: string, minChars = 50, maxChars = 300): string {
-  const len = (text ?? "").trim().length;
-  return `${len}/${maxChars} chars (min ${minChars})`;
+function charLimitHint(text: string, minWords = 5, maxWords = 30): string {
+  const count = countEnglishWords(text ?? "");
+  return `${count}/${maxWords} words (min ${minWords})`;
 }
 
 function extractFinalPubMedQuery(text: string): string {
@@ -311,8 +338,8 @@ function translateValidationError(reason: string | null): string {
     return reason.replace(/Text quality check failed\.\s*/, "Text quality check failed: ");
   }
   
-  if (reasonLower.includes("length") || reasonLower.includes("50") || reasonLower.includes("300")) {
-    return "Input length does not meet requirements. Please enter text between 50-300 characters.";
+  if (reasonLower.includes("length") || reasonLower.includes("word count") || reasonLower.includes("50") || reasonLower.includes("300")) {
+    return "Input length does not meet requirements. Please enter 5-30 English words.";
   }
   
   if (reasonLower.includes("empty")) {
@@ -404,7 +431,11 @@ function RunPageContent() {
     null | "textValidate" | "parse" | "buildFramework" | "adjustFramework" | "queryBuild" | "query" | "ingest"
   >(null);
   const [error, setError] = useState<string | null>(null);
-  const [validationErrorModal, setValidationErrorModal] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
+  const [validationErrorModal, setValidationErrorModal] = useState<{ show: boolean; rules: string; failed: string }>({
+    show: false,
+    rules: "",
+    failed: ""
+  });
   
   // Phase 2 state
   const [ingestStats, setIngestStats] = useState<IngestStats | null>(null);
@@ -424,6 +455,14 @@ function RunPageContent() {
   const [exportMapLoaded, setExportMapLoaded] = useState(false);
   const exportTitleRef = useRef<string | null>(null);
   const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
+
+  const openValidationModal = (failed: string) => {
+    setValidationErrorModal({
+      show: true,
+      rules: validationRulesSummary(),
+      failed
+    });
+  };
 
   useEffect(() => {
     if (!isDemoRun) return;
@@ -594,11 +633,7 @@ function RunPageContent() {
         setFrameworkAdjustMessages(messages);
         setShowFrameworkAdjustUI(true);
         
-        // Restore frameworkAdjustInput from last history item
-        const lastAdjustItem = adjustHistory[adjustHistory.length - 1];
-        if (lastAdjustItem?.user_input) {
-          setFrameworkAdjustInput(lastAdjustItem.user_input);
-        }
+        setFrameworkAdjustInput("");
       } else {
         // Initialize messages even without history
         setFrameworkAdjustHistory([String(u.retrieval_framework)]);
@@ -990,7 +1025,7 @@ function RunPageContent() {
       const validateData = validateRes.data as { ok: boolean; reason: string | null };
       if (!validateData.ok) {
         const userFriendlyMessage = translateValidationError(validateData.reason);
-        setValidationErrorModal({ show: true, message: userFriendlyMessage });
+        openValidationModal(userFriendlyMessage);
         return;
       }
 
@@ -1059,6 +1094,16 @@ function RunPageContent() {
     }
   }
 
+  async function onParseStage2SubmitChecked() {
+    const trimmed = parseAdditionalInfo.trim();
+    const clientIssues = validateClientInput(trimmed);
+    if (clientIssues.length > 0) {
+      openValidationModal(clientIssues.join(" · "));
+      return;
+    }
+    await onParseStage2Submit(trimmed);
+  }
+
   async function onBuildFramework() {
     setBusy("buildFramework");
     setError(null);
@@ -1111,10 +1156,10 @@ function RunPageContent() {
     setBusy("adjustFramework");
     setError(null);
     try {
-      // Client-side validation (same as parse stage)
-      const clientIssues = validateClientInput(frameworkAdjustInput);
+      // Client-side validation (adjustment rules)
+      const clientIssues = validateFrameworkAdjustmentInput(frameworkAdjustInput);
       if (clientIssues.length > 0) {
-        setError(`Input validation failed: ${clientIssues.join("; ")}`);
+        openValidationModal(clientIssues.join(" · "));
         return;
       }
 
@@ -1150,12 +1195,28 @@ function RunPageContent() {
 
       await refreshFiles();
     } catch (e: any) {
-      setError(String(e?.message || e));
-      // Remove user message on error
+      const errMsg = String(e?.message || e);
+      if (errMsg.includes("Text validate failed")) {
+        const reason = errMsg.split("Text validate failed:")[1]?.trim() || errMsg;
+        openValidationModal(translateValidationError(reason));
+        return;
+      }
+      setError(errMsg);
+      // Remove user message on non-validation error
       setFrameworkAdjustMessages(prev => prev.slice(0, -1));
     } finally {
       setBusy(null);
     }
+  }
+
+  async function onAdjustFrameworkChecked() {
+    const trimmed = frameworkAdjustInput.trim();
+    const clientIssues = validateFrameworkAdjustmentInput(trimmed);
+    if (clientIssues.length > 0) {
+      openValidationModal(clientIssues.join(" · "));
+      return;
+    }
+    await onAdjustFramework();
   }
 
   async function onUseFramework() {
@@ -1204,6 +1265,11 @@ function RunPageContent() {
     setTextValidateMode(true);
     const source = textValidateMode ? textValidateDraft : researchDescription;
     const input = source.trim();
+    const clientIssues = validateClientInput(input);
+    if (clientIssues.length > 0) {
+      openValidationModal(clientIssues.join(" · "));
+      return;
+    }
 
     setTextValidateLatest(input);
     setTextValidateDraft(input);
@@ -1238,7 +1304,7 @@ function RunPageContent() {
         const userFriendlyMessage = translateValidationError(reason);
         setTextValidateReason(reason);
         // 不添加到对话框，而是显示弹窗
-        setValidationErrorModal({ show: true, message: userFriendlyMessage });
+        openValidationModal(userFriendlyMessage);
         if (nextAttempts >= config.text_validation_max_attempts) {
           setTextValidateLocked(true);
         }
@@ -1247,7 +1313,7 @@ function RunPageContent() {
     } catch (e) {
       setError(String(e));
       const userFriendlyMessage = "Text validation service is temporarily unavailable. Please try again later.";
-      setValidationErrorModal({ show: true, message: userFriendlyMessage });
+      openValidationModal(userFriendlyMessage);
       return;
     } finally {
       setBusy(null);
@@ -1560,7 +1626,7 @@ function RunPageContent() {
             justifyContent: "center",
             zIndex: 1000
           }}
-          onClick={() => setValidationErrorModal({ show: false, message: "" })}
+          onClick={() => setValidationErrorModal({ show: false, rules: "", failed: "" })}
         >
           <div
             style={{
@@ -1575,17 +1641,60 @@ function RunPageContent() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ marginBottom: "16px" }}>
-              <h3 style={{ margin: 0, marginBottom: "8px", color: "#dc2626", fontSize: "20px" }}>
-                ⚠️ Validation Failed
+              <h3 style={{ margin: 0, marginBottom: "12px", color: "#dc2626", fontSize: "20px", textAlign: "center" }}>
+                Invalid Input Detected
               </h3>
-              <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.5" }}>
-                {validationErrorModal.message}
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: "#374151", marginBottom: 6 }}>
+                    Input should meet the following requirements:
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 8px" }}>
+                    {(validationErrorModal.rules ? validationErrorModal.rules.split(" · ") : []).map((rule) => (
+                      <span
+                        key={rule}
+                        style={{
+                          fontSize: "12px",
+                          color: "#4b5563",
+                          background: "#f3f4f6",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: 999,
+                          padding: "2px 8px"
+                        }}
+                      >
+                        {rule}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 12, padding: "10px 12px" }}>
+                  <div style={{ fontSize: "13px", fontWeight: 600, color: "#991b1b", marginBottom: 6 }}>
+                    Your input violates:
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 8px" }}>
+                    {(validationErrorModal.failed ? validationErrorModal.failed.split(" · ") : ["None"]).map((rule) => (
+                      <span
+                        key={rule}
+                        style={{
+                          fontSize: "12px",
+                          color: "#991b1b",
+                          background: "#fff1f2",
+                          border: "1px solid #fecaca",
+                          borderRadius: 999,
+                          padding: "2px 8px"
+                        }}
+                      >
+                        {rule.replace("ASCII only", "English only")}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
               <button
                 className="primary"
-                onClick={() => setValidationErrorModal({ show: false, message: "" })}
+                onClick={() => setValidationErrorModal({ show: false, rules: "", failed: "" })}
                 style={{ padding: "8px 16px", fontSize: "14px" }}
               >
                 OK
@@ -1776,14 +1885,14 @@ function RunPageContent() {
                   <div className="stack" style={{ gap: 8 }}>
                     {textValidateMessages.map((m, idx) => {
                       // Determine background and text color based on status
-                      let background = m.role === "user" ? "#e0f2fe" : "#f1f5f9";
-                      let textColor = "#1f2937";
-                      let borderColor = "rgba(0,0,0,0.06)";
+                      let background = m.role === "user" ? "#ffedd5" : "#d1fae5";
+                      let textColor = m.role === "user" ? "#9a3412" : "#065f46";
+                      let borderColor = m.role === "user" ? "#fed7aa" : "#a7f3d0";
                       
                       if (m.status === "helpful") {
-                        background = "#dbeafe";
-                        textColor = "#1e40af";
-                        borderColor = "#93c5fd";
+                        background = m.role === "user" ? "#fed7aa" : "#d1fae5";
+                        textColor = m.role === "user" ? "#9a3412" : "#065f46";
+                        borderColor = m.role === "user" ? "#fdba74" : "#a7f3d0";
                       } else if (m.status === "not_helpful") {
                         background = "#fee2e2";
                         textColor = "#dc2626";
@@ -1793,9 +1902,9 @@ function RunPageContent() {
                         textColor = "#dc2626";
                         borderColor = "#fca5a5";
                       } else if (m.status === "info") {
-                        background = "#f0f9ff";
-                        textColor = "#0369a1";
-                        borderColor = "#7dd3fc";
+                        background = m.role === "user" ? "#fff7ed" : "#d1fae5";
+                        textColor = m.role === "user" ? "#9a3412" : "#065f46";
+                        borderColor = m.role === "user" ? "#fed7aa" : "#a7f3d0";
                       }
                       
                       return (
@@ -1849,8 +1958,8 @@ function RunPageContent() {
                         <div
                           style={{
                             position: "absolute",
-                            top: 8,
                             right: 10,
+                            bottom: 8,
                             zIndex: 1,
                             fontSize: 12,
                             color: "#b91c1c",
@@ -1860,7 +1969,7 @@ function RunPageContent() {
                             padding: "2px 8px"
                           }}
                         >
-                          {parseAdditionalClientIssues.join(" · ")}
+                          Input 5-30 English words.
                         </div>
                       ) : null}
                       <textarea
@@ -1868,38 +1977,21 @@ function RunPageContent() {
                         value={parseAdditionalInfo}
                         onChange={(e) => setParseAdditionalInfo(e.target.value)}
                         disabled={parseCompleted || parseStage2Locked || busy !== null}
-                        placeholder={parseCompleted ? "Parse stage completed. Input disabled." : parseStage2Locked ? `Parse stage2 locked after ${config.parse_stage2_max_total_attempts} attempts.` : "Add details to answer the questions..."}
+                        placeholder={parseCompleted ? "Parse stage completed. Input disabled." : parseStage2Locked ? `Parse stage2 locked after ${config.parse_stage2_max_total_attempts} attempts.` : "Refine description by answering the questions, or use the latest understanding by clicking the button to the right."}
                         style={{ fontSize: "14px" }}
                         maxLength={300}
                       />
-                      <div
-                        style={{
-                          position: "absolute",
-                          right: 10,
-                          bottom: 8,
-                          fontSize: 12,
-                          color: "rgba(0,0,0,0.55)",
-                          background: "rgba(255,255,255,0.75)",
-                          border: "1px solid rgba(0,0,0,0.08)",
-                          borderRadius: 999,
-                          padding: "2px 8px"
-                        }}
-                      >
-                        {!parseCompleted ? charLimitHint(parseAdditionalInfo) : ""}
-                      </div>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
                       <div className="row" style={{ justifyContent: "center", gap: 12, alignItems: "center" }}>
                         <button
-                          onClick={() => onParseStage2Submit(parseAdditionalInfo.trim())}
-                          disabled={
-                            parseCompleted ||
-                            parseStage2Locked ||
-                            busy !== null ||
-                            !parseAdditionalInfo.trim() ||
-                            parseAdditionalClientIssues.length > 0 ||
-                            parseStage2TotalAttempts >= config.parse_stage2_max_total_attempts
-                          }
+                        onClick={onParseStage2SubmitChecked}
+                        disabled={
+                          parseCompleted ||
+                          parseStage2Locked ||
+                          busy !== null ||
+                          parseStage2TotalAttempts >= config.parse_stage2_max_total_attempts
+                        }
                           className="gradient-blue"
                         >
                           {busy === "parse" ? "🔄 Parsing…" : "submit"}
@@ -1990,7 +2082,7 @@ function RunPageContent() {
             </div>
 
             <div className="stack" style={{ gap: 10 }}>
-              <div className="muted">Latest research description</div>
+              <div className="muted" style={{ textAlign: "center" }}>Generated Research Description</div>
               <div style={{ maxHeight: 400, overflow: "auto" }}>
                 {normalizedUnderstandingsHistory.length > 0 ? (
                   <div className="stack" style={{ gap: 12 }}>
@@ -2027,7 +2119,7 @@ function RunPageContent() {
                   className="gradient-green"
                   style={{ width: "100%" }}
                 >
-                  {busy === "buildFramework" ? "Generating Retrieval Framework ..." : "Use the current understanding"}
+                  {busy === "buildFramework" ? "Generating Retrieval Framework ..." : "Use the latest understanding"}
                 </button>
               )}
             </div>
@@ -2081,13 +2173,29 @@ function RunPageContent() {
                   <div className="stack" style={{ gap: 12 }}>
                     {frameworkAdjustMessages.map((m, idx) => {
                       const isSystem = m.role === "system";
-                      const bg = isSystem
-                        ? (m.status === "error" ? "#fee2e2" : m.status === "info" ? "#dbeafe" : "#f3f4f6")
-                        : "#ffffff";
-                      const borderColor = isSystem
-                        ? (m.status === "error" ? "#fecaca" : m.status === "info" ? "#93c5fd" : "#e5e7eb")
-                        : "#e5e7eb";
-                      const textColor = isSystem && m.status === "error" ? "#991b1b" : "#1f2937";
+                      const bg = isSystem ? "#d1fae5" : "#ffedd5";
+                      const borderColor = isSystem ? "#a7f3d0" : "#fed7aa";
+                      const textColor = isSystem ? "#065f46" : "#9a3412";
+                      if (m.status === "error") {
+                        return (
+                          <div
+                            key={idx}
+                            style={{
+                              padding: "10px 12px",
+                              borderRadius: 12,
+                              whiteSpace: "pre-wrap",
+                              background: "#fee2e2",
+                              border: "1px solid #fecaca",
+                              color: "#991b1b"
+                            }}
+                          >
+                            <div className="muted" style={{ fontSize: 11, marginBottom: 4, color: "#991b1b", opacity: 0.8 }}>
+                              {m.role === "user" ? "You" : "System"}
+                            </div>
+                            <div style={{ fontSize: 13 }}>{m.content || "(empty)"}</div>
+                          </div>
+                        );
+                      }
                       return (
                         <div
                           key={idx}
@@ -2119,8 +2227,8 @@ function RunPageContent() {
                     <div
                       style={{
                         position: "absolute",
-                        top: 8,
                         right: 10,
+                        bottom: 8,
                         zIndex: 1,
                         fontSize: 12,
                         color: "#b91c1c",
@@ -2130,10 +2238,10 @@ function RunPageContent() {
                         padding: "2px 8px"
                       }}
                     >
-                      {frameworkAdjustClientIssues.join(" · ")}
+                      Input 5-30 English words.
                     </div>
                   ) : null}
-        <textarea
+                  <textarea
                     rows={4}
                     value={frameworkAdjustInput}
                     onChange={(e) => setFrameworkAdjustInput(e.target.value)}
@@ -2143,36 +2251,19 @@ function RunPageContent() {
                         ? "Framework stage completed. Input disabled."
                         : frameworkAdjustLocked
                         ? `Input disabled after ${config.retrieval_framework_adjust_max_attempts} adjustments.`
-                        : "Enter your adjustment request..."
+                        : "Refine the framework using natural language, or use the latest framework by clicking the button to the right."
                     }
                     style={{ fontSize: "14px" }}
                     maxLength={300}
                   />
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: 10,
-                      bottom: 8,
-                      fontSize: 12,
-                      color: "rgba(0,0,0,0.55)",
-                      background: "rgba(255,255,255,0.75)",
-                      border: "1px solid rgba(0,0,0,0.08)",
-                      borderRadius: 999,
-                      padding: "2px 8px"
-                    }}
-                  >
-                    {!frameworkCompleted ? charLimitHint(frameworkAdjustInput) : ""}
-                  </div>
                 </div>
                 <div className="row" style={{ justifyContent: "center", gap: 12, alignItems: "center" }}>
                   <button
-                    onClick={onAdjustFramework}
+                    onClick={onAdjustFrameworkChecked}
                     disabled={
                       frameworkCompleted ||
                       frameworkAdjustLocked ||
                       busy !== null ||
-                      !frameworkAdjustInput.trim() ||
-                      frameworkAdjustClientIssues.length > 0 ||
                       frameworkAdjustAttempts >= config.retrieval_framework_adjust_max_attempts
                     }
                     className="gradient-green"
@@ -2273,6 +2364,11 @@ function RunPageContent() {
             {busy === "query" ? "🔄 Executing…" : "🚀 Execute Query"}
           </button>
         </div>
+        {pubmedQueryText && (
+          <div className="muted" style={{ textAlign: "center", marginTop: 8 }}>
+            You can't make change to the query at this stage. You have to create a new run if you don't like the generated query.
+          </div>
+        )}
       </div>
       )}
 
