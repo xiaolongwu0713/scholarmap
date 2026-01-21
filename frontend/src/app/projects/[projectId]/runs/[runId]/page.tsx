@@ -2567,7 +2567,15 @@ function RunPageContent() {
         </div>
       )}
 
-      {showMap && <MapModal projectId={projectId} runId={runId} onClose={() => setShowMap(false)} />}
+      {showMap && (
+        <MapModal
+          projectId={projectId}
+          runId={runId}
+          onClose={() => setShowMap(false)}
+          onExport={handleExport}
+          exportLoading={exportLoading}
+        />
+      )}
       </div>
       </div>
 

@@ -20,6 +20,8 @@ type Props = {
   projectId: string;
   runId: string;
   onClose: () => void;
+  onExport: () => void;
+  exportLoading: boolean;
 };
 
 async function copyTextToClipboard(text: string): Promise<boolean> {
@@ -193,7 +195,7 @@ const CITY_COORDS: Record<string, [number, number]> = {
   "Brussels": [4.3517, 50.8503]
 };
 
-export default function MapModal({ projectId, runId, onClose }: Props) {
+export default function MapModal({ projectId, runId, onClose, onExport, exportLoading }: Props) {
   const [level, setLevel] = useState<MapLevel>("world");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -919,7 +921,7 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
             </h2>
             {renderBreadcrumbs()}
           </div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
             <button
               className="secondary"
               onClick={handleShare}
@@ -931,6 +933,19 @@ export default function MapModal({ projectId, runId, onClose }: Props) {
               }}
             >
               {shareCopied ? "Copied!" : "Share"}
+            </button>
+            <button
+              className="secondary"
+              onClick={onExport}
+              disabled={exportLoading}
+              style={{
+                fontSize: "15px",
+                background: "#5a0760",
+                color: "#fff",
+                borderColor: "#5a0760"
+              }}
+            >
+              {exportLoading ? "Exporting..." : "Export"}
             </button>
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
