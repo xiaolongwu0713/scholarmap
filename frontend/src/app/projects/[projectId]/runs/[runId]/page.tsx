@@ -1769,8 +1769,7 @@ function RunPageContent() {
                   background: "rgba(255,255,255,0.6)",
                   flex: "1 1 240px",
                   minHeight: 240,
-                  overflow: "auto",
-                  minHeight: 0
+                  overflow: "auto"
                 }}
               >
                 {textValidateMessages.length ? (
