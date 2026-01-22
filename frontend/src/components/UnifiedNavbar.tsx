@@ -85,7 +85,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   onMouseEnter={() => setHoveredLink("what-you-can-do")}
                   onMouseLeave={() => setHoveredLink(null)}
                 >
-                  Capabilities
+                  Who It's For
                 </a>
                 <a
                   href={pathname === "/" ? "#how-it-works" : "/#how-it-works"}
