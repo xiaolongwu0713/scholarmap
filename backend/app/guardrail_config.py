@@ -25,7 +25,7 @@ Parse Stage 2 - 迭代收敛阶段
 功能：用户回答了 Stage 1 的问题后，进行多轮对话优化
 作用：
  - 融合当前描述和用户的补充信息
- - 判断用户的补充是否有帮助（is_helpful）
+ - 判断用户是否正面回答了问题（is_answered）
  - 生成更精确的理解
  - 如果仍不清晰，继续提出问题
  - 保存对话历史（最近10轮）
@@ -52,9 +52,9 @@ PARSE_STAGE1_MAX_ATTEMPTS = 2
 # Parse Stage 2
 #总次数限制：防止无限对话，最多3轮澄清
 PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 3
-#连续无帮助限制：如果用户连续2次回答都没帮助（is_helpful=false），自动停止
+#连续未回答限制：如果用户连续2次都没有正面回答问题（is_answered=false），自动停止
 #例如：用户一直答非所问或提供无关信息
-PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2
+PARSE_STAGE2_MAX_CONSECUTIVE_UNANSWERED = 2
 
 # Retrieval Framework Adjustment
 # Maximum number of times user can adjust the retrieval framework
@@ -89,7 +89,7 @@ ADJUST_INVALID_RATIO_THRESHOLD_5_9 = 0.70
 # These should match or be stricter than frontend limits
 BACKEND_STAGE1_MAX_ATTEMPTS = PARSE_STAGE1_MAX_ATTEMPTS
 BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS = PARSE_STAGE2_MAX_TOTAL_ATTEMPTS
-BACKEND_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL
+BACKEND_STAGE2_MAX_CONSECUTIVE_UNANSWERED = PARSE_STAGE2_MAX_CONSECUTIVE_UNANSWERED
 
 # API rate limiting (per project_id + run_id)
 # Maximum requests per time window

@@ -715,8 +715,8 @@ async def parse_stage2_route(request: Request, project_id: str, run_id: str, req
             data = await parse_stage2(store, project_id, run_id, req.current_description, req.user_additional_info)
             
             # Increment attempt count after successful LLM call
-            is_helpful = data.get("is_helpful", False)
-            await tracker.increment_stage2_attempt(project_id, run_id, is_helpful)
+            is_answered = data.get("is_answered", True)  # Default to True for backward compatibility
+            await tracker.increment_stage2_attempt(project_id, run_id, is_answered)
             
             return {"data": data}
         except FileNotFoundError:

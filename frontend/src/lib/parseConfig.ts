@@ -53,7 +53,7 @@ export async function getConfig(): Promise<FrontendConfig> {
     text_validation_max_attempts: 3,
     parse_stage1_max_attempts: 2,
     parse_stage2_max_total_attempts: 3,
-    parse_stage2_max_consecutive_unhelpful: 2,
+    parse_stage2_max_consecutive_unanswered: 2,
     retrieval_framework_adjust_max_attempts: 2,
     share_run_auth_check_enabled: true,
   };
@@ -100,7 +100,7 @@ export const PARSE_STAGE2_MAX_TOTAL_ATTEMPTS = 3;
  * @deprecated Use `getConfig()` instead to get latest backend values.
  * These constants are fallback defaults only.
  */
-export const PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL = 2;
+export const PARSE_STAGE2_MAX_CONSECUTIVE_UNANSWERED = 2;
 
 /**
  * @deprecated Use `getConfig()` instead to get latest backend values.

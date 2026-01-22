@@ -20,7 +20,7 @@ from app.core.storage import FileStore
 from app.guardrail_config import (
     BACKEND_STAGE1_MAX_ATTEMPTS,
     BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS,
-    BACKEND_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
+    BACKEND_STAGE2_MAX_CONSECUTIVE_UNANSWERED,
     API_RATE_LIMIT_MAX_REQUESTS,
     API_RATE_LIMIT_WINDOW_SECONDS,
     MAX_CONCURRENT_PARSE_PER_RUN,
@@ -46,15 +46,15 @@ class ParseAttemptTracker:
             return {
                 "stage1_attempts": parse_meta.get("stage1_attempts", 0),
                 "stage2_total_attempts": parse_meta.get("stage2_total_attempts", 0),
-                "stage2_consecutive_unhelpful": parse_meta.get(
-                    "stage2_consecutive_unhelpful", 0
+                "stage2_consecutive_unanswered": parse_meta.get(
+                    "stage2_consecutive_unanswered", 0
                 ),
             }
         except FileNotFoundError:
             return {
                 "stage1_attempts": 0,
                 "stage2_total_attempts": 0,
-                "stage2_consecutive_unhelpful": 0,
+                "stage2_consecutive_unanswered": 0,
             }
     
     async def increment_stage1_attempt(
@@ -73,9 +73,9 @@ class ParseAttemptTracker:
         return parse_meta["stage1_attempts"]
     
     async def increment_stage2_attempt(
-        self, project_id: str, run_id: str, is_helpful: bool
+        self, project_id: str, run_id: str, is_answered: bool
     ) -> dict[str, int]:
-        """Increment stage2 attempt count and update consecutive unhelpful count."""
+        """Increment stage2 attempt count and update consecutive unanswered count."""
         understanding = await self.store.read_run_file(
             project_id, run_id, "understanding.json"
         )
@@ -86,12 +86,12 @@ class ParseAttemptTracker:
             parse_meta.get("stage2_total_attempts", 0) + 1
         )
         
-        # Update consecutive unhelpful count
-        if is_helpful:
-            parse_meta["stage2_consecutive_unhelpful"] = 0
+        # Update consecutive unanswered count
+        if is_answered:
+            parse_meta["stage2_consecutive_unanswered"] = 0
         else:
-            parse_meta["stage2_consecutive_unhelpful"] = (
-                parse_meta.get("stage2_consecutive_unhelpful", 0) + 1
+            parse_meta["stage2_consecutive_unanswered"] = (
+                parse_meta.get("stage2_consecutive_unanswered", 0) + 1
             )
         
         parse_meta["last_stage2_attempt"] = datetime.now(timezone.utc).isoformat()
@@ -101,7 +101,7 @@ class ParseAttemptTracker:
         
         return {
             "total_attempts": parse_meta["stage2_total_attempts"],
-            "consecutive_unhelpful": parse_meta["stage2_consecutive_unhelpful"],
+            "consecutive_unanswered": parse_meta["stage2_consecutive_unanswered"],
         }
     
     async def check_stage1_limit(self, project_id: str, run_id: str) -> tuple[bool, int]:
@@ -113,14 +113,14 @@ class ParseAttemptTracker:
     async def check_stage2_limit(
         self, project_id: str, run_id: str
     ) -> tuple[bool, int, int]:
-        """Check if stage2 limits are reached. Returns (is_locked, total_count, consecutive_unhelpful)."""
+        """Check if stage2 limits are reached. Returns (is_locked, total_count, consecutive_unanswered)."""
         counts = await self.get_attempt_counts(project_id, run_id)
         total = counts["stage2_total_attempts"]
-        consecutive = counts["stage2_consecutive_unhelpful"]
+        consecutive = counts["stage2_consecutive_unanswered"]
         
         is_locked = (
             total >= BACKEND_STAGE2_MAX_TOTAL_ATTEMPTS
-            or consecutive >= BACKEND_STAGE2_MAX_CONSECUTIVE_UNHELPFUL
+            or consecutive >= BACKEND_STAGE2_MAX_CONSECUTIVE_UNANSWERED
         )
         return (is_locked, total, consecutive)
 

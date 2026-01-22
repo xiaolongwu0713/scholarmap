@@ -21277,3 +21277,406 @@ DETAIL:  Consistent recovery state has not been yet reached.
 2026-01-22 12:59:05 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Budapest, Hungary
 2026-01-22 12:59:05 - app.main - INFO -    Institutions returned: 2
 2026-01-22 12:59:05 - app.main - INFO - ================================================================================
+2026-01-22 12:22:08 - root - INFO - ================================================================================
+2026-01-22 12:22:08 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 12:22:08 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 12:22:08 - root - INFO - ================================================================================
+2026-01-22 12:24:28 - app.main - INFO - ================================================================================
+2026-01-22 12:24:28 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:28 - app.main - INFO -    Min confidence: low
+2026-01-22 12:24:28 - app.main - INFO - ================================================================================
+2026-01-22 12:24:28 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 53e099cdb74e...
+2026-01-22 12:24:28 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:29 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 52 countries
+2026-01-22 12:24:29 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-22 12:24:29 - app.main - INFO -    Countries returned: 52
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:29 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:29 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-22 12:24:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:29 - app.main - INFO -    Country: Italy, Min confidence: low
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.phase2.pg_aggregations - INFO -    Getting country map for Italy (normalized: Italy)...
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:29 - app.main - INFO -    Country: Germany, Min confidence: low
+2026-01-22 12:24:29 - app.main - INFO - ================================================================================
+2026-01-22 12:24:29 - app.phase2.pg_aggregations - INFO -    Getting country map for Germany (normalized: Germany)...
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 74 cities in United States
+2026-01-22 12:24:30 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-22 12:24:30 - app.main - INFO -    Cities returned: 74
+2026-01-22 12:24:30 - app.main - INFO - ================================================================================
+2026-01-22 12:24:30 - app.main - INFO - ================================================================================
+2026-01-22 12:24:30 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:30 - app.main - INFO -    Country: Canada, Min confidence: low
+2026-01-22 12:24:30 - app.main - INFO - ================================================================================
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    Getting country map for Canada (normalized: Canada)...
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 30 cities in Italy
+2026-01-22 12:24:30 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Italy
+2026-01-22 12:24:30 - app.main - INFO -    Cities returned: 30
+2026-01-22 12:24:30 - app.main - INFO - ================================================================================
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 47 cities in China
+2026-01-22 12:24:30 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Canada
+2026-01-22 12:24:30 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-22 12:24:30 - app.main - INFO -    Cities returned: 47
+2026-01-22 12:24:30 - app.main - INFO - ================================================================================
+2026-01-22 12:24:30 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Canada
+2026-01-22 12:24:30 - app.main - INFO -    Cities returned: 11
+2026-01-22 12:24:30 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Frankfurt am Main; Cologne; Jülich, Germany' (from affiliation: Department of Neurology, University Hospital Frankfurt, Goethe University, Frankfurt am Main, Germany; Medical Faculty, University of Cologne, and Department of Neurology, University Hospital Cologne, Cologne, Germany; Cognitive Neuroscience, Institute of Neuroscience and Medicine (INM-3), Research Centre Jülich, Jülich, Germany. Electronic address: Grefkes-hermann@em.uni-frankfurt.de.)
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 38 cities in Germany
+2026-01-22 12:24:32 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Germany
+2026-01-22 12:24:32 - app.main - INFO -    Cities returned: 38
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:32 - app.main - INFO -    Country: United Kingdom, Min confidence: low
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Getting country map for United Kingdom (normalized: United Kingdom)...
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:32 - app.main - INFO -    Country: Switzerland, Min confidence: low
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Getting country map for Switzerland (normalized: Switzerland)...
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:32 - app.main - INFO -    Country: Netherlands, Min confidence: low
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Getting country map for Netherlands (normalized: Netherlands)...
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:32 - app.main - INFO -    Country: Australia, Min confidence: low
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Getting country map for Australia (normalized: Australia)...
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:32 - app.main - INFO -    Country: Spain, Min confidence: low
+2026-01-22 12:24:32 - app.main - INFO - ================================================================================
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Getting country map for Spain (normalized: Spain)...
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:32 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:33 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 18 cities in Australia
+2026-01-22 12:24:33 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Australia
+2026-01-22 12:24:33 - app.main - INFO -    Cities returned: 18
+2026-01-22 12:24:33 - app.main - INFO - ================================================================================
+2026-01-22 12:24:33 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 13 cities in United Kingdom
+2026-01-22 12:24:33 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United Kingdom
+2026-01-22 12:24:33 - app.main - INFO -    Cities returned: 13
+2026-01-22 12:24:33 - app.main - INFO - ================================================================================
+2026-01-22 12:24:33 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Spain
+2026-01-22 12:24:33 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Spain
+2026-01-22 12:24:33 - app.main - INFO -    Cities returned: 11
+2026-01-22 12:24:33 - app.main - INFO - ================================================================================
+2026-01-22 12:24:33 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 8 cities in Switzerland
+2026-01-22 12:24:33 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Switzerland
+2026-01-22 12:24:33 - app.main - INFO -    Cities returned: 8
+2026-01-22 12:24:33 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 9 cities in Netherlands
+2026-01-22 12:24:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Netherlands
+2026-01-22 12:24:34 - app.main - INFO -    Cities returned: 9
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:34 - app.main - INFO -    Country: Brazil, Min confidence: low
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Getting country map for Brazil (normalized: Brazil)...
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:34 - app.main - INFO -    Country: Japan, Min confidence: low
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Getting country map for Japan (normalized: Japan)...
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:34 - app.main - INFO -    Country: Iran, Min confidence: low
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Getting country map for Iran (normalized: Iran)...
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:34 - app.main - INFO -    Country: India, Min confidence: low
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Getting country map for India (normalized: India)...
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:34 - app.main - INFO -    Country: Belgium, Min confidence: low
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Getting country map for Belgium (normalized: Belgium)...
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 11 cities in Brazil
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Japan
+2026-01-22 12:24:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Brazil
+2026-01-22 12:24:34 - app.main - INFO -    Cities returned: 11
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Japan
+2026-01-22 12:24:34 - app.main - INFO -    Cities returned: 6
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Iran
+2026-01-22 12:24:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Iran
+2026-01-22 12:24:34 - app.main - INFO -    Cities returned: 5
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in India
+2026-01-22 12:24:34 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Belgium
+2026-01-22 12:24:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: India
+2026-01-22 12:24:34 - app.main - INFO -    Cities returned: 5
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Belgium
+2026-01-22 12:24:34 - app.main - INFO -    Cities returned: 6
+2026-01-22 12:24:34 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:35 - app.main - INFO -    Country: Finland, Min confidence: low
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Getting country map for Finland (normalized: Finland)...
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:35 - app.main - INFO -    Country: France, Min confidence: low
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Getting country map for France (normalized: France)...
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:35 - app.main - INFO -    Country: Israel, Min confidence: low
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Getting country map for Israel (normalized: Israel)...
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:35 - app.main - INFO -    Country: Mexico, Min confidence: low
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Getting country map for Mexico (normalized: Mexico)...
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:35 - app.main - INFO -    Country: Russia, Min confidence: low
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Getting country map for Russia (normalized: Russia)...
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Finland
+2026-01-22 12:24:35 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Finland
+2026-01-22 12:24:35 - app.main - INFO -    Cities returned: 2
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Russia
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 7 cities in France
+2026-01-22 12:24:35 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Russia
+2026-01-22 12:24:35 - app.main - INFO -    Cities returned: 2
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: France
+2026-01-22 12:24:35 - app.main - INFO -    Cities returned: 7
+2026-01-22 12:24:35 - app.main - INFO - ================================================================================
+2026-01-22 12:24:35 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 1 cities in Mexico
+2026-01-22 12:24:36 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Mexico
+2026-01-22 12:24:36 - app.main - INFO -    Cities returned: 1
+2026-01-22 12:24:36 - app.main - INFO - ================================================================================
+2026-01-22 12:24:37 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Beer-Yaacov, Israel' (from affiliation: QuantalX Neuroscience, Beer-Yaacov, Israel.)
+2026-01-22 12:24:38 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Zerifin, Israel' (from affiliation: Sagol Center for Hyperbaric Medicine and Research, Shamir Medical Center, Zerifin, Israel.)
+2026-01-22 12:24:38 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 15 cities in Israel
+2026-01-22 12:24:38 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Israel
+2026-01-22 12:24:38 - app.main - INFO -    Cities returned: 15
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:38 - app.main - INFO -    Country: Turkey, Min confidence: low
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.phase2.pg_aggregations - INFO -    Getting country map for Turkey (normalized: Turkey)...
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:38 - app.main - INFO -    Country: Denmark, Min confidence: low
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.phase2.pg_aggregations - INFO -    Getting country map for Denmark (normalized: Denmark)...
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:38 - app.main - INFO -    Country: Czech Republic, Min confidence: low
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.phase2.pg_aggregations - INFO -    Getting country map for Czech Republic (normalized: Czech Republic)...
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:38 - app.main - INFO -    Country: Austria, Min confidence: low
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.phase2.pg_aggregations - INFO -    Getting country map for Austria (normalized: Austria)...
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:38 - app.main - INFO -    Country: Portugal, Min confidence: low
+2026-01-22 12:24:38 - app.main - INFO - ================================================================================
+2026-01-22 12:24:38 - app.phase2.pg_aggregations - INFO -    Getting country map for Portugal (normalized: Portugal)...
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Turkey
+2026-01-22 12:24:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Turkey
+2026-01-22 12:24:39 - app.main - INFO -    Cities returned: 2
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 6 cities in Denmark
+2026-01-22 12:24:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Denmark
+2026-01-22 12:24:39 - app.main - INFO -    Cities returned: 6
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Austria
+2026-01-22 12:24:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Austria
+2026-01-22 12:24:39 - app.main - INFO -    Cities returned: 5
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Portugal
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 4 cities in Czech Republic
+2026-01-22 12:24:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Portugal
+2026-01-22 12:24:39 - app.main - INFO -    Cities returned: 5
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Czech Republic
+2026-01-22 12:24:39 - app.main - INFO -    Cities returned: 4
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:39 - app.main - INFO -    Country: South Korea, Min confidence: low
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Getting country map for South Korea (normalized: South Korea)...
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:39 - app.main - INFO -    Country: New Zealand, Min confidence: low
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Getting country map for New Zealand (normalized: New Zealand)...
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:39 - app.main - INFO -    Country: Hungary, Min confidence: low
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Getting country map for Hungary (normalized: Hungary)...
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:39 - app.main - INFO -    Country: Poland, Min confidence: low
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Getting country map for Poland (normalized: Poland)...
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 6af7ac1b6254, Run: 53e099cdb74e
+2026-01-22 12:24:39 - app.main - INFO -    Country: Taiwan, Min confidence: low
+2026-01-22 12:24:39 - app.main - INFO - ================================================================================
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Getting country map for Taiwan (normalized: Taiwan)...
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 0 cities in South Korea
+2026-01-22 12:24:39 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-22 12:24:40 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: South Korea
+2026-01-22 12:24:40 - app.main - INFO -    Cities returned: 0
+2026-01-22 12:24:40 - app.main - INFO - ================================================================================
+2026-01-22 12:24:40 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in New Zealand
+2026-01-22 12:24:40 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: New Zealand
+2026-01-22 12:24:40 - app.main - INFO -    Cities returned: 2
+2026-01-22 12:24:40 - app.main - INFO - ================================================================================
+2026-01-22 12:24:40 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Hungary
+2026-01-22 12:24:40 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Hungary
+2026-01-22 12:24:40 - app.main - INFO -    Cities returned: 2
+2026-01-22 12:24:40 - app.main - INFO - ================================================================================
+2026-01-22 12:24:40 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 2 cities in Poland
+2026-01-22 12:24:40 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 5 cities in Taiwan
+2026-01-22 12:24:40 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Poland
+2026-01-22 12:24:40 - app.main - INFO -    Cities returned: 2
+2026-01-22 12:24:40 - app.main - INFO - ================================================================================
+2026-01-22 12:24:40 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: Taiwan
+2026-01-22 12:24:40 - app.main - INFO -    Cities returned: 5
+2026-01-22 12:24:40 - app.main - INFO - ================================================================================
+2026-01-22 15:42:22 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-22 15:44:52 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-22 16:29:52 - root - INFO - ================================================================================
+2026-01-22 16:29:52 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:29:52 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:29:52 - root - INFO - ================================================================================
+2026-01-22 16:30:29 - root - INFO - ================================================================================
+2026-01-22 16:30:29 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:30:29 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:30:29 - root - INFO - ================================================================================
+2026-01-22 16:31:56 - root - INFO - ================================================================================
+2026-01-22 16:31:56 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:31:56 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:31:56 - root - INFO - ================================================================================
+2026-01-22 16:32:19 - root - INFO - ================================================================================
+2026-01-22 16:32:19 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:32:19 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:32:19 - root - INFO - ================================================================================
+2026-01-22 16:33:22 - root - INFO - ================================================================================
+2026-01-22 16:33:22 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:33:22 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:33:22 - root - INFO - ================================================================================
+2026-01-22 16:33:39 - root - INFO - ================================================================================
+2026-01-22 16:33:39 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:33:39 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:33:39 - root - INFO - ================================================================================
+2026-01-22 16:34:15 - root - INFO - ================================================================================
+2026-01-22 16:34:15 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:34:15 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:34:15 - root - INFO - ================================================================================
+2026-01-22 16:44:47 - root - INFO - ================================================================================
+2026-01-22 16:44:47 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:44:47 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:44:47 - root - INFO - ================================================================================
+2026-01-22 16:48:08 - root - INFO - ================================================================================
+2026-01-22 16:48:08 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:48:08 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:48:08 - root - INFO - ================================================================================
+2026-01-22 16:48:14 - root - INFO - ================================================================================
+2026-01-22 16:48:14 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:48:14 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:48:14 - root - INFO - ================================================================================
+2026-01-22 16:48:23 - root - INFO - ================================================================================
+2026-01-22 16:48:23 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:48:23 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:48:23 - root - INFO - ================================================================================
+2026-01-22 16:48:30 - root - INFO - ================================================================================
+2026-01-22 16:48:30 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:48:30 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:48:30 - root - INFO - ================================================================================
+2026-01-22 16:48:40 - root - INFO - ================================================================================
+2026-01-22 16:48:40 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:48:40 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:48:40 - root - INFO - ================================================================================
+2026-01-22 16:48:46 - root - INFO - ================================================================================
+2026-01-22 16:48:46 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:48:46 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:48:46 - root - INFO - ================================================================================
+2026-01-22 16:48:55 - root - INFO - ================================================================================
+2026-01-22 16:48:55 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:48:55 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:48:55 - root - INFO - ================================================================================
+2026-01-22 16:49:05 - root - INFO - ================================================================================
+2026-01-22 16:49:05 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:49:05 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:49:05 - root - INFO - ================================================================================
+2026-01-22 16:49:12 - root - INFO - ================================================================================
+2026-01-22 16:49:12 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:49:12 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:49:12 - root - INFO - ================================================================================
+2026-01-22 16:49:18 - root - INFO - ================================================================================
+2026-01-22 16:49:18 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:49:18 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:49:18 - root - INFO - ================================================================================
+2026-01-22 16:54:41 - root - INFO - ================================================================================
+2026-01-22 16:54:41 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 16:54:41 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 16:54:41 - root - INFO - ================================================================================
+2026-01-22 17:06:07 - root - INFO - ================================================================================
+2026-01-22 17:06:07 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-22 17:06:07 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-22 17:06:07 - root - INFO - ================================================================================
+2026-01-22 17:06:52 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-22 17:07:57 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-22 17:22:51 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-22 17:24:20 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

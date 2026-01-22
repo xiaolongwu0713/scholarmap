@@ -92,7 +92,6 @@ async def parse_stage1(store: FileStore, project_id: str, run_id: str, candidate
         data,
         [
             "plausibility_level",
-            "is_research_description",
             "is_clear_for_search",
             "normalized_understanding",
             "structured_summary",
@@ -194,7 +193,7 @@ async def parse_stage2(
         data,
         [
             "plausibility_level",
-            "is_research_description",
+            "is_answered",
             "is_clear_for_search",
             "normalized_understanding",
             "structured_summary",

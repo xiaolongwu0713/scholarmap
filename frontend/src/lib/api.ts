@@ -42,7 +42,7 @@ export interface FrontendConfig {
   text_validation_max_attempts: number;
   parse_stage1_max_attempts: number;
   parse_stage2_max_total_attempts: number;
-  parse_stage2_max_consecutive_unhelpful: number;
+  parse_stage2_max_consecutive_unanswered: number;
   retrieval_framework_adjust_max_attempts: number;
   share_run_auth_check_enabled: boolean;
 }

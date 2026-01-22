@@ -57,15 +57,14 @@ type AggregatedItem = {
 type ChatMessage = {
   role: "user" | "system";
   content: string;
-  status?: "helpful" | "not_helpful" | "info" | "error";
-  consecutiveUnhelpful?: number;
+  status?: "answered" | "not_answered" | "info" | "error";
+  consecutiveUnanswered?: number;
 };
 
 type ParseResult = {
   plausibility_level: "A_impossible" | "B_plausible";
-  is_research_description: boolean;
   is_clear_for_search: boolean;
-  is_helpful: boolean;
+  is_answered?: boolean;  // Only present in stage2
   normalized_understanding: string;
   structured_summary: {
     domain: string | null;
@@ -354,24 +353,31 @@ function translateValidationError(reason: string | null): string {
   return reason || "Validation failed. Please check that your input meets the requirements.";
 }
 
-function formatSystemUnderstanding(result: ParseResult, isStage2: boolean = false, consecutiveUnhelpful: number = 0): ChatMessage | null {
-  let status: "helpful" | "not_helpful" | "info" | "error" | undefined;
+function formatSystemUnderstanding(result: ParseResult, isStage2: boolean = false, consecutiveUnanswered: number = 0): ChatMessage | null {
+  let status: "answered" | "not_answered" | "info" | "error" | undefined;
   let content = "";
   
   if (isStage2) {
-    // Stage 2: Check if helpful
-    if (result.is_helpful) {
-      status = "helpful";
-      content = "Your answer is helpful. Below is the new understanding and further instruction for refinement. Or, you can choose to use it without further refinement.";
+    // Stage 2: Check if answered the question
+    if (result.is_answered) {
+      status = "answered";
+      content = "Thanks for the feedback. Below is the new understanding and further instruction for refinement. Or, you can choose to use it without further refinement.";
     } else {
-      status = "not_helpful";
-      content = "Please provide more useful information. You have one chance left to refine system understanding.";
+      status = "not_answered";
+      // Show LLM's reason from uncertainties
+      const reason = result.uncertainties && result.uncertainties.length > 0 
+        ? result.uncertainties.join('; ') 
+        : "Your response did not directly answer the question.";
+      content = `${reason}\n\nPlease provide a more direct answer to the question. You have ${2 - consecutiveUnanswered} chance(s) left.`;
     }
   } else {
-    // Stage 1: Check plausibility and clarity
-    if (result.plausibility_level === "A_impossible" || !result.is_research_description) {
+    // Stage 1: Check plausibility only
+    if (result.plausibility_level === "A_impossible") {
       status = "error";
-      content = "This is not a valid research description, or the input does not meet the requirements for a research description.";
+      const reason = result.uncertainties && result.uncertainties.length > 0
+        ? result.uncertainties.join('; ')
+        : "This research description is not plausible or feasible.";
+      content = reason;
     } else if (result.is_clear_for_search) {
       status = "info";
       content = "Below is the system understanding of your research and further instructions for refinement.";
@@ -381,7 +387,7 @@ function formatSystemUnderstanding(result: ParseResult, isStage2: boolean = fals
     }
   }
   
-  return { role: "system", content, status, consecutiveUnhelpful: consecutiveUnhelpful > 0 ? consecutiveUnhelpful : undefined };
+  return { role: "system", content, status, consecutiveUnanswered: consecutiveUnanswered > 0 ? consecutiveUnanswered : undefined };
 }
 
 function formatParseResultAsMessage(result: ParseResult): string {
@@ -422,7 +428,7 @@ function RunPageContent() {
     text_validation_max_attempts: 3,
     parse_stage1_max_attempts: 2,
     parse_stage2_max_total_attempts: 3,
-    parse_stage2_max_consecutive_unhelpful: 2,
+    parse_stage2_max_consecutive_unanswered: 2,
     retrieval_framework_adjust_max_attempts: 2,
     share_run_auth_check_enabled: true,
   });
@@ -649,7 +655,7 @@ function RunPageContent() {
 
     // Load parse history and normalized understandings
     const messages: ChatMessage[] = [];
-    let consecutiveFalse = 0;
+    let consecutiveUnanswered = 0;
     const historySnapshot = Array.isArray(u?.parse?.history) ? u.parse.history : [];
     const firstHistoryDescription = historySnapshot.find((item: any) => item?.current_description)?.current_description;
     const normalizedUnderstanding = String(u?.parse?.result?.normalized_understanding || "").trim();
@@ -763,7 +769,7 @@ function RunPageContent() {
         
         if (item.result) {
           // Add system understanding message
-          const systemUnderstanding = formatSystemUnderstanding(item.result, true, consecutiveFalse);
+          const systemUnderstanding = formatSystemUnderstanding(item.result, true, consecutiveUnanswered);
           if (systemUnderstanding) {
             messages.push(systemUnderstanding);
           }
@@ -776,10 +782,10 @@ function RunPageContent() {
           });
           
           // Update consecutive false count
-          if (item.result.is_helpful === false) {
-            consecutiveFalse++;
+          if (item.result.is_answered === false) {
+            consecutiveUnanswered++;
           } else {
-            consecutiveFalse = 0;
+            consecutiveUnanswered = 0;
           }
         }
       }
@@ -814,15 +820,15 @@ function RunPageContent() {
       const history = u.parse.history as Array<any>;
       setParseStage2TotalAttempts(history.length);
       // Count consecutive false from the end
-      let consecutiveFalse = 0;
+      let consecutiveUnanswered = 0;
       for (let i = history.length - 1; i >= 0; i--) {
         if (history[i]?.result?.is_helpful === false) {
-          consecutiveFalse++;
+          consecutiveUnanswered++;
         } else {
           break;
         }
       }
-      setParseStage2ConsecutiveFalse(consecutiveFalse);
+      setParseStage2ConsecutiveFalse(consecutiveUnanswered);
     }
 
     try {
@@ -976,7 +982,7 @@ function RunPageContent() {
       // Add system understanding first, then LLM response
       const systemUnderstanding = formatSystemUnderstanding(d, false);
       const llmResponse = formatParseResultAsMessage(d);
-      const stage1Failed = !d.is_research_description || d.plausibility_level === "A_impossible";
+      const stage1Failed = d.plausibility_level === "A_impossible";
       
       const newMessages: ChatMessage[] = [];
       if (systemUnderstanding) {
@@ -1039,7 +1045,7 @@ function RunPageContent() {
 
       // Update consecutive false counter
       let newConsecutiveFalse = 0;
-      if (!d.is_helpful) {
+      if (!d.is_answered) {
         newConsecutiveFalse = parseStage2ConsecutiveFalse + 1;
         setParseStage2ConsecutiveFalse(newConsecutiveFalse);
       } else {
@@ -1059,7 +1065,7 @@ function RunPageContent() {
       setParseAdditionalInfo("");
 
       // Update normalized understanding history only when is_helpful=true
-      if (d.is_helpful && d.normalized_understanding) {
+      if (d.is_answered && d.normalized_understanding) {
         setNormalizedUnderstandingsHistory((prev) => [...prev, d.normalized_understanding]);
       }
 
@@ -1077,12 +1083,12 @@ function RunPageContent() {
       messages.push({ role: "system", content: llmResponse });
 
       // Lock if consecutive unhelpful threshold reached (after adding the response)
-      if (!d.is_helpful && newConsecutiveFalse >= config.parse_stage2_max_consecutive_unhelpful) {
+      if (!d.is_answered && newConsecutiveFalse >= config.parse_stage2_max_consecutive_unanswered) {
         setParseStage2Locked(true);
-        messages.push({ role: "system", content: `Parse: Service refused due to ${config.parse_stage2_max_consecutive_unhelpful} consecutive unhelpful responses.` });
+        messages.push({ role: "system", content: `Parse: Service refused due to ${config.parse_stage2_max_consecutive_unanswered} consecutive unhelpful responses.` });
       }
 
-      if (d.plausibility_level === "A_impossible" || !d.is_research_description) {
+      if (d.plausibility_level === "A_impossible") {
         setParseStage2Locked(true);
       }
 
@@ -1933,11 +1939,11 @@ function RunPageContent() {
                       let textColor = m.role === "user" ? "#9a3412" : "#065f46";
                       let borderColor = m.role === "user" ? "#fed7aa" : "#a7f3d0";
                       
-                      if (m.status === "helpful") {
+                      if (m.status === "answered") {
                         background = m.role === "user" ? "#fed7aa" : "#d1fae5";
                         textColor = m.role === "user" ? "#9a3412" : "#065f46";
                         borderColor = m.role === "user" ? "#fdba74" : "#a7f3d0";
-                      } else if (m.status === "not_helpful") {
+                      } else if (m.status === "not_answered") {
                         background = "#fee2e2";
                         textColor = "#dc2626";
                         borderColor = "#fca5a5";
@@ -1994,7 +2000,6 @@ function RunPageContent() {
                     </button>
                   </div>
                 ) : parseResult?.plausibility_level === "B_plausible" &&
-                  parseResult.is_research_description &&
                   !parseResult.is_clear_for_search ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                     <div style={{ position: "relative" }}>
@@ -2048,7 +2053,7 @@ function RunPageContent() {
                       </div>
                       {parseStage2ConsecutiveFalse > 0 && (
                         <div style={{ fontSize: 12, color: "#dc2626", textAlign: "center" }}>
-                          (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/{config.parse_stage2_max_consecutive_unhelpful})
+                          (Consecutive unhelpful: {parseStage2ConsecutiveFalse}/{config.parse_stage2_max_consecutive_unanswered})
                         </div>
                       )}
                     </div>
@@ -2156,7 +2161,7 @@ function RunPageContent() {
                 )}
               </div>
               {/* Button to use current understanding and build framework */}
-              {parseResult?.is_helpful && (
+              {parseResult?.is_answered && (
                 <button
                   onClick={onBuildFramework}
                   disabled={parseCompleted || busy !== null || parseStage2Locked}
