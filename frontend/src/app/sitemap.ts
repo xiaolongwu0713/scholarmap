@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
-import { fetchWorldMap } from '@/lib/seoApi';
-import { countryToSlug } from '@/lib/geoSlugs';
+import { fetchWorldMap, fetchCountryMap } from '@/lib/seoApi';
+import { countryToSlug, cityToSlug } from '@/lib/geoSlugs';
 
 const DEMO_PROJECT_ID = '6af7ac1b6254';
 const DEMO_RUN_ID = '53e099cdb74e';
@@ -49,7 +49,52 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
-    return [...staticPages, ...countryPages];
+    // Generate city pages (top 200 cities globally)
+    const allCities: Array<{ city: string; country: string; scholar_count: number }> = [];
+    
+    // Fetch cities from top 30 countries (to limit API calls)
+    const topCountries = countries
+      .sort((a, b) => b.scholar_count - a.scholar_count)
+      .slice(0, 30);
+
+    // Use Promise.all for parallel requests, but limit concurrency
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < topCountries.length; i += BATCH_SIZE) {
+      const batch = topCountries.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(
+        batch.map(async (country) => {
+          try {
+            const cities = await fetchCountryMap(country.country);
+            return cities.map(city => ({
+              city: city.city,
+              country: country.country,
+              scholar_count: city.scholar_count,
+            }));
+          } catch (error) {
+            console.error(`Error fetching cities for ${country.country}:`, error);
+            return [];
+          }
+        })
+      );
+      
+      results.forEach(cityList => {
+        allCities.push(...cityList);
+      });
+    }
+
+    // Sort by scholar count and take top 200
+    const topCities = allCities
+      .sort((a, b) => b.scholar_count - a.scholar_count)
+      .slice(0, 200);
+
+    const cityPages: MetadataRoute.Sitemap = topCities.map((city) => ({
+      url: `${baseUrl}/research-jobs/city/${cityToSlug(city.city)}`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    }));
+
+    return [...staticPages, ...countryPages, ...cityPages];
   } catch (error) {
     console.error('Error generating sitemap:', error);
     // Return static pages only if API fails
