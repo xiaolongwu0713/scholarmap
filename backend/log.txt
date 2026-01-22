@@ -18770,3 +18770,13 @@ DETAIL:  Consistent recovery state has not been yet reached.
 2026-01-21 17:34:12 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
 2026-01-21 17:34:12 - app.main - INFO -    Cities returned: 6
 2026-01-21 17:34:12 - app.main - INFO - ================================================================================
+2026-01-22 08:42:52 - app.main - INFO - ================================================================================
+2026-01-22 08:42:52 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 6af7ac1b6254, Run: a0ed3ea2b2ed
+2026-01-22 08:42:52 - app.main - INFO -    Min confidence: low
+2026-01-22 08:42:52 - app.main - INFO - ================================================================================
+2026-01-22 08:42:52 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run a0ed3ea2b2ed...
+2026-01-22 08:42:53 - app.phase2.pg_aggregations - INFO -    Found 131 PMIDs
+2026-01-22 08:42:53 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 40 countries
+2026-01-22 08:42:53 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-22 08:42:53 - app.main - INFO -    Countries returned: 40
+2026-01-22 08:42:53 - app.main - INFO - ================================================================================
