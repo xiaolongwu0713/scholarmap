@@ -23035,3 +23035,104 @@ DETAIL:  Consistent recovery state has not been yet reached.
 2026-01-23 13:23:58 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
 2026-01-23 13:23:58 - app.main - INFO -    Countries returned: 74
 2026-01-23 13:23:58 - app.main - INFO - ================================================================================
+2026-01-23 13:25:40 - root - INFO - ================================================================================
+2026-01-23 13:25:40 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 13:25:40 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-23 13:25:40 - root - INFO - ================================================================================
+2026-01-23 13:25:41 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 13:25:41 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 15:19:40 - root - INFO - ================================================================================
+2026-01-23 15:19:40 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 15:19:40 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-23 15:19:40 - root - INFO - ================================================================================
+2026-01-23 15:19:41 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 15:19:41 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 15:20:29 - root - INFO - ================================================================================
+2026-01-23 15:20:29 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 15:20:29 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-23 15:20:29 - root - INFO - ================================================================================
+2026-01-23 15:20:30 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 15:20:30 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 15:46:26 - root - INFO - ================================================================================
+2026-01-23 15:46:26 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 15:46:26 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-23 15:46:26 - root - INFO - ================================================================================
+2026-01-23 15:46:27 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 15:46:27 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 15:46:33 - root - INFO - ================================================================================
+2026-01-23 15:46:33 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 15:46:33 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-23 15:46:33 - root - INFO - ================================================================================
+2026-01-23 15:46:34 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 15:46:34 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 15:47:11 - root - INFO - ================================================================================
+2026-01-23 15:47:11 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 15:47:11 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-23 15:47:11 - root - INFO - ================================================================================
+2026-01-23 15:47:11 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 15:47:11 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 16:31:32 - app.main - INFO - ================================================================================
+2026-01-23 16:31:32 - app.main - INFO - 🔍 VALIDATION STARTED - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-23 16:31:32 - app.main - INFO - ================================================================================
+2026-01-23 16:31:32 - app.phase2.affiliation_validator - INFO -    Pending institutions to validate: 0
+2026-01-23 16:31:32 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 16:31:32 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 597675a5f9fb...
+2026-01-23 16:31:33 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4436 authorships from 500 papers
+2026-01-23 16:31:33 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 16:31:33 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 2: Extracting unique location keys and batch querying geocoding_cache...
+2026-01-23 16:31:33 - app.phase2.affiliation_validator - INFO -    Found 657 unique location keys from 4436 authorships
+2026-01-23 16:31:33 - app.phase2.affiliation_validator - INFO -    Batch query complete: 657/657 found in cache
+2026-01-23 16:31:33 - app.phase2.affiliation_validator - INFO -    Processing 0 unique location keys via Nominatim...
+2026-01-23 16:31:33 - app.phase2.affiliation_validator - INFO -    Batch updating 4286 affiliations for 648 cached locations...
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    ✅ Batch updated affiliations for 648 locations (4286 total affiliations)
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 2-4 COMPLETE: Geocoding validation finished
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Total authorships checked: 4436
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Cache hits (valid): 4312
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Cache misses: 0
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Nominatim successes: 0
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Nominatim failures: 0
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Unique error affiliations: 20
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Error PMIDs: 15
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 5: Fixing 20 error affiliations with LLM...
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Collecting 20 unique error affiliations for LLM fix
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Calling LLM extractor (batch size: 20)...
+2026-01-23 16:31:53 - app.phase2.affiliation_extractor - INFO -    Checking affiliation_cache table for 20 affiliations...
+2026-01-23 16:31:53 - app.phase2.affiliation_extractor - INFO -    Trying institution_matcher (institution_geo table) for 20 affiliations...
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    Loaded 3648 institutions to memory (3648 normalized names, 219 aliases)
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2/20 (10%), matches found: 2
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 4/20 (20%), matches found: 4
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 6/20 (30%), matches found: 6
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 8/20 (40%), matches found: 8
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 10/20 (50%), matches found: 10
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 12/20 (60%), matches found: 12
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 14/20 (70%), matches found: 14
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 16/20 (80%), matches found: 16
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 18/20 (90%), matches found: 18
+2026-01-23 16:31:53 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 20/20 (100%), matches found: 20
+2026-01-23 16:31:53 - app.phase2.affiliation_extractor - INFO -    ✅ institution_geo table: 20 matches found
+2026-01-23 16:31:53 - app.phase2.affiliation_extractor - INFO -    ✅ All 20 affiliations found in cache/institution_geo
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    LLM extraction complete: 20 results from 0 LLM calls
+2026-01-23 16:31:53 - app.phase2.affiliation_validator - INFO -    Updating affiliation_cache with 20 LLM results...
+2026-01-23 16:31:54 - app.phase2.affiliation_validator - INFO -    ✅ Updated affiliation_cache table with 20 LLM results
+2026-01-23 16:31:54 - app.phase2.affiliation_validator - INFO -    Re-geocoding and updating authorships...
+2026-01-23 16:31:54 - app.phase2.affiliation_validator - INFO -    Processing 9 unique location keys for re-geocoding...
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO -    ✅ Fixed 20 affiliations
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO -    ✅ Updated 26 authorships
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO -    ✅ Re-geocoded 0 locations
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION COMPLETE - Run: 597675a5f9fb
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO -    LLM fallback extractions: 20
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO -    affiliation_cache table updated by LLM: 20
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO -    Authorship records updated: 26
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO -    geocoding_cache table updated: 0
+2026-01-23 16:31:57 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 16:31:57 - app.main - INFO - ================================================================================
+2026-01-23 16:31:57 - app.main - INFO - ✅ VALIDATION COMPLETED - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-23 16:31:57 - app.main - INFO -    Total authorships: 4436
+2026-01-23 16:31:57 - app.main - INFO -    Geocoding failures: 0
+2026-01-23 16:31:57 - app.main - INFO -    Affiliations fixed: 20
+2026-01-23 16:31:57 - app.main - INFO -    Authorships updated: 26
+2026-01-23 16:31:57 - app.main - INFO -    Geocoding updated: 0
+2026-01-23 16:31:57 - app.main - INFO - ================================================================================

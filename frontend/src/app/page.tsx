@@ -25,14 +25,14 @@ export default function LandingPage() {
       <StructuredData data={howToSchema} />
       <StructuredData data={breadcrumbSchema} />
       
-      <div className="min-h-screen" style={{ scrollBehavior: "smooth" }}>
-        <LandingNavbar />
-        <Hero />
-        <LandingCTAs />
-        <WhatYouCanDo />
-        <HowItWorks />
-        <Footer />
-      </div>
+    <div className="min-h-screen" style={{ scrollBehavior: "smooth" }}>
+      <LandingNavbar />
+      <Hero />
+      <LandingCTAs />
+      <WhatYouCanDo />
+      <HowItWorks />
+      <Footer />
+    </div>
     </>
   );
 }

@@ -21,7 +21,7 @@ Usage:
 Examples:
     # Using email/password
     python scripts/trigger_validation.py ad280effc0b8 run_7b1d4766fd27 --email user@example.com --password mypassword
-    python scripts/trigger_validation.py 6af7ac1b6254 13092a22728c --emil xiaolongwu0713@gmail.com --password xiaowu
+    python scripts/trigger_validation.py 3b9280a68d3d 597675a5f9fb --email xiaolongwu0713@gmail.com --password xiaowu
     # Using existing token
     python scripts/trigger_validation.py ad280effc0b8 run_7b1d4766fd27 --token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 

@@ -57,7 +57,7 @@ export const FIELD_CONFIGS: Record<string, FieldConfig> = {
   "cancer-immunotherapy": {
     slug: "cancer-immunotherapy",
     name: "Cancer Immunotherapy",
-    runId: "immunotherapy-run-id", // TODO: Replace after creating immunotherapy run
+    runId: "1893fb47f453", // TODO: Replace after creating immunotherapy run
     projectId: SEO_PROJECT_ID,
     description: "Cancer immunotherapy including CAR-T, checkpoint inhibitors, and immune-based cancer treatments",
     keywords: ["immunotherapy", "CAR-T", "checkpoint inhibitors", "cancer vaccines", "immune therapy"],
@@ -67,7 +67,7 @@ export const FIELD_CONFIGS: Record<string, FieldConfig> = {
   "ai-drug-discovery": {
     slug: "ai-drug-discovery",
     name: "AI in Drug Discovery",
-    runId: "ai-drug-run-id", // TODO: Replace after creating AI drug discovery run
+    runId: "597675a5f9fb", // TODO: Replace after creating AI drug discovery run
     projectId: SEO_PROJECT_ID,
     description: "Artificial intelligence and machine learning applications in drug discovery and development",
     keywords: ["AI drug discovery", "machine learning", "computational drug design", "AI pharmacology"],

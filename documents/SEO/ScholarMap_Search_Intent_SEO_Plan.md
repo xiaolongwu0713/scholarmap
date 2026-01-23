@@ -26,7 +26,7 @@ This plan outlines the strategy for creating search-intent-optimized pages to dr
 - **Metadata and OG tags**: `frontend/src/app/layout.tsx`
   - Google verification: `c1b2e25f626eceac`
   - Metadata base URL: `https://scholarmap-frontend.onrender.com`
-- **Structured data**: `frontend/src/components/StructuredData.tsx`
+- **Structured data**: `frontend/src/components/StructuredData.tsx` 
   - Organization, WebApplication, SoftwareApplication, FAQ, HowTo, BreadcrumbList schemas
 - **Robots.txt**: `frontend/src/app/robots.ts`
   - Allows all user agents

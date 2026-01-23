@@ -14,6 +14,9 @@ from app.phase2.models import GeoData
 # --------------------
 _email_re = re.compile(r"[\w\.-]+@[\w\.-]+\.\w+", re.I)
 _electronic_re = re.compile(r"\b(Electronic address|E-mail|Email)\s*:\s*.*$", re.I)
+# Author name initials in parentheses (e.g., "(R.Z., C.C., M.K.)")
+# Pattern: (A.B., C.D., E.F.) - 1-3 uppercase letters followed by period, comma-separated
+_author_initials_re = re.compile(r"\([A-Z]\.(?:[A-Z]\.)?(?:[A-Z]\.)?(?:,\s*[A-Z]\.(?:[A-Z]\.)?(?:[A-Z]\.)?)*\)", re.U)
 # Postal code patterns:
 # - US: 5 digits or 5-4 format (e.g., "10001", "10001-1234")
 # - Canada: A1A 1A1 format
@@ -136,6 +139,8 @@ def _preclean_affil(s: str) -> str:
     s = _norm_text(s)
     if not s:
         return ""
+    # Remove author name initials in parentheses (e.g., "(R.Z., C.C., M.K.)")
+    s = _author_initials_re.sub("", s)
     s = _electronic_re.sub("", s)
     s = _email_re.sub("", s)
     s = s.replace(";", ",")
@@ -635,6 +640,20 @@ def _normalize_country_city_names(geo_data: dict) -> dict:
         "P.R.C": "China",
         "P.R.C.": "China",
         "PR China": "China",
+        
+        # Official long-form country names → Short form
+        "Iran, Islamic Republic of": "Iran",
+        "Korea, Republic of": "South Korea",
+        "Korea, Democratic People's Republic of": "North Korea",
+        "Venezuela, Bolivarian Republic of": "Venezuela",
+        "Tanzania, United Republic of": "Tanzania",
+        "Bolivia, Plurinational State of": "Bolivia",
+        "Moldova, Republic of": "Moldova",
+        "Macedonia, the former Yugoslav Republic of": "North Macedonia",
+        "Congo, the Democratic Republic of the": "Democratic Republic of the Congo",
+        "Lao People's Democratic Republic": "Laos",
+        "Syrian Arab Republic": "Syria",
+        "Viet Nam": "Vietnam",
         
         # Other standardizations
         "ROC": "Taiwan",
