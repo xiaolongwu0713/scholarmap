@@ -21680,3 +21680,1358 @@ DETAIL:  Consistent recovery state has not been yet reached.
 2026-01-22 17:07:57 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2026-01-22 17:22:51 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2026-01-22 17:24:20 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 11:09:41 - root - INFO - ================================================================================
+2026-01-23 11:09:41 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 11:09:41 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 11:09:41 - root - INFO - ================================================================================
+2026-01-23 11:11:16 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 11:16:23 - root - INFO - ================================================================================
+2026-01-23 11:16:23 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 11:16:23 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 11:16:23 - root - INFO - ================================================================================
+2026-01-23 11:18:58 - root - INFO - ================================================================================
+2026-01-23 11:18:58 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 11:18:58 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 11:18:58 - root - INFO - ================================================================================
+2026-01-23 11:22:04 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 11:22:26 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 11:22:26 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 11:22:27 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 11:22:28 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 11:23:01 - app.main - INFO - ================================================================================
+2026-01-23 11:23:01 - app.main - INFO - 🚀 INGESTION STARTED - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:23:01 - app.main - INFO -    Force refresh: False
+2026-01-23 11:23:01 - app.main - INFO - ================================================================================
+2026-01-23 11:23:01 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:01 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Starting ingestion for run b6b977aeeed1
+2026-01-23 11:23:01 - app.phase2.pg_ingest - INFO -    Project ID: 3b9280a68d3d
+2026-01-23 11:23:01 - app.phase2.pg_ingest - INFO -    Force refresh: False
+2026-01-23 11:23:01 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:01 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...
+2026-01-23 11:23:04 - app.phase2.pg_ingest - INFO -    Loaded 500 unique PMIDs from run b6b977aeeed1
+2026-01-23 11:23:04 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 1 COMPLETE: Found 500 PMIDs
+2026-01-23 11:23:04 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:04 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 2: Fetching 500 PMIDs from PubMed...
+2026-01-23 11:23:04 - app.phase2.pubmed_fetcher - INFO - Fetching 500 PMIDs in 4 batches (batch_size=150, rate_limit=3.0 rps)
+2026-01-23 11:23:04 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 11:23:04 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41152174%2C41335749%2C40928672%2C41194086%2C41418936%2C40101362%2C41204680%2C40199863%2C41335119%2C40903968%2C41356065%2C41059099%2C40100695%2C40830488%2C40040137%2C41320740%2C41173359%2C41134943%2C41231905%2C40498623%2C40831229%2C40527331%2C40722299%2C41028971%2C40683191%2C41171945%2C41177674%2C41357676%2C41360010%2C40848318%2C40683189%2C40064104%2C40239679%2C41336341%2C40887179%2C41191764%2C40218647%2C41350592%2C40938318%2C41336408%2C41336530%2C40857922%2C41112520%2C41550729%2C40136836%2C40481044%2C40867208%2C41064747%2C41336297%2C40351570%2C40198632%2C40287725%2C40078487%2C41293812%2C41072285%2C40480249%2C41094901%2C41428932%2C41336201%2C40644990%2C40620352%2C40874066%2C40040170%2C40196232%2C40398443%2C40904893%2C40664221%2C41370855%2C40745321%2C40499342%2C41273580%2C41565527%2C40203855%2C40930287%2C40829351%2C40524963%2C40648241%2C40469096%2C40639398%2C40294568%2C40104767%2C41401061%2C40363359%2C41551232%2C41289134%2C41199757%2C41044458%2C40533772%2C41337318%2C40469097%2C40144587%2C40563723%2C40549518%2C40566767%2C40395688%2C40209163%2C40966137%2C40174604%2C41336460%2C40683976%2C40681115%2C40398440%2C41337275%2C41207468%2C41337165%2C41335679%2C40356632%2C40872049%2C41072287%2C40257874%2C40353311%2C40942721%2C41284444%2C40566766%2C40110612%2C40144585%2C40191683%2C40161643%2C40843107%2C40115888%2C41129446%2C40742862%2C41553892%2C41294401%2C41060851%2C41062739%2C40581220%2C40718596%2C40956723%2C40694466%2C41350471%2C40234486%2C41336280%2C40368962%2C40280983%2C40590380%2C41193512%2C40354812%2C41360009%2C40456241%2C40836202%2C40740060%2C40834866%2C41031916%2C40705590%2C40813218%2C41256173%2C41459561%2C41268354%2C40946865&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 11:23:05 - app.phase2.pubmed_fetcher - INFO - Batch 1/4 completed
+2026-01-23 11:23:05 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 11:23:05 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40880337%2C41217924%2C40212472%2C40667422%2C41318089%2C40871906%2C40690341%2C41079401%2C40819020%2C40535306%2C40514107%2C41109958%2C40270987%2C41081225%2C40221457%2C41499809%2C40040231%2C40040166%2C40490007%2C40602314%2C41265571%2C41293116%2C40605914%2C41157441%2C40706724%2C40315092%2C41335716%2C40614457%2C41149344%2C40273947%2C40999875%2C40247859%2C40313536%2C40179638%2C40226480%2C40127535%2C40816265%2C40110537%2C41397305%2C40212471%2C40538970%2C40562060%2C41179991%2C40288968%2C41336140%2C40924526%2C41262557%2C40101262%2C40522806%2C41145802%2C40608885%2C40431780%2C40141951%2C41005749%2C40085468%2C41467724%2C41398663%2C40720979%2C40672704%2C41351188%2C40644193%2C41335965%2C41305274%2C41259181%2C40371570%2C40245060%2C40871892%2C41183389%2C40096214%2C41152182%2C40115889%2C40672502%2C41094934%2C40594365%2C40072857%2C41129430%2C40588007%2C40462746%2C40428114%2C40887182%2C40071135%2C41450855%2C40881516%2C41472918%2C40281692%2C40722278%2C41471422%2C40807891%2C40533436%2C40403087%2C40887181%2C41250658%2C41209398%2C40494367%2C41305083%2C41404976%2C40795479%2C40679899%2C40722306%2C40083123%2C40995144%2C41412372%2C40880336%2C40564430%2C40602422%2C41335297%2C41551041%2C41456194%2C41266624%2C41336567%2C40578388%2C41564094%2C40989443%2C40627787%2C40478707%2C40395924%2C41025122%2C40949716%2C41302782%2C41167038%2C40173067%2C40807821%2C41108882%2C41345285%2C41289136%2C41337376%2C41408286%2C40297442%2C40911452%2C40859358%2C40628276%2C40594760%2C40983076%2C40867214%2C41296962%2C40907818%2C40664224%2C40563754%2C40748806%2C41337108%2C40911443%2C41310746%2C41525762%2C41095026%2C40644135%2C40590025%2C40606836%2C41528907%2C40122923%2C41337189&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 11:23:06 - app.phase2.pubmed_fetcher - INFO - Batch 2/4 completed
+2026-01-23 11:23:06 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 11:23:06 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40181122%2C40471491%2C41394940%2C40563743%2C41104354%2C40628277%2C40800536%2C40040208%2C40499369%2C40350042%2C41336480%2C41064793%2C40526539%2C40292964%2C40057290%2C40442206%2C40536865%2C40628758%2C40620712%2C40867216%2C40867148%2C40800774%2C40602419%2C41006379%2C40741296%2C40584269%2C40730254%2C40187178%2C40993190%2C40914440%2C41439390%2C41187598%2C40471721%2C41336805%2C40081503%2C40681665%2C40309849%2C40843108%2C40536747%2C40629288%2C40193612%2C40218817%2C40180157%2C41448755%2C41335841%2C40493465%2C41525614%2C41516662%2C41039113%2C41296974%2C40566768%2C40602315%2C40241786%2C41336584%2C41160913%2C41212707%2C40482972%2C41336840%2C40773015%2C40527877%2C40367953%2C40103837%2C41255549%2C40570701%2C41177306%2C41222817%2C41335863%2C40203859%2C40566765%2C41235174%2C40681114%2C40596215%2C41232376%2C41385417%2C41336566%2C41336716%2C40064095%2C40717726%2C41089660%2C41374720%2C40741298%2C40470749%2C40306303%2C41177816%2C40644240%2C41368697%2C41129590%2C41336630%2C40096020%2C41337106%2C41207160%2C40334321%2C41428911%2C40695313%2C41350343%2C40715225%2C40668685%2C40483616%2C41257892%2C41199758%2C40398442%2C40117159%2C40040206%2C41382998%2C41266142%2C41336191%2C40644274%2C40043320%2C41336226%2C40118966%2C40587936%2C40748802%2C40520859%2C40049458%2C40972658%2C40760397%2C40232894%2C41398930%2C41032544%2C41439901%2C40875414%2C40456243%2C40561478%2C40803174%2C41005322%2C40835360%2C40426690%2C41141194%2C40048822%2C41146476%2C40218770%2C41543945%2C40089573%2C40554057%2C40127544%2C40048825%2C40352906%2C40538971%2C40603471%2C40402697%2C40305243%2C40658672%2C40925395%2C40245876%2C40807788%2C41187327%2C40968836%2C40857498%2C40227907%2C40073451&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 11:23:07 - app.phase2.pubmed_fetcher - INFO - Batch 3/4 completed
+2026-01-23 11:23:07 - app.phase2.pubmed_fetcher - INFO - Fetching 50 PMIDs from PubMed...
+2026-01-23 11:23:07 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41336444%2C40621214%2C41070190%2C40816538%2C41457672%2C40458259%2C40712216%2C40768522%2C41205562%2C40240152%2C40136841%2C41374637%2C41336626%2C40408213%2C40862879%2C40835615%2C40688356%2C40913530%2C40867138%2C41389568%2C40825359%2C40627473%2C41336656%2C41044308%2C40490003%2C40101581%2C40720262%2C40512634%2C40668691%2C41336877%2C41548584%2C40367961%2C40102969%2C40626564%2C40722467%2C41559106%2C40059266%2C41330041%2C41381487%2C40754053%2C41499961%2C40974874%2C41008372%2C41335877%2C40564460%2C40588517%2C40934551%2C40342556%2C40043367%2C41120372&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 11:23:07 - app.phase2.pubmed_fetcher - INFO - Batch 4/4 completed
+2026-01-23 11:23:07 - app.phase2.pubmed_fetcher - INFO - Fetched 4/4 batches successfully
+2026-01-23 11:23:08 - app.phase2.pubmed_fetcher - INFO - Extracted 500 PMIDs from 4 batches
+2026-01-23 11:23:08 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 2 COMPLETE: Fetched 500 PubMed XML records
+2026-01-23 11:23:08 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:08 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 3: Parsing XML into structured papers...
+2026-01-23 11:23:09 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 3 COMPLETE: Parsed 500 papers
+2026-01-23 11:23:09 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:09 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 4: Extracting affiliations via rule-based...
+2026-01-23 11:23:09 - app.phase2.pg_ingest - INFO -    Extracting 1505 unique affiliations via rule-based method
+2026-01-23 11:23:09 - app.phase2.rule_based_extractor - INFO -    Processing 1505 affiliations...
+2026-01-23 11:23:09 - app.phase2.rule_based_extractor - INFO -    Batch checking affiliation_cache table for 1505 affiliations...
+2026-01-23 11:23:10 - app.phase2.rule_based_extractor - INFO -    ✅ affiliation_cache table: 248 hits, 1257 need extraction
+2026-01-23 11:23:10 - app.phase2.rule_based_extractor - INFO -    Trying institution_matcher (institution_geo table) for 1257 affiliations...
+2026-01-23 11:23:10 - app.phase2.institution_matcher - INFO -    Loaded 3062 institutions to memory (3062 normalized names, 216 aliases)
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 100/1257 (7%), matches found: 44
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 200/1257 (15%), matches found: 93
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 300/1257 (23%), matches found: 142
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 400/1257 (31%), matches found: 196
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 500/1257 (39%), matches found: 239
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 600/1257 (47%), matches found: 281
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 700/1257 (55%), matches found: 330
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 800/1257 (63%), matches found: 380
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 900/1257 (71%), matches found: 434
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1000/1257 (79%), matches found: 476
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1100/1257 (87%), matches found: 519
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1200/1257 (95%), matches found: 569
+2026-01-23 11:23:11 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1257/1257 (100%), matches found: 598
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    ✅ institution_geo table: 598 matches found
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Extracting 659 affiliations using rule-based parser...
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 65/659 (9%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 130/659 (19%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 195/659 (29%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 260/659 (39%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 325/659 (49%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 390/659 (59%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 455/659 (69%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 520/659 (78%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 585/659 (88%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 650/659 (98%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 659/659 (100%)
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -    ✅ Rule-based extraction complete: 659 results
+2026-01-23 11:23:11 - app.phase2.rule_based_extractor - INFO -       Pending validation: 622 institutions
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO -    Cached 1257 new affiliation extraction results to affiliation_cache table
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO -    ✅ Extraction complete: 1505 affiliations processed, 1498 with country
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 4 COMPLETE: Extracted 1505 affiliations
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO -    Unique affiliations: 1505
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO -    With country: 1498
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO -    LLM calls: 0
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 5: Writing to database...
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO -    Clearing existing data for run b6b977aeeed1...
+2026-01-23 11:23:13 - app.phase2.pg_ingest - INFO -    Inserting/updating 500 papers (bulk operation)...
+2026-01-23 11:23:14 - app.phase2.pg_ingest - INFO -    Papers inserted/updated: 500
+2026-01-23 11:23:14 - app.phase2.pg_ingest - INFO -    Inserting 2826 authorships (bulk operation)...
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Authorships inserted: 2826
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Linking run b6b977aeeed1 to 500 papers...
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Database write complete
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 5 COMPLETE: Created 2826 authorships
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - ✅ INGESTION COMPLETE - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Total PMIDs: 500
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Papers parsed: 500
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Authorships created: 2826
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Unique affiliations: 1505
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Affiliations with country: 1498
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - 
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Affiliation Processing Breakdown:
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table hits: 248
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table matches: 598
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -       ✅ rule-based extractions: 659
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table auto-added: 0
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated: 659
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - 
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    ✅ Count verification: 1505 = 1505 (matches)
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO -    Pending institutions for validation: 622
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - 
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 11:23:28 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...
+2026-01-23 11:23:28 - app.phase2.affiliation_validator - INFO -    Pending institutions to validate: 622
+2026-01-23 11:23:28 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:28 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run b6b977aeeed1...
+2026-01-23 11:23:29 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 3835 authorships from 500 papers
+2026-01-23 11:23:29 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:23:29 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 2: Extracting unique location keys and batch querying geocoding_cache...
+2026-01-23 11:23:29 - app.phase2.affiliation_validator - INFO -    Found 388 unique location keys from 3835 authorships
+2026-01-23 11:23:30 - app.phase2.affiliation_validator - INFO -    Batch query complete: 307/388 found in cache
+2026-01-23 11:23:30 - app.phase2.affiliation_validator - INFO -    Processing 81 unique location keys via Nominatim...
+2026-01-23 11:23:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Malta, Malta' -> (35.9311442, 14.3951627)
+2026-01-23 11:23:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Geosciences, China (Mainland)' -> (39.9886573, 116.3406423)
+2026-01-23 11:23:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Geelong, Australia' -> (-38.1493248, 144.3598241)
+2026-01-23 11:23:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Aeronautics and Astronautics, China (Mainland)' -> (39.9809427, 116.3409787)
+2026-01-23 11:23:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Jilin, China (Mainland)' -> (43.5122862, 124.8021133)
+2026-01-23 11:23:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Southern Queensland, Australia' -> (-28.2162236, 152.0418849)
+2026-01-23 11:23:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Osaka Metropolitan, Japan' -> (34.6466164, 135.5088394)
+2026-01-23 11:23:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Aston, United Kingdom' -> (52.5066355, -1.8812695)
+2026-01-23 11:23:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Melbourne, United States' -> (28.0785034, -80.6077908)
+2026-01-23 11:23:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Goa, India' -> (15.3004543, 74.0855134)
+2026-01-23 11:23:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Jharkhand, India' -> (23.4559809, 85.2557301)
+2026-01-23 11:23:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Mahesana, India' -> (23.6015557, 72.3867981)
+2026-01-23 11:23:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Djelfa, Algeria' -> (34.342841, 3.2172531)
+2026-01-23 11:24:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Isa Town, Bahrain' -> (26.1741995, 50.5473432)
+2026-01-23 11:24:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Madhya Pradesh, India' -> (23.8143419, 77.5340719)
+2026-01-23 11:24:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Rajasthan, India' -> (26.8105777, 73.7684549)
+2026-01-23 11:24:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Xian, China' -> (38.1904931, 116.1191021)
+2026-01-23 11:24:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Patras, Greece' -> (38.246242, 21.7350847)
+2026-01-23 11:24:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Bisha, Saudi Arabia' -> (20.0, 42.6)
+2026-01-23 11:24:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Najran, Saudi Arabia' -> (18.0, 45.666667)
+2026-01-23 11:24:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Jabalpur, India' -> (23.1701522, 79.9324505)
+2026-01-23 11:24:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Incheon, South Korea' -> (37.456, 126.7052)
+2026-01-23 11:24:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Assam, India' -> (26.4073841, 93.2551303)
+2026-01-23 11:24:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Greater Noida, India' -> (28.4670734, 77.5137649)
+2026-01-23 11:24:22 - app.phase2.pg_geocoding - WARNING - Cache store failed for city:Greater Noida,India: the database system is in recovery mode
+2026-01-23 11:24:22 - app.phase2.pg_geocoding - WARNING - Cache lookup failed for city:Patna,India: the database system is in recovery mode, falling back to API
+2026-01-23 11:24:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Patna, India' -> (25.6093239, 85.1235252)
+2026-01-23 11:24:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Salisbury, United Kingdom' -> (51.0690613, -1.7954134)
+2026-01-23 11:24:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Mount Pleasant, United States' -> (33.1570582, -94.9694007)
+2026-01-23 11:24:32 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Loc. Feo di Vito, Italy' (from affiliation: DIIES, University Mediterranea of Reggio Calabria, Via Zehender, Loc. Feo di Vito, Reggio Calabria 89122, Italy. (PMID: 41109958))
+2026-01-23 11:24:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Putian, China' -> (25.3538682, 119.0570588)
+2026-01-23 11:24:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Tunja, Colombia' -> (5.5324313, -73.3616014)
+2026-01-23 11:24:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Varanasi, India' -> (25.3356491, 83.0076292)
+2026-01-23 11:24:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Guilin, China' -> (25.2779894, 110.2910622)
+2026-01-23 11:24:43 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Jilin People's Republic of China, China' (from affiliation: School of Computer Science and Engineering, Changchun University of Technology, Changchun, 130102 Jilin People's Republic of China. (PMID: 40538970))
+2026-01-23 11:24:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Uttarakhand, India' -> (30.0417376, 79.089691)
+2026-01-23 11:24:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Elche, Spain' -> (38.2653307, -0.6988391)
+2026-01-23 11:24:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Saarbrücken, Germany' -> (49.234362, 6.996379)
+2026-01-23 11:24:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Manizales, Colombia' -> (5.0743694, -75.5081167)
+2026-01-23 11:24:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Pereira, Colombia' -> (4.7854606, -75.788322)
+2026-01-23 11:24:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Klagenfurt, Austria' -> (46.623943, 14.3075976)
+2026-01-23 11:24:57 - app.phase2.pg_geocoding - WARNING - Could not geocode 'École Nationale d'Ingénieurs de Sfax, Tunisia' (from affiliation: Control and Energy Management (CEM) Laboratory, École Nationale d'Ingénieurs de Sfax, University of Sfax, Sfax 3038, Tunisia. (PMID: 41471422))
+2026-01-23 11:24:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Ivry sur Seine, France' -> (48.8122302, 2.3872525)
+2026-01-23 11:25:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Tikrit, Iraq' -> (34.615807, 43.678606)
+2026-01-23 11:25:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Melbourne Campus, Australia' -> (-37.9119659, 145.1323587)
+2026-01-23 11:25:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Mishref, Kuwait' -> (29.2790336, 48.0661118)
+2026-01-23 11:25:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Polish Academy of Science, Poland' -> (52.2258111, 20.9499124)
+2026-01-23 11:25:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Sharjah, United Arab Emirates' -> (24.9760668, 56.2536044)
+2026-01-23 11:25:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Sfax, Tunisia' -> (34.7394361, 10.7604024)
+2026-01-23 11:25:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Ji Lin, China' -> (25.2203585, 110.0441122)
+2026-01-23 11:25:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Uttarakhand India, India' -> (30.2816105, 77.974907)
+2026-01-23 11:25:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Kanpur, India' -> (26.4609135, 80.3217588)
+2026-01-23 11:25:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Bhilai, India' -> (21.2120677, 81.3732849)
+2026-01-23 11:25:22 - app.phase2.pg_geocoding - WARNING - Could not geocode 'g.tec Medical Engineering, Austria' (from affiliation: g.tec Medical Engineering, 4521 Schiedlberg, Austria. (PMID: 41095026))
+2026-01-23 11:25:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Science and Technology Beijing, China (Mainland)' -> (39.9902334, 116.3531753)
+2026-01-23 11:25:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Stuttgart, Germany' -> (48.7784485, 9.1800132)
+2026-01-23 11:25:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Changshu, China' -> (31.6572954, 120.7480757)
+2026-01-23 11:25:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Coimbatore, India' -> (11.0018115, 76.9628425)
+2026-01-23 11:25:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Guerrero, Mexico' -> (17.666667, -100.0)
+2026-01-23 11:25:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Guanajuato, Mexico' -> (20.9876996, -101.0)
+2026-01-23 11:25:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Boys Town, United States' -> (41.2545638, -96.1294312)
+2026-01-23 11:25:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Maribor, Slovenia' -> (46.5576439, 15.6455854)
+2026-01-23 11:25:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Mohammedia, Morocco' -> (33.6958383, -7.3893292)
+2026-01-23 11:25:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Fez, Morocco' -> (34.0346534, -5.0161926)
+2026-01-23 11:25:46 - app.phase2.pg_geocoding - INFO - Geocoded 'El Jadida, Morocco' -> (33.2433309, -8.49884)
+2026-01-23 11:25:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Anna, India' -> (13.0093396, 80.2351455)
+2026-01-23 11:25:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Diu, India' -> (20.7137783, 70.9853635)
+2026-01-23 11:25:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Yantai, China' -> (37.461928, 121.4425255)
+2026-01-23 11:25:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Gumi, South Korea' -> (36.1195513, 128.3444692)
+2026-01-23 11:25:57 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Data and AI, Poland' (from affiliation: IBM, Data and AI, 30-150 Krakow, Poland. (PMID: 40218817))
+2026-01-23 11:25:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Technology Tiruchirappalli, India' -> (10.7633854, 78.8150292)
+2026-01-23 11:26:01 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Atlanta, Iceland' (from affiliation: Nox Research, Nox Medical, Katrínartún 2, 105 Reykjavík, Atlanta, Iceland. (PMID: 40773015))
+2026-01-23 11:26:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Al Kharj, Saudi Arabia' -> (23.8304401, 47.6840134)
+2026-01-23 11:26:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Santa Fe, Argentina' -> (-30.3154739, -61.1645076)
+2026-01-23 11:26:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Bahawalpur, Pakistan' -> (29.40295, 71.6523454)
+2026-01-23 11:26:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Sussex, United States' -> (36.9096897, -77.2741121)
+2026-01-23 11:26:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Perundurai, India' -> (11.2539029, 77.6288316)
+2026-01-23 11:26:13 - app.phase2.pg_geocoding - INFO - Geocoded 'La Libertad, Ecuador' -> (-2.2208117, -80.9077647)
+2026-01-23 11:26:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Petroleum and Energy Studies, India' -> (30.41761, 77.9682677)
+2026-01-23 11:26:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Roorkee, India' -> (29.8693496, 77.8902124)
+2026-01-23 11:26:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Haikou, China' -> (20.0462328, 110.1956502)
+2026-01-23 11:26:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Hull, United Kingdom' -> (53.7623863, -0.3301214)
+2026-01-23 11:26:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Jadavpur, India' -> (22.495499, 88.3709006)
+2026-01-23 11:26:24 - app.phase2.affiliation_validator - INFO -    Batch updating 2946 affiliations for 294 cached locations...
+2026-01-23 11:26:38 - app.phase2.affiliation_validator - INFO -    ✅ Batch updated affiliations for 294 locations (2946 total affiliations)
+2026-01-23 11:26:38 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:26:38 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 4.5: Adding 622 pending institutions to institution_geo...
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    ✅ Added 59 validated institutions to institution_geo table
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 2-4 COMPLETE: Geocoding validation finished
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Total authorships checked: 3835
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Cache hits (valid): 3002
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Cache misses: 205
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Nominatim successes: 191
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Nominatim failures: 14
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Unique error affiliations: 36
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Error PMIDs: 22
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Institutions validated and added: 59/622
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 5: Fixing 36 error affiliations with LLM...
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Collecting 36 unique error affiliations for LLM fix
+2026-01-23 11:26:46 - app.phase2.affiliation_validator - INFO -    Calling LLM extractor (batch size: 20)...
+2026-01-23 11:26:46 - app.phase2.affiliation_extractor - INFO -    Checking affiliation_cache table for 36 affiliations...
+2026-01-23 11:26:46 - app.phase2.affiliation_extractor - INFO -    Trying institution_matcher (institution_geo table) for 36 affiliations...
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    Loaded 3121 institutions to memory (3121 normalized names, 216 aliases)
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 3/36 (8%), matches found: 2
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 6/36 (16%), matches found: 5
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 9/36 (25%), matches found: 8
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 12/36 (33%), matches found: 10
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 15/36 (41%), matches found: 10
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 18/36 (50%), matches found: 11
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 21/36 (58%), matches found: 12
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 24/36 (66%), matches found: 12
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 27/36 (75%), matches found: 14
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 30/36 (83%), matches found: 14
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 33/36 (91%), matches found: 15
+2026-01-23 11:26:47 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 36/36 (100%), matches found: 15
+2026-01-23 11:26:47 - app.phase2.affiliation_extractor - INFO -    ✅ institution_geo table: 15 matches found
+2026-01-23 11:26:47 - app.phase2.affiliation_extractor - INFO -    Extracting 21 affiliations via LLM (affiliation_cache: 0, institution_geo: 15) in batches of 20
+2026-01-23 11:26:47 - app.phase2.affiliation_extractor - INFO -    Processing LLM batch 1/2 (20 affiliations)
+2026-01-23 11:26:54 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 11:27:01 - app.phase2.affiliation_extractor - INFO -    Processing LLM batch 2/2 (1 affiliations)
+2026-01-23 11:27:03 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 11:27:04 - app.phase2.affiliation_extractor - INFO -    ✅ LLM extraction complete: 21 affiliations processed
+2026-01-23 11:27:04 - app.phase2.affiliation_extractor - INFO -       Auto-added to institution_geo table: 12 institutions
+2026-01-23 11:27:04 - app.phase2.affiliation_validator - INFO -    LLM extraction complete: 36 results from 2 LLM calls
+2026-01-23 11:27:04 - app.phase2.affiliation_validator - INFO -    Updating affiliation_cache with 36 LLM results...
+2026-01-23 11:27:04 - app.phase2.affiliation_validator - INFO -    ✅ Updated affiliation_cache table with 36 LLM results
+2026-01-23 11:27:04 - app.phase2.affiliation_validator - INFO -    Re-geocoding and updating authorships...
+2026-01-23 11:27:04 - app.phase2.affiliation_validator - INFO -    Processing 18 unique location keys for re-geocoding...
+2026-01-23 11:27:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Reggio Calabria, Italy' -> (38.1035389, 15.6397556)
+2026-01-23 11:27:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Schiedlberg, Austria' -> (48.0920742, 14.2645752)
+2026-01-23 11:27:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Reykjavík, Iceland' -> (64.145981, -21.9422367)
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO -    ✅ Fixed 36 affiliations
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO -    ✅ Updated 70 authorships
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO -    ✅ Re-geocoded 11 locations
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION COMPLETE - Run: b6b977aeeed1
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO -    LLM fallback extractions: 36
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO -    affiliation_cache table updated by LLM: 36
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO -    Authorship records updated: 70
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO -    geocoding_cache table updated: 11
+2026-01-23 11:27:20 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 6 COMPLETE: Validation and fixes completed
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO -    Validation Statistics:
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO -       ✅ LLM fallback extractions: 36
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated by LLM: 36
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO -       ✅ Authorship records updated: 70
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO -       ✅ geocoding_cache table updated: 11
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table validated and added: 59
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO -       ⚠️  Geocoding failures (null coordinates): 14
+2026-01-23 11:27:20 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 11:27:20 - app.main - INFO - ================================================================================
+2026-01-23 11:27:20 - app.main - INFO - ✅ INGESTION COMPLETED - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:27:20 - app.main - INFO -    Total PMIDs: 500
+2026-01-23 11:27:20 - app.main - INFO -    Papers parsed: 500
+2026-01-23 11:27:20 - app.main - INFO -    Authorships created: 2826
+2026-01-23 11:27:20 - app.main - INFO -    Unique affiliations: 1505
+2026-01-23 11:27:20 - app.main - INFO -    Affiliations with country: 1498
+2026-01-23 11:27:20 - app.main - INFO -    LLM calls made: 0
+2026-01-23 11:27:20 - app.main - INFO - ================================================================================
+2026-01-23 11:27:29 - app.main - INFO - ================================================================================
+2026-01-23 11:27:29 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:27:29 - app.main - INFO -    Min confidence: low
+2026-01-23 11:27:29 - app.main - INFO - ================================================================================
+2026-01-23 11:27:29 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-23 11:27:29 - app.main - INFO - ================================================================================
+2026-01-23 11:27:29 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:27:29 - app.main - INFO -    Min confidence: low
+2026-01-23 11:27:29 - app.main - INFO - ================================================================================
+2026-01-23 11:27:29 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-23 11:27:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 11:27:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 11:27:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Malta' -> (35.9311442, 14.3951627)
+2026-01-23 11:27:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Malta' -> (35.9311442, 14.3951627)
+2026-01-23 11:27:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Bahrain' -> (26.1551249, 50.5344606)
+2026-01-23 11:27:34 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 67 countries
+2026-01-23 11:27:34 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 11:27:34 - app.main - INFO -    Countries returned: 67
+2026-01-23 11:27:34 - app.main - INFO - ================================================================================
+2026-01-23 11:27:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Bahrain' -> (26.1551249, 50.5344606)
+2026-01-23 11:27:35 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 67 countries
+2026-01-23 11:27:35 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 11:27:35 - app.main - INFO -    Countries returned: 67
+2026-01-23 11:27:35 - app.main - INFO - ================================================================================
+2026-01-23 11:39:34 - app.main - INFO - ================================================================================
+2026-01-23 11:39:34 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:39:34 - app.main - INFO -    Country: China (Mainland), Min confidence: low
+2026-01-23 11:39:34 - app.main - INFO - ================================================================================
+2026-01-23 11:39:34 - app.phase2.pg_aggregations - INFO -    Getting country map for China (Mainland) (normalized: China (Mainland))...
+2026-01-23 11:39:34 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 11:39:36 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Nankai, China (Mainland)' (from affiliation: School of Artificial Intelligence, Nankai University, Tianjin, China.)
+2026-01-23 11:39:37 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 16 cities in China (Mainland)
+2026-01-23 11:39:37 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China (Mainland)
+2026-01-23 11:39:37 - app.main - INFO -    Cities returned: 16
+2026-01-23 11:39:37 - app.main - INFO - ================================================================================
+2026-01-23 11:43:23 - app.main - INFO - ================================================================================
+2026-01-23 11:43:23 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:43:23 - app.main - INFO -    Min confidence: low
+2026-01-23 11:43:23 - app.main - INFO - ================================================================================
+2026-01-23 11:43:23 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-23 11:43:23 - app.main - INFO - ================================================================================
+2026-01-23 11:43:23 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 11:43:23 - app.main - INFO -    Min confidence: low
+2026-01-23 11:43:23 - app.main - INFO - ================================================================================
+2026-01-23 11:43:23 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-23 11:43:23 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 11:43:23 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 11:43:24 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 67 countries
+2026-01-23 11:43:24 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 11:43:24 - app.main - INFO -    Countries returned: 67
+2026-01-23 11:43:24 - app.main - INFO - ================================================================================
+2026-01-23 11:43:24 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 67 countries
+2026-01-23 11:43:24 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 11:43:24 - app.main - INFO -    Countries returned: 67
+2026-01-23 11:43:24 - app.main - INFO - ================================================================================
+2026-01-23 12:17:36 - root - INFO - ================================================================================
+2026-01-23 12:17:36 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 12:17:36 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 12:17:36 - root - INFO - ================================================================================
+2026-01-23 12:18:24 - app.main - INFO - ================================================================================
+2026-01-23 12:18:24 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 12:18:24 - app.main - INFO -    Min confidence: low
+2026-01-23 12:18:24 - app.main - INFO - ================================================================================
+2026-01-23 12:18:24 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-23 12:18:24 - app.main - INFO - ================================================================================
+2026-01-23 12:18:24 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-23 12:18:24 - app.main - INFO -    Min confidence: low
+2026-01-23 12:18:24 - app.main - INFO - ================================================================================
+2026-01-23 12:18:24 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-23 12:18:24 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 12:18:24 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 12:18:25 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 66 countries
+2026-01-23 12:18:25 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 12:18:25 - app.main - INFO -    Countries returned: 66
+2026-01-23 12:18:25 - app.main - INFO - ================================================================================
+2026-01-23 12:18:25 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 66 countries
+2026-01-23 12:18:25 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 12:18:25 - app.main - INFO -    Countries returned: 66
+2026-01-23 12:18:25 - app.main - INFO - ================================================================================
+2026-01-23 12:22:56 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 12:25:25 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 12:26:00 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 12:26:46 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 12:27:02 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 12:27:02 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 12:27:04 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 12:27:06 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 12:29:10 - app.main - INFO - ================================================================================
+2026-01-23 12:29:10 - app.main - INFO - 🚀 INGESTION STARTED - Project: 3b9280a68d3d, Run: 19d981d1d732
+2026-01-23 12:29:10 - app.main - INFO -    Force refresh: False
+2026-01-23 12:29:10 - app.main - INFO - ================================================================================
+2026-01-23 12:29:10 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:10 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Starting ingestion for run 19d981d1d732
+2026-01-23 12:29:10 - app.phase2.pg_ingest - INFO -    Project ID: 3b9280a68d3d
+2026-01-23 12:29:10 - app.phase2.pg_ingest - INFO -    Force refresh: False
+2026-01-23 12:29:10 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:10 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...
+2026-01-23 12:29:14 - app.phase2.pg_ingest - INFO -    Loaded 500 unique PMIDs from run 19d981d1d732
+2026-01-23 12:29:14 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 1 COMPLETE: Found 500 PMIDs
+2026-01-23 12:29:14 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:14 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 2: Fetching 500 PMIDs from PubMed...
+2026-01-23 12:29:14 - app.phase2.pubmed_fetcher - INFO - Fetching 500 PMIDs in 4 batches (batch_size=150, rate_limit=3.0 rps)
+2026-01-23 12:29:14 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 12:29:15 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40777856%2C41004112%2C40847522%2C40520533%2C41149800%2C40254536%2C41110183%2C41048147%2C40001284%2C41101579%2C40544477%2C40702287%2C41022536%2C41384746%2C40170189%2C41313999%2C40948426%2C40760231%2C40026596%2C40790851%2C40674874%2C40164948%2C40178114%2C40122358%2C41226713%2C41408102%2C40303447%2C40360929%2C41209402%2C41500385%2C40288558%2C40904820%2C41282884%2C40889562%2C41175966%2C40848961%2C41398077%2C40555455%2C41447629%2C41350451%2C41072764%2C40658766%2C40257798%2C40524350%2C41163056%2C41383122%2C41459829%2C40299324%2C41163224%2C40064894%2C41452829%2C41300995%2C41437758%2C40316664%2C40237781%2C40129500%2C40674832%2C41251995%2C41376187%2C41170333%2C40012529%2C41479844%2C40066106%2C40767750%2C39983809%2C40653187%2C40151908%2C41467003%2C41115869%2C40996868%2C41199404%2C41139995%2C41048357%2C40331426%2C41076757%2C40120814%2C40141329%2C41209501%2C40130687%2C40642411%2C40326412%2C41303831%2C40304622%2C40494265%2C40955796%2C40971139%2C40070907%2C40903455%2C40661748%2C40855676%2C40135028%2C40808812%2C40019120%2C40693637%2C40959794%2C41357920%2C40337353%2C40433495%2C40717779%2C41422963%2C41224772%2C40099054%2C40890999%2C40065917%2C40121525%2C40382612%2C40662561%2C41380293%2C40137408%2C41453664%2C41037808%2C40905808%2C40666902%2C40473076%2C40398955%2C40626702%2C40563719%2C41367943%2C40452783%2C41477617%2C40024459%2C41364811%2C41562002%2C40978683%2C40359294%2C40838395%2C41321362%2C40462873%2C40171119%2C40725591%2C40370279%2C41486716%2C40185902%2C40902871%2C41039090%2C40974731%2C40563711%2C41248858%2C40347355%2C40543322%2C41055929%2C40865406%2C40563733%2C40980746%2C40165314%2C40040511%2C40621206%2C41268179%2C40800690%2C40039580&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 12:29:15 - app.phase2.pubmed_fetcher - INFO - Batch 1/4 completed
+2026-01-23 12:29:15 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 12:29:16 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40303882%2C40643956%2C40293622%2C40945230%2C41120157%2C40926816%2C40309603%2C40863235%2C40103354%2C40292332%2C40876639%2C40065317%2C40405935%2C41010913%2C41355332%2C40208373%2C40897950%2C40142891%2C41503119%2C40630945%2C41272829%2C40549788%2C41551315%2C40551882%2C40582493%2C41008340%2C41090033%2C40141847%2C41431844%2C40930425%2C40797243%2C41491361%2C40355868%2C40633778%2C40567421%2C40982604%2C40267527%2C41460605%2C41353001%2C40608292%2C41191186%2C40090976%2C40933163%2C41018197%2C41091455%2C40810175%2C40244706%2C40550387%2C41426276%2C41398677%2C40123238%2C40562015%2C40260173%2C40771304%2C40216305%2C41026883%2C40208334%2C41523974%2C40138102%2C41400981%2C40142358%2C40664335%2C41192010%2C41038597%2C41038505%2C40260724%2C40593133%2C40153922%2C40004217%2C40318660%2C40104331%2C41358624%2C41244873%2C40285968%2C40305881%2C41190302%2C40583539%2C41153755%2C41154143%2C40516913%2C40438571%2C41480026%2C41169131%2C40867134%2C40271903%2C40488202%2C40848897%2C41212544%2C41238155%2C41303115%2C40435776%2C41033274%2C41268380%2C41281523%2C40015757%2C41551189%2C40658276%2C40175376%2C41010717%2C41022135%2C41051942%2C40735472%2C41408202%2C40420669%2C40771339%2C40881933%2C41353370%2C41164398%2C40492091%2C41534361%2C40203445%2C41536095%2C41458115%2C40916901%2C40109842%2C40161936%2C41049869%2C41056874%2C40354745%2C40260387%2C40138063%2C40607209%2C41441215%2C40109986%2C40009110%2C41180704%2C41280408%2C40131590%2C41140977%2C40740460%2C40455287%2C40095228%2C40702022%2C40539354%2C40264519%2C41343474%2C41456817%2C40513355%2C40543744%2C40320453%2C40720225%2C40789551%2C40370751%2C40406880%2C41338357%2C40174348%2C41397743%2C41204620%2C41121094%2C41562412&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 12:29:17 - app.phase2.pubmed_fetcher - INFO - Batch 2/4 completed
+2026-01-23 12:29:17 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 12:29:17 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41308907%2C40293646%2C40782718%2C40460123%2C40413810%2C41367968%2C41530818%2C41089630%2C40500280%2C41564196%2C40280439%2C41448678%2C40383201%2C40089220%2C40736043%2C41005591%2C40933148%2C40701403%2C40585545%2C40364094%2C41423172%2C40925485%2C41209581%2C40895891%2C40948026%2C40283048%2C40281039%2C41196789%2C40336040%2C40001028%2C40212453%2C40908273%2C40901773%2C40746199%2C40099482%2C41133756%2C40618530%2C40385547%2C41525952%2C40707460%2C41238117%2C40285734%2C40257938%2C40230821%2C41259906%2C40713415%2C40288455%2C40996171%2C41301161%2C41268378%2C41205713%2C40980513%2C40646416%2C40543893%2C41359335%2C40715588%2C41467025%2C40537471%2C41199470%2C41449571%2C41545465%2C41475313%2C40861564%2C40853662%2C41007681%2C40756002%2C40551158%2C40100678%2C41416249%2C41239129%2C40368305%2C40217524%2C41013466%2C41412208%2C40616921%2C41485564%2C40670808%2C40158629%2C40212103%2C40638342%2C40641504%2C40352367%2C40112319%2C41141779%2C41521449%2C41407763%2C40009384%2C41219385%2C40822430%2C41488559%2C40288970%2C40995064%2C41167567%2C40577046%2C41061573%2C41425808%2C40493630%2C40957931%2C41495691%2C41046632%2C40910499%2C41506306%2C40045265%2C41541943%2C40999798%2C40002513%2C40470166%2C40885254%2C41415016%2C40082006%2C41222299%2C40285542%2C41373112%2C40722735%2C40017534%2C41225566%2C40980699%2C40774517%2C40239297%2C40039406%2C40712906%2C40516628%2C40000219%2C41507453%2C40469336%2C40438568%2C40248597%2C40252967%2C40443512%2C41463254%2C40435789%2C41411355%2C41290067%2C40404040%2C40617381%2C41410295%2C41412340%2C40479952%2C41542361%2C41115790%2C41040393%2C40713759%2C41054353%2C40362755%2C40992620%2C40780869%2C40950425%2C41533249%2C40327301%2C40031488&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 12:29:18 - app.phase2.pubmed_fetcher - INFO - Batch 3/4 completed
+2026-01-23 12:29:18 - app.phase2.pubmed_fetcher - INFO - Fetching 50 PMIDs from PubMed...
+2026-01-23 12:29:18 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=40102718%2C40186275%2C40621245%2C40256159%2C41514319%2C41070508%2C40587429%2C41526702%2C41465304%2C40415257%2C41084082%2C40613366%2C40863414%2C41211491%2C40529657%2C40769285%2C40746455%2C41205901%2C41109991%2C41294786%2C41041883%2C41437760%2C41142047%2C41008337%2C40287034%2C40302500%2C41138314%2C41300189%2C41197935%2C40856746%2C41250964%2C40078293%2C41551308%2C40336945%2C40341817%2C40110477%2C41332701%2C41171882%2C40640762%2C41107836%2C40840637%2C40417274%2C41352532%2C39988595%2C41008330%2C40587364%2C39985419%2C40489407%2C40301914%2C41136747&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 12:29:19 - app.phase2.pubmed_fetcher - INFO - Batch 4/4 completed
+2026-01-23 12:29:19 - app.phase2.pubmed_fetcher - INFO - Fetched 4/4 batches successfully
+2026-01-23 12:29:19 - app.phase2.pubmed_fetcher - INFO - Extracted 500 PMIDs from 4 batches
+2026-01-23 12:29:19 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 2 COMPLETE: Fetched 500 PubMed XML records
+2026-01-23 12:29:19 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:19 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 3: Parsing XML into structured papers...
+2026-01-23 12:29:20 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 3 COMPLETE: Parsed 500 papers
+2026-01-23 12:29:20 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:20 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 4: Extracting affiliations via rule-based...
+2026-01-23 12:29:20 - app.phase2.pg_ingest - INFO -    Extracting 2406 unique affiliations via rule-based method
+2026-01-23 12:29:20 - app.phase2.rule_based_extractor - INFO -    Processing 2406 affiliations...
+2026-01-23 12:29:20 - app.phase2.rule_based_extractor - INFO -    Batch checking affiliation_cache table for 2406 affiliations...
+2026-01-23 12:29:20 - app.phase2.rule_based_extractor - INFO -    ✅ affiliation_cache table: 35 hits, 2371 need extraction
+2026-01-23 12:29:20 - app.phase2.rule_based_extractor - INFO -    Trying institution_matcher (institution_geo table) for 2371 affiliations...
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    Loaded 3133 institutions to memory (3133 normalized names, 217 aliases)
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 100/2371 (4%), matches found: 50
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 200/2371 (8%), matches found: 106
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 300/2371 (12%), matches found: 157
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 400/2371 (16%), matches found: 216
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 500/2371 (21%), matches found: 273
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 600/2371 (25%), matches found: 329
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 700/2371 (29%), matches found: 374
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 800/2371 (33%), matches found: 429
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 900/2371 (37%), matches found: 482
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1000/2371 (42%), matches found: 532
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1100/2371 (46%), matches found: 582
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1200/2371 (50%), matches found: 631
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1300/2371 (54%), matches found: 688
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1400/2371 (59%), matches found: 743
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1500/2371 (63%), matches found: 799
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1600/2371 (67%), matches found: 850
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1700/2371 (71%), matches found: 897
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1800/2371 (75%), matches found: 949
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1900/2371 (80%), matches found: 1012
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2000/2371 (84%), matches found: 1065
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2100/2371 (88%), matches found: 1119
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2200/2371 (92%), matches found: 1188
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2300/2371 (97%), matches found: 1237
+2026-01-23 12:29:21 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2371/2371 (100%), matches found: 1276
+2026-01-23 12:29:21 - app.phase2.rule_based_extractor - INFO -    ✅ institution_geo table: 1276 matches found
+2026-01-23 12:29:21 - app.phase2.rule_based_extractor - INFO -    Extracting 1095 affiliations using rule-based parser...
+2026-01-23 12:29:21 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 109/1095 (9%)
+2026-01-23 12:29:21 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 218/1095 (19%)
+2026-01-23 12:29:21 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 327/1095 (29%)
+2026-01-23 12:29:21 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 436/1095 (39%)
+2026-01-23 12:29:21 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 545/1095 (49%)
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 654/1095 (59%)
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 763/1095 (69%)
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 872/1095 (79%)
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 981/1095 (89%)
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 1090/1095 (99%)
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 1095/1095 (100%)
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -    ✅ Rule-based extraction complete: 1095 results
+2026-01-23 12:29:22 - app.phase2.rule_based_extractor - INFO -       Pending validation: 983 institutions
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO -    Cached 2371 new affiliation extraction results to affiliation_cache table
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO -    ✅ Extraction complete: 2406 affiliations processed, 2381 with country
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 4 COMPLETE: Extracted 2406 affiliations
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2406
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO -    With country: 2381
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO -    LLM calls: 0
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 5: Writing to database...
+2026-01-23 12:29:23 - app.phase2.pg_ingest - INFO -    Clearing existing data for run 19d981d1d732...
+2026-01-23 12:29:24 - app.phase2.pg_ingest - INFO -    Inserting/updating 500 papers (bulk operation)...
+2026-01-23 12:29:24 - app.phase2.pg_ingest - INFO -    Papers inserted/updated: 500
+2026-01-23 12:29:24 - app.phase2.pg_ingest - INFO -    Inserting 3866 authorships (bulk operation)...
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Authorships inserted: 3866
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Linking run 19d981d1d732 to 500 papers...
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Database write complete
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 5 COMPLETE: Created 3866 authorships
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - ✅ INGESTION COMPLETE - Project: 3b9280a68d3d, Run: 19d981d1d732
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Total PMIDs: 500
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Papers parsed: 500
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Authorships created: 3866
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2406
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Affiliations with country: 2381
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - 
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Affiliation Processing Breakdown:
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table hits: 35
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table matches: 1276
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -       ✅ rule-based extractions: 1095
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table auto-added: 0
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated: 1095
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - 
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    ✅ Count verification: 2406 = 2406 (matches)
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO -    Pending institutions for validation: 983
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - 
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 12:29:33 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...
+2026-01-23 12:29:33 - app.phase2.affiliation_validator - INFO -    Pending institutions to validate: 983
+2026-01-23 12:29:33 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:33 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 19d981d1d732...
+2026-01-23 12:29:34 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4177 authorships from 500 papers
+2026-01-23 12:29:34 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:29:34 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 2: Extracting unique location keys and batch querying geocoding_cache...
+2026-01-23 12:29:34 - app.phase2.affiliation_validator - INFO -    Found 538 unique location keys from 4177 authorships
+2026-01-23 12:29:35 - app.phase2.affiliation_validator - INFO -    Batch query complete: 408/538 found in cache
+2026-01-23 12:29:35 - app.phase2.affiliation_validator - INFO -    Processing 130 unique location keys via Nominatim...
+2026-01-23 12:29:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Seongnam-si, South Korea' -> (37.4201556, 127.1262092)
+2026-01-23 12:29:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Gilberton, Australia' -> (-27.7416885, 153.2754136)
+2026-01-23 12:29:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Troina, Italy' -> (37.7852205, 14.6004464)
+2026-01-23 12:29:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Hellerup, Denmark' -> (55.7336657, 12.5655408)
+2026-01-23 12:29:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Bandar Puncak Alam, Malaysia' -> (3.2342055, 101.4258355)
+2026-01-23 12:29:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Prayagraj, India' -> (25.4381302, 81.8338005)
+2026-01-23 12:29:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Meghalaya, India' -> (25.5379432, 91.2999102)
+2026-01-23 12:29:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Samborondón, Ecuador' -> (-2.0155653, -79.7562694)
+2026-01-23 12:29:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Sant Joan d'Alacant, Spain' -> (38.4014162, -0.4359957)
+2026-01-23 12:29:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Panjab, India' -> (30.9293211, 75.5004841)
+2026-01-23 12:29:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Sunnyvale, United States' -> (37.3688301, -122.036349)
+2026-01-23 12:29:58 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Bushehr, Iran, Islamic Republic of' (from affiliation: Master of General Psychology, Persian Gulf University of Bushehr, Bushehr, Iran. (PMID: 41452829))
+2026-01-23 12:30:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Queretaro, Mexico' -> (20.8052225, -99.8837376)
+2026-01-23 12:30:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Palm Springs, United States' -> (33.8246269, -116.540303)
+2026-01-23 12:30:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Saint Petersburg, Russian Federation' -> (59.9606739, 30.1586551)
+2026-01-23 12:30:08 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Sanatorium and Resort Complex «Podmoskovie» of the Ministry of Defense of the Russian Federation, Russian Federation' (from affiliation: Sanatorium and Resort Complex «Podmoskovie» of the Ministry of Defense of the Russian Federation, Moscow region, Russia. (PMID: 40767750))
+2026-01-23 12:30:11 - app.phase2.pg_geocoding - INFO - Geocoded '#727 Jing Ming Nan Road, China' -> (24.8422289, 102.8405163)
+2026-01-23 12:30:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Kolkata, India' -> (22.5726459, 88.3638953)
+2026-01-23 12:30:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Pok Fu Lam, Hong Kong' -> (22.2613585, 114.1368109)
+2026-01-23 12:30:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Deoghar, India' -> (24.4898318, 86.6990182)
+2026-01-23 12:30:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Cusco, Peru' -> (-13.5170887, -71.9785356)
+2026-01-23 12:30:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Shaoguan, China' -> (24.8136095, 113.5922116)
+2026-01-23 12:30:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Xi’An City, China' -> (34.261004, 108.9423363)
+2026-01-23 12:30:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Rajamahendravaram, India' -> (17.0050454, 81.7804732)
+2026-01-23 12:30:28 - app.phase2.pg_geocoding - INFO - Geocoded 'St. George's, Grenada' -> (12.0535331, -61.751805)
+2026-01-23 12:30:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Las Piñas, Philippines' -> (14.4809012, 120.9817861)
+2026-01-23 12:30:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Hamirpur, India' -> (25.75, 80.0)
+2026-01-23 12:30:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Rewa, India' -> (24.7560846, 81.3810574)
+2026-01-23 12:30:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Willemstad, Curaçao' -> (12.1066695, -68.9351307)
+2026-01-23 12:30:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Enna, Italy' -> (37.5667573, 14.2807473)
+2026-01-23 12:30:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Vimercate, Italy' -> (45.6139627, 9.37006)
+2026-01-23 12:30:43 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Clinical & Technical Support, China' (from affiliation: Clinical & Technical Support, Philips Healthcare, China. (PMID: 40473076))
+2026-01-23 12:30:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Bron, France' -> (45.7337532, 4.9092352)
+2026-01-23 12:30:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Zigong, China' -> (29.2995746, 104.6928392)
+2026-01-23 12:30:48 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Marand, Iran, Islamic Republic of' (from affiliation: Faculty of Psychology, Marand Azad University, Marand, Iran. (PMID: 40452783))
+2026-01-23 12:30:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Ticino, Switzerland' -> (46.3351913, 8.7525902)
+2026-01-23 12:30:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Loughborough, United Kingdom' -> (52.7723859, -1.2077985)
+2026-01-23 12:30:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Yeshiva, United States' -> (40.8502619, -73.9288891)
+2026-01-23 12:30:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Pitesti, Romania' -> (44.8572882, 24.8721156)
+2026-01-23 12:30:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Tzur Moshe, Israel' -> (32.2978073, 34.9135462)
+2026-01-23 12:31:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Kent, United Kingdom' -> (51.2070749, 0.7210362)
+2026-01-23 12:31:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Montclair, United States' -> (40.8164458, -74.2210643)
+2026-01-23 12:31:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Laval, Canada' -> (45.5571125, -73.7211779)
+2026-01-23 12:31:08 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Psychiatry Region Zealand, Denmark' (from affiliation: Psychiatry Region Zealand, Region Zealand, Denmark. (PMID: 41120157))
+2026-01-23 12:31:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Colton, United States' -> (34.0739016, -117.3136547)
+2026-01-23 12:31:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Rancho Mirage, United States' -> (33.7583005, -116.4347271)
+2026-01-23 12:31:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Wuhu, China' -> (31.3536127, 118.4277477)
+2026-01-23 12:31:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Wichita, United States' -> (37.6922361, -97.3375448)
+2026-01-23 12:31:20 - app.phase2.pg_geocoding - INFO - Geocoded 'I.F.-C, Spain' -> (43.1285703, -3.7477001)
+2026-01-23 12:31:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Greater Noida, India' -> (28.4670734, 77.5137649)
+2026-01-23 12:31:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Stirling, Australia' -> (-31.8902485, 115.8232254)
+2026-01-23 12:31:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Liuzhou, China' -> (25.0009993, 109.3414252)
+2026-01-23 12:31:28 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Electronic Science and Technology of China, China' (from affiliation: The Clinical Hospital of Chengdu Brain Science Institute, MOE Key Lab for Neuroinformation, School of Life Science and Technology, University of Electronic Science and Technology of China, Chengdu 610036, China; Chengdu Fourth People's Hospital, Chengdu 610036, China. (PMID: 41192010))
+2026-01-23 12:31:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Camerino, Italy' -> (43.1357641, 13.0683092)
+2026-01-23 12:31:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Pasian di Prato, Italy' -> (46.0485134, 13.1875972)
+2026-01-23 12:31:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Bosisio Parini, Italy' -> (45.80228, 9.290743)
+2026-01-23 12:31:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Australian Capital Territory, Australia' -> (-35.4883502, 149.0026942)
+2026-01-23 12:31:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Rio Grande do Norte, Brazil' -> (-5.6781175, -36.4781776)
+2026-01-23 12:31:40 - app.phase2.pg_geocoding - INFO - Geocoded 'São Bernardo do Campo, Brazil' -> (-23.7080345, -46.5506747)
+2026-01-23 12:31:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Querétaro, Mexico' -> (20.8052225, -99.8837376)
+2026-01-23 12:31:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Nedlands, Australia' -> (-31.9799209, 115.8057167)
+2026-01-23 12:31:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Av. Carlos Chagas Filho, Brazil' -> (-22.8440087, -43.234966)
+2026-01-23 12:31:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Arizona, United States' -> (34.395342, -111.763275)
+2026-01-23 12:31:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Visalia, United States' -> (36.3302284, -119.292058)
+2026-01-23 12:31:54 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Danville, Panama' (from affiliation: Department of Population Health Sciences, Geisinger, Danville, PA. (PMID: 40492091))
+2026-01-23 12:31:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Goiânia, Brazil' -> (-16.680882, -49.2532691)
+2026-01-23 12:31:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Jining, China' -> (35.4125047, 116.5849266)
+2026-01-23 12:32:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Wanju-gun, South Korea' -> (35.9039, 127.1622)
+2026-01-23 12:32:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Cherry Hill, United States' -> (39.9348351, -75.0307264)
+2026-01-23 12:32:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Agoura Hills, United States' -> (34.1481692, -118.7655456)
+2026-01-23 12:32:06 - app.phase2.pg_geocoding - INFO - Geocoded 'WA D.C, United States' -> (38.9123169, -77.0404678)
+2026-01-23 12:32:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Peshawar, Pakistan' -> (34.0123846, 71.5787458)
+2026-01-23 12:32:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Hayatabad Medical Complex Peshawar, Pakistan' -> (33.9921399, 71.449425)
+2026-01-23 12:32:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Grenada' -> (12.1360374, -61.6904045)
+2026-01-23 12:32:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Neijiang, China' -> (29.6602202, 104.9192806)
+2026-01-23 12:32:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Florianópolis, Brazil' -> (-27.5973002, -48.5496098)
+2026-01-23 12:32:21 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Nucleus of Pain Pharmacology and Neuromodulation, Brazil' (from affiliation: Post-Graduate Program in Health and Human development, Universidade La Salle, Canoas, Brazil; Universidade Federal do Rio Grande do Sul, Post-graduate Program in Biological Sciences: Pharmacology and Therapeutics, Porto Alegre, RS, Brazil; Nucleus of Pain Pharmacology and Neuromodulation, Hospital de Clínicas de Porto Alegre, RS, Brazil. (PMID: 41456817))
+2026-01-23 12:32:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Cyprus, Cyprus' -> (34.9174159, 32.8899027)
+2026-01-23 12:32:26 - app.phase2.pg_geocoding - INFO - Geocoded 'T.L, China' -> (38.8863047, -77.0266121)
+2026-01-23 12:32:29 - app.phase2.pg_geocoding - INFO - Geocoded 'X.W, China' -> (42.9047315, 129.5253956)
+2026-01-23 12:32:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Baoding, China' -> (38.8579735, 115.490696)
+2026-01-23 12:32:32 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Camali Clinic, United Arab Emirates' (from affiliation: Camali Clinic, United Arab Emirates. (PMID: 41564196))
+2026-01-23 12:32:34 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Functional Imaging, Germany' (from affiliation: Functional Imaging, Center for Diagnostic Radiology and Neuroradiology, University Medicine Greifswald, Germany. Electronic address: martin.lotze@uni-greifswald.de. (PMID: 41005591))
+2026-01-23 12:32:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Clemson, United States' -> (34.6850749, -82.8364111)
+2026-01-23 12:32:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Winnipeg, Canada' -> (49.8955367, -97.1384584)
+2026-01-23 12:32:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Ministry of Education, China' -> (39.9123408, 116.3630203)
+2026-01-23 12:32:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Bosisio Parini (LC, Italy' -> (45.80228, 9.290743)
+2026-01-23 12:32:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Naarden, Netherlands' -> (52.2957628, 5.1633636)
+2026-01-23 12:32:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Suizhou, China' -> (31.920921, 113.465844)
+2026-01-23 12:32:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Oklahoma State, United States' -> (36.1313523, -97.0890651)
+2026-01-23 12:32:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Yongzhou, China' -> (25.781344, 111.6979977)
+2026-01-23 12:32:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Kano, Nigeria' -> (11.9939978, 8.5219738)
+2026-01-23 12:32:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Winnetka, United States' -> (42.1080703, -87.7365286)
+2026-01-23 12:32:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Nankai, China' -> (39.1370055, 117.1439502)
+2026-01-23 12:33:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Tomsk, Russian Federation' -> (58.6124279, 82.0475315)
+2026-01-23 12:33:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Lagos, Nigeria' -> (6.4550575, 3.3941795)
+2026-01-23 12:33:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Lynchburg, United States' -> (37.4137536, -79.1422464)
+2026-01-23 12:33:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Gillingham, United Kingdom' -> (51.3871701, 0.5461611)
+2026-01-23 12:33:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Wales, United Kingdom' -> (52.2928116, -3.73893)
+2026-01-23 12:33:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Abbottabad, Pakistan' -> (34.1436136, 73.2132747)
+2026-01-23 12:33:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Shillong, India' -> (25.5759931, 91.8827872)
+2026-01-23 12:33:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Kempen, Germany' -> (51.3642126, 6.4195011)
+2026-01-23 12:33:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Mexico City CP, Mexico' -> (19.4326296, -99.1331785)
+2026-01-23 12:33:28 - app.phase2.pg_geocoding - WARNING - Could not geocode 's.r.o. Prague Czech Republic, Czechia' (from affiliation: DP Neuro, s.r.o. Prague Czech Republic. (PMID: 40980699))
+2026-01-23 12:33:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Al Mubarraz, Saudi Arabia' -> (25.4100012, 49.580833)
+2026-01-23 12:33:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Jawaharlal Nehru, India' -> (13.0064491, 80.2027994)
+2026-01-23 12:33:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Lakewood, United States' -> (39.7085736, -105.0846694)
+2026-01-23 12:33:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Aqaba, Jordan' -> (29.5266483, 35.0075433)
+2026-01-23 12:33:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Córdoba, Argentina' -> (-31.4166867, -64.1834193)
+2026-01-23 12:33:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Minho, Portugal' -> (41.7360007, -8.346108)
+2026-01-23 12:33:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Rua Dr. António Bernardino de Almeida, Portugal' -> (41.1784119, -8.6064452)
+2026-01-23 12:33:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Cúcuta, Colombia' -> (8.0776187, -72.4689002)
+2026-01-23 12:33:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Atlántico, Colombia' -> (10.6773422, -74.9718666)
+2026-01-23 12:33:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Valledupar, Colombia' -> (10.4651733, -73.2529512)
+2026-01-23 12:33:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Pamplona, Colombia' -> (7.3763807, -72.6482628)
+2026-01-23 12:33:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Barranquilla, Colombia' -> (11.0101922, -74.8231794)
+2026-01-23 12:33:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Bayannur, China' -> (41.569576, 107.494851)
+2026-01-23 12:33:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Coyoacán C.P. CDMX, Mexico' -> (19.3654388, -99.1966249)
+2026-01-23 12:33:59 - app.phase2.pg_geocoding - INFO - Geocoded 'México City, Mexico' -> (19.3207722, -99.1514678)
+2026-01-23 12:34:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Sindh, Pakistan' -> (25.5, 69.0)
+2026-01-23 12:34:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Visakhapatnam, India' -> (17.6935526, 83.2921297)
+2026-01-23 12:34:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Maranhão, Brazil' -> (-5.2085503, -45.3930262)
+2026-01-23 12:34:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Niterói, Brazil' -> (-22.8884, -43.1147)
+2026-01-23 12:34:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Rosario, Argentina' -> (-32.9593609, -60.6617024)
+2026-01-23 12:34:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Jundiaí, Brazil' -> (-23.1887668, -46.884506)
+2026-01-23 12:34:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Brig, Switzerland' -> (46.3163457, 7.9879473)
+2026-01-23 12:34:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Bahia, Brazil' -> (-12.285251, -41.9294776)
+2026-01-23 12:34:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Long Beach, United States' -> (33.7690164, -118.191604)
+2026-01-23 12:34:22 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Minneapolis, Mongolia' (from affiliation: Minneapolis VA Health Care System, Comprehensive Pain Center, One Veterans Drive, Minneapolis, MN 55417-2309. (PMID: 41352532))
+2026-01-23 12:34:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Science and Technology of China, China' -> (30.5202172, 114.4118463)
+2026-01-23 12:34:26 - app.phase2.affiliation_validator - INFO -    Batch updating 3651 affiliations for 395 cached locations...
+2026-01-23 12:34:44 - app.phase2.affiliation_validator - INFO -    ✅ Batch updated affiliations for 395 locations (3651 total affiliations)
+2026-01-23 12:34:44 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:34:44 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 4.5: Adding 983 pending institutions to institution_geo...
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    ✅ Added 91 validated institutions to institution_geo table
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 2-4 COMPLETE: Geocoding validation finished
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Total authorships checked: 4177
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Cache hits (valid): 3710
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Cache misses: 299
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Nominatim successes: 268
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Nominatim failures: 31
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Unique error affiliations: 51
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Error PMIDs: 27
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Institutions validated and added: 91/983
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 5: Fixing 51 error affiliations with LLM...
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Collecting 51 unique error affiliations for LLM fix
+2026-01-23 12:34:54 - app.phase2.affiliation_validator - INFO -    Calling LLM extractor (batch size: 20)...
+2026-01-23 12:34:54 - app.phase2.affiliation_extractor - INFO -    Checking affiliation_cache table for 51 affiliations...
+2026-01-23 12:34:54 - app.phase2.affiliation_extractor - INFO -    Trying institution_matcher (institution_geo table) for 51 affiliations...
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    Loaded 3224 institutions to memory (3224 normalized names, 217 aliases)
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 5/51 (9%), matches found: 1
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 10/51 (19%), matches found: 2
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 15/51 (29%), matches found: 6
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 20/51 (39%), matches found: 6
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 25/51 (49%), matches found: 9
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 30/51 (58%), matches found: 10
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 35/51 (68%), matches found: 10
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 40/51 (78%), matches found: 12
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 45/51 (88%), matches found: 16
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 50/51 (98%), matches found: 17
+2026-01-23 12:34:55 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 51/51 (100%), matches found: 17
+2026-01-23 12:34:55 - app.phase2.affiliation_extractor - INFO -    ✅ institution_geo table: 17 matches found
+2026-01-23 12:34:55 - app.phase2.affiliation_extractor - INFO -    Extracting 34 affiliations via LLM (affiliation_cache: 0, institution_geo: 17) in batches of 20
+2026-01-23 12:34:55 - app.phase2.affiliation_extractor - INFO -    Processing LLM batch 1/2 (20 affiliations)
+2026-01-23 12:35:00 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 12:35:06 - app.phase2.affiliation_extractor - INFO -    Processing LLM batch 2/2 (14 affiliations)
+2026-01-23 12:35:11 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 12:35:16 - app.phase2.affiliation_extractor - INFO -    ✅ LLM extraction complete: 34 affiliations processed
+2026-01-23 12:35:16 - app.phase2.affiliation_extractor - INFO -       Auto-added to institution_geo table: 13 institutions
+2026-01-23 12:35:16 - app.phase2.affiliation_validator - INFO -    LLM extraction complete: 51 results from 2 LLM calls
+2026-01-23 12:35:16 - app.phase2.affiliation_validator - INFO -    Updating affiliation_cache with 51 LLM results...
+2026-01-23 12:35:16 - app.phase2.affiliation_validator - INFO -    ✅ Updated affiliation_cache table with 51 LLM results
+2026-01-23 12:35:16 - app.phase2.affiliation_validator - INFO -    Re-geocoding and updating authorships...
+2026-01-23 12:35:16 - app.phase2.affiliation_validator - INFO -    Processing 27 unique location keys for re-geocoding...
+2026-01-23 12:35:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Bushehr, Iran' -> (28.8936645, 51.3204877)
+2026-01-23 12:35:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Danville, United States' -> (40.125222, -87.6304614)
+2026-01-23 12:35:36 - app.phase2.pg_geocoding - INFO - Geocoded 'Canoas, Brazil' -> (-29.9216045, -51.1799525)
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO -    ✅ Fixed 51 affiliations
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO -    ✅ Updated 90 authorships
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO -    ✅ Re-geocoded 20 locations
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION COMPLETE - Run: 19d981d1d732
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO -    LLM fallback extractions: 51
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO -    affiliation_cache table updated by LLM: 51
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO -    Authorship records updated: 90
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO -    geocoding_cache table updated: 20
+2026-01-23 12:35:38 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 6 COMPLETE: Validation and fixes completed
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO -    Validation Statistics:
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO -       ✅ LLM fallback extractions: 51
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated by LLM: 51
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO -       ✅ Authorship records updated: 90
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO -       ✅ geocoding_cache table updated: 20
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table validated and added: 91
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO -       ⚠️  Geocoding failures (null coordinates): 31
+2026-01-23 12:35:38 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 12:35:38 - app.main - INFO - ================================================================================
+2026-01-23 12:35:38 - app.main - INFO - ✅ INGESTION COMPLETED - Project: 3b9280a68d3d, Run: 19d981d1d732
+2026-01-23 12:35:38 - app.main - INFO -    Total PMIDs: 500
+2026-01-23 12:35:38 - app.main - INFO -    Papers parsed: 500
+2026-01-23 12:35:38 - app.main - INFO -    Authorships created: 3866
+2026-01-23 12:35:38 - app.main - INFO -    Unique affiliations: 2406
+2026-01-23 12:35:38 - app.main - INFO -    Affiliations with country: 2381
+2026-01-23 12:35:38 - app.main - INFO -    LLM calls made: 0
+2026-01-23 12:35:38 - app.main - INFO - ================================================================================
+2026-01-23 12:47:40 - root - INFO - ================================================================================
+2026-01-23 12:47:40 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 12:47:40 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 12:47:40 - root - INFO - ================================================================================
+2026-01-23 12:47:59 - root - INFO - ================================================================================
+2026-01-23 12:47:59 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 12:47:59 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 12:47:59 - root - INFO - ================================================================================
+2026-01-23 12:48:20 - root - INFO - ================================================================================
+2026-01-23 12:48:20 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 12:48:20 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 12:48:20 - root - INFO - ================================================================================
+2026-01-23 12:48:31 - root - INFO - ================================================================================
+2026-01-23 12:48:31 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 12:48:31 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 12:48:31 - root - INFO - ================================================================================
+2026-01-23 12:48:38 - root - INFO - ================================================================================
+2026-01-23 12:48:38 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 12:48:38 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 12:48:38 - root - INFO - ================================================================================
+2026-01-23 12:48:40 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 12:48:40 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 12:54:38 - root - INFO - ================================================================================
+2026-01-23 12:54:38 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 12:54:38 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 12:54:38 - root - INFO - ================================================================================
+2026-01-23 12:54:42 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 12:54:42 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 12:54:54 - app.main - INFO - ================================================================================
+2026-01-23 12:54:54 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 19d981d1d732
+2026-01-23 12:54:54 - app.main - INFO -    Min confidence: low
+2026-01-23 12:54:54 - app.main - INFO - ================================================================================
+2026-01-23 12:54:54 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 19d981d1d732...
+2026-01-23 12:54:54 - app.main - INFO - ================================================================================
+2026-01-23 12:54:54 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 19d981d1d732
+2026-01-23 12:54:54 - app.main - INFO -    Min confidence: low
+2026-01-23 12:54:54 - app.main - INFO - ================================================================================
+2026-01-23 12:54:54 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 19d981d1d732...
+2026-01-23 12:54:54 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 12:54:54 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 12:54:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Curaçao' -> (12.2135136, -69.040892)
+2026-01-23 12:54:57 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 70 countries
+2026-01-23 12:54:57 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 12:54:57 - app.main - INFO -    Countries returned: 70
+2026-01-23 12:54:57 - app.main - INFO - ================================================================================
+2026-01-23 12:54:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Curaçao' -> (12.2135136, -69.040892)
+2026-01-23 12:54:58 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 70 countries
+2026-01-23 12:54:58 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 12:54:58 - app.main - INFO -    Countries returned: 70
+2026-01-23 12:54:58 - app.main - INFO - ================================================================================
+2026-01-23 12:57:00 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 13:09:54 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 13:10:29 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 13:10:46 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 13:10:54 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:10:55 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:10:57 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:10:59 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:11:10 - app.background_tasks - INFO - 🚀 Started background ingest task for run 16d4c49fc4f6
+2026-01-23 13:11:10 - app.background_tasks - INFO - ⚙️  Background ingest running for run 16d4c49fc4f6
+2026-01-23 13:11:10 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:10 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Starting ingestion for run 16d4c49fc4f6
+2026-01-23 13:11:10 - app.phase2.pg_ingest - INFO -    Project ID: 3b9280a68d3d
+2026-01-23 13:11:10 - app.phase2.pg_ingest - INFO -    Force refresh: False
+2026-01-23 13:11:10 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:11 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...
+2026-01-23 13:11:14 - app.phase2.pg_ingest - INFO -    Loaded 500 unique PMIDs from run 16d4c49fc4f6
+2026-01-23 13:11:14 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 1 COMPLETE: Found 500 PMIDs
+2026-01-23 13:11:14 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:14 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 2: Fetching 500 PMIDs from PubMed...
+2026-01-23 13:11:14 - app.phase2.pubmed_fetcher - INFO - Fetching 500 PMIDs in 4 batches (batch_size=150, rate_limit=3.0 rps)
+2026-01-23 13:11:14 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 13:11:15 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41416126%2C41105786%2C41491255%2C41152217%2C41351984%2C41236708%2C41517680%2C41485186%2C41302762%2C41404500%2C41504123%2C41474879%2C41381416%2C41305525%2C41535129%2C41459442%2C41264184%2C41498249%2C41314754%2C41514951%2C41480464%2C41534449%2C41208769%2C41430372%2C41170183%2C41183413%2C41465342%2C41300715%2C41109692%2C41191525%2C41441852%2C41411488%2C41278749%2C41200536%2C41137066%2C41570230%2C41476860%2C41300773%2C41508959%2C41469148%2C41245217%2C41317251%2C41225939%2C41116297%2C41504814%2C41213207%2C41479230%2C41463103%2C41568097%2C41352695%2C41132842%2C41483810%2C41136797%2C41496284%2C41511319%2C41510162%2C41321948%2C41179948%2C41163642%2C41153417%2C41281666%2C41409250%2C41536960%2C41220980%2C41377389%2C41220431%2C41396047%2C41276863%2C41224955%2C41495582%2C41226719%2C41456781%2C41183015%2C41533202%2C41353207%2C41169880%2C41139369%2C41109516%2C41166658%2C41508907%2C41256526%2C41365890%2C41276526%2C41356103%2C41369371%2C41150843%2C41431922%2C41285723%2C41249458%2C41380779%2C41313490%2C41535609%2C41252434%2C41496894%2C41377346%2C41481795%2C41496283%2C41225853%2C41163074%2C41121375%2C41400455%2C41185939%2C41300819%2C41533919%2C41168621%2C41294822%2C41215480%2C41432281%2C41543272%2C41488985%2C41296442%2C41137959%2C41321963%2C41555463%2C41248825%2C41115768%2C41141632%2C41394272%2C41206685%2C41472363%2C41247565%2C41524770%2C41303475%2C41311390%2C41220178%2C41485050%2C41391726%2C41274609%2C41387334%2C41113669%2C41126843%2C41284622%2C41536070%2C41425600%2C41469506%2C41140210%2C41278587%2C41365534%2C41465368%2C41543170%2C41399538%2C41254174%2C41368443%2C41223770%2C41211945%2C41410797%2C41292583%2C41160062%2C41267399%2C41496934&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:11:16 - app.phase2.pubmed_fetcher - INFO - Batch 1/4 completed
+2026-01-23 13:11:16 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 13:11:16 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41468377%2C41209346%2C41177514%2C41174163%2C41334187%2C41275207%2C41229123%2C41120666%2C41203361%2C41313840%2C41563473%2C41210587%2C41428622%2C41159426%2C41349512%2C41535270%2C41230642%2C41496592%2C41314977%2C41277417%2C41478663%2C41421305%2C41281758%2C41112276%2C41296403%2C41150154%2C41311869%2C41203870%2C41198017%2C41331925%2C41497813%2C41350682%2C41385899%2C41148810%2C41235102%2C41202069%2C41377344%2C41192264%2C41288387%2C41179303%2C41449800%2C41362301%2C41123248%2C41405619%2C41362674%2C41305485%2C41281743%2C41550651%2C41223195%2C41418774%2C41510705%2C41454745%2C41480181%2C41394966%2C41549285%2C41272236%2C41367203%2C41213415%2C41545355%2C41201433%2C41399436%2C41311395%2C41487494%2C41263806%2C41236489%2C41210166%2C41347244%2C41542048%2C41297417%2C41315111%2C41416220%2C41480395%2C41521358%2C41445726%2C41404141%2C41526374%2C41361538%2C41544897%2C41506374%2C41482541%2C41301194%2C41171314%2C41184573%2C41281724%2C41268195%2C41141388%2C41394638%2C41389662%2C41384733%2C41292010%2C41181445%2C41213129%2C41180619%2C41414668%2C41494241%2C41445194%2C41181417%2C41501880%2C41230178%2C41455063%2C41548978%2C41485458%2C41123743%2C41279346%2C41514894%2C41372233%2C41568168%2C41489768%2C41322390%2C41414813%2C41500123%2C41233575%2C41294857%2C41556308%2C41107628%2C41532605%2C41241097%2C41111484%2C41353673%2C41238927%2C41304797%2C41314120%2C41523156%2C41471101%2C41162233%2C41146877%2C41178492%2C41106454%2C41415457%2C41307588%2C41496278%2C41203276%2C41156655%2C41241162%2C41404605%2C41417286%2C41219611%2C41188225%2C41548848%2C41569163%2C41418729%2C41116289%2C41530266%2C41479110%2C41210586%2C41443126%2C41125417%2C41267936%2C41262044%2C41241768&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:11:18 - app.phase2.pubmed_fetcher - INFO - Batch 2/4 completed
+2026-01-23 13:11:18 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 13:11:19 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41135520%2C41279709%2C41273687%2C41148458%2C41309188%2C41494604%2C41271724%2C41296247%2C41294211%2C41314749%2C41237872%2C41497669%2C41562671%2C41171167%2C41244575%2C41349606%2C41167015%2C41210585%2C41486850%2C41202468%2C41188868%2C41518477%2C41141493%2C41522190%2C41365142%2C41346023%2C41497062%2C41180706%2C41125159%2C41280279%2C41220897%2C41498761%2C41176953%2C41244668%2C41319963%2C41329461%2C41341274%2C41302913%2C41242543%2C41209486%2C41167225%2C41369779%2C41296664%2C41188895%2C41424058%2C41511364%2C41479407%2C41512493%2C41467903%2C41381927%2C41548436%2C41402770%2C41234126%2C41242468%2C41344324%2C41278137%2C41148632%2C41141487%2C41418951%2C41370671%2C41476373%2C41405255%2C41299498%2C41226290%2C41389205%2C41309192%2C41356190%2C41345283%2C41211267%2C41516321%2C41232532%2C41277645%2C41274245%2C41176596%2C41504102%2C41424006%2C41481232%2C41387726%2C41539406%2C41414712%2C41338025%2C41281092%2C41314751%2C41373776%2C41259745%2C41495521%2C41105924%2C41279041%2C41278950%2C41421338%2C41312772%2C41416453%2C41423621%2C41147512%2C41454461%2C41549062%2C41159033%2C41279081%2C41375383%2C41568513%2C41428486%2C41249169%2C41191736%2C41455873%2C41165418%2C41431758%2C41236017%2C41519897%2C41291679%2C41407349%2C41270030%2C41190236%2C41223249%2C41240134%2C41284414%2C41108536%2C41244500%2C41403389%2C41481737%2C41110569%2C41214878%2C41376775%2C41385960%2C41188452%2C41430241%2C41407557%2C41485467%2C41202713%2C41115594%2C41314913%2C41344099%2C41152563%2C41180498%2C41370200%2C41358006%2C41304743%2C41496996%2C41447548%2C41411128%2C41419637%2C41484984%2C41535641%2C41485557%2C41465565%2C41565695%2C41292842%2C41481148%2C41356473%2C41341749%2C41311107&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:11:20 - app.phase2.pubmed_fetcher - INFO - Batch 3/4 completed
+2026-01-23 13:11:20 - app.phase2.pubmed_fetcher - INFO - Fetching 50 PMIDs from PubMed...
+2026-01-23 13:11:20 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41301838%2C41424849%2C41253147%2C41118255%2C41545752%2C41108054%2C41438771%2C41270297%2C41568286%2C41468306%2C41330733%2C41295360%2C41255332%2C41352688%2C41229218%2C41145968%2C41304580%2C41511845%2C41264211%2C41262458%2C41392542%2C41109702%2C41181594%2C41142378%2C41324589%2C41235827%2C41187596%2C41412287%2C41566394%2C41251968%2C41317988%2C41138228%2C41450580%2C41220317%2C41524478%2C41501530%2C41451635%2C41328300%2C41105775%2C41444327%2C41384994%2C41388436%2C41265646%2C41503845%2C41121349%2C41438873%2C41322191%2C41424846%2C41516041%2C41253219&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:11:21 - app.phase2.pubmed_fetcher - INFO - Batch 4/4 completed
+2026-01-23 13:11:21 - app.phase2.pubmed_fetcher - INFO - Fetched 4/4 batches successfully
+2026-01-23 13:11:22 - app.phase2.pubmed_fetcher - INFO - Extracted 500 PMIDs from 4 batches
+2026-01-23 13:11:22 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 2 COMPLETE: Fetched 500 PubMed XML records
+2026-01-23 13:11:22 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:22 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 3: Parsing XML into structured papers...
+2026-01-23 13:11:22 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 3 COMPLETE: Parsed 500 papers
+2026-01-23 13:11:22 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:22 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 4: Extracting affiliations via rule-based...
+2026-01-23 13:11:22 - app.phase2.pg_ingest - INFO -    Extracting 2331 unique affiliations via rule-based method
+2026-01-23 13:11:22 - app.phase2.rule_based_extractor - INFO -    Processing 2331 affiliations...
+2026-01-23 13:11:22 - app.phase2.rule_based_extractor - INFO -    Batch checking affiliation_cache table for 2331 affiliations...
+2026-01-23 13:11:23 - app.phase2.rule_based_extractor - INFO -    ✅ affiliation_cache table: 20 hits, 2311 need extraction
+2026-01-23 13:11:23 - app.phase2.rule_based_extractor - INFO -    Trying institution_matcher (institution_geo table) for 2311 affiliations...
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    Loaded 3237 institutions to memory (3237 normalized names, 217 aliases)
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 100/2311 (4%), matches found: 56
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 200/2311 (8%), matches found: 102
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 300/2311 (12%), matches found: 154
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 400/2311 (17%), matches found: 208
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 500/2311 (21%), matches found: 260
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 600/2311 (25%), matches found: 318
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 700/2311 (30%), matches found: 371
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 800/2311 (34%), matches found: 422
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 900/2311 (38%), matches found: 474
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1000/2311 (43%), matches found: 519
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1100/2311 (47%), matches found: 567
+2026-01-23 13:11:23 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1200/2311 (51%), matches found: 621
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1300/2311 (56%), matches found: 673
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1400/2311 (60%), matches found: 728
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1500/2311 (64%), matches found: 782
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1600/2311 (69%), matches found: 837
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1700/2311 (73%), matches found: 894
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1800/2311 (77%), matches found: 947
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1900/2311 (82%), matches found: 1000
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2000/2311 (86%), matches found: 1049
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2100/2311 (90%), matches found: 1104
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2200/2311 (95%), matches found: 1162
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2300/2311 (99%), matches found: 1209
+2026-01-23 13:11:24 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2311/2311 (100%), matches found: 1215
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    ✅ institution_geo table: 1215 matches found
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Extracting 1096 affiliations using rule-based parser...
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 109/1096 (9%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 218/1096 (19%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 327/1096 (29%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 436/1096 (39%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 545/1096 (49%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 654/1096 (59%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 763/1096 (69%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 872/1096 (79%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 981/1096 (89%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 1090/1096 (99%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 1096/1096 (100%)
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -    ✅ Rule-based extraction complete: 1096 results
+2026-01-23 13:11:24 - app.phase2.rule_based_extractor - INFO -       Pending validation: 1012 institutions
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO -    Cached 2311 new affiliation extraction results to affiliation_cache table
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO -    ✅ Extraction complete: 2331 affiliations processed, 2307 with country
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 4 COMPLETE: Extracted 2331 affiliations
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2331
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO -    With country: 2307
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO -    LLM calls: 0
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 5: Writing to database...
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO -    Clearing existing data for run 16d4c49fc4f6...
+2026-01-23 13:11:27 - app.phase2.pg_ingest - INFO -    Inserting/updating 500 papers (bulk operation)...
+2026-01-23 13:11:28 - app.phase2.pg_ingest - INFO -    Papers inserted/updated: 500
+2026-01-23 13:11:28 - app.phase2.pg_ingest - INFO -    Inserting 4076 authorships (bulk operation)...
+2026-01-23 13:11:34 - app.phase2.pg_ingest - INFO -    Authorships inserted: 4076
+2026-01-23 13:11:34 - app.phase2.pg_ingest - INFO -    Linking run 16d4c49fc4f6 to 500 papers...
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Database write complete
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 5 COMPLETE: Created 4076 authorships
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - ✅ INGESTION COMPLETE - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Total PMIDs: 500
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Papers parsed: 500
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Authorships created: 4076
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2331
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Affiliations with country: 2307
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - 
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Affiliation Processing Breakdown:
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table hits: 20
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table matches: 1215
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -       ✅ rule-based extractions: 1096
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table auto-added: 0
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated: 1096
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - 
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    ✅ Count verification: 2331 = 2331 (matches)
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO -    Pending institutions for validation: 1012
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - 
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 13:11:35 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...
+2026-01-23 13:11:35 - app.phase2.affiliation_validator - INFO -    Pending institutions to validate: 1012
+2026-01-23 13:11:35 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:35 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 16d4c49fc4f6...
+2026-01-23 13:11:36 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4076 authorships from 500 papers
+2026-01-23 13:11:36 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:11:36 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 2: Extracting unique location keys and batch querying geocoding_cache...
+2026-01-23 13:11:36 - app.phase2.affiliation_validator - INFO -    Found 589 unique location keys from 4076 authorships
+2026-01-23 13:11:37 - app.phase2.affiliation_validator - INFO -    Batch query complete: 437/589 found in cache
+2026-01-23 13:11:37 - app.phase2.affiliation_validator - INFO -    Processing 152 unique location keys via Nominatim...
+2026-01-23 13:11:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Fitzroy, Australia' -> (-37.8010382, 144.9792611)
+2026-01-23 13:11:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Freising, Germany' -> (48.4008273, 11.7439565)
+2026-01-23 13:11:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Jhansi, India' -> (25.529855, 78.6527802)
+2026-01-23 13:11:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Nanjing Normal, China' -> (32.1072982, 118.9046537)
+2026-01-23 13:11:47 - app.phase2.pg_geocoding - INFO - Geocoded 'Hangzhou Zhejiang, China' -> (30.2489634, 120.2052342)
+2026-01-23 13:11:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Sapporo, Japan' -> (43.061936, 141.3542924)
+2026-01-23 13:11:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Matsumoto, Japan' -> (36.2382047, 137.9687141)
+2026-01-23 13:11:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Nanning Guangxi, China' -> (22.8049546, 108.2384922)
+2026-01-23 13:11:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Chongqing City, China' -> (30.05518, 107.8748712)
+2026-01-23 13:11:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Tashkent, Uzbekistan' -> (41.3123363, 69.2787079)
+2026-01-23 13:12:00 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Special Coatings and Nanostructures Engineering (IREN, Argentina' (from affiliation: Special Coatings and Nanostructures Engineering (IREN), National Technological University, Buenos Aires 1706, Argentina. (PMID: 41302762))
+2026-01-23 13:12:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Dakka, Bangladesh' -> (23.7643863, 90.3890144)
+2026-01-23 13:12:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Almaty, Kazakhstan' -> (43.2363924, 76.9457275)
+2026-01-23 13:12:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Bhopal, India' -> (23.2584857, 77.401989)
+2026-01-23 13:12:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Guna. MP, India' -> (24.5001772, 77.2600959)
+2026-01-23 13:12:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Albay, Philippines' -> (13.216667, 123.55)
+2026-01-23 13:12:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Medinipur, India' -> (22.4207025, 87.3269963)
+2026-01-23 13:12:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Panskura, India' -> (22.3994709, 87.7175073)
+2026-01-23 13:12:16 - app.phase2.pg_geocoding - INFO - Geocoded 'El Paso, United States' -> (31.7601001, -106.4870476)
+2026-01-23 13:12:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Miramar, United States' -> (25.9873137, -80.2322706)
+2026-01-23 13:12:20 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Shahrekord, Iran, Islamic Republic of' (from affiliation: Department of Medical Biotechnology, Faculty of Advanced Technologies, Shahrekord University of Medical Sciences, Shahrekord, Iran. (PMID: 41170183))
+2026-01-23 13:12:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Le Kremlin-Bicetre, France' -> (48.8125893, 2.3570028)
+2026-01-23 13:12:24 - app.phase2.pg_geocoding - INFO - Geocoded 'amsterdam, Netherlands' -> (52.3730796, 4.8924534)
+2026-01-23 13:12:26 - app.phase2.pg_geocoding - INFO - Geocoded 'West Lafayette, United States' -> (40.4258686, -86.9080655)
+2026-01-23 13:12:28 - app.phase2.pg_geocoding - INFO - Geocoded 'Russian Academy of Sciences, Russian Federation' -> (55.7108089, 37.5789699)
+2026-01-23 13:12:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Cary, United States' -> (35.7882893, -78.7812081)
+2026-01-23 13:12:32 - app.phase2.pg_geocoding - INFO - Geocoded 'Santa Fe, United States' -> (35.6876096, -105.938456)
+2026-01-23 13:12:35 - app.phase2.pg_geocoding - INFO - Geocoded 'San Sebastian, Spain' -> (43.3224219, -1.9838889)
+2026-01-23 13:12:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Baku, Azerbaijan' -> (40.3755885, 49.8328009)
+2026-01-23 13:12:39 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Hormozgan, Iran, Islamic Republic of' (from affiliation: Student Research Committee, West Hormozgan School of Medical Sciences, Hormozgan University of Medical Sciences, Bandar Abbas, Hormozgan, Iran. (PMID: 41136797))
+2026-01-23 13:12:41 - app.phase2.pg_geocoding - INFO - Geocoded 'Rio Grande, Brazil' -> (-25.8598258, -51.7005236)
+2026-01-23 13:12:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Building D, Belgium' -> (50.7095029, 4.4098253)
+2026-01-23 13:12:45 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Hematology and Transplantology, Poland' (from affiliation: Department of Pediatric Oncology, Hematology and Transplantology, Poznan University of Medical Sciences, ul. Fredry 10, 61-701 Poznan, Poland. (PMID: 41153417))
+2026-01-23 13:12:47 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Amsterdam Cardiovascular Sciences, Netherlands' (from affiliation: Department of Physiology, Amsterdam Cardiovascular Sciences, Amsterdam University Medical Center, De Boelelaan 1108, 1081 HZ Amsterdam, The Netherlands. (PMID: 41536960))
+2026-01-23 13:12:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Sylhet, Bangladesh' -> (24.7358854, 91.6852476)
+2026-01-23 13:12:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Mymensingh, Bangladesh' -> (24.8889305, 90.3845187)
+2026-01-23 13:12:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Candiolo, Italy' -> (44.959244, 7.601722)
+2026-01-23 13:12:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Technology and Science, India' -> (10.0460266, 76.3233045)
+2026-01-23 13:12:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Amravati, India' -> (21.1545412, 77.6442962)
+2026-01-23 13:12:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Shirpur, India' -> (20.4309237, 76.1858349)
+2026-01-23 13:13:00 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Somerville, Morocco' (from affiliation: Bluebird Bio, Inc, Somerville, MA. (PMID: 41150843))
+2026-01-23 13:13:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Tamilnadu, India' -> (11.3323723, 78.6098639)
+2026-01-23 13:13:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Emeryville, United States' -> (37.8314089, -122.2865266)
+2026-01-23 13:13:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Madurai, India' -> (9.9261153, 78.1140983)
+2026-01-23 13:13:09 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Asadabad, Iran, Islamic Republic of' (from affiliation: Asadabad School of Medical Sciences, Asadabad, Iran. (PMID: 41163074))
+2026-01-23 13:13:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Moga, India' -> (30.7877554, 75.159359)
+2026-01-23 13:13:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Jiashan, China' -> (30.8327446, 120.9218024)
+2026-01-23 13:13:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Bahrain, Bahrain' -> (26.1551249, 50.5344606)
+2026-01-23 13:13:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Anshan, China' -> (40.822222, 122.8275)
+2026-01-23 13:13:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Science and Technology, China' -> (31.2787148, 120.7237629)
+2026-01-23 13:13:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Foshan, China' -> (23.0239788, 113.1159558)
+2026-01-23 13:13:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Cangzhou, China' -> (38.3042796, 116.8511597)
+2026-01-23 13:13:26 - app.phase2.pg_geocoding - INFO - Geocoded 'The Gambia, Gambia' -> (13.470062, -15.4900464)
+2026-01-23 13:13:29 - app.phase2.pg_geocoding - INFO - Geocoded 'China Agricultural, China' -> (23.1612069, 113.3481027)
+2026-01-23 13:13:31 - app.phase2.pg_geocoding - INFO - Geocoded 'East Africa, Uganda' -> (0.2858775, 32.6077523)
+2026-01-23 13:13:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Kirkuk, Iraq' -> (35.4719308, 44.3953896)
+2026-01-23 13:13:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Penang, Malaysia' -> (5.4065013, 100.2559077)
+2026-01-23 13:13:37 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Dezful, Iran, Islamic Republic of' (from affiliation: Department of Chemistry, Jundi-Shapur University of Technology, Dezful, Iran. (PMID: 41126843))
+2026-01-23 13:13:39 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Damghan, Iran, Islamic Republic of' (from affiliation: School of Chemistry, Damghan University, Damghan, 36716-45667, Iran. (PMID: 41126843))
+2026-01-23 13:13:41 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Osennyaya Street Moscow Russia, Russian Federation' (from affiliation: R&D Department Institute for Atherosclerosis Research 4-1-207, Osennyaya Street 121609 Moscow Russia. (PMID: 41140210))
+2026-01-23 13:13:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Ajman, United Arab Emirates' -> (25.332875, 55.9960073)
+2026-01-23 13:13:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Vigo, Spain' -> (42.2376602, -8.7247205)
+2026-01-23 13:13:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Szczecin, Poland' -> (53.4301818, 14.5509623)
+2026-01-23 13:13:48 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Fondazione IRCCS Istituto Nazionale dei Tumori di Milano, Italy' (from affiliation: Unit of Medical Genetics, Department of Medical Oncology and Hematology, Fondazione IRCCS Istituto Nazionale dei Tumori di Milano, Italy. (PMID: 41223770))
+2026-01-23 13:13:50 - app.phase2.pg_geocoding - INFO - Geocoded 'Starkville, United States' -> (33.4638745, -88.8152074)
+2026-01-23 13:13:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Larissa, Greece' -> (39.6383092, 22.4160706)
+2026-01-23 13:13:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Duarte, United States' -> (34.1394513, -117.9772873)
+2026-01-23 13:13:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Christchurch, New Zealand' -> (-43.530955, 172.6364343)
+2026-01-23 13:13:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Nanjing City, China' -> (32.0438284, 118.7788631)
+2026-01-23 13:14:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Rio Grande do Sul, Brazil' -> (-29.8425284, -53.7680577)
+2026-01-23 13:14:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Inti International, Malaysia' -> (2.8114894, 101.7587713)
+2026-01-23 13:14:05 - app.phase2.pg_geocoding - INFO - Geocoded 'Babylon, Iraq' -> (32.5377918, 44.4270029)
+2026-01-23 13:14:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Afya, Brazil' -> (-13.0016388, -38.5053193)
+2026-01-23 13:14:08 - app.phase2.pg_geocoding - INFO - Geocoded 'Abo Akademi, Finland' -> (60.4534537, 22.2794289)
+2026-01-23 13:14:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Auburn, United States' -> (32.6098566, -85.4807825)
+2026-01-23 13:14:14 - app.phase2.pg_geocoding - INFO - Geocoded 'Awka, Nigeria' -> (6.218947, 7.0774372)
+2026-01-23 13:14:16 - app.phase2.pg_geocoding - INFO - Geocoded 'Abuja, Nigeria' -> (9.0643305, 7.4892974)
+2026-01-23 13:14:18 - app.phase2.pg_geocoding - INFO - Geocoded 'Sogang, South Korea' -> (37.5521044, 126.9409839)
+2026-01-23 13:14:20 - app.phase2.pg_geocoding - INFO - Geocoded 'Yamaguchi, Japan' -> (34.2379614, 131.5873845)
+2026-01-23 13:14:22 - app.phase2.pg_geocoding - INFO - Geocoded 'Kirksville, United States' -> (40.1948848, -92.5833939)
+2026-01-23 13:14:24 - app.phase2.pg_geocoding - INFO - Geocoded 'Raipur, India' -> (21.2380912, 81.6336993)
+2026-01-23 13:14:26 - app.phase2.pg_geocoding - INFO - Geocoded 'Muzaffarabad, Pakistan' -> (34.3734751, 73.4702407)
+2026-01-23 13:14:28 - app.phase2.pg_geocoding - INFO - Geocoded 'North Bergen, United States' -> (40.8042674, -74.012084)
+2026-01-23 13:14:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Valhalla, United States' -> (41.075213, -73.7750061)
+2026-01-23 13:14:32 - app.phase2.pg_geocoding - INFO - Geocoded 'The Nothe Weymouth, United Kingdom' -> (50.6065983, -2.4501635)
+2026-01-23 13:14:34 - app.phase2.pg_geocoding - INFO - Geocoded 'Pune, India' -> (18.5213738, 73.8545071)
+2026-01-23 13:14:36 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Akademia Medyczna Nauk Stosowanych i Holistycznych, United Kingdom' (from affiliation: Akademia Medyczna Nauk Stosowanych i Holistycznych. (PMID: 41263806))
+2026-01-23 13:14:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Al-Quds, Palestine' -> (31.892672, 35.2019979)
+2026-01-23 13:14:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Durban, South Africa' -> (-29.861825, 31.009909)
+2026-01-23 13:14:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Quaid-I-Azam, Pakistan' -> (33.7476438, 73.1430184)
+2026-01-23 13:14:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Benin, Nigeria' -> (6.3330586, 5.6221058)
+2026-01-23 13:14:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Chattanooga, United States' -> (35.0457219, -85.3094883)
+2026-01-23 13:14:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Attaka, Egypt' -> (29.9144511, 32.3982337)
+2026-01-23 13:14:49 - app.phase2.pg_geocoding - INFO - Geocoded 'Voorhees, United States' -> (39.8512162, -74.9619779)
+2026-01-23 13:14:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Baltimore, China' -> (38.8975256, -77.0306688)
+2026-01-23 13:14:53 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Hinganghat Dist. Wardha (M.S, India' (from affiliation: Tulaskar College of Pharmacy, Hinganghat Dist. Wardha (M.S), 442301, India. (PMID: 41489768))
+2026-01-23 13:14:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Himachal Pradesh, India' -> (31.9292352, 77.1828462)
+2026-01-23 13:14:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Parkville Australia, Australia' -> (-32.3212478, 115.8198884)
+2026-01-23 13:15:00 - app.phase2.pg_geocoding - INFO - Geocoded 'Medellin, Colombia' -> (6.2697325, -75.6025597)
+2026-01-23 13:15:02 - app.phase2.pg_geocoding - INFO - Geocoded 'Mérida, Mexico' -> (20.9670759, -89.6237402)
+2026-01-23 13:15:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Medellín, Colombia' -> (6.2697325, -75.6025597)
+2026-01-23 13:15:06 - app.phase2.pg_geocoding - INFO - Geocoded 'Sabaneta, Colombia' -> (6.1515344, -75.6153715)
+2026-01-23 13:15:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Flagstaff, United States' -> (35.1987522, -111.651822)
+2026-01-23 13:15:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Jiangsu Yancheng, China' -> (33.4015327, 120.1169222)
+2026-01-23 13:15:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Jiangsu Suzhou, China' -> (31.2431546, 120.5458293)
+2026-01-23 13:15:15 - app.phase2.pg_geocoding - INFO - Geocoded 'AARI, Pakistan' -> (31.3941079, 73.0600396)
+2026-01-23 13:15:17 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Nanotechnology and Tissue Engineering, Iran, Islamic Republic of' (from affiliation: Department of Biomaterials, Nanotechnology and Tissue Engineering, School of Advanced Technologies in Medicine, Isfahan University of Medical Sciences, Isfahan 8174673461, Iran. (PMID: 41443126))
+2026-01-23 13:15:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Port Harcourt, Nigeria' -> (4.7676576, 7.0188527)
+2026-01-23 13:15:21 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Karaj, Iran, Islamic Republic of' (from affiliation: Department of Animal Breeding and Genetics, Tehran University, Karaj, Iran. (PMID: 41241768))
+2026-01-23 13:15:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Trichy, India' -> (10.8071144, 78.6880939)
+2026-01-23 13:15:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Lahore Pakistan, Pakistan' -> (31.4689654, 74.3175064)
+2026-01-23 13:15:27 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Molecular and Cellular Immunology, United Kingdom' (from affiliation: Molecular and Cellular Immunology, UCL Great Ormond Street Institute of Child Health, London WC1N 1EH, UK. (PMID: 41562671))
+2026-01-23 13:15:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Ansan-si, South Korea' -> (37.3217152, 126.8308604)
+2026-01-23 13:15:30 - app.phase2.pg_geocoding - INFO - Geocoded 'Ministry of Agriculture, China' -> (39.9331167, 116.4576852)
+2026-01-23 13:15:32 - app.phase2.pg_geocoding - INFO - Geocoded 'East China Normal, China' -> (30.5223609, 114.3496565)
+2026-01-23 13:15:35 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Ardabil, Iran, Islamic Republic of' (from affiliation: University of Mohaghegh Ardabili, Ardabil, Islamic Republic of Iran. ciamakghazaei@yahoo.com. (PMID: 41518477))
+2026-01-23 13:15:37 - app.phase2.pg_geocoding - INFO - Geocoded 'Cross River State, Nigeria' -> (5.8671966, 8.5204774)
+2026-01-23 13:15:38 - app.phase2.pg_geocoding - INFO - Geocoded 'Enugu, Nigeria' -> (6.4496519, 7.5136856)
+2026-01-23 13:15:40 - app.phase2.pg_geocoding - INFO - Geocoded 'Edinburg, United States' -> (26.3013982, -98.1624501)
+2026-01-23 13:15:42 - app.phase2.pg_geocoding - INFO - Geocoded 'Al Ain, United Arab Emirates' -> (24.2248697, 55.7452211)
+2026-01-23 13:15:44 - app.phase2.pg_geocoding - INFO - Geocoded 'Midrand, South Africa' -> (-25.999262, 28.125912)
+2026-01-23 13:15:46 - app.phase2.pg_geocoding - INFO - Geocoded 'Mohali, India' -> (30.7041168, 76.7176885)
+2026-01-23 13:15:48 - app.phase2.pg_geocoding - INFO - Geocoded 'Rende, Italy' -> (39.3319934, 16.1843828)
+2026-01-23 13:15:49 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Independent Scientist, Netherlands' (from affiliation: Independent Scientist, The Netherlands. (PMID: 41234126))
+2026-01-23 13:15:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Science and Technology Beijing, China' -> (39.9902334, 116.3531753)
+2026-01-23 13:15:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Pathom, Thailand' -> (13.8918425, 100.0165659)
+2026-01-23 13:15:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Italy, Switzerland' -> (46.9392318, 7.4615694)
+2026-01-23 13:15:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Amity, India' -> (27.1754712, 75.9599791)
+2026-01-23 13:15:59 - app.phase2.pg_geocoding - WARNING - Could not geocode 'MeiraGTx UK II, United Kingdom' (from affiliation: MeiraGTx UK II, 34-38 Provost Street, London N1 7NG, UK. (PMID: 41516321))
+2026-01-23 13:16:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Faridkot, India' -> (30.6014507, 74.7950176)
+2026-01-23 13:16:04 - app.phase2.pg_geocoding - INFO - Geocoded 'Guwahati, India' -> (26.1805978, 91.753943)
+2026-01-23 13:16:06 - app.phase2.pg_geocoding - INFO - Geocoded 'West Hartford, United States' -> (41.7620447, -72.7420399)
+2026-01-23 13:16:08 - app.phase2.pg_geocoding - INFO - Geocoded 'San Jose, United States' -> (37.3361663, -121.890591)
+2026-01-23 13:16:10 - app.phase2.pg_geocoding - INFO - Geocoded 'Wanning, China' -> (18.7961376, 110.3872565)
+2026-01-23 13:16:11 - app.phase2.pg_geocoding - INFO - Geocoded 'Muséum National d'Histoire Naturelle, France' -> (48.6956351, 2.4935254)
+2026-01-23 13:16:13 - app.phase2.pg_geocoding - INFO - Geocoded 'Palapye, Botswana' -> (-22.536888, 27.123513)
+2026-01-23 13:16:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Western Australia, Australia' -> (-25.2303005, 121.0187246)
+2026-01-23 13:16:17 - app.phase2.pg_geocoding - INFO - Geocoded 'Subiaco, Australia' -> (-31.9463298, 115.8240314)
+2026-01-23 13:16:19 - app.phase2.pg_geocoding - INFO - Geocoded 'Bulacan, Philippines' -> (15.0, 121.083333)
+2026-01-23 13:16:21 - app.phase2.pg_geocoding - INFO - Geocoded 'De La Salle, Philippines' -> (14.2608963, 121.0427959)
+2026-01-23 13:16:23 - app.phase2.pg_geocoding - INFO - Geocoded 'Valenzuela, Philippines' -> (14.6916903, 120.9694534)
+2026-01-23 13:16:25 - app.phase2.pg_geocoding - INFO - Geocoded 'Huangshan, China' -> (29.7172627, 118.3324811)
+2026-01-23 13:16:27 - app.phase2.pg_geocoding - INFO - Geocoded 'Gießen, Germany' -> (50.5808795, 8.6938161)
+2026-01-23 13:16:29 - app.phase2.pg_geocoding - INFO - Geocoded 'Blacksburg, United States' -> (37.2296566, -80.4136767)
+2026-01-23 13:16:31 - app.phase2.pg_geocoding - INFO - Geocoded 'Buckingham, United Kingdom' -> (51.999928, -0.9876832)
+2026-01-23 13:16:33 - app.phase2.pg_geocoding - INFO - Geocoded 'Detmold, Germany' -> (51.936284, 8.8791526)
+2026-01-23 13:16:35 - app.phase2.pg_geocoding - INFO - Geocoded 'Langen, Germany' -> (49.9915138, 8.6667015)
+2026-01-23 13:16:37 - app.phase2.pg_geocoding - INFO - Geocoded 'White River Junction, United States' -> (43.6505307, -72.3309258)
+2026-01-23 13:16:39 - app.phase2.pg_geocoding - INFO - Geocoded 'Scottsdale, United States' -> (33.4942189, -111.926018)
+2026-01-23 13:16:41 - app.phase2.pg_geocoding - WARNING - Could not geocode '100 Daxuedong RD, China' (from affiliation: Department of Computer Science and Technology, School of Computer and Electronic Information, Guangxi University, 100 Daxuedong RD, Guangxi Zhuang Autonomous Region, Nanning, 530 004, People's Republic of China. (PMID: 41388436))
+2026-01-23 13:16:43 - app.phase2.pg_geocoding - INFO - Geocoded 'Shendi, Sudan' -> (16.6884963, 33.432286)
+2026-01-23 13:16:45 - app.phase2.pg_geocoding - INFO - Geocoded 'Ulaanbaatar, Mongolia' -> (47.9184676, 106.9177016)
+2026-01-23 13:16:45 - app.phase2.affiliation_validator - INFO -    Batch updating 3531 affiliations for 425 cached locations...
+2026-01-23 13:17:02 - app.phase2.affiliation_validator - INFO -    ✅ Batch updated affiliations for 425 locations (3531 total affiliations)
+2026-01-23 13:17:02 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:17:02 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 4.5: Adding 1012 pending institutions to institution_geo...
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    ✅ Added 128 validated institutions to institution_geo table
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 2-4 COMPLETE: Geocoding validation finished
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Total authorships checked: 4076
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Cache hits (valid): 3608
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Cache misses: 339
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Nominatim successes: 307
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Nominatim failures: 32
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Unique error affiliations: 58
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Error PMIDs: 32
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Institutions validated and added: 128/1012
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 5: Fixing 58 error affiliations with LLM...
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Collecting 58 unique error affiliations for LLM fix
+2026-01-23 13:17:13 - app.phase2.affiliation_validator - INFO -    Calling LLM extractor (batch size: 20)...
+2026-01-23 13:17:13 - app.phase2.affiliation_extractor - INFO -    Checking affiliation_cache table for 58 affiliations...
+2026-01-23 13:17:13 - app.phase2.affiliation_extractor - INFO -    Trying institution_matcher (institution_geo table) for 58 affiliations...
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    Loaded 3365 institutions to memory (3365 normalized names, 217 aliases)
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 5/58 (8%), matches found: 1
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 10/58 (17%), matches found: 1
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 15/58 (25%), matches found: 3
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 20/58 (34%), matches found: 6
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 25/58 (43%), matches found: 9
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 30/58 (51%), matches found: 14
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 35/58 (60%), matches found: 14
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 40/58 (68%), matches found: 17
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 45/58 (77%), matches found: 17
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 50/58 (86%), matches found: 17
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 55/58 (94%), matches found: 17
+2026-01-23 13:17:14 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 58/58 (100%), matches found: 17
+2026-01-23 13:17:14 - app.phase2.affiliation_extractor - INFO -    ✅ institution_geo table: 17 matches found
+2026-01-23 13:17:14 - app.phase2.affiliation_extractor - INFO -    Extracting 41 affiliations via LLM (affiliation_cache: 0, institution_geo: 17) in batches of 20
+2026-01-23 13:17:14 - app.phase2.affiliation_extractor - INFO -    Processing LLM batch 1/3 (20 affiliations)
+2026-01-23 13:17:20 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 13:17:26 - app.phase2.affiliation_extractor - INFO -    Processing LLM batch 2/3 (20 affiliations)
+2026-01-23 13:17:36 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 13:17:42 - app.phase2.affiliation_extractor - INFO -    Processing LLM batch 3/3 (1 affiliations)
+2026-01-23 13:17:43 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-01-23 13:17:44 - app.phase2.affiliation_extractor - INFO -    ✅ LLM extraction complete: 41 affiliations processed
+2026-01-23 13:17:44 - app.phase2.affiliation_extractor - INFO -       Auto-added to institution_geo table: 20 institutions
+2026-01-23 13:17:44 - app.phase2.affiliation_validator - INFO -    LLM extraction complete: 58 results from 3 LLM calls
+2026-01-23 13:17:44 - app.phase2.affiliation_validator - INFO -    Updating affiliation_cache with 58 LLM results...
+2026-01-23 13:17:44 - app.phase2.affiliation_validator - INFO -    ✅ Updated affiliation_cache table with 58 LLM results
+2026-01-23 13:17:44 - app.phase2.affiliation_validator - INFO -    Re-geocoding and updating authorships...
+2026-01-23 13:17:44 - app.phase2.affiliation_validator - INFO -    Processing 29 unique location keys for re-geocoding...
+2026-01-23 13:17:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Somerville, United States' -> (42.3875968, -71.0994968)
+2026-01-23 13:17:59 - app.phase2.pg_geocoding - INFO - Geocoded 'Asadabad, Iran' -> (34.7825885, 48.1217832)
+2026-01-23 13:18:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Dezful, Iran' -> (32.3780257, 48.4032064)
+2026-01-23 13:18:03 - app.phase2.pg_geocoding - INFO - Geocoded 'Damghan, Iran' -> (36.167451, 54.3379993)
+2026-01-23 13:18:07 - app.phase2.pg_geocoding - INFO - Geocoded 'Hinganghat, India' -> (20.542611, 78.8331636)
+2026-01-23 13:18:09 - app.phase2.pg_geocoding - INFO - Geocoded 'Karaj, Iran' -> (35.8224892, 50.9904681)
+2026-01-23 13:18:12 - app.phase2.pg_geocoding - INFO - Geocoded 'Ardabil, Iran' -> (38.4583983, 47.9313001)
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO -    ✅ Fixed 58 affiliations
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO -    ✅ Updated 109 authorships
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO -    ✅ Re-geocoded 25 locations
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION COMPLETE - Run: 16d4c49fc4f6
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO -    LLM fallback extractions: 58
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO -    affiliation_cache table updated by LLM: 58
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO -    Authorship records updated: 109
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO -    geocoding_cache table updated: 25
+2026-01-23 13:18:13 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 6 COMPLETE: Validation and fixes completed
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO -    Validation Statistics:
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO -       ✅ LLM fallback extractions: 58
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated by LLM: 58
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO -       ✅ Authorship records updated: 109
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO -       ✅ geocoding_cache table updated: 25
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table validated and added: 128
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO -       ⚠️  Geocoding failures (null coordinates): 32
+2026-01-23 13:18:13 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 13:18:13 - app.background_tasks - INFO - ✅ Background ingest completed for run 16d4c49fc4f6 in 422.92s
+2026-01-23 13:20:04 - root - INFO - ================================================================================
+2026-01-23 13:20:04 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 13:20:04 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 13:20:04 - root - INFO - ================================================================================
+2026-01-23 13:20:06 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 13:20:06 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 13:22:14 - root - INFO - ================================================================================
+2026-01-23 13:22:14 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-23 13:22:14 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-23 13:22:14 - root - INFO - ================================================================================
+2026-01-23 13:22:16 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-23 13:22:16 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-23 13:22:37 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:22:38 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:22:39 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:22:41 - httpx - INFO - HTTP Request: POST https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi "HTTP/1.1 200 OK"
+2026-01-23 13:22:48 - app.background_tasks - INFO - 🚀 Started background ingest task for run 16d4c49fc4f6
+2026-01-23 13:22:48 - app.main - INFO - 🚀 Auto-started background ingest for run 16d4c49fc4f6
+2026-01-23 13:22:48 - app.background_tasks - INFO - ⚙️  Background ingest running for run 16d4c49fc4f6
+2026-01-23 13:22:48 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:22:48 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Starting ingestion for run 16d4c49fc4f6
+2026-01-23 13:22:48 - app.phase2.pg_ingest - INFO -    Project ID: 3b9280a68d3d
+2026-01-23 13:22:48 - app.phase2.pg_ingest - INFO -    Force refresh: False
+2026-01-23 13:22:48 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:22:48 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 1: Loading PMIDs from Phase 1 results...
+2026-01-23 13:22:50 - app.phase2.pg_ingest - INFO -    Loaded 500 unique PMIDs from run 16d4c49fc4f6
+2026-01-23 13:22:50 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 1 COMPLETE: Found 500 PMIDs
+2026-01-23 13:22:50 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:22:50 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 2: Fetching 500 PMIDs from PubMed...
+2026-01-23 13:22:50 - app.phase2.pubmed_fetcher - INFO - Fetching 500 PMIDs in 4 batches (batch_size=150, rate_limit=3.0 rps)
+2026-01-23 13:22:50 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 13:22:51 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41542048%2C41532605%2C41188895%2C41459442%2C41450580%2C41132842%2C41516041%2C41300819%2C41491255%2C41106454%2C41349512%2C41329461%2C41524770%2C41563473%2C41203870%2C41192264%2C41498761%2C41345283%2C41146877%2C41108054%2C41496592%2C41121375%2C41108536%2C41200536%2C41455063%2C41314977%2C41174163%2C41273687%2C41356103%2C41514951%2C41362674%2C41292583%2C41211267%2C41225853%2C41555463%2C41241162%2C41120666%2C41242543%2C41412287%2C41244500%2C41330733%2C41188452%2C41465565%2C41376775%2C41220980%2C41109516%2C41367203%2C41220317%2C41230642%2C41309188%2C41121349%2C41209346%2C41296442%2C41311395%2C41226719%2C41313490%2C41443126%2C41288387%2C41482541%2C41471101%2C41247565%2C41253219%2C41445726%2C41281092%2C41570230%2C41389205%2C41296403%2C41187596%2C41311390%2C41369371%2C41274609%2C41369779%2C41211945%2C41568513%2C41179948%2C41568168%2C41314749%2C41414668%2C41147512%2C41438771%2C41387726%2C41305485%2C41148458%2C41508907%2C41400455%2C41497813%2C41483810%2C41311869%2C41424849%2C41274245%2C41417286%2C41432281%2C41159426%2C41145968%2C41535609%2C41385899%2C41536960%2C41485467%2C41494241%2C41249458%2C41481148%2C41347244%2C41445194%2C41504814%2C41503845%2C41480181%2C41370671%2C41399538%2C41341274%2C41377344%2C41504102%2C41281758%2C41171314%2C41485557%2C41263806%2C41416220%2C41304797%2C41496278%2C41352695%2C41294857%2C41314913%2C41536070%2C41279041%2C41254174%2C41510705%2C41449800%2C41279081%2C41524478%2C41396047%2C41171167%2C41478663%2C41522190%2C41543170%2C41352688%2C41403389%2C41341749%2C41543272%2C41380779%2C41141632%2C41278749%2C41311107%2C41539406%2C41405619%2C41176596%2C41430241%2C41549062%2C41105786%2C41181594%2C41235827%2C41481795&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:22:51 - app.phase2.pubmed_fetcher - INFO - Batch 1/4 completed
+2026-01-23 13:22:51 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 13:22:52 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41176953%2C41141487%2C41276526%2C41508959%2C41424006%2C41202713%2C41344099%2C41495582%2C41220431%2C41109692%2C41279346%2C41226290%2C41533919%2C41476373%2C41220897%2C41407349%2C41135520%2C41255332%2C41421338%2C41501880%2C41279709%2C41488985%2C41468306%2C41481232%2C41165418%2C41394966%2C41373776%2C41314754%2C41438873%2C41533202%2C41184573%2C41225939%2C41387334%2C41141493%2C41115594%2C41496284%2C41281666%2C41516321%2C41277417%2C41414813%2C41496996%2C41142378%2C41425600%2C41191736%2C41424846%2C41238927%2C41223195%2C41138228%2C41183015%2C41300773%2C41249169%2C41486850%2C41384994%2C41159033%2C41185939%2C41566394%2C41125159%2C41183413%2C41126843%2C41431922%2C41107628%2C41472363%2C41304580%2C41299498%2C41259745%2C41384733%2C41198017%2C41294211%2C41233575%2C41232532%2C41568097%2C41148632%2C41469148%2C41295360%2C41489768%2C41309192%2C41526374%2C41356473%2C41240134%2C41235102%2C41495521%2C41416126%2C41167225%2C41418729%2C41180619%2C41317988%2C41556308%2C41224955%2C41404141%2C41181417%2C41267399%2C41220178%2C41180706%2C41278587%2C41399436%2C41267936%2C41424058%2C41565695%2C41476860%2C41394272%2C41319963%2C41497062%2C41234126%2C41530266%2C41519897%2C41394638%2C41191525%2C41167015%2C41350682%2C41278137%2C41321948%2C41116297%2C41170183%2C41123743%2C41496283%2C41480464%2C41137959%2C41244575%2C41365890%2C41391726%2C41506374%2C41454745%2C41292842%2C41545752%2C41372233%2C41112276%2C41115768%2C41431758%2C41518477%2C41188225%2C41534449%2C41296664%2C41210585%2C41338025%2C41419637%2C41209486%2C41265646%2C41202468%2C41301838%2C41322191%2C41215480%2C41285723%2C41300715%2C41365534%2C41178492%2C41116289%2C41404500%2C41223249%2C41110569%2C41381927&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:22:53 - app.phase2.pubmed_fetcher - INFO - Batch 2/4 completed
+2026-01-23 13:22:53 - app.phase2.pubmed_fetcher - INFO - Fetching 150 PMIDs from PubMed...
+2026-01-23 13:22:53 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41236489%2C41152217%2C41411488%2C41368443%2C41229218%2C41201433%2C41410797%2C41370200%2C41270030%2C41463103%2C41109702%2C41416453%2C41242468%2C41223770%2C41219611%2C41474879%2C41302762%2C41313840%2C41163642%2C41404605%2C41297417%2C41301194%2C41467903%2C41245217%2C41454461%2C41479230%2C41456781%2C41305525%2C41407557%2C41324589%2C41304743%2C41501530%2C41414712%2C41392542%2C41278950%2C41202069%2C41180498%2C41152563%2C41307588%2C41113669%2C41315111%2C41136797%2C41484984%2C41441852%2C41256526%2C41548436%2C41344324%2C41139369%2C41415457%2C41169880%2C41465342%2C41512493%2C41166658%2C41251968%2C41535641%2C41569163%2C41237872%2C41253147%2C41480395%2C41523156%2C41447548%2C41494604%2C41377346%2C41346023%2C41248825%2C41275207%2C41517680%2C41535270%2C41353673%2C41303475%2C41123248%2C41153417%2C41455873%2C41430372%2C41428486%2C41264211%2C41214878%2C41292010%2C41388436%2C41496934%2C41317251%2C41213415%2C41284414%2C41504123%2C41487494%2C41272236%2C41203361%2C41210166%2C41160062%2C41302913%2C41568286%2C41252434%2C41140210%2C41105924%2C41479407%2C41428622%2C41479110%2C41148810%2C41444327%2C41361538%2C41358006%2C41423621%2C41485050%2C41409250%2C41362301%2C41548978%2C41418774%2C41389662%2C41402770%2C41150154%2C41229123%2C41241768%2C41281743%2C41485186%2C41244668%2C41262458%2C41125417%2C41500123%2C41271724%2C41548848%2C41405255%2C41496894%2C41284622%2C41481737%2C41545355%2C41381416%2C41411128%2C41294822%2C41356190%2C41141388%2C41276863%2C41137066%2C41264184%2C41262044%2C41535129%2C41236708%2C41511364%2C41465368%2C41312772%2C41280279%2C41321963%2C41208769%2C41213129%2C41268195%2C41168621%2C41418951%2C41111484%2C41270297%2C41377389%2C41277645&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:22:54 - app.phase2.pubmed_fetcher - INFO - Batch 3/4 completed
+2026-01-23 13:22:54 - app.phase2.pubmed_fetcher - INFO - Fetching 50 PMIDs from PubMed...
+2026-01-23 13:22:55 - httpx - INFO - HTTP Request: GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=41190236%2C41314751%2C41105775%2C41163074%2C41162233%2C41510162%2C41230178%2C41349606%2C41328300%2C41334187%2C41210587%2C41511319%2C41322390%2C41177514%2C41156655%2C41353207%2C41296247%2C41150843%2C41521358%2C41549285%2C41544897%2C41331925%2C41385960%2C41375383%2C41421305%2C41213207%2C41210586%2C41498249%2C41497669%2C41118255%2C41314120%2C41291679%2C41188868%2C41451635%2C41203276%2C41562671%2C41179303%2C41181445%2C41550651%2C41511845%2C41469506%2C41514894%2C41485458%2C41468377%2C41351984%2C41365142%2C41281724%2C41206685%2C41236017%2C41241097&retmode=xml&rettype=abstract "HTTP/1.1 200 OK"
+2026-01-23 13:22:55 - app.phase2.pubmed_fetcher - INFO - Batch 4/4 completed
+2026-01-23 13:22:55 - app.phase2.pubmed_fetcher - INFO - Fetched 4/4 batches successfully
+2026-01-23 13:22:56 - app.phase2.pubmed_fetcher - INFO - Extracted 500 PMIDs from 4 batches
+2026-01-23 13:22:56 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 2 COMPLETE: Fetched 500 PubMed XML records
+2026-01-23 13:22:56 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:22:56 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 3: Parsing XML into structured papers...
+2026-01-23 13:22:56 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 3 COMPLETE: Parsed 500 papers
+2026-01-23 13:22:56 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:22:56 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 4: Extracting affiliations via rule-based...
+2026-01-23 13:22:56 - app.phase2.pg_ingest - INFO -    Extracting 2331 unique affiliations via rule-based method
+2026-01-23 13:22:56 - app.phase2.rule_based_extractor - INFO -    Processing 2331 affiliations...
+2026-01-23 13:22:56 - app.phase2.rule_based_extractor - INFO -    Batch checking affiliation_cache table for 2331 affiliations...
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    ✅ affiliation_cache table: 2312 hits, 19 need extraction
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Trying institution_matcher (institution_geo table) for 19 affiliations...
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    Loaded 3385 institutions to memory (3385 normalized names, 218 aliases)
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1/19 (5%), matches found: 1
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2/19 (10%), matches found: 2
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 3/19 (15%), matches found: 2
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 4/19 (21%), matches found: 3
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 5/19 (26%), matches found: 4
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 6/19 (31%), matches found: 4
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 7/19 (36%), matches found: 4
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 8/19 (42%), matches found: 5
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 9/19 (47%), matches found: 6
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 10/19 (52%), matches found: 7
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 11/19 (57%), matches found: 8
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 12/19 (63%), matches found: 8
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 13/19 (68%), matches found: 8
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 14/19 (73%), matches found: 9
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 15/19 (78%), matches found: 10
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 16/19 (84%), matches found: 10
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 17/19 (89%), matches found: 10
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 18/19 (94%), matches found: 10
+2026-01-23 13:22:57 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 19/19 (100%), matches found: 10
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    ✅ institution_geo table: 10 matches found
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Extracting 9 affiliations using rule-based parser...
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 1/9 (11%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 2/9 (22%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 3/9 (33%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 4/9 (44%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 5/9 (55%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 6/9 (66%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 7/9 (77%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 8/9 (88%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    Parsing progress: 9/9 (100%)
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -    ✅ Rule-based extraction complete: 9 results
+2026-01-23 13:22:57 - app.phase2.rule_based_extractor - INFO -       Pending validation: 9 institutions
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    Cached 19 new affiliation extraction results to affiliation_cache table
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    ✅ Extraction complete: 2331 affiliations processed, 2307 with country
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 4 COMPLETE: Extracted 2331 affiliations
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2331
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    With country: 2307
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    LLM calls: 0
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 5: Writing to database...
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    Clearing existing data for run 16d4c49fc4f6...
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    Deleted authorships for 500 existing PMIDs
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    Inserting/updating 500 papers (bulk operation)...
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    Papers inserted/updated: 500
+2026-01-23 13:22:58 - app.phase2.pg_ingest - INFO -    Inserting 4076 authorships (bulk operation)...
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Authorships inserted: 4076
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Linking run 16d4c49fc4f6 to 500 papers...
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Database write complete
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 5 COMPLETE: Created 4076 authorships
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - ✅ INGESTION COMPLETE - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Total PMIDs: 500
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Papers parsed: 500
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Authorships created: 4076
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Unique affiliations: 2331
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Affiliations with country: 2307
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - 
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Affiliation Processing Breakdown:
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table hits: 2312
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table matches: 10
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -       ✅ rule-based extractions: 9
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table auto-added: 0
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated: 9
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - 
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    ✅ Count verification: 2331 = 2331 (matches)
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO -    Pending institutions for validation: 9
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - 
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 13:23:04 - app.phase2.pg_ingest - INFO - 📥 INGESTION STEP 6: Starting post-ingestion validation and LLM fallback...
+2026-01-23 13:23:04 - app.phase2.affiliation_validator - INFO -    Pending institutions to validate: 9
+2026-01-23 13:23:04 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:04 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 1: Getting authorships for run 16d4c49fc4f6...
+2026-01-23 13:23:05 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 1 COMPLETE: Found 4076 authorships from 500 papers
+2026-01-23 13:23:05 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:05 - app.phase2.affiliation_validator - INFO - 🔍 VALIDATION STEP 2: Extracting unique location keys and batch querying geocoding_cache...
+2026-01-23 13:23:05 - app.phase2.affiliation_validator - INFO -    Found 573 unique location keys from 4076 authorships
+2026-01-23 13:23:06 - app.phase2.affiliation_validator - INFO -    Batch query complete: 573/573 found in cache
+2026-01-23 13:23:06 - app.phase2.affiliation_validator - INFO -    Processing 0 unique location keys via Nominatim...
+2026-01-23 13:23:06 - app.phase2.affiliation_validator - INFO -    Batch updating 3916 affiliations for 569 cached locations...
+2026-01-23 13:23:25 - app.main - INFO - ================================================================================
+2026-01-23 13:23:25 - app.main - INFO - ⏳ WAITING - Background ingest in progress for run 16d4c49fc4f6
+2026-01-23 13:23:25 - app.main - INFO -    Project: 3b9280a68d3d
+2026-01-23 13:23:25 - app.main - INFO -    Started at: 2026-01-23 05:22:48.804169
+2026-01-23 13:23:25 - app.main - INFO - ================================================================================
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    ✅ Batch updated affiliations for 569 locations (3916 total affiliations)
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 4.5: Adding 9 pending institutions to institution_geo...
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    ⚠️  No institutions passed geocoding validation
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION STEP 2-4 COMPLETE: Geocoding validation finished
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Total authorships checked: 4076
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Cache hits (valid): 3947
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Cache misses: 0
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Nominatim successes: 0
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Nominatim failures: 0
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Unique error affiliations: 13
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Error PMIDs: 8
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Institutions validated and added: 0/9
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO - 🔧 VALIDATION STEP 5: Fixing 13 error affiliations with LLM...
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Collecting 13 unique error affiliations for LLM fix
+2026-01-23 13:23:32 - app.phase2.affiliation_validator - INFO -    Calling LLM extractor (batch size: 20)...
+2026-01-23 13:23:32 - app.phase2.affiliation_extractor - INFO -    Checking affiliation_cache table for 13 affiliations...
+2026-01-23 13:23:32 - app.phase2.affiliation_extractor - INFO -    Trying institution_matcher (institution_geo table) for 13 affiliations...
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    Loaded 3385 institutions to memory (3385 normalized names, 218 aliases)
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 1/13 (7%), matches found: 1
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 2/13 (15%), matches found: 2
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 3/13 (23%), matches found: 3
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 4/13 (30%), matches found: 4
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 5/13 (38%), matches found: 5
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 6/13 (46%), matches found: 6
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 7/13 (53%), matches found: 7
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 8/13 (61%), matches found: 8
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 9/13 (69%), matches found: 9
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 10/13 (76%), matches found: 10
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 11/13 (84%), matches found: 11
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 12/13 (92%), matches found: 12
+2026-01-23 13:23:33 - app.phase2.institution_matcher - INFO -    institution_geo table matching progress: 13/13 (100%), matches found: 13
+2026-01-23 13:23:33 - app.phase2.affiliation_extractor - INFO -    ✅ institution_geo table: 13 matches found
+2026-01-23 13:23:33 - app.phase2.affiliation_extractor - INFO -    ✅ All 13 affiliations found in cache/institution_geo
+2026-01-23 13:23:33 - app.phase2.affiliation_validator - INFO -    LLM extraction complete: 13 results from 0 LLM calls
+2026-01-23 13:23:33 - app.phase2.affiliation_validator - INFO -    Updating affiliation_cache with 13 LLM results...
+2026-01-23 13:23:33 - app.phase2.affiliation_validator - INFO -    ✅ Updated affiliation_cache table with 13 LLM results
+2026-01-23 13:23:33 - app.phase2.affiliation_validator - INFO -    Re-geocoding and updating authorships...
+2026-01-23 13:23:33 - app.phase2.affiliation_validator - INFO -    Processing 4 unique location keys for re-geocoding...
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO -    ✅ Fixed 13 affiliations
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO -    ✅ Updated 31 authorships
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO -    ✅ Re-geocoded 0 locations
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO - ✅ VALIDATION COMPLETE - Run: 16d4c49fc4f6
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO -    LLM fallback extractions: 13
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO -    affiliation_cache table updated by LLM: 13
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO -    Authorship records updated: 31
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO -    geocoding_cache table updated: 0
+2026-01-23 13:23:36 - app.phase2.affiliation_validator - INFO - ────────────────────────────────────────────────────────────────────────────────
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO - ✅ INGESTION STEP 6 COMPLETE: Validation and fixes completed
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO -    Validation Statistics:
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO -       ✅ LLM fallback extractions: 13
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO -       ✅ affiliation_cache table updated by LLM: 13
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO -       ✅ Authorship records updated: 31
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO -       ✅ geocoding_cache table updated: 0
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO -       ✅ institution_geo table validated and added: 0
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO -       ⚠️  Geocoding failures (null coordinates): 0
+2026-01-23 13:23:36 - app.phase2.pg_ingest - INFO - ================================================================================
+2026-01-23 13:23:36 - app.background_tasks - INFO - ✅ Background ingest completed for run 16d4c49fc4f6 in 47.91s
+2026-01-23 13:23:36 - app.main - INFO - ✅ Background ingest completed after wait for run 16d4c49fc4f6
+2026-01-23 13:23:48 - app.main - INFO - ================================================================================
+2026-01-23 13:23:48 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-23 13:23:48 - app.main - INFO -    Min confidence: low
+2026-01-23 13:23:48 - app.main - INFO - ================================================================================
+2026-01-23 13:23:48 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 16d4c49fc4f6...
+2026-01-23 13:23:48 - app.main - INFO - ================================================================================
+2026-01-23 13:23:48 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-23 13:23:48 - app.main - INFO -    Min confidence: low
+2026-01-23 13:23:48 - app.main - INFO - ================================================================================
+2026-01-23 13:23:48 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 16d4c49fc4f6...
+2026-01-23 13:23:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 13:23:48 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-23 13:23:51 - app.phase2.pg_geocoding - INFO - Geocoded 'Botswana' -> (-23.1681782, 24.5928742)
+2026-01-23 13:23:52 - app.phase2.pg_geocoding - INFO - Geocoded 'Botswana' -> (-23.1681782, 24.5928742)
+2026-01-23 13:23:53 - app.phase2.pg_geocoding - INFO - Geocoded 'Palestine' -> (31.5197847, 35.0494777)
+2026-01-23 13:23:54 - app.phase2.pg_geocoding - INFO - Geocoded 'Palestine' -> (31.5197847, 35.0494777)
+2026-01-23 13:23:55 - app.phase2.pg_geocoding - INFO - Geocoded 'Gambia' -> (13.470062, -15.4900464)
+2026-01-23 13:23:56 - app.phase2.pg_geocoding - INFO - Geocoded 'Gambia' -> (13.470062, -15.4900464)
+2026-01-23 13:23:57 - app.phase2.pg_geocoding - INFO - Geocoded 'Azerbaijan' -> (40.3936294, 47.7872508)
+2026-01-23 13:23:57 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 74 countries
+2026-01-23 13:23:57 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 13:23:57 - app.main - INFO -    Countries returned: 74
+2026-01-23 13:23:57 - app.main - INFO - ================================================================================
+2026-01-23 13:23:58 - app.phase2.pg_geocoding - INFO - Geocoded 'Azerbaijan' -> (40.3936294, 47.7872508)
+2026-01-23 13:23:58 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 74 countries
+2026-01-23 13:23:58 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-23 13:23:58 - app.main - INFO -    Countries returned: 74
+2026-01-23 13:23:58 - app.main - INFO - ================================================================================

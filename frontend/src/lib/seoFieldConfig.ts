@@ -18,7 +18,7 @@ export interface FieldConfig {
 /**
  * SEO Project ID (under super user account)
  */
-export const SEO_PROJECT_ID = "seo-project-id"; // TODO: Replace with actual SEO project ID
+export const SEO_PROJECT_ID = "3b9280a68d3d"; // TODO: Replace with actual SEO project ID
 
 /**
  * Field-specific run configurations
@@ -27,7 +27,7 @@ export const FIELD_CONFIGS: Record<string, FieldConfig> = {
   "brain-computer-interface": {
     slug: "brain-computer-interface",
     name: "Brain-Computer Interface (BCI)",
-    runId: "bci-run-id-here", // TODO: Replace after creating BCI run
+    runId: "b6b977aeeed1", // TODO: Replace after creating BCI run
     projectId: SEO_PROJECT_ID,
     description: "Brain-computer interfaces, neural interfaces, and direct brain communication systems",
     keywords: ["BCI", "brain-computer interface", "neural interface", "EEG", "brain signals"],
@@ -37,7 +37,7 @@ export const FIELD_CONFIGS: Record<string, FieldConfig> = {
   "neural-modulation": {
     slug: "neural-modulation",
     name: "Neural Modulation (tDCS/TMS)",
-    runId: "neural-mod-run-id", // TODO: Replace after creating neural modulation run
+    runId: "19d981d1d732", // TODO: Replace after creating neural modulation run
     projectId: SEO_PROJECT_ID,
     description: "Non-invasive brain stimulation including tDCS, TMS, and other neuromodulation techniques",
     keywords: ["tDCS", "TMS", "transcranial magnetic stimulation", "neuromodulation", "brain stimulation"],
@@ -47,7 +47,7 @@ export const FIELD_CONFIGS: Record<string, FieldConfig> = {
   "crispr-gene-editing": {
     slug: "crispr-gene-editing",
     name: "CRISPR Gene Editing",
-    runId: "crispr-run-id", // TODO: Replace after creating CRISPR run
+    runId: "16d4c49fc4f6", // TODO: Replace after creating CRISPR run
     projectId: SEO_PROJECT_ID,
     description: "CRISPR-Cas9 and other gene editing technologies for therapeutic and research applications",
     keywords: ["CRISPR", "gene editing", "CRISPR-Cas9", "genome editing", "genetic engineering"],
