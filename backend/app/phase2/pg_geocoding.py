@@ -31,6 +31,7 @@ COUNTRY_ALIASES = {
     "Korea, Republic of": "South Korea",  # Add this for Nominatim compatibility
     "People's Republic of China": "China",
     "PRC": "China",
+    "China (Mainland)": "China",
     "Taiwan, Province of China": "Taiwan",  # Nominatim recognizes "Taiwan" better
 }
 

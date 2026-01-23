@@ -34,6 +34,7 @@ COUNTRY_ALIASES = {
     "Republic of Korea": "South Korea",
     "People's Republic of China": "China",
     "PRC": "China",
+    "China (Mainland)": "China",
 }
 
 

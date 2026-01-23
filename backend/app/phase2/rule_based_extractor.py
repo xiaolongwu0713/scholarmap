@@ -631,10 +631,10 @@ def _normalize_country_city_names(geo_data: dict) -> dict:
         "U.A.E.": "United Arab Emirates",
         
         # People's Republic of China
-        "PRC": "China (Mainland)",
-        "P.R.C": "China (Mainland)",
-        "P.R.C.": "China (Mainland)",
-        "PR China": "China (Mainland)",
+        "PRC": "China",
+        "P.R.C": "China",
+        "P.R.C.": "China",
+        "PR China": "China",
         
         # Other standardizations
         "ROC": "Taiwan",
