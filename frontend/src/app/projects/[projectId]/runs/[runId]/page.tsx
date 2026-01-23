@@ -2026,7 +2026,15 @@ function RunPageContent() {
                         value={parseAdditionalInfo}
                         onChange={(e) => setParseAdditionalInfo(e.target.value)}
                         disabled={parseCompleted || parseStage2Locked || busy !== null}
-                        placeholder={parseCompleted ? "Parse stage completed. Input disabled." : parseStage2Locked ? `Parse stage2 locked after ${config.parse_stage2_max_total_attempts} attempts.` : "Refine description by answering the questions, or use the latest understanding by clicking the button to the right."}
+                        placeholder={
+                          parseCompleted 
+                            ? "Parse stage completed. Input disabled." 
+                            : parseStage2Locked 
+                              ? `Parse stage2 locked after ${config.parse_stage2_max_total_attempts} attempts.` 
+                              : parseResult?.is_answered
+                                ? "Refine description by answering the questions, or use the latest understanding by clicking the button to the right."
+                                : "To proceed, refine description by answering the questions."
+                        }
                         style={{ fontSize: "14px" }}
                         maxLength={300}
                       />
