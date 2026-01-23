@@ -539,6 +539,8 @@ async def list_run_files(request: Request, project_id: str, run_id: str) -> dict
 @app.post("/api/projects/{project_id}/runs/{run_id}/query")
 async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
     user_id = request.state.user_id
+    logger = logging.getLogger(__name__)  # Define logger at function start
+    
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -575,7 +577,6 @@ async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
             if not can_proceed:
                 # Log warning but don't block (for backward compatibility)
                 # In the future, you can raise HTTPException here
-                logger = logging.getLogger(__name__)
                 logger.warning(f"User {user.email} exceeded paper quota: {total_papers} papers retrieved")
                 # Optionally add warning to result
                 result["quota_warning"] = error_msg
