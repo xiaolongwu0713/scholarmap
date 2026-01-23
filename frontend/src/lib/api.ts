@@ -455,6 +455,30 @@ export async function runIngest(
   return json.stats as IngestStats;
 }
 
+export interface IngestStatus {
+  status: "not_started" | "pending" | "running" | "completed" | "failed";
+  background_task: boolean;
+  started_at?: string;
+  completed_at?: string;
+  stats?: IngestStats;
+  error?: string;
+}
+
+export async function getIngestStatus(
+  projectId: string,
+  runId: string
+): Promise<IngestStatus> {
+  const res = await fetch(
+    `${baseUrl}/api/projects/${projectId}/runs/${runId}/ingest/status`,
+    {
+      headers: getDefaultHeaders(),
+      cache: "no-store"
+    }
+  );
+  await throwIfNotOk(res, "getIngestStatus");
+  return await res.json();
+}
+
 export async function getWorldMap(
   projectId: string,
   runId: string,

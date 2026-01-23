@@ -73,6 +73,11 @@ async def lifespan(app: FastAPI):
     else:
         print("⚠️  DATABASE_URL not configured, some features may not work")
     
+    # Startup: initialize background task manager
+    from app.background_tasks import background_ingest_manager
+    await background_ingest_manager.start_periodic_cleanup(interval_hours=1)
+    print("✅ Background task manager initialized with periodic cleanup")
+    
     yield
     
     # Shutdown: close database connection
@@ -195,7 +200,7 @@ def get_frontend_config() -> dict:
         TEXT_VALIDATION_MAX_ATTEMPTS,
         PARSE_STAGE1_MAX_ATTEMPTS,
         PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
-        PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
+        PARSE_STAGE2_MAX_CONSECUTIVE_UNANSWERED,
         RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
     )
     from config import settings
@@ -204,7 +209,7 @@ def get_frontend_config() -> dict:
         "text_validation_max_attempts": TEXT_VALIDATION_MAX_ATTEMPTS,
         "parse_stage1_max_attempts": PARSE_STAGE1_MAX_ATTEMPTS,
         "parse_stage2_max_total_attempts": PARSE_STAGE2_MAX_TOTAL_ATTEMPTS,
-        "parse_stage2_max_consecutive_unhelpful": PARSE_STAGE2_MAX_CONSECUTIVE_UNHELPFUL,
+        "parse_stage2_max_consecutive_unhelpful": PARSE_STAGE2_MAX_CONSECUTIVE_UNANSWERED,
         "retrieval_framework_adjust_max_attempts": RETRIEVAL_FRAMEWORK_ADJUST_MAX_ATTEMPTS,
         "share_run_auth_check_enabled": settings.share_run_auth_check_enabled,
     }
@@ -574,6 +579,34 @@ async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
                 logger.warning(f"User {user.email} exceeded paper quota: {total_papers} papers retrieved")
                 # Optionally add warning to result
                 result["quota_warning"] = error_msg
+    
+    # NEW: Auto-start background ingest after query completes
+    from app.background_tasks import background_ingest_manager
+    from app.phase2.pg_ingest import PostgresIngestionPipeline
+    
+    async def run_background_ingest():
+        """Background ingest coroutine."""
+        pipeline = PostgresIngestionPipeline(
+            project_id=project_id,
+            api_key=settings.pubmed_api_key or None
+        )
+        return await pipeline.ingest_run(
+            run_id=run_id,
+            store=store,
+            force_refresh=False
+        )
+    
+    # Start background task (don't await - let it run in background)
+    try:
+        background_ingest_manager.start_ingest_task(
+            run_id=run_id,
+            project_id=project_id,
+            ingest_coroutine=run_background_ingest()
+        )
+        logger.info(f"🚀 Auto-started background ingest for run {run_id}")
+    except Exception as e:
+        # Don't fail the query if background task fails to start
+        logger.warning(f"⚠️  Failed to start background ingest for run {run_id}: {e}")
     
     return {"result": result}
 
@@ -976,7 +1009,12 @@ async def phase2_ingest(request: Request, project_id: str, run_id: str, req: Ing
     """
     Ingest papers from Phase 1 into authorship database.
     
-    This endpoint:
+    This endpoint checks for background tasks first:
+    1. If background task completed → return results immediately
+    2. If background task running → wait for completion
+    3. If no background task or force_refresh → run synchronously
+    
+    The ingestion process:
     1. Loads PMIDs from Phase 1 results
     2. Fetches PubMed XML (with caching)
     3. Parses authors and affiliations
@@ -989,10 +1027,52 @@ async def phase2_ingest(request: Request, project_id: str, run_id: str, req: Ing
     
     logger = logging.getLogger(__name__)
     
+    # NEW: Check for background task (unless force_refresh)
+    from app.background_tasks import background_ingest_manager
+    
+    if not req.force_refresh:
+        bg_task = background_ingest_manager.get_task_status(run_id)
+        
+        if bg_task:
+            if bg_task.status == "completed":
+                # Background task already completed! Return immediately
+                logger.info("=" * 80)
+                logger.info(f"⚡ CACHE HIT - Background ingest already completed for run {run_id}")
+                logger.info(f"   Project: {project_id}")
+                logger.info(f"   Completed at: {bg_task.completed_at}")
+                logger.info("=" * 80)
+                return {"stats": bg_task.result}
+            
+            elif bg_task.status == "running":
+                # Wait for background task to complete
+                logger.info("=" * 80)
+                logger.info(f"⏳ WAITING - Background ingest in progress for run {run_id}")
+                logger.info(f"   Project: {project_id}")
+                logger.info(f"   Started at: {bg_task.started_at}")
+                logger.info("=" * 80)
+                
+                result_task = await background_ingest_manager.wait_for_task(run_id)
+                
+                if result_task and result_task.status == "completed":
+                    logger.info(f"✅ Background ingest completed after wait for run {run_id}")
+                    return {"stats": result_task.result}
+                elif result_task and result_task.status == "failed":
+                    logger.error(f"❌ Background ingest failed for run {run_id}: {result_task.error}")
+                    raise HTTPException(
+                        status_code=500, 
+                        detail=f"Background ingestion failed: {result_task.error}"
+                    )
+            
+            elif bg_task.status == "failed":
+                # Previous background task failed, run synchronously
+                logger.warning(f"⚠️  Previous background ingest failed for run {run_id}, running synchronously")
+    
+    # Original logic: run ingest synchronously
     try:
         logger.info("=" * 80)
         logger.info(f"🚀 INGESTION STARTED - Project: {project_id}, Run: {run_id}")
         logger.info(f"   Force refresh: {req.force_refresh}")
+        logger.info(f"   Mode: Synchronous (user-initiated)")
         logger.info("=" * 80)
         
         pipeline = PostgresIngestionPipeline(
@@ -1024,6 +1104,67 @@ async def phase2_ingest(request: Request, project_id: str, run_id: str, req: Ing
     except Exception as e:
         logger.error(f"❌ INGESTION FAILED - Error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
+
+
+@app.get("/api/projects/{project_id}/runs/{run_id}/ingest/status")
+async def get_ingest_status(request: Request, project_id: str, run_id: str) -> dict:
+    """
+    Get background ingest task status.
+    
+    This endpoint allows checking whether a background ingest task is running,
+    completed, or failed without triggering a new ingestion.
+    
+    Returns:
+        - status: "not_started", "pending", "running", "completed", "failed"
+        - background_task: True if from background manager, False if from database
+        - started_at: Task start time (ISO format)
+        - completed_at: Task completion time (ISO format)
+        - stats: Ingestion statistics (if completed)
+        - error: Error message (if failed)
+    """
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    from app.background_tasks import background_ingest_manager
+    
+    # Check background task manager first
+    task = background_ingest_manager.get_task_status(run_id)
+    
+    if task:
+        response = {
+            "status": task.status,
+            "background_task": True,
+            "started_at": task.started_at.isoformat() if task.started_at else None,
+            "completed_at": task.completed_at.isoformat() if task.completed_at else None,
+        }
+        
+        if task.status == "completed" and task.result:
+            response["stats"] = task.result
+        elif task.status == "failed" and task.error:
+            response["error"] = task.error
+        
+        return response
+    
+    # No background task, check database for existing data
+    try:
+        stats_result = await phase2_authorship_stats(request, project_id, run_id)
+        if stats_result.get("stats"):
+            return {
+                "status": "completed",
+                "background_task": False,
+                "stats": stats_result["stats"]
+            }
+    except Exception as e:
+        logger = logging.getLogger(__name__)
+        logger.debug(f"No authorship data found for run {run_id}: {e}")
+    
+    # No data found anywhere
+    return {
+        "status": "not_started",
+        "background_task": False
+    }
 
 
 @app.post("/api/projects/{project_id}/runs/{run_id}/validate-affiliations")
