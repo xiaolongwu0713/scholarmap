@@ -9,6 +9,7 @@ import {
   generateCountryMetaDescription,
   generateCountryKeywords,
 } from '@/lib/seoContent';
+import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
@@ -416,6 +417,38 @@ export default async function CountryPage({ params }: PageProps) {
                 ))}
               </div>
             </section>
+          </div>
+
+          {/* Field-Specific Pages */}
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Explore {countryName} by Research Field
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Discover field-specific research opportunities and institutions in {countryName}
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {getAllFieldConfigs().slice(0, 6).map((field) => (
+                <Link
+                  key={field.slug}
+                  href={`/research-jobs/${field.slug}/country/${countrySlug}`}
+                  className="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
+                >
+                  <h3 className="font-semibold text-gray-900 mb-2">{field.name}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{field.description}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {field.keywords.slice(0, 3).map((keyword) => (
+                      <span
+                        key={keyword}
+                        className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded"
+                      >
+                        {keyword}
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
 
           {/* Related Links */}

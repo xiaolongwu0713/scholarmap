@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { fetchWorldMap, fetchCountryMap } from '@/lib/seoApi';
 import { countryToSlug, cityToSlug } from '@/lib/geoSlugs';
+import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
+import { fetchFieldWorldData, fetchFieldCountryData } from '@/lib/seoFieldApi';
 
 const DEMO_PROJECT_ID = '6af7ac1b6254';
 const DEMO_RUN_ID = '53e099cdb74e';
@@ -94,7 +96,75 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    return [...staticPages, ...countryPages, ...cityPages];
+    // Generate field-specific pages
+    const fieldPages: MetadataRoute.Sitemap = [];
+    const fieldCountryPages: MetadataRoute.Sitemap = [];
+    const fieldCityPages: MetadataRoute.Sitemap = [];
+
+    try {
+      const fields = getAllFieldConfigs();
+      
+      for (const field of fields) {
+        // Field overview page
+        fieldPages.push({
+          url: `${baseUrl}/research-jobs/${field.slug}`,
+          lastModified: currentDate,
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        });
+
+        try {
+          // Get top 10 countries for this field
+          const fieldWorldData = await fetchFieldWorldData(field.slug);
+          const topFieldCountries = fieldWorldData
+            .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
+            .slice(0, 10);
+
+          // Generate field × country pages
+          for (const country of topFieldCountries) {
+            fieldCountryPages.push({
+              url: `${baseUrl}/research-jobs/${field.slug}/country/${countryToSlug(country.country)}`,
+              lastModified: currentDate,
+              changeFrequency: 'weekly',
+              priority: 0.75,
+            });
+
+            try {
+              // Get top 5 cities for this field × country
+              const fieldCities = await fetchFieldCountryData(field.slug, country.country);
+              const topFieldCities = fieldCities
+                .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
+                .slice(0, 5);
+
+              // Generate field × city pages
+              for (const city of topFieldCities) {
+                fieldCityPages.push({
+                  url: `${baseUrl}/research-jobs/${field.slug}/city/${cityToSlug(city.city)}`,
+                  lastModified: currentDate,
+                  changeFrequency: 'weekly',
+                  priority: 0.7,
+                });
+              }
+            } catch (error) {
+              console.error(`Error fetching cities for field ${field.slug} in ${country.country}:`, error);
+            }
+          }
+        } catch (error) {
+          console.error(`Error generating field pages for ${field.slug}:`, error);
+        }
+      }
+    } catch (error) {
+      console.error('Error generating field-specific sitemap entries:', error);
+    }
+
+    return [
+      ...staticPages,
+      ...countryPages,
+      ...cityPages,
+      ...fieldPages,
+      ...fieldCountryPages,
+      ...fieldCityPages,
+    ];
   } catch (error) {
     console.error('Error generating sitemap:', error);
     // Return static pages only if API fails

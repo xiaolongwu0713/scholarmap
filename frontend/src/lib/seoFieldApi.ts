@@ -20,12 +20,16 @@ export async function fetchFieldWorldData(fieldSlug: string, minConfidence: stri
 
   const url = `${API_BASE_URL}/api/projects/${config.projectId}/runs/${config.runId}/map/world?min_confidence=${minConfidence}`;
   
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    next: { revalidate: 86400 } // 24 hour cache
+  });
+  
   if (!response.ok) {
     throw new Error(`Failed to fetch field world data: ${response.statusText}`);
   }
   
-  return response.json();
+  const json = await response.json();
+  return json.data || [];
 }
 
 /**
@@ -43,12 +47,16 @@ export async function fetchFieldCountryData(
 
   const url = `${API_BASE_URL}/api/projects/${config.projectId}/runs/${config.runId}/map/country/${encodeURIComponent(country)}?min_confidence=${minConfidence}`;
   
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    next: { revalidate: 86400 } // 24 hour cache
+  });
+  
   if (!response.ok) {
     throw new Error(`Failed to fetch field country data: ${response.statusText}`);
   }
   
-  return response.json();
+  const json = await response.json();
+  return json.data || [];
 }
 
 /**
@@ -67,12 +75,16 @@ export async function fetchFieldCityData(
 
   const url = `${API_BASE_URL}/api/projects/${config.projectId}/runs/${config.runId}/map/city/${encodeURIComponent(country)}/${encodeURIComponent(city)}?min_confidence=${minConfidence}`;
   
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    next: { revalidate: 86400 } // 24 hour cache
+  });
+  
   if (!response.ok) {
     throw new Error(`Failed to fetch field city data: ${response.statusText}`);
   }
   
-  return response.json();
+  const json = await response.json();
+  return json.data || [];
 }
 
 /**
@@ -99,12 +111,16 @@ export async function fetchFieldInstitutionScholars(
 
   const url = `${API_BASE_URL}/api/projects/${config.projectId}/runs/${config.runId}/map/institution?${params}`;
   
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    next: { revalidate: 86400 } // 24 hour cache
+  });
+  
   if (!response.ok) {
     throw new Error(`Failed to fetch field institution scholars: ${response.statusText}`);
   }
   
-  return response.json();
+  const json = await response.json();
+  return json.data || [];
 }
 
 /**

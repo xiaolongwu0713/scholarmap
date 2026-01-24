@@ -421,7 +421,9 @@ function RunPageContent() {
   const params = useParams();
   const projectId = params.projectId as string;
   const runId = params.runId as string;
-  const isDemoRun = projectId === "6af7ac1b6254" && runId === "53e099cdb74e";
+  // Original demo run or any run in the SEO project
+  const isDemoRun = (projectId === "6af7ac1b6254" && runId === "53e099cdb74e") || 
+                     projectId === "3b9280a68d3d";
 
   // Load configuration from backend (with fallback defaults)
   const [config, setConfig] = useState<FrontendConfig>({
@@ -2879,8 +2881,9 @@ export default function RunPage() {
       .catch(() => setShareAuthCheckEnabled(true));
   }, []);
 
-  // Allow public access to demo run
-  const isDemoRun = projectId === "6af7ac1b6254" && runId === "53e099cdb74e";
+  // Allow public access to demo run or SEO project runs
+  const isDemoRun = (projectId === "6af7ac1b6254" && runId === "53e099cdb74e") || 
+                     projectId === "3b9280a68d3d";
   
   if (isDemoRun) {
     return <RunPageContent />;

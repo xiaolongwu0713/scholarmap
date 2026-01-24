@@ -487,13 +487,26 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
     const crumbs = ["World"];
     if (selectedCountry) crumbs.push(selectedCountry);
     if (selectedCity) crumbs.push(selectedCity);
+    const scholarCount =
+      selectedCity && cityData.length
+        ? cityData.reduce((sum, institution) => sum + institution.scholar_count, 0)
+        : selectedCountry && countryData.length
+          ? countryData.reduce((sum, city) => sum + city.scholar_count, 0)
+          : null;
+    const scholarLabel =
+      scholarCount !== null
+        ? ` (${scholarCount.toLocaleString()} scholar${scholarCount === 1 ? "" : "s"})`
+        : "";
 
     return (
       <div style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14 }}>
         {crumbs.map((c, i) => (
           <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {i > 0 && <span style={{ color: "#999" }}>→</span>}
-            <span style={{ fontWeight: i === crumbs.length - 1 ? "bold" : "normal" }}>{c}</span>
+            <span style={{ fontWeight: i === crumbs.length - 1 ? "bold" : "normal" }}>
+              {c}
+              {i === crumbs.length - 1 ? scholarLabel : ""}
+            </span>
           </span>
         ))}
       </div>
@@ -959,31 +972,6 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
         <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
           {/* Map (left side) */}
           <div style={{ flex: 1, position: "relative" }}>
-            {/* Fixed country info box (only visible in country view) */}
-            {level === "country" && selectedCountry && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: 12,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  zIndex: 10,
-                  backgroundColor: "white",
-                  padding: "8px 12px",
-                  borderRadius: "8px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-                  border: "1px solid #e5e7eb",
-                  pointerEvents: "none"
-                }}
-              >
-                <div style={{ fontSize: "14px", fontWeight: 600, color: "#111827", marginBottom: "2px" }}>
-                  {selectedCountry}
-                </div>
-                <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                  👥 {countryData.reduce((sum, city) => sum + city.scholar_count, 0)} scholars
-                </div>
-              </div>
-            )}
             {mapboxToken ? (
               mapError ? (
                 <div
