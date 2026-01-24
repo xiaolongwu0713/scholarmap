@@ -291,8 +291,9 @@ export default async function FieldCountryPage({ params }: PageProps) {
               </p>
               <TrackedLink
                 href={demoRunUrl}
-                eventName="seo_field_to_demo_click"
-                eventData={{ field: fieldSlug, country: countryName, page_type: 'field_country' }}
+                trackingType="demo"
+                trackingSource={`field_country_${fieldSlug}`}
+                country={countryName}
                 className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
               >
                 View Interactive Map →
@@ -328,8 +329,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
                   <TrackedLink
                     key={city.city}
                     href={`/research-jobs/${fieldSlug}/city/${cityToSlug(city.city)}`}
-                    eventName="seo_field_city_link_click"
-                    eventData={{ field: fieldSlug, country: countryName, city: city.city }}
+                    trackingType="none"
                     className="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
                   >
                     <div className="flex justify-between items-start">
@@ -424,16 +424,18 @@ export default async function FieldCountryPage({ params }: PageProps) {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <TrackedLink
                   href={demoRunUrl}
-                  eventName="seo_field_to_demo_click"
-                  eventData={{ field: fieldSlug, country: countryName, page_type: 'field_country', location: 'bottom_cta' }}
+                  trackingType="demo"
+                  trackingSource={`field_country_${fieldSlug}_bottom`}
+                  country={countryName}
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
                 >
                   Explore Interactive Map
                 </TrackedLink>
                 <TrackedLink
                   href="/auth/register"
-                  eventName="seo_to_signup_start"
-                  eventData={{ source: 'field_country', field: fieldSlug, country: countryName }}
+                  trackingType="signup"
+                  trackingSource={`field_country_${fieldSlug}`}
+                  country={countryName}
                   className="inline-block bg-white hover:bg-gray-50 text-blue-600 font-semibold px-8 py-3 rounded-lg border-2 border-blue-600 transition-colors"
                 >
                   Create Free Account

@@ -242,8 +242,8 @@ export default async function FieldOverviewPage({ params }: PageProps) {
               </p>
               <TrackedLink
                 href={demoRunUrl}
-                eventName="seo_field_to_demo_click"
-                eventData={{ field: fieldSlug, page_type: 'field_overview' }}
+                trackingType="demo"
+                trackingSource={`field_overview_${fieldSlug}`}
                 className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
               >
                 View Interactive Map →
@@ -291,8 +291,7 @@ export default async function FieldOverviewPage({ params }: PageProps) {
                   <TrackedLink
                     key={country.country}
                     href={`/research-jobs/${fieldSlug}/country/${countryToSlug(country.country)}`}
-                    eventName="seo_field_country_link_click"
-                    eventData={{ field: fieldSlug, country: country.country }}
+                    trackingType="none"
                     className="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
                   >
                     <div className="flex justify-between items-start">
@@ -356,16 +355,16 @@ export default async function FieldOverviewPage({ params }: PageProps) {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <TrackedLink
                   href={demoRunUrl}
-                  eventName="seo_field_to_demo_click"
-                  eventData={{ field: fieldSlug, page_type: 'field_overview', location: 'bottom_cta' }}
+                  trackingType="demo"
+                  trackingSource={`field_overview_${fieldSlug}_bottom`}
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
                 >
                   Explore Interactive Map
                 </TrackedLink>
                 <TrackedLink
                   href="/auth/register"
-                  eventName="seo_to_signup_start"
-                  eventData={{ source: 'field_overview', field: fieldSlug }}
+                  trackingType="signup"
+                  trackingSource={`field_overview_${fieldSlug}`}
                   className="inline-block bg-white hover:bg-gray-50 text-blue-600 font-semibold px-8 py-3 rounded-lg border-2 border-blue-600 transition-colors"
                 >
                   Create Free Account

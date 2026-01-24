@@ -371,8 +371,10 @@ export default async function FieldCityPage({ params }: PageProps) {
               </p>
               <TrackedLink
                 href={demoRunUrl}
-                eventName="seo_field_to_demo_click"
-                eventData={{ field: fieldSlug, country, city: cityName, page_type: 'field_city' }}
+                trackingType="demo"
+                trackingSource={`field_city_${fieldSlug}`}
+                country={country}
+                city={cityName}
                 className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
               >
                 View Interactive Map →
@@ -512,16 +514,20 @@ export default async function FieldCityPage({ params }: PageProps) {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <TrackedLink
                   href={demoRunUrl}
-                  eventName="seo_field_to_demo_click"
-                  eventData={{ field: fieldSlug, country, city: cityName, page_type: 'field_city', location: 'bottom_cta' }}
+                  trackingType="demo"
+                  trackingSource={`field_city_${fieldSlug}_bottom`}
+                  country={country}
+                  city={cityName}
                   className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
                 >
                   Explore Interactive Map
                 </TrackedLink>
                 <TrackedLink
                   href="/auth/register"
-                  eventName="seo_to_signup_start"
-                  eventData={{ source: 'field_city', field: fieldSlug, city: cityName }}
+                  trackingType="signup"
+                  trackingSource={`field_city_${fieldSlug}`}
+                  country={country}
+                  city={cityName}
                   className="inline-block bg-white hover:bg-gray-50 text-blue-600 font-semibold px-8 py-3 rounded-lg border-2 border-blue-600 transition-colors"
                 >
                   Create Free Account
