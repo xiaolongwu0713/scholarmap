@@ -300,8 +300,8 @@ export default async function FieldCityPage({ params }: PageProps) {
   return (
     <>
       <SEOPageTracker 
-        pageType="field-city"
-        geoData={{ field: fieldSlug, country, city: cityName }}
+        pageName={`field_city_${fieldSlug}`}
+        location={`${cityName}-${country}-${fieldSlug}`}
       />
       
       <StructuredData 

@@ -179,8 +179,8 @@ export default async function FieldOverviewPage({ params }: PageProps) {
   return (
     <>
       <SEOPageTracker 
-        pageType="field-overview"
-        geoData={{ field: fieldSlug }}
+        pageName={`field_overview_${fieldSlug}`}
+        location={fieldSlug}
       />
       
       <StructuredData 
