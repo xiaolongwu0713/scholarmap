@@ -51,26 +51,32 @@ class PostgresMapAggregator:
     
     async def get_world_map(
         self,
+        session: AsyncSession,
         run_id: str,
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
-        """Get world-level map data."""
+        """Get world-level map data.
+        
+        Args:
+            session: Database session to use for all queries
+            run_id: Run ID to get data for
+            min_confidence: Minimum confidence level
+        """
         import logging
         logger = logging.getLogger(__name__)
         
         confidence_levels = self._get_confidence_levels(min_confidence)
         
         logger.info(f"   Getting PMIDs for run {run_id}...")
-        async with db_manager.session() as session:
-            # Get PMIDs for this run
-            pmids = await self._get_run_pmids(session, run_id)
-            if not pmids:
-                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-                return []
-            logger.info(f"   Found {len(pmids)} PMIDs")
-            
-            # Aggregate by country
-            query = select(
+        # Get PMIDs for this run
+        pmids = await self._get_run_pmids(session, run_id)
+        if not pmids:
+            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
+            return []
+        logger.info(f"   Found {len(pmids)} PMIDs")
+        
+        # Aggregate by country
+        query = select(
                 Authorship.country,
                 func.count(
                     func.distinct(
@@ -96,84 +102,91 @@ class PostgresMapAggregator:
             ).order_by(
                 text('scholar_count DESC')
             )
+        
+        result = await session.execute(query)
+        rows = result.all()
+        
+        # Merge countries with same normalized name first
+        country_map: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            country = normalize_country(row.country)
+            if not country:
+                continue
             
-            result = await session.execute(query)
-            rows = result.all()
-            
-            # Merge countries with same normalized name first
-            country_map: dict[str, dict[str, Any]] = {}
-            for row in rows:
-                country = normalize_country(row.country)
-                if not country:
-                    continue
-                
-                if country in country_map:
-                    # Aggregate counts
-                    country_map[country]["scholar_count"] += row.scholar_count
-                    country_map[country]["paper_count"] += row.paper_count
-                    country_map[country]["institution_count"] += row.institution_count
-                else:
-                    country_map[country] = {
-                        "country": country,
-                        "scholar_count": row.scholar_count,
-                        "paper_count": row.paper_count,
-                        "institution_count": row.institution_count,
-                        "latitude": None,
-                        "longitude": None
-                    }
-            
-            # Batch fetch all coordinates from cache
-            from app.db.repository import GeocodingCacheRepository
-            from app.phase2.pg_geocoding import PostgresGeocoder
-            
-            country_keys = [PostgresGeocoder.make_location_key(country, None) for country in country_map.keys()]
-            
-            cached_coords: dict[str, tuple[float, float] | None] = {}
-            to_geocode: list[str] = []
-            
-            async with db_manager.session() as session:
-                cache_repo = GeocodingCacheRepository(session)
-                cached_items = await cache_repo.get_batch_cached(country_keys)
-                
-                for country, location_key in zip(country_map.keys(), country_keys):
-                    cached = cached_items.get(location_key)
-                    if cached and cached.latitude is not None and cached.longitude is not None:
-                        cached_coords[country] = (cached.latitude, cached.longitude)
-                    else:
-                        to_geocode.append(country)
-            
-            # Geocode only the missing ones (this will handle caching internally)
-            if to_geocode:
-                geocoder = self._get_geocoder()
-                import asyncio
-                # Note: get_coordinates handles caching, but for uncached items it will make API calls
-                # The rate limiting in _geocode_external will still apply, so we geocode sequentially
-                # to respect rate limits. For cached items, this is fast.
-                for country in to_geocode:
-                    coords = await geocoder.get_coordinates(country, None)
-                    cached_coords[country] = coords
-            
-            # Apply coordinates to country_map
-            for country in country_map:
-                coords = cached_coords.get(country)
-                if coords:
-                    country_map[country]["latitude"] = coords[0]
-                    country_map[country]["longitude"] = coords[1]
-            
-            # Convert to list and sort by scholar_count
-            items = list(country_map.values())
-            items.sort(key=lambda x: x["scholar_count"], reverse=True)
-            
-            logger.info(f"   ✅ World map aggregation complete: {len(items)} countries")
-            return items
+            if country in country_map:
+                # Aggregate counts
+                country_map[country]["scholar_count"] += row.scholar_count
+                country_map[country]["paper_count"] += row.paper_count
+                country_map[country]["institution_count"] += row.institution_count
+            else:
+                country_map[country] = {
+                    "country": country,
+                    "scholar_count": row.scholar_count,
+                    "paper_count": row.paper_count,
+                    "institution_count": row.institution_count,
+                    "latitude": None,
+                    "longitude": None
+                }
+        
+        # Batch fetch all coordinates from cache (reuse same session)
+        from app.db.repository import GeocodingCacheRepository
+        from app.phase2.pg_geocoding import PostgresGeocoder
+        
+        country_keys = [PostgresGeocoder.make_location_key(country, None) for country in country_map.keys()]
+        
+        cached_coords: dict[str, tuple[float, float] | None] = {}
+        to_geocode: list[str] = []
+        
+        cache_repo = GeocodingCacheRepository(session)
+        cached_items = await cache_repo.get_batch_cached(country_keys)
+        
+        for country, location_key in zip(country_map.keys(), country_keys):
+            cached = cached_items.get(location_key)
+            if cached and cached.latitude is not None and cached.longitude is not None:
+                cached_coords[country] = (cached.latitude, cached.longitude)
+            else:
+                to_geocode.append(country)
+        
+        # Geocode only the missing ones (this will handle caching internally)
+        if to_geocode:
+            geocoder = self._get_geocoder()
+            import asyncio
+            # Note: get_coordinates handles caching, but for uncached items it will make API calls
+            # The rate limiting in _geocode_external will still apply, so we geocode sequentially
+            # to respect rate limits. For cached items, this is fast.
+            for country in to_geocode:
+                coords = await geocoder.get_coordinates(country, None)
+                cached_coords[country] = coords
+        
+        # Apply coordinates to country_map
+        for country in country_map:
+            coords = cached_coords.get(country)
+            if coords:
+                country_map[country]["latitude"] = coords[0]
+                country_map[country]["longitude"] = coords[1]
+        
+        # Convert to list and sort by scholar_count
+        items = list(country_map.values())
+        items.sort(key=lambda x: x["scholar_count"], reverse=True)
+        
+        logger.info(f"   ✅ World map aggregation complete: {len(items)} countries")
+        return items
     
     async def get_country_map(
         self,
+        session: AsyncSession,
         run_id: str,
         country: str,
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
-        """Get country-level map data (cities)."""
+        """Get country-level map data (cities).
+        
+        Args:
+            session: Database session to use for all queries
+            run_id: Run ID to get data for
+            country: Country name
+            min_confidence: Minimum confidence level
+        """
         import logging
         logger = logging.getLogger(__name__)
         
@@ -181,132 +194,138 @@ class PostgresMapAggregator:
         country_normalized = normalize_country(country)
         
         logger.info(f"   Getting country map for {country} (normalized: {country_normalized})...")
-        async with db_manager.session() as session:
-            pmids = await self._get_run_pmids(session, run_id)
-            if not pmids:
-                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-                return []
-            logger.info(f"   Found {len(pmids)} PMIDs")
-            
-            query = select(
-                Authorship.city,
-                func.count(
-                    func.distinct(
-                        func.concat(
-                            Authorship.author_name_raw,
-                            '|',
-                            func.coalesce(Authorship.institution, ''),
-                            '|',
-                            Authorship.country
-                        )
+        pmids = await self._get_run_pmids(session, run_id)
+        if not pmids:
+            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
+            return []
+        logger.info(f"   Found {len(pmids)} PMIDs")
+        
+        query = select(
+            Authorship.city,
+            func.count(
+                func.distinct(
+                    func.concat(
+                        Authorship.author_name_raw,
+                        '|',
+                        func.coalesce(Authorship.institution, ''),
+                        '|',
+                        Authorship.country
                     )
-                ).label('scholar_count'),
-                func.count(func.distinct(Authorship.institution)).label('institution_count'),
-                func.min(Authorship.affiliation_raw_joined).label('sample_affiliation')
-            ).where(
-                and_(
-                    Authorship.country == country_normalized,
-                    Authorship.city.isnot(None),
-                    Authorship.pmid.in_(pmids),
-                    Authorship.affiliation_confidence.in_(confidence_levels)
                 )
-            ).group_by(
-                Authorship.city
-            ).order_by(
-                text('scholar_count DESC')
+            ).label('scholar_count'),
+            func.count(func.distinct(Authorship.institution)).label('institution_count'),
+            func.min(Authorship.affiliation_raw_joined).label('sample_affiliation')
+        ).where(
+            and_(
+                Authorship.country == country_normalized,
+                Authorship.city.isnot(None),
+                Authorship.pmid.in_(pmids),
+                Authorship.affiliation_confidence.in_(confidence_levels)
             )
+        ).group_by(
+            Authorship.city
+        ).order_by(
+            text('scholar_count DESC')
+        )
+        
+        result = await session.execute(query)
+        rows = result.all()
+        
+        # Build city map with data (without coordinates yet)
+        city_map: dict[str, dict[str, Any]] = {}
+        for row in rows:
+            city_map[row.city] = {
+                "city": row.city,
+                "scholar_count": row.scholar_count,
+                "institution_count": row.institution_count,
+                "latitude": None,
+                "longitude": None,
+                "sample_affiliation": row.sample_affiliation
+            }
+        
+        # Batch fetch all coordinates from cache (reuse same session)
+        from app.db.repository import GeocodingCacheRepository
+        from app.phase2.pg_geocoding import PostgresGeocoder
+        
+        city_keys = [PostgresGeocoder.make_location_key(country_normalized, city) for city in city_map.keys()]
+        
+        cached_coords: dict[str, tuple[float, float] | None] = {}
+        to_geocode: list[str] = []
+        
+        cache_repo = GeocodingCacheRepository(session)
+        cached_items = await cache_repo.get_batch_cached(city_keys)
+        
+        for city, location_key in zip(city_map.keys(), city_keys):
+            cached = cached_items.get(location_key)
+            if cached and cached.latitude is not None and cached.longitude is not None:
+                cached_coords[city] = (cached.latitude, cached.longitude)
+            else:
+                to_geocode.append(city)
+        
+        # Geocode only the missing ones and batch cache the results (reuse same session)
+        if to_geocode:
+            geocoder = self._get_geocoder()
+            new_cache_entries: dict[str, tuple[float | None, float | None]] = {}
+            affiliations_map: dict[str, str | None] = {}
             
-            result = await session.execute(query)
-            rows = result.all()
+            # Geocode sequentially to respect rate limits
+            for city in to_geocode:
+                # Get sample affiliation for this city for better error logging
+                sample_affiliation = city_map.get(city, {}).get("sample_affiliation")
+                coords = await geocoder._geocode_external(
+                    country_normalized, 
+                    city,
+                    original_affiliation=sample_affiliation
+                )
+                cached_coords[city] = coords
+                location_key = PostgresGeocoder.make_location_key(country_normalized, city)
+                new_cache_entries[location_key] = (coords[0] if coords else None, coords[1] if coords else None)
+                affiliations_map[location_key] = sample_affiliation
             
-            # Build city map with data (without coordinates yet)
-            city_map: dict[str, dict[str, Any]] = {}
-            for row in rows:
-                city_map[row.city] = {
-                    "city": row.city,
-                    "scholar_count": row.scholar_count,
-                    "institution_count": row.institution_count,
-                    "latitude": None,
-                    "longitude": None,
-                    "sample_affiliation": row.sample_affiliation
-                }
-            
-            # Batch fetch all coordinates from cache
-            from app.db.repository import GeocodingCacheRepository
-            from app.phase2.pg_geocoding import PostgresGeocoder
-            
-            city_keys = [PostgresGeocoder.make_location_key(country_normalized, city) for city in city_map.keys()]
-            
-            cached_coords: dict[str, tuple[float, float] | None] = {}
-            to_geocode: list[str] = []
-            
-            async with db_manager.session() as session:
+            # Batch save all new cache entries (reuse same session)
+            if new_cache_entries:
+                from config import settings
                 cache_repo = GeocodingCacheRepository(session)
-                cached_items = await cache_repo.get_batch_cached(city_keys)
-                
-                for city, location_key in zip(city_map.keys(), city_keys):
-                    cached = cached_items.get(location_key)
-                    if cached and cached.latitude is not None and cached.longitude is not None:
-                        cached_coords[city] = (cached.latitude, cached.longitude)
-                    else:
-                        to_geocode.append(city)
-            
-            # Geocode only the missing ones and batch cache the results
-            if to_geocode:
-                geocoder = self._get_geocoder()
-                new_cache_entries: dict[str, tuple[float | None, float | None]] = {}
-                affiliations_map: dict[str, str | None] = {}
-                
-                # Geocode sequentially to respect rate limits
-                for city in to_geocode:
-                    # Get sample affiliation for this city for better error logging
-                    sample_affiliation = city_map.get(city, {}).get("sample_affiliation")
-                    coords = await geocoder._geocode_external(
-                        country_normalized, 
-                        city,
-                        original_affiliation=sample_affiliation
-                    )
-                    cached_coords[city] = coords
-                    location_key = PostgresGeocoder.make_location_key(country_normalized, city)
-                    new_cache_entries[location_key] = (coords[0] if coords else None, coords[1] if coords else None)
-                    affiliations_map[location_key] = sample_affiliation
-                
-                # Batch save all new cache entries
-                if new_cache_entries:
-                    from config import settings
-                    async with db_manager.session() as session:
-                        cache_repo = GeocodingCacheRepository(session)
-                        await cache_repo.cache_locations_batch(
-                            new_cache_entries,
-                            affiliations=affiliations_map,
-                            max_affiliations=settings.geocoding_cache_max_affiliations
-                        )
-                        await session.commit()
-            
-            # Apply coordinates to city_map
-            for city in city_map:
-                coords = cached_coords.get(city)
-                if coords:
-                    city_map[city]["latitude"] = coords[0]
-                    city_map[city]["longitude"] = coords[1]
-                # Remove sample_affiliation from output (it was only for logging)
-                city_map[city].pop("sample_affiliation", None)
-            
-            # Convert to list and sort by scholar_count
-            items = list(city_map.values())
-            items.sort(key=lambda x: x["scholar_count"], reverse=True)
-            
-            logger.info(f"   ✅ Country map aggregation complete: {len(items)} cities in {country_normalized}")
-            return items
+                await cache_repo.cache_locations_batch(
+                    new_cache_entries,
+                    affiliations=affiliations_map,
+                    max_affiliations=settings.geocoding_cache_max_affiliations
+                )
+                await session.commit()
+        
+        # Apply coordinates to city_map
+        for city in city_map:
+            coords = cached_coords.get(city)
+            if coords:
+                city_map[city]["latitude"] = coords[0]
+                city_map[city]["longitude"] = coords[1]
+            # Remove sample_affiliation from output (it was only for logging)
+            city_map[city].pop("sample_affiliation", None)
+        
+        # Convert to list and sort by scholar_count
+        items = list(city_map.values())
+        items.sort(key=lambda x: x["scholar_count"], reverse=True)
+        
+        logger.info(f"   ✅ Country map aggregation complete: {len(items)} cities in {country_normalized}")
+        return items
     
     async def get_city_map(
         self,
+        session: AsyncSession,
         run_id: str,
         country: str,
         city: str,
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
-        """Get city-level map data (institutions)."""
+        """Get city-level map data (institutions).
+        
+        Args:
+            session: Database session to use for all queries
+            run_id: Run ID to get data for
+            country: Country name
+            city: City name
+            min_confidence: Minimum confidence level
+        """
         import logging
         logger = logging.getLogger(__name__)
         
@@ -314,15 +333,14 @@ class PostgresMapAggregator:
         country_normalized = normalize_country(country)
         
         logger.info(f"   Getting city map for {city}, {country}...")
-        async with db_manager.session() as session:
-            pmids = await self._get_run_pmids(session, run_id)
-            if not pmids:
-                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-                return []
-            logger.info(f"   Found {len(pmids)} PMIDs")
-            
-            query = select(
-                Authorship.institution,
+        pmids = await self._get_run_pmids(session, run_id)
+        if not pmids:
+            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
+            return []
+        logger.info(f"   Found {len(pmids)} PMIDs")
+        
+        query = select(
+            Authorship.institution,
                 func.count(
                     func.distinct(
                         func.concat(
@@ -347,32 +365,42 @@ class PostgresMapAggregator:
             ).order_by(
                 text('scholar_count DESC')
             )
-            
-            result = await session.execute(query)
-            rows = result.all()
-            
-            items = [
-                {
-                    "country": country_normalized,
-                    "city": city,
-                    "institution": row.institution,
-                    "scholar_count": row.scholar_count
-                }
-                for row in rows
-            ]
-            
-            logger.info(f"   ✅ City map aggregation complete: {len(items)} institutions in {city}, {country_normalized}")
-            return items
+        
+        result = await session.execute(query)
+        rows = result.all()
+        
+        items = [
+            {
+                "country": country_normalized,
+                "city": city,
+                "institution": row.institution,
+                "scholar_count": row.scholar_count
+            }
+            for row in rows
+        ]
+        
+        logger.info(f"   ✅ City map aggregation complete: {len(items)} institutions in {city}, {country_normalized}")
+        return items
     
     async def get_institution_scholars(
         self,
+        session: AsyncSession,
         run_id: str,
         country: str,
         city: str,
         institution: str,
         min_confidence: str = "low"
     ) -> list[dict[str, Any]]:
-        """Get scholars at a specific institution."""
+        """Get scholars at a specific institution.
+        
+        Args:
+            session: Database session to use for all queries
+            run_id: Run ID to get data for
+            country: Country name
+            city: City name
+            institution: Institution name
+            min_confidence: Minimum confidence level
+        """
         import logging
         logger = logging.getLogger(__name__)
         
@@ -380,15 +408,14 @@ class PostgresMapAggregator:
         country_normalized = normalize_country(country)
         
         logger.info(f"   Getting scholars for {institution}, {city}, {country}...")
-        async with db_manager.session() as session:
-            pmids = await self._get_run_pmids(session, run_id)
-            if not pmids:
-                logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-                return []
-            logger.info(f"   Found {len(pmids)} PMIDs")
-            
-            # Get distinct authors
-            author_query = select(
+        pmids = await self._get_run_pmids(session, run_id)
+        if not pmids:
+            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
+            return []
+        logger.info(f"   Found {len(pmids)} PMIDs")
+        
+        # Get distinct authors
+        author_query = select(
                 Authorship.author_name_raw,
                 func.count(func.distinct(Authorship.pmid)).label('paper_count')
             ).where(
@@ -404,18 +431,18 @@ class PostgresMapAggregator:
             ).order_by(
                 text('paper_count DESC')
             )
+        
+        result = await session.execute(author_query)
+        author_rows = result.all()
+        
+        # For each author, get their papers with details
+        from app.db.models import Paper
+        scholars_data = []
+        for author_row in author_rows:
+            author_name = author_row.author_name_raw
             
-            result = await session.execute(author_query)
-            author_rows = result.all()
-            
-            # For each author, get their papers with details
-            from app.db.models import Paper
-            scholars_data = []
-            for author_row in author_rows:
-                author_name = author_row.author_name_raw
-                
-                # Get PMIDs for this author at this institution
-                pmids_query = select(Authorship.pmid).where(
+            # Get PMIDs for this author at this institution
+            pmids_query = select(Authorship.pmid).where(
                     and_(
                         Authorship.author_name_raw == author_name,
                         Authorship.country == country_normalized,
@@ -425,31 +452,31 @@ class PostgresMapAggregator:
                         Authorship.affiliation_confidence.in_(confidence_levels)
                     )
                 ).distinct()
-                
-                pmids_result = await session.execute(pmids_query)
-                author_pmids = [row[0] for row in pmids_result.all()]
-                
-                # Get paper details
-                papers_query = select(Paper).where(Paper.pmid.in_(author_pmids))
-                papers_result = await session.execute(papers_query)
-                papers = papers_result.scalars().all()
-                
-                scholars_data.append({
-                    "scholar_name": author_name,
-                    "paper_count": author_row.paper_count,
-                    "papers": [
-                        {
-                            "pmid": paper.pmid,
-                            "title": paper.title,
-                            "year": paper.year,
-                            "doi": paper.doi
-                        }
-                        for paper in papers
-                    ]
-                })
             
-            logger.info(f"   ✅ Institution scholars aggregation complete: {len(scholars_data)} scholars at {institution}")
-            return scholars_data
+            pmids_result = await session.execute(pmids_query)
+            author_pmids = [row[0] for row in pmids_result.all()]
+            
+            # Get paper details
+            papers_query = select(Paper).where(Paper.pmid.in_(author_pmids))
+            papers_result = await session.execute(papers_query)
+            papers = papers_result.scalars().all()
+            
+            scholars_data.append({
+                "scholar_name": author_name,
+                "paper_count": author_row.paper_count,
+                "papers": [
+                    {
+                        "pmid": paper.pmid,
+                        "title": paper.title,
+                        "year": paper.year,
+                        "doi": paper.doi
+                    }
+                    for paper in papers
+                ]
+            })
+        
+        logger.info(f"   ✅ Institution scholars aggregation complete: {len(scholars_data)} scholars at {institution}")
+        return scholars_data
     
     async def _get_run_pmids(
         self,

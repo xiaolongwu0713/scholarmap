@@ -1258,8 +1258,10 @@ async def phase2_map_world(
         logger.info(f"   Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        aggregator = PostgresMapAggregator()
-        data = await aggregator.get_world_map(run_id, min_confidence)
+        # Create single session for entire request
+        async with db_manager.session() as session:
+            aggregator = PostgresMapAggregator()
+            data = await aggregator.get_world_map(session, run_id, min_confidence)
         
         logger.info(f"✅ MAP OPERATION COMPLETED - World Map")
         logger.info(f"   Countries returned: {len(data)}")
@@ -1313,8 +1315,10 @@ async def phase2_map_country(request: Request,
         logger.info(f"   Country: {country}, Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        aggregator = PostgresMapAggregator()
-        data = await aggregator.get_country_map(run_id, country, min_confidence)
+        # Create single session for entire request
+        async with db_manager.session() as session:
+            aggregator = PostgresMapAggregator()
+            data = await aggregator.get_country_map(session, run_id, country, min_confidence)
         
         logger.info(f"✅ MAP OPERATION COMPLETED - Country Map: {country}")
         logger.info(f"   Cities returned: {len(data)}")
@@ -1367,8 +1371,10 @@ async def phase2_map_city(request: Request,
         logger.info(f"   Country: {country}, City: {city}, Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        aggregator = PostgresMapAggregator()
-        data = await aggregator.get_city_map(run_id, country, city, min_confidence)
+        # Create single session for entire request
+        async with db_manager.session() as session:
+            aggregator = PostgresMapAggregator()
+            data = await aggregator.get_city_map(session, run_id, country, city, min_confidence)
         
         logger.info(f"✅ MAP OPERATION COMPLETED - City Map: {city}, {country}")
         logger.info(f"   Institutions returned: {len(data)}")
@@ -1427,14 +1433,17 @@ async def phase2_map_institution(request: Request,
         logger.info(f"   Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        aggregator = PostgresMapAggregator()
-        data = await aggregator.get_institution_scholars(
-            run_id=run_id,
-            country=country,
-            city=city,
-            institution=institution,
-            min_confidence=min_confidence
-        )
+        # Create single session for entire request
+        async with db_manager.session() as session:
+            aggregator = PostgresMapAggregator()
+            data = await aggregator.get_institution_scholars(
+                session=session,
+                run_id=run_id,
+                country=country,
+                city=city,
+                institution=institution,
+                min_confidence=min_confidence
+            )
         
         logger.info(f"✅ MAP OPERATION COMPLETED - Institution Scholars: {institution}")
         logger.info(f"   Scholars returned: {len(data)}")
