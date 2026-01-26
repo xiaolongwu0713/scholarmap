@@ -67,6 +67,17 @@ CAN_PROV_NAME_TO_ABBR = {
 
 CAN_PROV_NAMES = set(CAN_PROV_NAME_TO_ABBR.keys())
 
+# China provinces and autonomous regions
+CHINA_PROVINCES = {
+    "Anhui", "Beijing", "Chongqing", "Fujian", "Gansu", "Guangdong", "Guangxi",
+    "Guizhou", "Hainan", "Hebei", "Heilongjiang", "Henan", "Hubei", "Hunan",
+    "Inner Mongolia", "Jiangsu", "Jiangxi", "Jilin", "Liaoning", "Ningxia",
+    "Qinghai", "Shaanxi", "Shandong", "Shanghai", "Shanxi", "Sichuan",
+    "Tianjin", "Tibet", "Xinjiang", "Yunnan", "Zhejiang",
+    # Include common variations
+    "Hong Kong", "Macau", "Macao"
+}
+
 DEPT_PREFIXES = [
     "department", "division", "faculty", "school", "centre", "center", "laboratory", "lab",
     "unit", "program", "programme", "institute"
@@ -203,6 +214,8 @@ def _is_region_token(tok: str) -> bool:
         return True
     if t in CAN_PROV_NAMES:
         return True
+    if t in CHINA_PROVINCES:
+        return True
     if re.search(r"\b(state|province|prefecture|county|region)\b", t, re.I):
         return True
     return False
@@ -218,6 +231,8 @@ def _normalize_region(tok: str) -> str:
         return t.upper()
     if t in CAN_PROV_NAME_TO_ABBR:
         return CAN_PROV_NAME_TO_ABBR[t]
+    if t in CHINA_PROVINCES:
+        return t  # Return as-is for Chinese provinces
     return t
 
 
@@ -243,6 +258,11 @@ def _infer_country(country, region_norm, region_raw, tokens):
         return "Canada", "CA"
     if region_raw and _norm_token(region_raw) in CAN_PROV_NAMES:
         return "Canada", "CA"
+    # Infer China from province names
+    if region_norm and region_norm in CHINA_PROVINCES:
+        return "China", "CN"
+    if region_raw and _norm_token(region_raw) in CHINA_PROVINCES:
+        return "China", "CN"
     joined = " ".join(tokens).lower()
     for key, val in COUNTRY_SYNONYMS.items():
         if key in joined:
