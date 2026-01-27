@@ -17,6 +17,8 @@ import { StructuredData } from '@/components/StructuredData';
 import { CityInstitutionsGrid } from '@/components/CityInstitutionsGrid';
 import { SEOPageTracker } from '@/components/SEOPageTracker';
 import { TrackedLink } from '@/components/TrackedLink';
+import { AIContentSummary } from '@/components/AIContentSummary';
+import { DataSourceCitation } from '@/components/DataSourceCitation';
 
 // Enable ISR with 24 hour revalidation
 export const revalidate = 86400;
@@ -101,11 +103,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
         const description = generateCityMetaDescription(matchingCity.city, country.country, stats);
         const keywords = generateCityKeywords(matchingCity.city, country.country);
+        
+        // Get top 3 institutions for AI summary
+        const topInstitutions = institutions.slice(0, 3).map((i: any) => i.institution).join(', ');
 
         return {
           title: `${matchingCity.city} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | ScholarMap`,
           description,
           keywords,
+          
+          // GEO: AI-friendly metadata
+          other: {
+            'ai-summary': `${matchingCity.city}, ${country.country} biomedical research: ${stats.scholar_count.toLocaleString()} researchers across ${stats.institution_count} institutions. Top institutions: ${topInstitutions}. Covers medicine, biology, neuroscience, health sciences. Data from PubMed (2000-2026). Visit ScholarMap to explore researchers by institution.`,
+            'ai-keywords': 'biomedical research, life sciences, medical research, research institutions, postdoc positions',
+            'ai-content-type': 'research-data',
+            'ai-data-source': 'PubMed scientific publications',
+            'ai-last-updated': new Date().toISOString().split('T')[0],
+            'ai-geographic-scope': 'city',
+            'ai-citable': 'true',
+            'ai-citation': `ScholarMap (2026). Biomedical Research in ${matchingCity.city}, ${country.country}. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs/city/${citySlug}`,
+          },
+          
           openGraph: {
             title: `Biomedical Research in ${matchingCity.city}, ${country.country}`,
             description: `${stats.scholar_count.toLocaleString()} life sciences researchers across ${stats.institution_count} institutions`,
@@ -609,6 +627,26 @@ export default async function CityPage({ params }: PageProps) {
               </TrackedLink>
             </div>
           </div>
+          
+          {/* GEO: AI Content Summary (hidden, for AI crawlers only) */}
+          <AIContentSummary 
+            pageType="city"
+            data={{
+              title: `Biomedical Research Opportunities in ${cityData.city}, ${cityData.country}`,
+              cityName: cityData.city,
+              countryName: cityData.country,
+              totalResearchers: cityData.scholar_count,
+              totalInstitutions: cityData.institution_count,
+              topLocations: cityData.institutions.slice(0, 10).map((i: any) => ({ name: i.institution, count: i.scholar_count })),
+              dataSource: 'PubMed scientific publications',
+              lastUpdated: '2026-01-27',
+              pageUrl: `https://scholarmap-frontend.onrender.com/research-jobs/city/${citySlug}`,
+              keywords: ['biomedical research', 'life sciences', 'medical research', 'research institutions'],
+            }}
+          />
+          
+          {/* GEO: Data Source Citation (visible, at page bottom) */}
+          <DataSourceCitation />
         </div>
       </div>
 

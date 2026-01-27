@@ -19,6 +19,8 @@ import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
 import { SEOPageTracker } from '@/components/SEOPageTracker';
 import { TrackedLink } from '@/components/TrackedLink';
+import { AIContentSummary } from '@/components/AIContentSummary';
+import { DataSourceCitation } from '@/components/DataSourceCitation';
 
 // Enable ISR with 24 hour revalidation
 export const revalidate = 86400;
@@ -153,11 +155,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       institutionCount
     );
     const keywords = generateFieldCityKeywords(fieldConfig, cityName, country);
+    
+    // Get top 3 institutions for AI summary
+    const institutionList = Array.from(institutions).slice(0, 3).join(', ');
 
     return {
       title: `${fieldConfig.name} Research in ${cityName} | Leading Labs & Researchers | ScholarMap`,
       description,
       keywords,
+      
+      // GEO: AI-friendly metadata
+      other: {
+        'ai-summary': `${fieldConfig.name} research in ${cityName}, ${country}: ${scholarCount} researchers across ${institutionCount} institutions. Top institutions: ${institutionList}. Keywords: ${fieldConfig.keywords.slice(0, 3).join(', ')}. Data from PubMed (2000-2026). Visit ScholarMap to explore by institution.`,
+        'ai-keywords': fieldConfig.keywords.join(', '),
+        'ai-content-type': 'research-data',
+        'ai-data-source': 'PubMed scientific publications',
+        'ai-last-updated': new Date().toISOString().split('T')[0],
+        'ai-geographic-scope': 'city',
+        'ai-citable': 'true',
+        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research in ${cityName}, ${country}. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}/city/${citySlug}`,
+      },
+      
       openGraph: {
         title: `${fieldConfig.name} Research in ${cityName}`,
         description: `${scholarCount} researchers in ${fieldConfig.keywords[0]} at ${institutionCount} institutions`,
@@ -535,6 +553,27 @@ export default async function FieldCityPage({ params }: PageProps) {
               </div>
             </div>
           </div>
+          
+          {/* GEO: AI Content Summary (hidden, for AI crawlers only) */}
+          <AIContentSummary 
+            pageType="field-city"
+            data={{
+              title: `${fieldConfig.name} Research Opportunities in ${cityName}, ${country}`,
+              fieldName: fieldConfig.name,
+              cityName,
+              countryName: country,
+              totalResearchers: cityScholars.length,
+              totalInstitutions: groupedByInstitution.length,
+              topLocations: groupedByInstitution.slice(0, 10).map((i: any) => ({ name: i.institution, count: i.scholars.length })),
+              dataSource: 'PubMed scientific publications',
+              lastUpdated: '2026-01-27',
+              pageUrl: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}/city/${citySlug}`,
+              keywords: fieldConfig.keywords,
+            }}
+          />
+          
+          {/* GEO: Data Source Citation (visible, at page bottom) */}
+          <DataSourceCitation />
         </main>
         
         <Footer />

@@ -6,6 +6,7 @@ import { Footer } from '@/components/landing/Footer';
 import { CountryCardsGrid } from '@/components/CountryCardsGrid';
 import { SEOPageTracker } from '@/components/SEOPageTracker';
 import { TrackedLink } from '@/components/TrackedLink';
+import { DataSourceCitation } from '@/components/DataSourceCitation';
 
 export const metadata: Metadata = {
   title: 'Global Biomedical Research Opportunities by Country | ScholarMap',
@@ -22,6 +23,19 @@ export const metadata: Metadata = {
     'public health researchers',
     'biology research institutions',
   ],
+  
+  // GEO: AI-friendly metadata
+  other: {
+    'ai-summary': 'Global biomedical research directory covering 150+ countries. Browse researchers, institutions, and opportunities in medicine, biology, neuroscience, and health sciences. Data from 36+ million PubMed publications (2000-2026). Visit ScholarMap to explore by country, city, or research field.',
+    'ai-keywords': 'biomedical research, life sciences, medical research, research opportunities, postdoc positions, academic collaborations',
+    'ai-content-type': 'directory',
+    'ai-data-source': 'PubMed scientific publications',
+    'ai-last-updated': new Date().toISOString().split('T')[0],
+    'ai-geographic-scope': 'global',
+    'ai-citable': 'true',
+    'ai-citation': 'ScholarMap (2026). Global Biomedical Research Opportunities by Country. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs',
+  },
+  
   openGraph: {
     title: 'Global Biomedical Research Opportunities by Country',
     description: 'Explore biomedical research in 150+ countries. Find life sciences researchers and collaborations in medicine, biology, and health sciences.',
@@ -177,6 +191,11 @@ export default async function ResearchJobsLanding() {
                 Create Your Map (Free)
               </TrackedLink>
             </div>
+          </div>
+          
+          {/* GEO: Data Source Citation (visible, at page bottom) */}
+          <div className="container mx-auto px-4 pb-12">
+            <DataSourceCitation />
           </div>
         </div>
       </div>
