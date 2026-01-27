@@ -20,3 +20,118 @@
 2026-01-26 16:58:21 - app.phase2.pg_geocoding - INFO - Geocoded 'San Francisco, South Korea' -> (8.9777634, -79.5158827)
 2026-01-26 16:58:15 - app.phase2.pg_geocoding - INFO - Geocoded 'Luohe, China' -> (33.571189, 114.0289356)
 2026-01-26 16:58:01 - app.phase2.pg_geocoding - INFO - Geocoded 'Seattle, Taiwan' -> (25.1841598, 121.44694)
+2026-01-27 11:29:52 - root - INFO - ================================================================================
+2026-01-27 11:29:52 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 11:29:52 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-27 11:29:52 - root - INFO - ================================================================================
+2026-01-27 11:29:55 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 11:29:55 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 11:31:51 - app.main - INFO - 👥 ADMIN: Fetching online user count
+2026-01-27 11:31:51 - app.main - INFO - ✅ ADMIN: Online users: 1
+2026-01-27 11:32:29 - app.main - INFO - ================================================================================
+2026-01-27 11:32:29 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-27 11:32:29 - app.main - INFO -    Min confidence: low
+2026-01-27 11:32:29 - app.main - INFO - ================================================================================
+2026-01-27 11:32:29 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 16d4c49fc4f6...
+2026-01-27 11:32:29 - app.main - INFO - ================================================================================
+2026-01-27 11:32:29 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-27 11:32:29 - app.main - INFO -    Min confidence: low
+2026-01-27 11:32:29 - app.main - INFO - ================================================================================
+2026-01-27 11:32:29 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 16d4c49fc4f6...
+2026-01-27 11:32:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 11:32:29 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 11:32:29 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 72 countries
+2026-01-27 11:32:29 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 11:32:29 - app.main - INFO -    Countries returned: 72
+2026-01-27 11:32:29 - app.main - INFO - ================================================================================
+2026-01-27 11:32:29 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 72 countries
+2026-01-27 11:32:29 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 11:32:29 - app.main - INFO -    Countries returned: 72
+2026-01-27 11:32:29 - app.main - INFO - ================================================================================
+2026-01-27 11:32:36 - app.main - INFO - ================================================================================
+2026-01-27 11:32:36 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-27 11:32:36 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-27 11:32:36 - app.main - INFO - ================================================================================
+2026-01-27 11:32:36 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-27 11:32:37 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 11:32:37 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 84 cities in China
+2026-01-27 11:32:37 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-27 11:32:37 - app.main - INFO -    Cities returned: 84
+2026-01-27 11:32:37 - app.main - INFO - ================================================================================
+2026-01-27 11:32:54 - app.main - INFO - ================================================================================
+2026-01-27 11:32:54 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-27 11:32:54 - app.main - INFO -    Country: China, City: Beijing, Min confidence: low
+2026-01-27 11:32:54 - app.main - INFO - ================================================================================
+2026-01-27 11:32:54 - app.phase2.pg_aggregations - INFO -    Getting city map for Beijing, China...
+2026-01-27 11:32:54 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 11:32:54 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 19 institutions in Beijing, China
+2026-01-27 11:32:54 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Beijing, China
+2026-01-27 11:32:54 - app.main - INFO -    Institutions returned: 19
+2026-01-27 11:32:54 - app.main - INFO - ================================================================================
+2026-01-27 11:33:13 - app.main - INFO - ================================================================================
+2026-01-27 11:33:13 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-27 11:33:13 - app.main - INFO -    Country: China, City: Baltimore, Min confidence: low
+2026-01-27 11:33:13 - app.main - INFO - ================================================================================
+2026-01-27 11:33:13 - app.phase2.pg_aggregations - INFO -    Getting city map for Baltimore, China...
+2026-01-27 11:33:13 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 11:33:13 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 1 institutions in Baltimore, China
+2026-01-27 11:33:13 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Baltimore, China
+2026-01-27 11:33:13 - app.main - INFO -    Institutions returned: 1
+2026-01-27 11:33:13 - app.main - INFO - ================================================================================
+2026-01-27 11:33:22 - app.main - INFO - ================================================================================
+2026-01-27 11:33:22 - app.main - INFO - 🗺️  MAP OPERATION - Institution Scholars - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-27 11:33:22 - app.main - INFO -    Institution: Complete Omics Inc, Country: China, City: Baltimore
+2026-01-27 11:33:22 - app.main - INFO -    Min confidence: low
+2026-01-27 11:33:22 - app.main - INFO - ================================================================================
+2026-01-27 11:33:22 - app.phase2.pg_aggregations - INFO -    Getting scholars for Complete Omics Inc, Baltimore, China...
+2026-01-27 11:33:22 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 11:33:22 - app.phase2.pg_aggregations - INFO -    ✅ Institution scholars aggregation complete: 1 scholars at Complete Omics Inc
+2026-01-27 11:33:22 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Institution Scholars: Complete Omics Inc
+2026-01-27 11:33:22 - app.main - INFO -    Scholars returned: 1
+2026-01-27 11:33:22 - app.main - INFO - ================================================================================
+2026-01-27 11:34:04 - app.main - INFO - ================================================================================
+2026-01-27 11:34:04 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 16d4c49fc4f6
+2026-01-27 11:34:04 - app.main - INFO -    Min confidence: low
+2026-01-27 11:34:04 - app.main - INFO - ================================================================================
+2026-01-27 11:34:04 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 16d4c49fc4f6...
+2026-01-27 11:34:04 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 11:34:04 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 72 countries
+2026-01-27 11:34:04 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 11:34:04 - app.main - INFO -    Countries returned: 72
+2026-01-27 11:34:04 - app.main - INFO - ================================================================================
+2026-01-27 11:42:09 - root - INFO - ================================================================================
+2026-01-27 11:42:09 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 11:42:09 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-27 11:42:09 - root - INFO - ================================================================================
+2026-01-27 11:42:12 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 11:42:12 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 11:46:08 - root - INFO - ================================================================================
+2026-01-27 11:46:08 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 11:46:08 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-27 11:46:08 - root - INFO - ================================================================================
+2026-01-27 11:46:10 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 11:46:10 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 11:49:51 - root - INFO - ================================================================================
+2026-01-27 11:49:51 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 11:49:51 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-27 11:49:51 - root - INFO - ================================================================================
+2026-01-27 11:49:54 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 11:49:54 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 11:50:29 - root - INFO - ================================================================================
+2026-01-27 11:50:29 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 11:50:29 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-27 11:50:29 - root - INFO - ================================================================================
+2026-01-27 11:50:31 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 11:50:31 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 11:53:37 - root - INFO - ================================================================================
+2026-01-27 11:53:37 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 11:53:37 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-27 11:53:37 - root - INFO - ================================================================================
+2026-01-27 11:53:39 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 11:53:39 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 11:58:22 - root - INFO - ================================================================================
+2026-01-27 11:58:22 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 11:58:22 - root - INFO - Log file: /Users/xiaowu/local_code/scholarmap/backend/log.txt
+2026-01-27 11:58:22 - root - INFO - ================================================================================
+2026-01-27 11:58:23 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 11:58:23 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)

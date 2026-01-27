@@ -84,11 +84,10 @@ class PostgresGeocoder:
         city: str | None = None,
         original_affiliation: str | None = None
     ) -> Tuple[float, float] | None:
-        """Geocode location using external API (Nominatim)."""
+        """Geocode location using external API (Nominatim) with strict country validation."""
         try:
             # Normalize country name before querying Nominatim
             country_normalized = normalize_country(country) or country
-            query = f"{city}, {country_normalized}" if city else country_normalized
             
             # Rate limiting
             await asyncio.sleep(self._rate_limit_delay)
@@ -96,21 +95,76 @@ class PostgresGeocoder:
             # Run synchronous geocoding in thread pool
             loop = asyncio.get_event_loop()
             geocoder = self._get_geocoder()
+            
+            # Use structured query to enforce country constraint
+            if city:
+                query_params = {
+                    'city': city,
+                    'country': country_normalized
+                }
+                query_str = f"{city}, {country_normalized}"
+            else:
+                query_params = {
+                    'country': country_normalized
+                }
+                query_str = country_normalized
+            
             location = await loop.run_in_executor(
                 self._executor,
-                lambda: geocoder.geocode(query)
+                lambda: geocoder.geocode(query_params)
             )
             
             if location:
+                # Validate that the returned location matches the requested country
+                # Check if country appears in the address
+                address = location.raw.get('address', {})
+                returned_country = address.get('country', '')
+                
+                # Normalize returned country for comparison
+                returned_country_normalized = normalize_country(returned_country) or returned_country
+                
+                # Check if countries match
+                if returned_country_normalized.lower() != country_normalized.lower():
+                    logger.warning(
+                        f"Country mismatch for '{query_str}': "
+                        f"requested={country_normalized}, returned={returned_country} "
+                        f"(coords: {location.latitude}, {location.longitude})"
+                    )
+                    # Try fallback: simple string query
+                    logger.info(f"Attempting fallback query: '{query_str}'")
+                    location_fallback = await loop.run_in_executor(
+                        self._executor,
+                        lambda: geocoder.geocode(query_str)
+                    )
+                    if location_fallback:
+                        fallback_address = location_fallback.raw.get('address', {})
+                        fallback_country = fallback_address.get('country', '')
+                        fallback_country_normalized = normalize_country(fallback_country) or fallback_country
+                        
+                        if fallback_country_normalized.lower() == country_normalized.lower():
+                            coords = (location_fallback.latitude, location_fallback.longitude)
+                            logger.info(f"Fallback success: '{query_str}' -> {coords} (country: {fallback_country})")
+                            return coords
+                    
+                    # Both attempts failed to match country
+                    if original_affiliation:
+                        logger.warning(
+                            f"Could not geocode '{query_str}' with country validation "
+                            f"(from affiliation: {original_affiliation})"
+                        )
+                    else:
+                        logger.warning(f"Could not geocode '{query_str}' with country validation")
+                    return None
+                
                 coords = (location.latitude, location.longitude)
-                logger.info(f"Geocoded '{query}' -> {coords}")
+                logger.info(f"Geocoded '{query_str}' -> {coords} (verified country: {returned_country})")
                 return coords
             else:
                 # Log with original affiliation if available
                 if original_affiliation:
-                    logger.warning(f"Could not geocode '{query}' (from affiliation: {original_affiliation})")
+                    logger.warning(f"Could not geocode '{query_str}' (from affiliation: {original_affiliation})")
                 else:
-                    logger.warning(f"Could not geocode '{query}'")
+                    logger.warning(f"Could not geocode '{query_str}'")
                 return None
             
         except Exception as e:
