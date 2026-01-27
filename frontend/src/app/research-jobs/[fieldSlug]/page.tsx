@@ -417,7 +417,7 @@ export default async function FieldOverviewPage({ params }: PageProps) {
               fieldName: fieldConfig.name,
               totalResearchers: totalScholars,
               totalCountries,
-              topLocations: topCountries.map(c => ({ name: c.country, count: c.scholar_count })),
+              topLocations: topCountries.map((c: any) => ({ name: c.country, count: c.scholar_count })),
               dataSource: 'PubMed scientific publications',
               lastUpdated: '2026-01-27',
               pageUrl: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}`,
