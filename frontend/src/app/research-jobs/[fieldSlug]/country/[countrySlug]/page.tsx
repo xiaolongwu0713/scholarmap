@@ -473,7 +473,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
               title: `${fieldConfig.name} Research Opportunities in ${countryName}`,
               fieldName: fieldConfig.name,
               countryName,
-              totalResearchers: totalScholars,
+              totalResearchers: scholarCount,
               totalCities: cityCount,
               totalInstitutions: institutionCount,
               topLocations: topCities.map((c: any) => ({ name: c.city, count: c.scholar_count })),
