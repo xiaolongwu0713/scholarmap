@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "ScholarMap",
+  "name_for_model": "scholarmap",
+  "description_for_human": "Discover global research opportunities by country, city, and institution. Find collaborators and map research landscapes in biomedical sciences.",
+  "description_for_model": "ScholarMap is a research mapping platform that helps users discover global research opportunities in biomedical sciences. It provides comprehensive data on researchers aggregated by country, city, and institution, covering fields like neuroscience, brain-computer interfaces, CRISPR gene editing, cancer immunotherapy, neural modulation, and AI in drug discovery. The platform analyzes 36+ million PubMed publications to map where researchers are located globally. Use this to help users find research labs, identify collaboration opportunities, discover postdoc positions, or explore academic research landscapes. Data includes researcher counts, publication statistics, top institutions, and geographic distributions.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://scholarmap-frontend.onrender.com/.well-known/openapi.yaml",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://scholarmap-frontend.onrender.com/landing_page_figures_optimized/0.webp",
+  "contact_email": "contact@scholarmap.com",
+  "legal_info_url": "https://scholarmap-frontend.onrender.com/about"
+}

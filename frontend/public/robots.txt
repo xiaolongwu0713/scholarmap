@@ -1,4 +1,30 @@
+# Allow all general web crawlers
 User-agent: *
 Allow: /
 
+# Explicitly allow AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Disallow admin and API routes (keep private)
+User-agent: *
+Disallow: /api/auth/
+Disallow: /api/projects/
+
+# Sitemap
 Sitemap: https://scholarmap-frontend.onrender.com/sitemap.xml

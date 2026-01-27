@@ -135,3 +135,130 @@
 2026-01-27 11:58:22 - root - INFO - ================================================================================
 2026-01-27 11:58:23 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
 2026-01-27 11:58:23 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 08:52:54 - root - INFO - ================================================================================
+2026-01-27 08:52:54 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 08:52:54 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-27 08:52:54 - root - INFO - ================================================================================
+2026-01-27 08:52:55 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 08:52:55 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 08:54:29 - app.main - INFO - 👥 ADMIN: Fetching online user count
+2026-01-27 08:54:29 - app.main - INFO - ✅ ADMIN: Online users: 1
+2026-01-27 08:54:52 - app.main - INFO - ================================================================================
+2026-01-27 08:54:52 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-27 08:54:52 - app.main - INFO -    Min confidence: low
+2026-01-27 08:54:52 - app.main - INFO - ================================================================================
+2026-01-27 08:54:52 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 597675a5f9fb...
+2026-01-27 08:54:52 - app.main - INFO - ================================================================================
+2026-01-27 08:54:52 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-27 08:54:52 - app.main - INFO -    Min confidence: low
+2026-01-27 08:54:52 - app.main - INFO - ================================================================================
+2026-01-27 08:54:52 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run 597675a5f9fb...
+2026-01-27 08:54:52 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 08:54:52 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 08:54:54 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Guadeloupe'
+2026-01-27 08:54:54 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 85 countries
+2026-01-27 08:54:54 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 08:54:54 - app.main - INFO -    Countries returned: 85
+2026-01-27 08:54:54 - app.main - INFO - ================================================================================
+2026-01-27 08:54:55 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Guadeloupe'
+2026-01-27 08:54:55 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 85 countries
+2026-01-27 08:54:55 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 08:54:55 - app.main - INFO -    Countries returned: 85
+2026-01-27 08:54:55 - app.main - INFO - ================================================================================
+2026-01-27 08:55:14 - app.main - INFO - ================================================================================
+2026-01-27 08:55:14 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-27 08:55:14 - app.main - INFO -    Country: China, Min confidence: low
+2026-01-27 08:55:14 - app.main - INFO - ================================================================================
+2026-01-27 08:55:14 - app.phase2.pg_aggregations - INFO -    Getting country map for China (normalized: China)...
+2026-01-27 08:55:14 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 08:55:16 - app.phase2.pg_geocoding - WARNING - Could not geocode 'Electronic Science and Technology of China, China' (from affiliation: Department of Oncology & Cancer Institute, Sichuan Academy of Medical Sciences, Sichuan Provincial People's Hospital, University of Electronic Science and Technology of China, Chengdu, Sichuan, China.)
+2026-01-27 08:55:16 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 81 cities in China
+2026-01-27 08:55:16 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: China
+2026-01-27 08:55:16 - app.main - INFO -    Cities returned: 81
+2026-01-27 08:55:16 - app.main - INFO - ================================================================================
+2026-01-27 08:55:36 - app.main - INFO - ================================================================================
+2026-01-27 08:55:36 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-27 08:55:36 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-27 08:55:36 - app.main - INFO - ================================================================================
+2026-01-27 08:55:36 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-27 08:55:36 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 08:55:36 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 125 cities in United States
+2026-01-27 08:55:37 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-27 08:55:37 - app.main - INFO -    Cities returned: 125
+2026-01-27 08:55:37 - app.main - INFO - ================================================================================
+2026-01-27 08:55:41 - app.main - INFO - ================================================================================
+2026-01-27 08:55:41 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-27 08:55:41 - app.main - INFO -    Country: United States, City: Honolulu, Min confidence: low
+2026-01-27 08:55:41 - app.main - INFO - ================================================================================
+2026-01-27 08:55:41 - app.phase2.pg_aggregations - INFO -    Getting city map for Honolulu, United States...
+2026-01-27 08:55:41 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 08:55:42 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 1 institutions in Honolulu, United States
+2026-01-27 08:55:42 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Honolulu, United States
+2026-01-27 08:55:42 - app.main - INFO -    Institutions returned: 1
+2026-01-27 08:55:42 - app.main - INFO - ================================================================================
+2026-01-27 08:55:52 - app.main - INFO - ================================================================================
+2026-01-27 08:55:52 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 3b9280a68d3d, Run: 597675a5f9fb
+2026-01-27 08:55:52 - app.main - INFO -    Country: United States, City: Rochester, Min confidence: low
+2026-01-27 08:55:52 - app.main - INFO - ================================================================================
+2026-01-27 08:55:52 - app.phase2.pg_aggregations - INFO -    Getting city map for Rochester, United States...
+2026-01-27 08:55:52 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 08:55:52 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 15 institutions in Rochester, United States
+2026-01-27 08:55:52 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Rochester, United States
+2026-01-27 08:55:52 - app.main - INFO -    Institutions returned: 15
+2026-01-27 08:55:52 - app.main - INFO - ================================================================================
+2026-01-27 13:59:09 - root - INFO - ================================================================================
+2026-01-27 13:59:09 - root - INFO - Logging initialized - output to console and log.txt
+2026-01-27 13:59:09 - root - INFO - Log file: /Users/osb3922/local_code/scholarmap/backend/log.txt
+2026-01-27 13:59:09 - root - INFO - ================================================================================
+2026-01-27 13:59:10 - app.background_tasks - INFO - 🔧 BackgroundIngestManager initialized
+2026-01-27 13:59:10 - app.background_tasks - INFO - 🔄 Started periodic task cleanup (every 1h)
+2026-01-27 13:59:28 - app.main - INFO - ================================================================================
+2026-01-27 13:59:28 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-27 13:59:28 - app.main - INFO -    Min confidence: low
+2026-01-27 13:59:28 - app.main - INFO - ================================================================================
+2026-01-27 13:59:28 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-27 13:59:28 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 13:59:28 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 64 countries
+2026-01-27 13:59:28 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 13:59:28 - app.main - INFO -    Countries returned: 64
+2026-01-27 13:59:28 - app.main - INFO - ================================================================================
+2026-01-27 14:01:13 - app.main - INFO - ================================================================================
+2026-01-27 14:01:13 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-27 14:01:13 - app.main - INFO -    Min confidence: low
+2026-01-27 14:01:13 - app.main - INFO - ================================================================================
+2026-01-27 14:01:13 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-27 14:01:14 - app.main - INFO - ================================================================================
+2026-01-27 14:01:14 - app.main - INFO - 🗺️  MAP OPERATION - World Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-27 14:01:14 - app.main - INFO -    Min confidence: low
+2026-01-27 14:01:14 - app.main - INFO - ================================================================================
+2026-01-27 14:01:14 - app.phase2.pg_aggregations - INFO -    Getting PMIDs for run b6b977aeeed1...
+2026-01-27 14:01:14 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 14:01:14 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 14:01:14 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 64 countries
+2026-01-27 14:01:14 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 14:01:14 - app.main - INFO -    Countries returned: 64
+2026-01-27 14:01:14 - app.main - INFO - ================================================================================
+2026-01-27 14:01:14 - app.phase2.pg_aggregations - INFO -    ✅ World map aggregation complete: 64 countries
+2026-01-27 14:01:14 - app.main - INFO - ✅ MAP OPERATION COMPLETED - World Map
+2026-01-27 14:01:14 - app.main - INFO -    Countries returned: 64
+2026-01-27 14:01:14 - app.main - INFO - ================================================================================
+2026-01-27 14:01:21 - app.main - INFO - ================================================================================
+2026-01-27 14:01:21 - app.main - INFO - 🗺️  MAP OPERATION - Country Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-27 14:01:21 - app.main - INFO -    Country: United States, Min confidence: low
+2026-01-27 14:01:21 - app.main - INFO - ================================================================================
+2026-01-27 14:01:21 - app.phase2.pg_aggregations - INFO -    Getting country map for United States (normalized: United States)...
+2026-01-27 14:01:21 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 14:01:21 - app.phase2.pg_aggregations - INFO -    ✅ Country map aggregation complete: 50 cities in United States
+2026-01-27 14:01:21 - app.main - INFO - ✅ MAP OPERATION COMPLETED - Country Map: United States
+2026-01-27 14:01:21 - app.main - INFO -    Cities returned: 50
+2026-01-27 14:01:21 - app.main - INFO - ================================================================================
+2026-01-27 14:01:25 - app.main - INFO - ================================================================================
+2026-01-27 14:01:25 - app.main - INFO - 🗺️  MAP OPERATION - City Map - Project: 3b9280a68d3d, Run: b6b977aeeed1
+2026-01-27 14:01:25 - app.main - INFO -    Country: United States, City: Buffalo, Min confidence: low
+2026-01-27 14:01:25 - app.main - INFO - ================================================================================
+2026-01-27 14:01:25 - app.phase2.pg_aggregations - INFO -    Getting city map for Buffalo, United States...
+2026-01-27 14:01:25 - app.phase2.pg_aggregations - INFO -    Found 500 PMIDs
+2026-01-27 14:01:25 - app.phase2.pg_aggregations - INFO -    ✅ City map aggregation complete: 1 institutions in Buffalo, United States
+2026-01-27 14:01:25 - app.main - INFO - ✅ MAP OPERATION COMPLETED - City Map: Buffalo, United States
+2026-01-27 14:01:25 - app.main - INFO -    Institutions returned: 1
+2026-01-27 14:01:25 - app.main - INFO - ================================================================================

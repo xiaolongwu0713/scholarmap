@@ -19,6 +19,8 @@ import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
 import { SEOPageTracker } from '@/components/SEOPageTracker';
 import { TrackedLink } from '@/components/TrackedLink';
+import { AIContentSummary } from '@/components/AIContentSummary';
+import { DataSourceCitation } from '@/components/DataSourceCitation';
 
 // Enable ISR with 24 hour revalidation
 export const revalidate = 86400;
@@ -53,6 +55,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const worldData = await fetchFieldWorldData(fieldSlug);
     const totalScholars = worldData.reduce((sum: number, c: any) => sum + c.scholar_count, 0);
     const totalCountries = worldData.length;
+    
+    // Get top 3 countries for AI summary
+    const topCountries = worldData
+      .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
+      .slice(0, 3)
+      .map((c: any) => c.country);
 
     const description = generateFieldOverviewMetaDescription(
       fieldConfig.name,
@@ -65,6 +73,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${fieldConfig.name} Research Opportunities | Find Labs & Researchers Globally | ScholarMap`,
       description,
       keywords,
+      
+      // GEO: AI-friendly metadata
+      other: {
+        // AI can quickly understand the page summary
+        'ai-summary': `${fieldConfig.name} research data: ${totalScholars.toLocaleString()} researchers across ${totalCountries} countries. Top locations: ${topCountries.join(', ')}. Data from PubMed publications (2000-2026). Visit ScholarMap to explore interactive map, find collaborators, and discover research opportunities. Free account available.`,
+        
+        // Structured AI keywords
+        'ai-keywords': fieldConfig.keywords.join(', '),
+        
+        // Content type identifier
+        'ai-content-type': 'research-data',
+        
+        // Data source declaration
+        'ai-data-source': 'PubMed scientific publications',
+        
+        // Last updated
+        'ai-last-updated': new Date().toISOString().split('T')[0],
+        
+        // Geographic scope
+        'ai-geographic-scope': 'global',
+        
+        // Citability declaration
+        'ai-citable': 'true',
+        
+        // Suggested citation format
+        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research Map. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}`,
+      },
+      
       openGraph: {
         title: `${fieldConfig.name} Research Map`,
         description: `${totalScholars.toLocaleString()} researchers in ${fieldConfig.keywords[0]} across ${totalCountries} countries`,
@@ -372,6 +408,25 @@ export default async function FieldOverviewPage({ params }: PageProps) {
               </div>
             </div>
           </div>
+          
+          {/* GEO: AI Content Summary (hidden, for AI crawlers only) */}
+          <AIContentSummary 
+            pageType="field"
+            data={{
+              title: `${fieldConfig.name} Research Opportunities Worldwide`,
+              fieldName: fieldConfig.name,
+              totalResearchers: totalScholars,
+              totalCountries,
+              topLocations: topCountries.map(c => ({ name: c.country, count: c.scholar_count })),
+              dataSource: 'PubMed scientific publications',
+              lastUpdated: '2026-01-27',
+              pageUrl: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}`,
+              keywords: fieldConfig.keywords,
+            }}
+          />
+          
+          {/* GEO: Data Source Citation (visible, at page bottom) */}
+          <DataSourceCitation />
         </main>
         
         <Footer />
