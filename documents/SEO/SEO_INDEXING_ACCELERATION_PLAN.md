@@ -1,0 +1,305 @@
+# SEO 索引加速计划与进度追踪
+
+**创建日期**: 2026-02-01  
+**最后更新**: 2026-02-01
+
+---
+
+## 📊 当前状态
+
+### 索引统计（2026-02-01）
+- **Sitemap URLs**: 563
+- **Discovered Pages**: 563 (100%)
+- **Indexed Pages**: 6 (1.1%)
+- **Not Indexed**: 248 (44%)
+- **状态**: "Discovered – currently not indexed" (Started)
+
+### 问题诊断
+✅ **好消息**:
+- 所有页面都被 Google 发现
+- Sitemap 配置正确
+- 页面加载速度快 (~0.35s)
+- robots.txt 配置正确
+
+❌ **索引慢的原因**:
+- 新网站，Google 爬取预算低
+- 大量页面同时上线（1月18日）
+- 缺少从首页到深层页面的直接链接
+- 缺少外部链接指向
+
+---
+
+## 🔧 已实施的优化（2026-02-01）
+
+### 1. 修复 Dataset Structured Data 错误
+**文件**: `frontend/src/components/DataSourceCitation.tsx`
+
+**问题**: 
+- ❌ Missing field 'name'
+- ❌ Invalid string length in field 'description'
+- ⚠️ Invalid object type for field 'creator'
+
+**修复**:
+- ✅ 添加 `name` meta tag
+- ✅ 添加完整的 `description` (>50 chars)
+- ✅ 使用 Organization 结构的 `creator`
+- ✅ 添加 `license` 和 `url` 字段
+
+**状态**: ✅ 已部署
+
+---
+
+### 2. 增强首页内部链接
+**文件**: 
+- `frontend/src/components/landing/PopularResearchFields.tsx` (新建)
+- `frontend/src/app/page.tsx` (更新)
+
+**改进**:
+- ✅ 在首页添加"热门研究领域"模块
+- ✅ 直接链接到 5 个 field overview 页面
+- ✅ 建立从首页到深层页面的爬取路径
+
+**预期效果**: Google 更快发现和索引 field-specific 页面
+
+**状态**: ✅ 已部署
+
+---
+
+### 3. 创建 HTML Sitemap 页面
+**文件**:
+- `frontend/src/app/sitemap-page/page.tsx` (新建)
+- `frontend/src/components/landing/Footer.tsx` (更新)
+
+**功能**:
+- ✅ 人类可读的站点地图
+- ✅ 列出所有主要页面类别
+- ✅ 在 Footer 添加链接
+
+**URL**: `/sitemap-page`
+
+**预期效果**: 帮助用户和搜索引擎发现所有页面
+
+**状态**: ✅ 已部署
+
+---
+
+## 🚀 执行计划
+
+### Phase 1: 立即行动（Week 1）
+
+#### ✅ Day 1 (2026-02-01) - 已完成
+- [x] 修复 Dataset structured data 错误
+- [x] 添加首页内部链接模块
+- [x] 创建 HTML sitemap 页面
+- [x] 部署所有优化
+
+#### 📋 Day 2-3 - 待执行
+**任务**: 手动请求索引关键页面（每天 10 个）
+
+**优先级排序**:
+
+**第一批（Day 2）- 核心页面**:
+1. https://scholarmap-frontend.onrender.com/
+2. https://scholarmap-frontend.onrender.com/research-jobs
+3. https://scholarmap-frontend.onrender.com/sitemap-page
+4. https://scholarmap-frontend.onrender.com/about
+5. https://scholarmap-frontend.onrender.com/about/methodology
+6. https://scholarmap-frontend.onrender.com/use-cases
+7. https://scholarmap-frontend.onrender.com/research-jobs/brain-computer-interface
+8. https://scholarmap-frontend.onrender.com/research-jobs/crispr-gene-editing
+9. https://scholarmap-frontend.onrender.com/research-jobs/cancer-immunotherapy
+10. https://scholarmap-frontend.onrender.com/research-jobs/neural-modulation
+
+**第二批（Day 3）- Top Countries**:
+11. https://scholarmap-frontend.onrender.com/research-jobs/ai-drug-discovery
+12. https://scholarmap-frontend.onrender.com/research-jobs/country/china
+13. https://scholarmap-frontend.onrender.com/research-jobs/country/united-states
+14. https://scholarmap-frontend.onrender.com/research-jobs/country/italy
+15. https://scholarmap-frontend.onrender.com/research-jobs/country/germany
+16. https://scholarmap-frontend.onrender.com/research-jobs/country/canada
+17. https://scholarmap-frontend.onrender.com/research-jobs/country/australia
+18. https://scholarmap-frontend.onrender.com/research-jobs/country/united-kingdom
+19. https://scholarmap-frontend.onrender.com/research-jobs/country/spain
+20. https://scholarmap-frontend.onrender.com/research-jobs/country/switzerland
+
+#### 📋 Day 4-7 - 持续请求索引
+
+**第三批（Day 4）- Top Cities**:
+21. https://scholarmap-frontend.onrender.com/research-jobs/city/beijing
+22. https://scholarmap-frontend.onrender.com/research-jobs/city/boston
+23. https://scholarmap-frontend.onrender.com/research-jobs/city/shanghai
+24. https://scholarmap-frontend.onrender.com/research-jobs/city/rome
+25. https://scholarmap-frontend.onrender.com/research-jobs/city/toronto
+26. https://scholarmap-frontend.onrender.com/research-jobs/city/new-york
+27. https://scholarmap-frontend.onrender.com/research-jobs/city/london
+28. https://scholarmap-frontend.onrender.com/research-jobs/city/sydney
+29. https://scholarmap-frontend.onrender.com/research-jobs/city/paris
+30. https://scholarmap-frontend.onrender.com/research-jobs/city/berlin
+
+**第四批（Day 5-7）- Field × Country 组合**:
+31. https://scholarmap-frontend.onrender.com/research-jobs/crispr-gene-editing/country/united-states
+32. https://scholarmap-frontend.onrender.com/research-jobs/brain-computer-interface/country/united-states
+33. https://scholarmap-frontend.onrender.com/research-jobs/cancer-immunotherapy/country/united-states
+34. https://scholarmap-frontend.onrender.com/research-jobs/crispr-gene-editing/country/china
+35. https://scholarmap-frontend.onrender.com/research-jobs/brain-computer-interface/country/china
+...（继续添加重要组合）
+
+---
+
+### Phase 2: 短期优化（Week 2-4）
+
+#### Week 2 任务
+- [ ] 监控索引进度（每 2-3 天检查 GSC）
+- [ ] 继续手动请求索引（每天 10 个）
+- [ ] 在 Reddit 分享 Use Cases 页面
+- [ ] 在 ResearchGate 分享项目
+
+#### Week 3 任务
+- [ ] 分析哪些页面索引快/慢
+- [ ] 优化未索引页面的内容
+- [ ] 联系 5-10 个学术博主
+- [ ] 创建第一篇博客文章
+
+#### Week 4 任务
+- [ ] 继续请求索引（Field×City 组合）
+- [ ] 在专业论坛分享
+- [ ] 监控搜索展示数据
+- [ ] 优化 CTR
+
+---
+
+### Phase 3: 中期优化（Month 2-3）
+
+#### Month 2 重点
+- 外部链接建设（目标 20+ 外链）
+- 内容营销（发布 4 篇高质量文章）
+- 社交媒体活跃（每周 3-5 条内容）
+- 监控关键词排名
+
+#### Month 3 重点
+- 评估索引效果（目标 80%+ 索引率）
+- 优化转化率
+- 扩展内容覆盖
+- 考虑添加 Tier 2 领域
+
+---
+
+## 📊 预期时间线
+
+| 时间节点 | 索引目标 | 关键里程碑 |
+|---------|---------|-----------|
+| **Day 1 (现在)** | 6 (1%) | 优化部署完成 ✅ |
+| **Day 7** | 50-80 (9-14%) | 核心页面索引完成 |
+| **Day 14** | 120-180 (21-32%) | 主要国家/城市页面索引 |
+| **Day 30** | 280-350 (50-62%) | 大部分页面索引 |
+| **Day 60** | 450-500 (80-89%) | 接近完全索引 |
+| **Day 90** | 520-550 (92-98%) | 完全索引 + 排名提升 |
+
+---
+
+## 📈 监控指标
+
+### 每周检查（在 GSC）
+
+#### 1. 索引覆盖率
+- **路径**: Indexing → Pages
+- **指标**: Indexed / Discovered
+- **目标**: 每周增长 10-15%
+
+#### 2. 爬取统计
+- **路径**: Settings → Crawl Stats
+- **指标**: 每天爬取页面数
+- **目标**: 50-100+ 页面/天
+
+#### 3. 搜索展示
+- **路径**: Performance → Impressions
+- **指标**: 搜索展示次数
+- **目标**: Week 2 开始有展示
+
+#### 4. 点击率
+- **路径**: Performance → CTR
+- **指标**: 点击次数 / 展示次数
+- **目标**: 3-5%
+
+---
+
+## 🔍 故障排除
+
+### 如果索引速度仍然很慢
+
+#### 检查项 1: 页面质量
+- [ ] 确保每个页面有独特内容（600+ 字）
+- [ ] 检查重复内容问题
+- [ ] 验证 meta tags 正确
+
+#### 检查项 2: 技术问题
+- [ ] 检查 Render 日志是否有 5xx 错误
+- [ ] 验证所有页面返回 200 状态码
+- [ ] 检查页面加载速度（< 2 秒）
+
+#### 检查项 3: 爬取问题
+- [ ] 查看 GSC Crawl Stats
+- [ ] 检查是否有爬取错误
+- [ ] 验证 robots.txt 正确
+
+#### 检查项 4: 内容问题
+- [ ] 检查是否被判断为低质量内容
+- [ ] 验证 structured data 正确
+- [ ] 确保没有 thin content
+
+---
+
+## 🎯 成功标准
+
+### 30 天目标
+- ✅ 索引率达到 50%+ (280/563 页面)
+- ✅ 核心页面全部索引（~20 个）
+- ✅ 开始出现搜索展示（Impressions > 100/week）
+- ✅ 获得 3-5 个外部链接
+
+### 60 天目标
+- ✅ 索引率达到 80%+ (450/563 页面)
+- ✅ 至少 5 个关键词进入 Top 50
+- ✅ 有机搜索流量 > 100/week
+- ✅ 获得 10-15 个外部链接
+
+### 90 天目标
+- ✅ 索引率达到 90%+ (500/563 页面)
+- ✅ 至少 10 个关键词进入 Top 20
+- ✅ 有机搜索流量 > 500/week
+- ✅ 转化率 > 15%
+- ✅ 获得 20-30 个外部链接
+
+---
+
+## 📝 更新日志
+
+### 2026-02-01
+- ✅ 诊断索引问题（6/563 索引率）
+- ✅ 修复 Dataset structured data 错误
+- ✅ 添加首页内部链接模块
+- ✅ 创建 HTML sitemap 页面
+- ✅ 部署所有优化
+- ✅ 创建索引加速计划文档
+
+---
+
+## 🔗 相关资源
+
+### Google Search Console
+- URL: https://search.google.com/search-console
+- 主要功能: URL Inspection, Indexing Status, Performance
+
+### 相关文档
+- Phase 3 Implementation: `PHASE3_IMPLEMENTATION_COMPLETE.md`
+- Marketing Strategy: `marketing_strategy.md`
+- Field-Specific Strategy: `PHASE3_FIELD_SPECIFIC_STRATEGY.md`
+
+### 外部工具
+- Google Rich Results Test: https://search.google.com/test/rich-results
+- PageSpeed Insights: https://pagespeed.web.dev/
+- Schema.org Validator: https://validator.schema.org/
+
+---
+
+**下次更新**: 2026-02-03（检查首批请求索引的效果）

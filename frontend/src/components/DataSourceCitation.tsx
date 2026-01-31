@@ -17,9 +17,14 @@ export function DataSourceCitation() {
       {/* Hidden metadata for Google structured data */}
       <meta itemProp="name" content="ScholarMap Global Biomedical Research Database" />
       <meta itemProp="description" content="ScholarMap provides a comprehensive database of biomedical researchers and institutions worldwide, extracted from 36+ million PubMed publications. The dataset includes geographic coordinates, institutional affiliations, and research output metrics for researchers in medicine, biology, neuroscience, pharmacology, public health, and related life sciences fields. Data spans publications from 2000-2026 with AI-powered extraction accuracy of approximately 95% for major research institutions." />
-      <meta itemProp="creator" content="ScholarMap" />
       <meta itemProp="license" content="https://creativecommons.org/licenses/by/4.0/" />
       <meta itemProp="url" content="https://scholarmap-frontend.onrender.com/research-jobs" />
+      
+      {/* Creator as Organization (proper nested structure) */}
+      <div itemProp="creator" itemScope itemType="https://schema.org/Organization" style={{ display: 'none' }}>
+        <meta itemProp="name" content="ScholarMap" />
+        <meta itemProp="url" content="https://scholarmap-frontend.onrender.com" />
+      </div>
       
       <div className="container mx-auto px-4 max-w-4xl">
         <h3 className="text-lg font-semibold mb-4 text-gray-900">
