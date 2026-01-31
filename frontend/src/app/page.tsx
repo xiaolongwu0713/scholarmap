@@ -4,6 +4,7 @@ import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Footer } from "@/components/landing/Footer";
 import { LandingCTAs } from "@/components/landing/LandingCTAs";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
+import { PopularResearchFields } from "@/components/landing/PopularResearchFields";
 import { 
   StructuredData, 
   organizationSchema, 
@@ -29,6 +30,7 @@ export default function LandingPage() {
       <LandingNavbar />
       <Hero />
       <LandingCTAs />
+      <PopularResearchFields />
       <WhatYouCanDo />
       <HowItWorks />
       <Footer />
