@@ -51,6 +51,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/openapi.json",
         "/redoc",
         "/health",
+        "/healthz",  # Backend health check endpoint
         "/api/config",
         "/api/auth/register",
         "/api/auth/login",
