@@ -628,7 +628,7 @@ if [ "$BACKEND_AVAILABLE" = true ]; then
     # Email verification endpoint
     echo -e "${CYAN}→ Email Verification Endpoint${NC}"
     check_start
-    TEST_EMAIL="test@example.com"
+    TEST_EMAIL="xiaolongwu0813@gmail.com"
     RESPONSE=$(http_post "$BACKEND_URL/api/auth/send-verification-code" "{\"email\":\"$TEST_EMAIL\"}" 5)
     HTTP_CODE=$(extract_code "$RESPONSE")
     
