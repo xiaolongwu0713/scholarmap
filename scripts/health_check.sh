@@ -1,229 +1,866 @@
 #!/bin/bash
 
 ################################################################################
-# ScholarMap Health Check Script
+# ScholarMap Comprehensive Health Check Script
 # 
-# This script performs comprehensive health checks on the ScholarMap system:
-# 1. Email service (SendGrid verification email)
-# 2. robots.txt availability
-# 3. System availability (backend + frontend)
+# Performs extensive health checks across:
+# - System availability
+# - SEO optimization
+# - Performance metrics
+# - User functionality
+# - Database integrity
+# - External services
+# - Security posture
 #
 # Usage:
-#   ./scripts/health_check.sh [environment]
+#   ./scripts/health_check.sh [environment] [options]
 #
 # Arguments:
 #   environment - Optional. Either "local" or "production" (default: production)
+#   --verbose   - Enable verbose output
+#   --skip-slow - Skip slow checks (performance, external services)
 #
 # Exit codes:
 #   0 - All checks passed
 #   1 - One or more checks failed
 ################################################################################
 
-set -e  # Exit on error
+set +e  # Don't exit on error, we want to run all checks
 
-# Colors for output
+# Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+CYAN='\033[0;36m'
+NC='\033[0m'
 
-# Environment selection
+# Configuration
 ENVIRONMENT=${1:-production}
+VERBOSE=false
+SKIP_SLOW=false
 
+# Parse options
+for arg in "$@"; do
+    case $arg in
+        --verbose) VERBOSE=true ;;
+        --skip-slow) SKIP_SLOW=true ;;
+    esac
+done
+
+# Environment URLs
 if [ "$ENVIRONMENT" = "local" ]; then
     BACKEND_URL="http://localhost:8000"
     FRONTEND_URL="http://localhost:3000"
-    echo -e "${BLUE}Running health checks for LOCAL environment${NC}"
+    echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}║  LOCAL Environment Health Check       ║${NC}"
+    echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"
 elif [ "$ENVIRONMENT" = "production" ]; then
-    BACKEND_URL="https://scholarmap-backend.onrender.com"
+    BACKEND_URL="https://scholarmap-q1k1.onrender.com"
     FRONTEND_URL="https://scholarmap-frontend.onrender.com"
-    echo -e "${BLUE}Running health checks for PRODUCTION environment${NC}"
+    echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}║  PRODUCTION Environment Health Check  ║${NC}"
+    echo -e "${BLUE}╚════════════════════════════════════════╝${NC}"
 else
     echo -e "${RED}Invalid environment: $ENVIRONMENT${NC}"
-    echo "Usage: $0 [local|production]"
+    echo "Usage: $0 [local|production] [--verbose] [--skip-slow]"
     exit 1
 fi
 
-echo "Backend URL: $BACKEND_URL"
-echo "Frontend URL: $FRONTEND_URL"
+echo "Backend:  $BACKEND_URL"
+echo "Frontend: $FRONTEND_URL"
 echo ""
 
-# Track overall status
+# Demo run configuration
+DEMO_PROJECT_ID="6af7ac1b6254"
+DEMO_RUN_ID="53e099cdb74e"
+
+# Track stats
 OVERALL_STATUS=0
+TOTAL_CHECKS=0
+PASSED_CHECKS=0
+FAILED_CHECKS=0
+WARNING_CHECKS=0
+SKIPPED_CHECKS=0
 
-################################################################################
-# Check 1: System Availability (Backend & Frontend)
-################################################################################
-echo -e "${BLUE}=== Check 1: System Availability ===${NC}"
-
-# 1.1 Backend health check
-echo -e "${BLUE}1.1 Backend Service:${NC}"
-BACKEND_HEALTH=$(curl -s -w "\n%{http_code}" "$BACKEND_URL/healthz" 2>&1)
-BACKEND_HTTP_CODE=$(echo "$BACKEND_HEALTH" | tail -n1)
-BACKEND_BODY=$(echo "$BACKEND_HEALTH" | sed '$d')
-
+# Global flags
 BACKEND_AVAILABLE=false
-if [ "$BACKEND_HTTP_CODE" = "200" ]; then
-    echo -e "${GREEN}✓ Backend is healthy (HTTP $BACKEND_HTTP_CODE)${NC}"
-    if echo "$BACKEND_BODY" | grep -q "ok"; then
-        echo -e "${GREEN}✓ Backend status: OK${NC}"
-    fi
+FRONTEND_AVAILABLE=false
+
+################################################################################
+# Helper Functions
+################################################################################
+
+# Increment check counter
+check_start() {
+    ((TOTAL_CHECKS++))
+}
+
+# Record check result
+check_pass() {
+    ((PASSED_CHECKS++))
+    echo -e "${GREEN}✓ $1${NC}"
+}
+
+check_fail() {
+    ((FAILED_CHECKS++))
+    OVERALL_STATUS=1
+    echo -e "${RED}✗ $1${NC}"
+}
+
+check_warn() {
+    ((WARNING_CHECKS++))
+    echo -e "${YELLOW}⚠ $1${NC}"
+}
+
+check_skip() {
+    ((SKIPPED_CHECKS++))
+    echo -e "${CYAN}⊘ $1${NC}"
+}
+
+# Measure time
+time_start=$(date +%s)
+measure_time() {
+    local start=$1
+    local end=$(date +%s)
+    echo $((end - start))
+}
+
+# HTTP request with timing
+http_get() {
+    local url=$1
+    local timeout=${2:-10}
+    curl -s -w "\n%{http_code}\n%{time_total}" --max-time "$timeout" "$url" 2>&1
+}
+
+http_post() {
+    local url=$1
+    local data=$2
+    local timeout=${3:-10}
+    curl -s -w "\n%{http_code}\n%{time_total}" --max-time "$timeout" \
+        -X POST -H "Content-Type: application/json" -d "$data" "$url" 2>&1
+}
+
+# Extract HTTP response
+extract_body() {
+    echo "$1" | sed '$ d' | sed '$ d'
+}
+
+extract_code() {
+    echo "$1" | tail -n 2 | head -n 1
+}
+
+extract_time() {
+    echo "$1" | tail -n 1
+}
+
+################################################################################
+# P0: Critical System Availability
+################################################################################
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}  P0: Critical System Availability${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo ""
+
+# Check 1: Backend Health
+echo -e "${CYAN}→ Backend Service${NC}"
+check_start
+RESPONSE=$(http_get "$BACKEND_URL/healthz" 5)
+HTTP_CODE=$(extract_code "$RESPONSE")
+RESPONSE_TIME=$(extract_time "$RESPONSE")
+
+if [ "$HTTP_CODE" = "200" ]; then
     BACKEND_AVAILABLE=true
+    check_pass "Backend is healthy (HTTP $HTTP_CODE, ${RESPONSE_TIME}s)"
 else
-    echo -e "${RED}✗ Backend health check failed (HTTP $BACKEND_HTTP_CODE)${NC}"
-    echo -e "${YELLOW}  Note: Backend might be sleeping (Render free tier)${NC}"
-    echo "Response: $BACKEND_BODY"
-    OVERALL_STATUS=1
+    check_fail "Backend health check failed (HTTP $HTTP_CODE)"
+    echo "  Response: $(extract_body "$RESPONSE")"
 fi
 echo ""
 
-# 1.2 Frontend health check
-echo -e "${BLUE}1.2 Frontend Service:${NC}"
-FRONTEND_HEALTH=$(curl -s -w "\n%{http_code}" "$FRONTEND_URL/health" 2>&1)
-FRONTEND_HTTP_CODE=$(echo "$FRONTEND_HEALTH" | tail -n1)
-FRONTEND_BODY=$(echo "$FRONTEND_HEALTH" | sed '$d')
+# Check 2: Frontend Health
+echo -e "${CYAN}→ Frontend Service${NC}"
+check_start
+RESPONSE=$(http_get "$FRONTEND_URL/health" 5)
+HTTP_CODE=$(extract_code "$RESPONSE")
+RESPONSE_TIME=$(extract_time "$RESPONSE")
 
-if [ "$FRONTEND_HTTP_CODE" = "200" ]; then
-    echo -e "${GREEN}✓ Frontend is healthy (HTTP $FRONTEND_HTTP_CODE)${NC}"
-    if echo "$FRONTEND_BODY" | grep -q "ok"; then
-        echo -e "${GREEN}✓ Frontend status: OK${NC}"
-    fi
+if [ "$HTTP_CODE" = "200" ]; then
+    FRONTEND_AVAILABLE=true
+    check_pass "Frontend is healthy (HTTP $HTTP_CODE, ${RESPONSE_TIME}s)"
 else
-    echo -e "${YELLOW}⚠ Frontend /health endpoint not available (HTTP $FRONTEND_HTTP_CODE)${NC}"
-    echo -e "${YELLOW}  Trying homepage instead...${NC}"
-    
-    # Fallback: check homepage
-    HOMEPAGE=$(curl -s -w "\n%{http_code}" "$FRONTEND_URL/" 2>&1)
-    HOMEPAGE_HTTP_CODE=$(echo "$HOMEPAGE" | tail -n1)
-    
-    if [ "$HOMEPAGE_HTTP_CODE" = "200" ]; then
-        echo -e "${GREEN}✓ Frontend homepage is accessible (HTTP $HOMEPAGE_HTTP_CODE)${NC}"
+    # Fallback to homepage
+    check_warn "Frontend /health endpoint not available, checking homepage..."
+    RESPONSE=$(http_get "$FRONTEND_URL/" 10)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    if [ "$HTTP_CODE" = "200" ]; then
+        FRONTEND_AVAILABLE=true
+        check_pass "Frontend homepage is accessible (HTTP $HTTP_CODE)"
     else
-        echo -e "${RED}✗ Frontend is not accessible (HTTP $HOMEPAGE_HTTP_CODE)${NC}"
-        OVERALL_STATUS=1
+        check_fail "Frontend is not accessible (HTTP $HTTP_CODE)"
     fi
 fi
 echo ""
 
-# 1.3 Check sitemap.xml
-echo -e "${BLUE}1.3 Sitemap:${NC}"
-SITEMAP=$(curl -s -w "\n%{http_code}" "$FRONTEND_URL/sitemap.xml" 2>&1)
-SITEMAP_HTTP_CODE=$(echo "$SITEMAP" | tail -n1)
-SITEMAP_BODY=$(echo "$SITEMAP" | sed '$d')
+# Check 3: Demo Run Accessibility
+echo -e "${CYAN}→ Demo Run (Public Access)${NC}"
+check_start
+DEMO_URL="$FRONTEND_URL/projects/$DEMO_PROJECT_ID/runs/$DEMO_RUN_ID"
+RESPONSE=$(http_get "$DEMO_URL" 10)
+HTTP_CODE=$(extract_code "$RESPONSE")
 
-if [ "$SITEMAP_HTTP_CODE" = "200" ]; then
-    echo -e "${GREEN}✓ sitemap.xml is accessible (HTTP $SITEMAP_HTTP_CODE)${NC}"
-    
-    # Count URLs in sitemap
-    URL_COUNT=$(echo "$SITEMAP_BODY" | grep -c "<loc>" || echo "0")
-    echo -e "${GREEN}✓ Sitemap contains $URL_COUNT URLs${NC}"
+if [ "$HTTP_CODE" = "200" ]; then
+    check_pass "Demo run page is accessible (HTTP $HTTP_CODE)"
 else
-    echo -e "${RED}✗ sitemap.xml check failed (HTTP $SITEMAP_HTTP_CODE)${NC}"
-    OVERALL_STATUS=1
+    check_fail "Demo run page is not accessible (HTTP $HTTP_CODE)"
 fi
 echo ""
 
-################################################################################
-# Check 2: Email Service (SendGrid) - Only if backend is available
-################################################################################
-echo -e "${BLUE}=== Check 2: Email Service ===${NC}"
-
-if [ "$BACKEND_AVAILABLE" = false ]; then
-    echo -e "${YELLOW}⚠ Skipping email check - backend is not available${NC}"
-    echo ""
-else
-    # Test email endpoint with a test email
-    TEST_EMAIL="test@example.com"
-    EMAIL_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
-        -H "Content-Type: application/json" \
-        -d "{\"email\":\"$TEST_EMAIL\"}" \
-        "$BACKEND_URL/api/auth/send-verification-code" 2>&1)
-
-    # Extract HTTP status code (last line)
-    EMAIL_HTTP_CODE=$(echo "$EMAIL_RESPONSE" | tail -n1)
-    EMAIL_BODY=$(echo "$EMAIL_RESPONSE" | sed '$d')
-
-    if [ "$EMAIL_HTTP_CODE" = "200" ]; then
-        echo -e "${GREEN}✓ Email service is responding (HTTP $EMAIL_HTTP_CODE)${NC}"
-        
-        # Check if SendGrid is actually configured
-        if echo "$EMAIL_BODY" | grep -q "code_sent"; then
-            echo -e "${GREEN}✓ Verification code sent successfully${NC}"
-        elif echo "$EMAIL_BODY" | grep -q "DEV"; then
-            echo -e "${YELLOW}⚠ Email service in DEV mode (SendGrid not configured)${NC}"
-            echo -e "${YELLOW}  This is OK for local development${NC}"
+# Check 4: Demo Map Data API
+echo -e "${CYAN}→ Demo Map Data API${NC}"
+if [ "$BACKEND_AVAILABLE" = true ]; then
+    check_start
+    MAP_URL="$BACKEND_URL/api/projects/$DEMO_PROJECT_ID/runs/$DEMO_RUN_ID/map/world"
+    RESPONSE=$(http_get "$MAP_URL" 10)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    BODY=$(extract_body "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        # Check if response contains data
+        if echo "$BODY" | grep -q "\"data\""; then
+            check_pass "Demo map API returns valid data (HTTP $HTTP_CODE)"
         else
-            echo -e "${GREEN}✓ Email endpoint working${NC}"
+            check_warn "Demo map API returns 200 but data format unexpected"
         fi
-    elif [ "$EMAIL_HTTP_CODE" = "500" ]; then
-        # 500 might indicate SendGrid API issue
-        echo -e "${YELLOW}⚠ Email service returned 500 (HTTP $EMAIL_HTTP_CODE)${NC}"
-        echo -e "${YELLOW}  This might indicate SendGrid API key issue${NC}"
-        echo "Response: $EMAIL_BODY"
-        OVERALL_STATUS=1
-    elif [ "$EMAIL_HTTP_CODE" = "404" ]; then
-        echo -e "${RED}✗ Email endpoint not found (HTTP $EMAIL_HTTP_CODE)${NC}"
-        echo -e "${YELLOW}  The /api/auth/send-verification-code endpoint may not exist${NC}"
-        OVERALL_STATUS=1
     else
-        echo -e "${RED}✗ Email service check failed (HTTP $EMAIL_HTTP_CODE)${NC}"
-        echo "Response: $EMAIL_BODY"
-        OVERALL_STATUS=1
+        check_fail "Demo map API failed (HTTP $HTTP_CODE)"
+    fi
+else
+    check_skip "Demo map API check (backend unavailable)"
+fi
+echo ""
+
+# Check 5: HTTPS Enforcement (Production only)
+if [ "$ENVIRONMENT" = "production" ]; then
+    echo -e "${CYAN}→ HTTPS Enforcement${NC}"
+    check_start
+    
+    # Check if HTTP redirects to HTTPS
+    HTTP_FRONTEND="http://scholarmap-frontend.onrender.com"
+    RESPONSE=$(curl -s -I -L --max-time 5 "$HTTP_FRONTEND" 2>&1 | grep -i "^location:")
+    
+    if echo "$RESPONSE" | grep -q "https://"; then
+        check_pass "HTTP redirects to HTTPS"
+    else
+        check_warn "HTTP to HTTPS redirect not detected"
     fi
     echo ""
 fi
 
 ################################################################################
-# Check 3: robots.txt Availability
+# P0: Critical SEO Pages
 ################################################################################
-echo -e "${BLUE}=== Check 3: robots.txt Availability ===${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}  P0: Critical SEO Pages${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo ""
 
-ROBOTS_RESPONSE=$(curl -s -w "\n%{http_code}" "$FRONTEND_URL/robots.txt" 2>&1)
-ROBOTS_HTTP_CODE=$(echo "$ROBOTS_RESPONSE" | tail -n1)
-ROBOTS_BODY=$(echo "$ROBOTS_RESPONSE" | sed '$d')
+# Check key field pages
+echo -e "${CYAN}→ Research Field Pages (Top 5)${NC}"
+FIELDS=("brain-computer-interface" "crispr-gene-editing" "cancer-immunotherapy" "neural-modulation" "ai-drug-discovery")
+FIELD_PASSED=0
 
-if [ "$ROBOTS_HTTP_CODE" = "200" ]; then
-    echo -e "${GREEN}✓ robots.txt is accessible (HTTP $ROBOTS_HTTP_CODE)${NC}"
+for field in "${FIELDS[@]}"; do
+    check_start
+    RESPONSE=$(http_get "$FRONTEND_URL/research-jobs/$field" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
     
-    # Verify content contains essential directives
-    if echo "$ROBOTS_BODY" | grep -q "User-agent:" && \
-       echo "$ROBOTS_BODY" | grep -q "Sitemap:"; then
-        echo -e "${GREEN}✓ robots.txt contains required directives${NC}"
-        
-        # Show first few lines
-        echo -e "${BLUE}Preview:${NC}"
-        echo "$ROBOTS_BODY" | head -n 5
+    if [ "$HTTP_CODE" = "200" ]; then
+        ((FIELD_PASSED++))
+        [ "$VERBOSE" = true ] && check_pass "/$field (HTTP $HTTP_CODE)"
     else
-        echo -e "${YELLOW}⚠ robots.txt missing required directives${NC}"
-        OVERALL_STATUS=1
+        check_fail "/$field (HTTP $HTTP_CODE)"
     fi
-elif [ "$ROBOTS_HTTP_CODE" = "401" ]; then
-    echo -e "${RED}✗ robots.txt returned 401 Unauthorized${NC}"
-    echo -e "${RED}  This is CRITICAL - Google crawler will be blocked!${NC}"
-    OVERALL_STATUS=1
-elif [ "$ROBOTS_HTTP_CODE" = "404" ]; then
-    echo -e "${RED}✗ robots.txt not found (404)${NC}"
-    OVERALL_STATUS=1
+done
+
+if [ $FIELD_PASSED -eq 5 ]; then
+    check_pass "All 5 field pages accessible ($FIELD_PASSED/5)"
+elif [ $FIELD_PASSED -ge 3 ]; then
+    check_warn "Most field pages accessible ($FIELD_PASSED/5)"
 else
-    echo -e "${RED}✗ robots.txt check failed (HTTP $ROBOTS_HTTP_CODE)${NC}"
-    OVERALL_STATUS=1
+    check_fail "Too many field pages failing ($FIELD_PASSED/5)"
 fi
 echo ""
+
+# Check top country pages
+echo -e "${CYAN}→ Country Pages (Top 10)${NC}"
+COUNTRIES=("united-states" "china" "united-kingdom" "germany" "italy" "canada" "spain" "australia" "france" "japan")
+COUNTRY_PASSED=0
+
+for country in "${COUNTRIES[@]}"; do
+    check_start
+    RESPONSE=$(http_get "$FRONTEND_URL/research-jobs/country/$country" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        ((COUNTRY_PASSED++))
+        [ "$VERBOSE" = true ] && check_pass "/$country (HTTP $HTTP_CODE)"
+    else
+        check_fail "/$country (HTTP $HTTP_CODE)"
+    fi
+done
+
+if [ $COUNTRY_PASSED -eq 10 ]; then
+    check_pass "All 10 country pages accessible ($COUNTRY_PASSED/10)"
+elif [ $COUNTRY_PASSED -ge 7 ]; then
+    check_warn "Most country pages accessible ($COUNTRY_PASSED/10)"
+else
+    check_fail "Too many country pages failing ($COUNTRY_PASSED/10)"
+fi
+echo ""
+
+# Check top city pages
+echo -e "${CYAN}→ City Pages (Top 10)${NC}"
+CITIES=("beijing" "boston" "london" "shanghai" "toronto" "rome" "new-york" "paris" "berlin" "sydney")
+CITY_PASSED=0
+
+for city in "${CITIES[@]}"; do
+    check_start
+    RESPONSE=$(http_get "$FRONTEND_URL/research-jobs/city/$city" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        ((CITY_PASSED++))
+        [ "$VERBOSE" = true ] && check_pass "/$city (HTTP $HTTP_CODE)"
+    else
+        check_fail "/$city (HTTP $HTTP_CODE)"
+    fi
+done
+
+if [ $CITY_PASSED -eq 10 ]; then
+    check_pass "All 10 city pages accessible ($CITY_PASSED/10)"
+elif [ $CITY_PASSED -ge 7 ]; then
+    check_warn "Most city pages accessible ($CITY_PASSED/10)"
+else
+    check_fail "Too many city pages failing ($CITY_PASSED/10)"
+fi
+echo ""
+
+# Check robots.txt
+echo -e "${CYAN}→ robots.txt${NC}"
+check_start
+RESPONSE=$(http_get "$FRONTEND_URL/robots.txt" 5)
+HTTP_CODE=$(extract_code "$RESPONSE")
+BODY=$(extract_body "$RESPONSE")
+
+if [ "$HTTP_CODE" = "200" ]; then
+    if echo "$BODY" | grep -q "User-agent:" && echo "$BODY" | grep -q "Sitemap:"; then
+        check_pass "robots.txt is accessible and valid (HTTP $HTTP_CODE)"
+    else
+        check_warn "robots.txt missing required directives"
+    fi
+elif [ "$HTTP_CODE" = "401" ]; then
+    check_fail "robots.txt returned 401 - CRITICAL for SEO!"
+else
+    check_fail "robots.txt check failed (HTTP $HTTP_CODE)"
+fi
+echo ""
+
+# Check sitemap.xml
+echo -e "${CYAN}→ sitemap.xml${NC}"
+check_start
+RESPONSE=$(http_get "$FRONTEND_URL/sitemap.xml" 5)
+HTTP_CODE=$(extract_code "$RESPONSE")
+BODY=$(extract_body "$RESPONSE")
+
+if [ "$HTTP_CODE" = "200" ]; then
+    URL_COUNT=$(echo "$BODY" | grep -c "<loc>" || echo "0")
+    if [ "$URL_COUNT" -ge 500 ]; then
+        check_pass "Sitemap accessible with $URL_COUNT URLs (HTTP $HTTP_CODE)"
+    elif [ "$URL_COUNT" -ge 100 ]; then
+        check_warn "Sitemap has fewer URLs than expected: $URL_COUNT"
+    else
+        check_fail "Sitemap has too few URLs: $URL_COUNT"
+    fi
+else
+    check_fail "Sitemap check failed (HTTP $HTTP_CODE)"
+fi
+echo ""
+
+################################################################################
+# P0: Page Load Performance
+################################################################################
+if [ "$SKIP_SLOW" = false ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  P0: Page Load Performance${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Homepage load time
+    echo -e "${CYAN}→ Homepage Load Time${NC}"
+    check_start
+    RESPONSE=$(http_get "$FRONTEND_URL/" 10)
+    LOAD_TIME=$(extract_time "$RESPONSE")
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        LOAD_TIME_MS=$(echo "$LOAD_TIME * 1000" | bc | cut -d. -f1)
+        if [ "$LOAD_TIME_MS" -lt 2000 ]; then
+            check_pass "Homepage loads fast: ${LOAD_TIME}s (< 2s)"
+        elif [ "$LOAD_TIME_MS" -lt 4000 ]; then
+            check_warn "Homepage load time acceptable: ${LOAD_TIME}s (< 4s)"
+        else
+            check_warn "Homepage loads slowly: ${LOAD_TIME}s (>= 4s)"
+        fi
+    else
+        check_fail "Homepage load failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+
+    # SEO page load time
+    echo -e "${CYAN}→ SEO Page Load Time${NC}"
+    check_start
+    RESPONSE=$(http_get "$FRONTEND_URL/research-jobs" 10)
+    LOAD_TIME=$(extract_time "$RESPONSE")
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        LOAD_TIME_MS=$(echo "$LOAD_TIME * 1000" | bc | cut -d. -f1)
+        if [ "$LOAD_TIME_MS" -lt 3000 ]; then
+            check_pass "SEO page loads fast: ${LOAD_TIME}s (< 3s)"
+        elif [ "$LOAD_TIME_MS" -lt 5000 ]; then
+            check_warn "SEO page load time acceptable: ${LOAD_TIME}s (< 5s)"
+        else
+            check_warn "SEO page loads slowly: ${LOAD_TIME}s (>= 5s)"
+        fi
+    else
+        check_fail "SEO page load failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+
+    # Demo page load time
+    echo -e "${CYAN}→ Demo Page Load Time${NC}"
+    check_start
+    RESPONSE=$(http_get "$DEMO_URL" 15)
+    LOAD_TIME=$(extract_time "$RESPONSE")
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        LOAD_TIME_MS=$(echo "$LOAD_TIME * 1000" | bc | cut -d. -f1)
+        if [ "$LOAD_TIME_MS" -lt 5000 ]; then
+            check_pass "Demo page loads fast: ${LOAD_TIME}s (< 5s)"
+        elif [ "$LOAD_TIME_MS" -lt 8000 ]; then
+            check_warn "Demo page load time acceptable: ${LOAD_TIME}s (< 8s)"
+        else
+            check_warn "Demo page loads slowly: ${LOAD_TIME}s (>= 8s)"
+        fi
+    else
+        check_fail "Demo page load failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+fi
+
+################################################################################
+# P1: SEO Optimization
+################################################################################
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}  P1: SEO Optimization${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo ""
+
+# Meta tags on homepage
+echo -e "${CYAN}→ Homepage Meta Tags${NC}"
+check_start
+RESPONSE=$(http_get "$FRONTEND_URL/" 5)
+HTTP_CODE=$(extract_code "$RESPONSE")
+BODY=$(extract_body "$RESPONSE")
+
+if [ "$HTTP_CODE" = "200" ]; then
+    HAS_TITLE=$(echo "$BODY" | grep -c "<title>" || echo "0")
+    HAS_DESCRIPTION=$(echo "$BODY" | grep -c "name=\"description\"" || echo "0")
+    HAS_OG=$(echo "$BODY" | grep -c "property=\"og:" || echo "0")
+    
+    if [ "$HAS_TITLE" -ge 1 ] && [ "$HAS_DESCRIPTION" -ge 1 ] && [ "$HAS_OG" -ge 1 ]; then
+        check_pass "Homepage has complete meta tags (title, description, OG)"
+    elif [ "$HAS_TITLE" -ge 1 ] && [ "$HAS_DESCRIPTION" -ge 1 ]; then
+        check_warn "Homepage missing Open Graph tags"
+    else
+        check_fail "Homepage missing critical meta tags"
+    fi
+else
+    check_fail "Cannot check homepage meta tags (HTTP $HTTP_CODE)"
+fi
+echo ""
+
+# Sitemap content validation
+echo -e "${CYAN}→ Sitemap Content Validation${NC}"
+check_start
+if [ -n "$BODY" ] && [ "$URL_COUNT" -gt 0 ]; then
+    # Check if key pages are in sitemap
+    HAS_HOMEPAGE=$(echo "$BODY" | grep -c "$FRONTEND_URL<" || echo "0")
+    HAS_RESEARCH_JOBS=$(echo "$BODY" | grep -c "/research-jobs<" || echo "0")
+    HAS_ABOUT=$(echo "$BODY" | grep -c "/about<" || echo "0")
+    
+    if [ "$HAS_HOMEPAGE" -ge 1 ] && [ "$HAS_RESEARCH_JOBS" -ge 1 ] && [ "$HAS_ABOUT" -ge 1 ]; then
+        check_pass "Sitemap contains key pages"
+    else
+        check_warn "Sitemap may be missing some key pages"
+    fi
+else
+    check_skip "Sitemap content validation (sitemap not loaded)"
+fi
+echo ""
+
+################################################################################
+# P1: API Performance & Endpoints
+################################################################################
+if [ "$BACKEND_AVAILABLE" = true ] && [ "$SKIP_SLOW" = false ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  P1: API Performance & Endpoints${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Backend health endpoint performance
+    echo -e "${CYAN}→ Backend Health Endpoint Performance${NC}"
+    check_start
+    RESPONSE=$(http_get "$BACKEND_URL/healthz" 5)
+    RESPONSE_TIME=$(extract_time "$RESPONSE")
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        RESPONSE_TIME_MS=$(echo "$RESPONSE_TIME * 1000" | bc | cut -d. -f1)
+        if [ "$RESPONSE_TIME_MS" -lt 500 ]; then
+            check_pass "Health endpoint very fast: ${RESPONSE_TIME}s (< 0.5s)"
+        elif [ "$RESPONSE_TIME_MS" -lt 2000 ]; then
+            check_pass "Health endpoint acceptable: ${RESPONSE_TIME}s (< 2s)"
+        else
+            check_warn "Health endpoint slow: ${RESPONSE_TIME}s (>= 2s)"
+        fi
+    else
+        check_fail "Health endpoint failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+
+    # Map API performance
+    echo -e "${CYAN}→ Map API Performance${NC}"
+    check_start
+    MAP_URL="$BACKEND_URL/api/projects/$DEMO_PROJECT_ID/runs/$DEMO_RUN_ID/map/world"
+    RESPONSE=$(http_get "$MAP_URL" 10)
+    RESPONSE_TIME=$(extract_time "$RESPONSE")
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        RESPONSE_TIME_MS=$(echo "$RESPONSE_TIME * 1000" | bc | cut -d. -f1)
+        if [ "$RESPONSE_TIME_MS" -lt 2000 ]; then
+            check_pass "Map API fast: ${RESPONSE_TIME}s (< 2s)"
+        elif [ "$RESPONSE_TIME_MS" -lt 5000 ]; then
+            check_warn "Map API acceptable: ${RESPONSE_TIME}s (< 5s)"
+        else
+            check_warn "Map API slow: ${RESPONSE_TIME}s (>= 5s)"
+        fi
+    else
+        check_fail "Map API failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+
+    # Country map API
+    echo -e "${CYAN}→ Country Map API${NC}"
+    check_start
+    COUNTRY_URL="$BACKEND_URL/api/projects/$DEMO_PROJECT_ID/runs/$DEMO_RUN_ID/map/country/United%20States"
+    RESPONSE=$(http_get "$COUNTRY_URL" 10)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    BODY=$(extract_body "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        if echo "$BODY" | grep -q "\"data\""; then
+            check_pass "Country map API works (HTTP $HTTP_CODE)"
+        else
+            check_warn "Country map API returns unexpected format"
+        fi
+    else
+        check_fail "Country map API failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+fi
+
+################################################################################
+# P1: Authentication & User Endpoints
+################################################################################
+if [ "$BACKEND_AVAILABLE" = true ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  P1: Authentication & User Endpoints${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Password requirements endpoint
+    echo -e "${CYAN}→ Password Requirements Endpoint${NC}"
+    check_start
+    RESPONSE=$(http_get "$BACKEND_URL/api/auth/password-requirements" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    BODY=$(extract_body "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        if echo "$BODY" | grep -q "min_length"; then
+            check_pass "Password requirements endpoint works (HTTP $HTTP_CODE)"
+        else
+            check_warn "Password requirements endpoint returns unexpected format"
+        fi
+    else
+        check_fail "Password requirements endpoint failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+
+    # Email verification endpoint
+    echo -e "${CYAN}→ Email Verification Endpoint${NC}"
+    check_start
+    TEST_EMAIL="test@example.com"
+    RESPONSE=$(http_post "$BACKEND_URL/api/auth/send-verification-code" "{\"email\":\"$TEST_EMAIL\"}" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        check_pass "Email verification endpoint accessible (HTTP $HTTP_CODE)"
+    elif [ "$HTTP_CODE" = "500" ]; then
+        check_warn "Email service may have SendGrid configuration issue"
+    else
+        check_fail "Email verification endpoint failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+
+    # Config endpoint
+    echo -e "${CYAN}→ Frontend Config Endpoint${NC}"
+    check_start
+    RESPONSE=$(http_get "$BACKEND_URL/api/config" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        check_pass "Config endpoint accessible (HTTP $HTTP_CODE)"
+    else
+        check_fail "Config endpoint failed (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+fi
+
+################################################################################
+# P1: Error Handling & Static Resources
+################################################################################
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}  P1: Error Handling & Static Resources${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo ""
+
+# 404 page
+echo -e "${CYAN}→ 404 Error Page${NC}"
+check_start
+RESPONSE=$(http_get "$FRONTEND_URL/nonexistent-page-12345" 5)
+HTTP_CODE=$(extract_code "$RESPONSE")
+
+if [ "$HTTP_CODE" = "404" ]; then
+    check_pass "404 page returns correct status (HTTP $HTTP_CODE)"
+else
+    check_warn "404 page returns unexpected status (HTTP $HTTP_CODE)"
+fi
+echo ""
+
+# Favicon
+echo -e "${CYAN}→ Favicon${NC}"
+check_start
+RESPONSE=$(http_get "$FRONTEND_URL/favicon.ico" 5)
+HTTP_CODE=$(extract_code "$RESPONSE")
+
+if [ "$HTTP_CODE" = "200" ]; then
+    check_pass "Favicon is accessible (HTTP $HTTP_CODE)"
+else
+    check_warn "Favicon not found (HTTP $HTTP_CODE)"
+fi
+echo ""
+
+################################################################################
+# P1: Security - Endpoint Protection
+################################################################################
+if [ "$BACKEND_AVAILABLE" = true ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  P1: Security - Endpoint Protection${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Protected endpoints should require auth
+    echo -e "${CYAN}→ Protected Endpoints (Should Require Auth)${NC}"
+    
+    check_start
+    RESPONSE=$(http_get "$BACKEND_URL/api/projects" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "401" ]; then
+        check_pass "/api/projects requires authentication (HTTP 401)"
+    else
+        check_warn "/api/projects returned unexpected status (HTTP $HTTP_CODE)"
+    fi
+    
+    check_start
+    RESPONSE=$(http_get "$BACKEND_URL/api/user/quota" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "401" ]; then
+        check_pass "/api/user/quota requires authentication (HTTP 401)"
+    else
+        check_warn "/api/user/quota returned unexpected status (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+
+    # Public endpoints should NOT require auth
+    echo -e "${CYAN}→ Public Endpoints (Should Be Accessible)${NC}"
+    
+    check_start
+    RESPONSE=$(http_get "$BACKEND_URL/api/config" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        check_pass "/api/config is publicly accessible (HTTP $HTTP_CODE)"
+    else
+        check_fail "/api/config should be public (HTTP $HTTP_CODE)"
+    fi
+    echo ""
+fi
+
+################################################################################
+# P2: Resource Size & Optimization
+################################################################################
+if [ "$SKIP_SLOW" = false ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  P2: Resource Size & Optimization${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    # Sitemap size
+    echo -e "${CYAN}→ Sitemap File Size${NC}"
+    check_start
+    if [ -n "$BODY" ]; then
+        SIZE_BYTES=$(echo "$BODY" | wc -c)
+        SIZE_KB=$((SIZE_BYTES / 1024))
+        
+        if [ "$SIZE_KB" -lt 1024 ]; then
+            check_pass "Sitemap size is acceptable: ${SIZE_KB}KB (< 1MB)"
+        else
+            check_warn "Sitemap is large: ${SIZE_KB}KB (>= 1MB)"
+        fi
+    else
+        check_skip "Sitemap size check (sitemap not loaded)"
+    fi
+    echo ""
+
+    # Homepage HTML size
+    echo -e "${CYAN}→ Homepage HTML Size${NC}"
+    check_start
+    RESPONSE=$(http_get "$FRONTEND_URL/" 5)
+    HTTP_CODE=$(extract_code "$RESPONSE")
+    BODY=$(extract_body "$RESPONSE")
+    
+    if [ "$HTTP_CODE" = "200" ]; then
+        SIZE_BYTES=$(echo "$BODY" | wc -c)
+        SIZE_KB=$((SIZE_BYTES / 1024))
+        
+        if [ "$SIZE_KB" -lt 500 ]; then
+            check_pass "Homepage HTML is optimized: ${SIZE_KB}KB (< 500KB)"
+        elif [ "$SIZE_KB" -lt 1000 ]; then
+            check_warn "Homepage HTML is acceptable: ${SIZE_KB}KB (< 1MB)"
+        else
+            check_warn "Homepage HTML is large: ${SIZE_KB}KB (>= 1MB)"
+        fi
+    else
+        check_skip "Homepage size check (page not loaded)"
+    fi
+    echo ""
+fi
+
+################################################################################
+# P2: Security Headers
+################################################################################
+if [ "$ENVIRONMENT" = "production" ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  P2: Security Headers${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    echo -e "${CYAN}→ Security Headers (Frontend)${NC}"
+    HEADERS=$(curl -s -I --max-time 5 "$FRONTEND_URL/" 2>&1)
+    
+    check_start
+    if echo "$HEADERS" | grep -qi "x-frame-options:"; then
+        check_pass "X-Frame-Options header present"
+    else
+        check_warn "X-Frame-Options header missing"
+    fi
+    
+    check_start
+    if echo "$HEADERS" | grep -qi "x-content-type-options:"; then
+        check_pass "X-Content-Type-Options header present"
+    else
+        check_warn "X-Content-Type-Options header missing"
+    fi
+    
+    check_start
+    if echo "$HEADERS" | grep -qi "referrer-policy:"; then
+        check_pass "Referrer-Policy header present"
+    else
+        check_warn "Referrer-Policy header missing"
+    fi
+    echo ""
+fi
+
+################################################################################
+# P2: CORS Configuration
+################################################################################
+if [ "$BACKEND_AVAILABLE" = true ] && [ "$FRONTEND_AVAILABLE" = true ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  P2: CORS Configuration${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+
+    echo -e "${CYAN}→ CORS Headers${NC}"
+    check_start
+    HEADERS=$(curl -s -I -H "Origin: $FRONTEND_URL" --max-time 5 "$BACKEND_URL/healthz" 2>&1)
+    
+    if echo "$HEADERS" | grep -qi "access-control-allow-origin"; then
+        check_pass "CORS headers configured"
+    else
+        check_warn "CORS headers not detected (may be conditional)"
+    fi
+    echo ""
+fi
 
 ################################################################################
 # Summary
 ################################################################################
-echo -e "${BLUE}=== Health Check Summary ===${NC}"
+SCRIPT_TIME=$(measure_time $time_start)
+
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}  Health Check Summary${NC}"
+echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+echo ""
 echo "Environment: $ENVIRONMENT"
-echo "Backend: $BACKEND_URL"
-echo "Frontend: $FRONTEND_URL"
+echo "Duration:    ${SCRIPT_TIME}s"
+echo ""
+echo "Total Checks:   $TOTAL_CHECKS"
+echo -e "${GREEN}Passed:         $PASSED_CHECKS${NC}"
+echo -e "${RED}Failed:         $FAILED_CHECKS${NC}"
+echo -e "${YELLOW}Warnings:       $WARNING_CHECKS${NC}"
+echo -e "${CYAN}Skipped:        $SKIPPED_CHECKS${NC}"
+echo ""
+
+SUCCESS_RATE=$((PASSED_CHECKS * 100 / TOTAL_CHECKS))
+echo "Success Rate:   ${SUCCESS_RATE}%"
 echo ""
 
 if [ $OVERALL_STATUS -eq 0 ]; then
-    echo -e "${GREEN}✓ All health checks passed!${NC}"
+    echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║  ✓ All Critical Checks Passed!        ║${NC}"
+    echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some health checks failed. Please review the output above.${NC}"
+    echo -e "${RED}╔════════════════════════════════════════╗${NC}"
+    echo -e "${RED}║  ✗ Some Checks Failed                  ║${NC}"
+    echo -e "${RED}╚════════════════════════════════════════╝${NC}"
+    echo ""
+    echo "Review the output above for details."
     exit 1
 fi
