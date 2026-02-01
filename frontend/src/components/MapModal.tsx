@@ -1186,8 +1186,6 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
               {level === "city" && renderCityList()}
             </div>
           </div>
-        </div>
-          </div>
           )}
         </div>
       </div>
