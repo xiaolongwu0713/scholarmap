@@ -2,7 +2,14 @@
 
 ## 概述
 
-全面的健康检查脚本，涵盖系统可用性、SEO、性能、安全、用户功能等多个维度。
+全面的健康检查脚本，涵盖系统可用性、SEO、性能、安全、用户功能、资源快照和邮件报告等多个维度。
+
+**新功能** (v2.1):
+- ✅ 集成数据库资源快照功能
+- ✅ 自动邮件报告发送到管理员 (xiaolongwu0713@gmail.com)
+- ✅ 支持 mail/sendmail 命令发送邮件
+- ✅ 邮件包含完整的健康检查摘要
+- ✅ 生产环境自动记录资源使用情况
 
 ---
 
@@ -62,7 +69,13 @@
 ### **P2: CORS 配置**（1 项）
 - ✅ CORS Headers 检查
 
-**总计**: 50+ 检查项
+### **新增：资源快照**（1 项）
+- ✅ 数据库资源使用情况记录
+
+### **新增：邮件报告**（1 项）
+- ✅ 自动发送健康检查报告邮件
+
+**总计**: 50+ 检查项 + 资源快照 + 邮件报告
 
 ---
 
@@ -72,16 +85,16 @@
 
 ```bash
 # 检查生产环境（默认）
-./scripts/health_check.sh
+./cron_job/health_check.sh
 
 # 检查本地环境
-./scripts/health_check.sh local
+./cron_job/health_check.sh local
 
 # 详细输出模式
-./scripts/health_check.sh production --verbose
+./cron_job/health_check.sh production --verbose
 
 # 跳过慢速检查（性能测试、外部服务）
-./scripts/health_check.sh production --skip-slow
+./cron_job/health_check.sh production --skip-slow
 ```
 
 ### 环境配置
@@ -198,7 +211,7 @@ Success Rate:   91%
 
 **示例**:
 ```bash
-./scripts/health_check.sh production --verbose
+./cron_job/health_check.sh production --verbose
 ```
 
 **用途**:
@@ -216,7 +229,7 @@ Success Rate:   91%
 
 **示例**:
 ```bash
-./scripts/health_check.sh production --skip-slow
+./cron_job/health_check.sh production --skip-slow
 ```
 
 **用途**:
@@ -267,8 +280,8 @@ jobs:
       
       - name: Run Health Check
         run: |
-          chmod +x scripts/health_check.sh
-          ./scripts/health_check.sh production
+          chmod +x cron_job/health_check.sh
+          ./cron_job/health_check.sh production
       
       - name: Notify on Failure
         if: failure()
@@ -283,13 +296,13 @@ jobs:
 
 ```bash
 # 每小时执行一次
-0 * * * * /path/to/scholarmap/scripts/health_check.sh production >> /var/log/scholarmap_health.log 2>&1
+0 * * * * /path/to/scholarmap/cron_job/health_check.sh production >> /var/log/scholarmap_health.log 2>&1
 
 # 每 6 小时执行完整检查
-0 */6 * * * /path/to/scholarmap/scripts/health_check.sh production --verbose >> /var/log/scholarmap_health_detailed.log 2>&1
+0 */6 * * * /path/to/scholarmap/cron_job/health_check.sh production --verbose >> /var/log/scholarmap_health_detailed.log 2>&1
 
 # 每 15 分钟执行快速检查
-*/15 * * * * /path/to/scholarmap/scripts/health_check.sh production --skip-slow >> /var/log/scholarmap_health_quick.log 2>&1
+*/15 * * * * /path/to/scholarmap/cron_job/health_check.sh production --skip-slow >> /var/log/scholarmap_health_quick.log 2>&1
 ```
 
 ---
@@ -388,13 +401,13 @@ $SCRIPT_DIR/health_check.sh production || \
 ### 部署前检查
 ```bash
 # 1. 本地环境全面检查
-./scripts/health_check.sh local --verbose
+./cron_job/health_check.sh local --verbose
 
 # 2. 生产环境快速检查
-./scripts/health_check.sh production --skip-slow
+./cron_job/health_check.sh production --skip-slow
 
 # 3. 生产环境完整检查
-./scripts/health_check.sh production --verbose
+./cron_job/health_check.sh production --verbose
 ```
 
 ### 定期监控
@@ -403,7 +416,7 @@ $SCRIPT_DIR/health_check.sh production || \
 0 9 * * * /path/to/health_check.sh production
 
 # 部署后立即检查
-./scripts/health_check.sh production --skip-slow
+./cron_job/health_check.sh production --skip-slow
 
 # 每周完整检查
 0 0 * * 0 /path/to/health_check.sh production --verbose
@@ -466,7 +479,7 @@ $SCRIPT_DIR/health_check.sh production || \
 
 ```bash
 # 导出为 JSON 格式
-./scripts/health_check.sh production --json > /var/log/health_check.json
+./cron_job/health_check.sh production --json > /var/log/health_check.json
 
 # 发送到监控系统
 curl -X POST -H "Content-Type: application/json" \
@@ -508,16 +521,207 @@ echo ""
 
 ---
 
+## 📧 **邮件报告功能** (v2.1 新增)
+
+### 功能说明
+
+脚本在生产环境运行完成后会自动发送健康检查报告邮件到管理员邮箱。
+
+### 邮件内容
+
+邮件包含以下信息：
+- ✅ 检查摘要（总数、通过、失败、警告）
+- ✅ 整体状态（通过/失败）
+- ✅ Backend 和 Frontend 状态
+- ✅ 执行时间和环境信息
+- ✅ 失败检查的数量（如有）
+
+### 邮件发送方式
+
+脚本会按以下顺序尝试发送邮件：
+
+1. **mail 命令**（推荐）
+   ```bash
+   # 检查是否可用
+   command -v mail
+   
+   # 安装（macOS）
+   # mail 通常默认安装
+   
+   # 安装（Linux）
+   sudo apt-get install mailutils  # Ubuntu/Debian
+   sudo yum install mailx          # CentOS/RHEL
+   ```
+
+2. **sendmail 命令**（备用）
+   ```bash
+   # 检查是否可用
+   command -v sendmail
+   
+   # 安装（Linux）
+   sudo apt-get install sendmail
+   ```
+
+3. **保存到文件**（最后手段）
+   - 如果没有邮件命令，报告会保存到 `/tmp/scholarmap_health_report_*.txt`
+   - 可以手动发送：
+     ```bash
+     mail -s "Subject" xiaolongwu0713@gmail.com < /tmp/scholarmap_health_report_*.txt
+     ```
+
+### 配置邮件地址
+
+要更改接收邮件的地址，编辑脚本中的变量：
+
+```bash
+# 在 health_check.sh 中找到这一行：
+ADMIN_EMAIL="xiaolongwu0713@gmail.com"
+
+# 修改为你的邮箱：
+ADMIN_EMAIL="your_email@example.com"
+```
+
+### 邮件示例
+
+**成功时的邮件主题**:
+```
+✓ ScholarMap Health Check Passed - 2026-02-01 10:30:45
+```
+
+**失败时的邮件主题**:
+```
+⚠ ScholarMap Health Check Failed - 2026-02-01 10:30:45
+```
+
+**邮件正文示例**:
+```
+ScholarMap Health Check Report
+========================================
+Date: 2026-02-01 10:30:45
+Environment: production
+Duration: 17s
+
+SUMMARY
+-------
+Total Checks:   54
+Passed:         52
+Failed:         0
+Warnings:       2
+Skipped:        0
+Success Rate:   96%
+
+OVERALL STATUS
+--------------
+✓ All Critical Checks Passed!
+
+QUICK STATUS
+------------
+Backend:  ✓ Healthy
+Frontend: ✓ Healthy
+
+URLs
+----
+Backend:  https://scholarmap-q1k1.onrender.com
+Frontend: https://scholarmap-frontend.onrender.com
+```
+
+---
+
+## 💾 **资源快照功能** (v2.1 新增)
+
+### 功能说明
+
+在生产环境健康检查完成后，脚本会自动记录数据库资源使用情况快照。
+
+### 快照内容
+
+- 📊 各数据表的行数
+- 💿 数据库磁盘使用情况
+- 📅 快照时间戳
+- 🔢 用户活动统计
+
+### 快照存储
+
+快照数据保存在数据库的 `resource_snapshots` 表中，可用于：
+- 📈 资源使用趋势分析
+- ⚠️ 异常增长检测
+- 📊 容量规划
+
+### 查看快照
+
+使用 backend 管理端点查看快照历史：
+
+```bash
+# 需要超级用户认证
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+  https://scholarmap-q1k1.onrender.com/api/admin/resource-monitor/stats?days=30
+```
+
+### 依赖要求
+
+资源快照功能需要：
+- ✅ Python 环境
+- ✅ 数据库连接配置
+- ✅ `cron_job/take_resource_snapshot.py` 脚本
+
+如果环境不满足，脚本会跳过资源快照但继续执行其他检查。
+
+---
+
+## 🔄 **Cron Job 配置**
+
+### 推荐配置（含邮件报告）
+
+```bash
+# 编辑 crontab
+crontab -e
+
+# 每天早上 9 点执行完整检查并发送邮件
+0 9 * * * /path/to/scholarmap/cron_job/health_check.sh production >> /var/log/scholarmap_health.log 2>&1
+
+# 每 6 小时快速检查（不发邮件，因为会跳过慢检查）
+0 */6 * * * /path/to/scholarmap/cron_job/health_check.sh production --skip-slow >> /var/log/scholarmap_health_quick.log 2>&1
+```
+
+### 邮件频率建议
+
+- ✅ **每天 1 次完整检查** - 发送邮件
+- ✅ **每 6 小时快速检查** - 仅记录日志
+- ⚠️ **避免过于频繁发送邮件** - 防止邮件洪水
+
+### 本地测试邮件功能
+
+```bash
+# 测试邮件是否正常工作
+echo "Test email body" | mail -s "Test Subject" xiaolongwu0713@gmail.com
+
+# 运行健康检查（本地环境不会发邮件）
+./cron_job/health_check.sh local
+
+# 运行健康检查（生产环境会发邮件）
+./cron_job/health_check.sh production
+```
+
+---
+
 ## 📚 相关文档
 
 - [部署检查清单](../documents/DEPLOYMENT_CHECKLIST.md)
 - [SEO 优化策略](../documents/SEO/SEO_INDEXING_ACCELERATION_PLAN.md)
 - [性能优化](../documents/PERFORMANCE_OPTIMIZATION.md)
 - [Render 部署](../documents/RENDER_DEPLOYMENT_GUIDE.md)
+- [资源监控说明](../documents/RESOURCE_MONITORING.md)
 
 ---
 
 ## 📝 更新日志
+
+### 2026-02-01 v2.1
+- ✅ **集成资源快照功能** - 整合 take_resource_snapshot.sh
+- ✅ **邮件报告功能** - 自动发送健康检查报告到管理员
+- ✅ 支持 mail/sendmail 命令
+- ✅ 移动所有 health check 文件到 cron_job 目录
+- ✅ 优化 cron job 友好性
 
 ### 2026-02-01 v2.0
 - ✅ 添加 P0/P1/P2 全面检查（50+ 项）

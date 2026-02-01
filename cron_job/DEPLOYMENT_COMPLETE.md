@@ -18,15 +18,15 @@
 - 中间件：自动追踪用户活动
 
 ### ✅ 3. 自动化脚本
-- Python 脚本：`scripts/take_resource_snapshot.py` ✅ 已测试通过
-- Shell 脚本：`scripts/take_resource_snapshot.sh` ✅ 已测试通过
+- Python 脚本：`cron_job/take_resource_snapshot.py` ✅ 已测试通过
+- Shell 脚本：`cron_job/health_check.sh` ✅ 已测试通过
 - Conda 路径已配置：`/Users/xiaowu/opt/miniconda3`
 - 日志文件：`resource_snapshot.log`（根目录）
 
 ### ✅ 4. Cron 定时任务配置
 ```bash
 # 每天 09:00 执行快照
-0 9 * * * /Users/xiaowu/local_code/scholarmap/scripts/take_resource_snapshot.sh
+0 9 * * * /Users/xiaowu/local_code/scholarmap/cron_job/health_check.sh
 ```
 
 ### ✅ 5. 前端界面
@@ -44,7 +44,7 @@
 ```bash
 crontab -e
 # 添加以下行：
-0 9 * * * /Users/xiaowu/local_code/scholarmap/scripts/take_resource_snapshot.sh
+0 9 * * * /Users/xiaowu/local_code/scholarmap/cron_job/health_check.sh
 ```
 
 ### 2. 重启后端服务（必需）
@@ -125,8 +125,8 @@ Disk Sizes:
 ### 新增文件
 - `backend/app/db/resource_monitor_repository.py` - Repository 实现
 - `scripts/create_resource_monitoring_tables.sql` - 数据库迁移
-- `scripts/take_resource_snapshot.py` - Python 快照脚本
-- `scripts/take_resource_snapshot.sh` - Shell 包装脚本
+- `cron_job/take_resource_snapshot.py` - Python 快照脚本
+- `cron_job/health_check.sh` - Shell 包装脚本
 - `scripts/run_migration.py` - 迁移执行工具
 - `CRON_SETUP.md` - Cron 配置指南
 - `RESOURCE_MONITORING.md` - 完整文档
@@ -183,7 +183,7 @@ crontab -l
 tail -50 resource_snapshot.log
 
 # 手动触发测试
-./scripts/take_resource_snapshot.sh
+./cron_job/health_check.sh
 ```
 
 ---

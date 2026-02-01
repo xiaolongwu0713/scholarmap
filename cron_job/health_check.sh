@@ -4,25 +4,37 @@
 # ScholarMap Comprehensive Health Check Script
 # 
 # Performs extensive health checks across:
-# - System availability
-# - SEO optimization
-# - Performance metrics
-# - User functionality
-# - Database integrity
-# - External services
-# - Security posture
+# - System availability (backend, frontend, demo)
+# - SEO optimization (pages, robots.txt, sitemap)
+# - Performance metrics (load times, API response)
+# - User functionality (auth, email service)
+# - Database integrity & resource snapshots
+# - External services (geocoding, etc.)
+# - Security posture (headers, CORS, endpoint protection)
+#
+# NEW in v2.1:
+# - Integrated resource snapshot (database usage monitoring)
+# - Automatic email reporting to xiaolongwu0713@gmail.com
+# - Replaces take_resource_snapshot.sh functionality
 #
 # Usage:
-#   ./scripts/health_check.sh [environment] [options]
+#   ./cron_job/health_check.sh [environment] [options]
 #
 # Arguments:
 #   environment - Optional. Either "local" or "production" (default: production)
-#   --verbose   - Enable verbose output
-#   --skip-slow - Skip slow checks (performance, external services)
+#   --verbose   - Enable verbose output (show all individual checks)
+#   --skip-slow - Skip slow checks (performance tests, skips email)
+#
+# Features:
+#   - 57+ health checks across P0/P1/P2 priorities
+#   - Color-coded output (✓ ✗ ⚠ ⊘)
+#   - Performance timing for all requests
+#   - Resource snapshot in production
+#   - Email report to admin (production only, full check only)
 #
 # Exit codes:
-#   0 - All checks passed
-#   1 - One or more checks failed
+#   0 - All critical checks passed (warnings are OK)
+#   1 - One or more critical checks failed
 ################################################################################
 
 set +e  # Don't exit on error, we want to run all checks
@@ -832,6 +844,47 @@ if [ "$BACKEND_AVAILABLE" = true ] && [ "$FRONTEND_AVAILABLE" = true ]; then
 fi
 
 ################################################################################
+# Resource Snapshot (Production Only)
+################################################################################
+if [ "$ENVIRONMENT" = "production" ] && [ "$BACKEND_AVAILABLE" = true ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  Resource Snapshot${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+    
+    echo -e "${CYAN}→ Taking Database Resource Snapshot${NC}"
+    
+    # Get script directory
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+    
+    # Check if Python snapshot script exists
+    if [ -f "$PROJECT_DIR/cron_job/take_resource_snapshot.py" ]; then
+        # Try to run snapshot (with conda environment if available)
+        if command -v conda &> /dev/null && [ -f "$HOME/opt/miniconda3/etc/profile.d/conda.sh" ]; then
+            echo "  Using conda environment 'maker'..."
+            source "$HOME/opt/miniconda3/etc/profile.d/conda.sh" 2>/dev/null
+            conda activate maker >/dev/null 2>&1
+        fi
+        
+        # Run snapshot script
+        SNAPSHOT_OUTPUT=$(cd "$PROJECT_DIR" && python cron_job/take_resource_snapshot.py 2>&1)
+        SNAPSHOT_EXIT=$?
+        
+        if [ $SNAPSHOT_EXIT -eq 0 ]; then
+            check_pass "Resource snapshot saved successfully"
+            [ "$VERBOSE" = true ] && echo "$SNAPSHOT_OUTPUT" | tail -n 5
+        else
+            check_warn "Resource snapshot failed (non-critical)"
+            [ "$VERBOSE" = true ] && echo "$SNAPSHOT_OUTPUT" | tail -n 10
+        fi
+    else
+        check_skip "Resource snapshot script not found"
+    fi
+    echo ""
+fi
+
+################################################################################
 # Summary
 ################################################################################
 SCRIPT_TIME=$(measure_time $time_start)
@@ -854,16 +907,135 @@ SUCCESS_RATE=$((PASSED_CHECKS * 100 / TOTAL_CHECKS))
 echo "Success Rate:   ${SUCCESS_RATE}%"
 echo ""
 
+# Determine overall status message
 if [ $OVERALL_STATUS -eq 0 ]; then
-    echo -e "${GREEN}╔════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║  ✓ All Critical Checks Passed!        ║${NC}"
-    echo -e "${GREEN}╚════════════════════════════════════════╝${NC}"
+    STATUS_ICON="✓"
+    STATUS_MSG="All Critical Checks Passed!"
+    STATUS_COLOR="${GREEN}"
+else
+    STATUS_ICON="✗"
+    STATUS_MSG="Some Checks Failed"
+    STATUS_COLOR="${RED}"
+fi
+
+echo -e "${STATUS_COLOR}╔════════════════════════════════════════╗${NC}"
+echo -e "${STATUS_COLOR}║  $STATUS_ICON $STATUS_MSG        ║${NC}"
+echo -e "${STATUS_COLOR}╚════════════════════════════════════════╝${NC}"
+echo ""
+
+################################################################################
+# Email Report (Production Only)
+################################################################################
+if [ "$ENVIRONMENT" = "production" ]; then
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo -e "${BLUE}  Email Report${NC}"
+    echo -e "${BLUE}═══════════════════════════════════════════════════════════${NC}"
+    echo ""
+    
+    ADMIN_EMAIL="xiaolongwu0713@gmail.com"
+    REPORT_DATE=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    # Create email subject
+    if [ $OVERALL_STATUS -eq 0 ]; then
+        EMAIL_SUBJECT="✓ ScholarMap Health Check Passed - $REPORT_DATE"
+    else
+        EMAIL_SUBJECT="⚠ ScholarMap Health Check Failed - $REPORT_DATE"
+    fi
+    
+    # Create email body (plain text summary)
+    EMAIL_BODY="ScholarMap Health Check Report
+========================================
+Date: $REPORT_DATE
+Environment: $ENVIRONMENT
+Duration: ${SCRIPT_TIME}s
+
+SUMMARY
+-------
+Total Checks:   $TOTAL_CHECKS
+Passed:         $PASSED_CHECKS
+Failed:         $FAILED_CHECKS
+Warnings:       $WARNING_CHECKS
+Skipped:        $SKIPPED_CHECKS
+Success Rate:   ${SUCCESS_RATE}%
+
+OVERALL STATUS
+--------------
+$STATUS_ICON $STATUS_MSG
+
+QUICK STATUS
+------------
+Backend:  $([[ "$BACKEND_AVAILABLE" == "true" ]] && echo "✓ Healthy" || echo "✗ Unavailable")
+Frontend: $([[ "$FRONTEND_AVAILABLE" == "true" ]] && echo "✓ Healthy" || echo "✗ Unavailable")
+
+URLs
+----
+Backend:  $BACKEND_URL
+Frontend: $FRONTEND_URL
+
+"
+
+    # Add failure details if any
+    if [ $FAILED_CHECKS -gt 0 ] || [ $WARNING_CHECKS -gt 0 ]; then
+        EMAIL_BODY+="
+⚠ ATTENTION REQUIRED
+--------------------
+$FAILED_CHECKS check(s) failed
+$WARNING_CHECKS warning(s) detected
+
+Please review the full logs for details.
+"
+    fi
+    
+    EMAIL_BODY+="
+--
+This is an automated health check report from ScholarMap.
+For full details, check the server logs or run the health check script manually.
+"
+    
+    # Try to send email using mail command (if available)
+    if command -v mail &> /dev/null; then
+        echo "$EMAIL_BODY" | mail -s "$EMAIL_SUBJECT" "$ADMIN_EMAIL" 2>/dev/null
+        MAIL_EXIT=$?
+        
+        if [ $MAIL_EXIT -eq 0 ]; then
+            echo -e "${GREEN}✓ Email report sent to $ADMIN_EMAIL${NC}"
+        else
+            echo -e "${YELLOW}⚠ Failed to send email (mail command failed)${NC}"
+        fi
+    elif command -v sendmail &> /dev/null; then
+        # Try sendmail as fallback
+        {
+            echo "To: $ADMIN_EMAIL"
+            echo "Subject: $EMAIL_SUBJECT"
+            echo "Content-Type: text/plain; charset=UTF-8"
+            echo ""
+            echo "$EMAIL_BODY"
+        } | sendmail -t 2>/dev/null
+        
+        SENDMAIL_EXIT=$?
+        if [ $SENDMAIL_EXIT -eq 0 ]; then
+            echo -e "${GREEN}✓ Email report sent to $ADMIN_EMAIL (via sendmail)${NC}"
+        else
+            echo -e "${YELLOW}⚠ Failed to send email (sendmail failed)${NC}"
+        fi
+    else
+        # No mail command available, save to file
+        REPORT_FILE="/tmp/scholarmap_health_report_$(date '+%Y%m%d_%H%M%S').txt"
+        echo "$EMAIL_BODY" > "$REPORT_FILE"
+        echo -e "${YELLOW}⚠ Mail command not available${NC}"
+        echo -e "${CYAN}  Report saved to: $REPORT_FILE${NC}"
+        echo -e "${CYAN}  To send manually: mail -s \"$EMAIL_SUBJECT\" $ADMIN_EMAIL < $REPORT_FILE${NC}"
+    fi
+    echo ""
+fi
+
+################################################################################
+# Exit
+################################################################################
+if [ $OVERALL_STATUS -eq 0 ]; then
+    [ "$ENVIRONMENT" != "production" ] && echo "Review the output above for details."
     exit 0
 else
-    echo -e "${RED}╔════════════════════════════════════════╗${NC}"
-    echo -e "${RED}║  ✗ Some Checks Failed                  ║${NC}"
-    echo -e "${RED}╚════════════════════════════════════════╝${NC}"
-    echo ""
     echo "Review the output above for details."
     exit 1
 fi

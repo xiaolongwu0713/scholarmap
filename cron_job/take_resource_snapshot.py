@@ -8,7 +8,7 @@ This script:
 3. Saves snapshot to resource_snapshots table (UPSERT by date)
 
 Usage:
-    python scripts/take_resource_snapshot.py
+    python cron_job/take_resource_snapshot.py
 
 Designed to be run by cron daily at 09:00.
 If run multiple times on the same day, it updates (not duplicates) the snapshot.

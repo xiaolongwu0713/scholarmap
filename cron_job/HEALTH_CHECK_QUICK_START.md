@@ -1,21 +1,27 @@
 # 健康检查系统 - 快速开始
 
+**版本**: v2.1  
+**新功能**: 
+- ✅ 自动邮件报告（发送到 xiaolongwu0713@gmail.com）
+- ✅ 集成资源快照
+- ✅ 一键完成所有监控任务
+
 ## 🚀 **3 分钟快速上手**
 
 ### **基础用法**
 
 ```bash
 # 生产环境完整检查（推荐）
-./scripts/health_check.sh production
+./cron_job/health_check.sh production
 
 # 生产环境快速检查（跳过性能测试）
-./scripts/health_check.sh production --skip-slow
+./cron_job/health_check.sh production --skip-slow
 
 # 本地环境检查
-./scripts/health_check.sh local
+./cron_job/health_check.sh local
 
 # 详细输出模式
-./scripts/health_check.sh production --verbose
+./cron_job/health_check.sh production --verbose
 ```
 
 ---
@@ -108,10 +114,10 @@ Success Rate:   82%
 ### 1. 部署后验证
 ```bash
 # Render 部署完成后立即运行
-./scripts/health_check.sh production --skip-slow
+./cron_job/health_check.sh production --skip-slow
 
 # 5 分钟后运行完整检查
-sleep 300 && ./scripts/health_check.sh production
+sleep 300 && ./cron_job/health_check.sh production
 ```
 
 ### 2. 定期监控
@@ -130,16 +136,84 @@ crontab -e
 ```yaml
 # .github/workflows/health-check.yml
 - name: Health Check
-  run: ./scripts/health_check.sh production --skip-slow
+  run: ./cron_job/health_check.sh production --skip-slow
 ```
 
 ### 4. 调试特定问题
 ```bash
 # 详细查看所有页面状态
-./scripts/health_check.sh production --verbose
+./cron_job/health_check.sh production --verbose
 
 # 只检查快速项目
-./scripts/health_check.sh production --skip-slow
+./cron_job/health_check.sh production --skip-slow
+```
+
+---
+
+## 📧 **邮件报告功能**
+
+### 自动发送
+
+生产环境检查完成后自动发送报告到：**xiaolongwu0713@gmail.com**
+
+### 邮件内容
+- ✅ 检查摘要（通过/失败/警告）
+- ✅ 执行时间和环境
+- ✅ Backend/Frontend 状态
+- ⚠️ 失败详情（如有）
+
+### 邮件示例
+
+**主题**: `✓ ScholarMap Health Check Passed - 2026-02-01`
+
+**正文**:
+```
+Total Checks:   54
+Passed:         52
+Failed:         0
+Warnings:       2
+Success Rate:   96%
+
+✓ All Critical Checks Passed!
+```
+
+### 配置邮件命令
+
+需要 `mail` 或 `sendmail` 命令：
+
+```bash
+# macOS (通常已安装)
+command -v mail
+
+# Linux
+sudo apt-get install mailutils  # Ubuntu
+sudo yum install mailx          # CentOS
+```
+
+---
+
+## 💾 **资源快照功能**
+
+### 自动记录
+
+生产环境检查时自动记录数据库资源使用情况。
+
+### 快照内容
+- 📊 数据表行数
+- 💿 磁盘使用情况
+- 📅 时间戳
+
+### 用途
+- 📈 趋势分析
+- ⚠️ 异常检测
+- 📊 容量规划
+
+### 查看快照
+
+```bash
+# 通过 admin API 查看（需要认证）
+curl -H "Authorization: Bearer TOKEN" \
+  https://scholarmap-q1k1.onrender.com/api/admin/resource-monitor/stats?days=30
 ```
 
 ---
@@ -209,20 +283,20 @@ Note: Backend might be sleeping
 
 ```bash
 # 查看帮助
-./scripts/health_check.sh --help
+./cron_job/health_check.sh --help
 
 # 检查脚本语法
-bash -n scripts/health_check.sh
+bash -n cron_job/health_check.sh
 
 # 查看完整文档
-cat scripts/health_check_README.md
+cat cron_job/health_check_README.md
 ```
 
 ---
 
 ## 📞 **需要帮助？**
 
-- 📖 完整文档: `scripts/health_check_README.md`
+- 📖 完整文档: `cron_job/health_check_README.md`
 - 🐛 报告问题: GitHub Issues
 - 💬 讨论: GitHub Discussions
 
