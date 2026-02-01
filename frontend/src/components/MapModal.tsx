@@ -201,6 +201,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
   const [error, setError] = useState<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Data for each level
   const [worldData, setWorldData] = useState<WorldMapData[]>([]);
@@ -972,6 +973,46 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
         <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
           {/* Map (left side) */}
           <div style={{ flex: 1, position: "relative" }}>
+            {/* Fullscreen Toggle Button (Mobile Optimized) */}
+            <button
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              style={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                zIndex: 10,
+                background: "white",
+                border: "2px solid #e5e7eb",
+                borderRadius: 8,
+                padding: "8px 12px",
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "#374151"
+              }}
+              title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            >
+              {isFullscreen ? (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3" />
+                  </svg>
+                  <span className="hidden sm:inline">Exit</span>
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                  </svg>
+                  <span className="hidden sm:inline">Full</span>
+                </>
+              )}
+            </button>
+            
             {mapboxToken ? (
               mapError ? (
                 <div
@@ -1096,16 +1137,18 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             )}
           </div>
 
-          {/* Data panel (right side) */}
-          <div
-            style={{
-              width: 420,
-              borderLeft: "2px solid #e5e7eb",
-              display: "flex",
-              flexDirection: "column",
-              background: "#fafafa"
-            }}
-          >
+          {/* Data panel (right side) - Hidden in fullscreen mode */}
+          {!isFullscreen && (
+            <div
+              style={{
+                width: 420,
+                borderLeft: "2px solid #e5e7eb",
+                display: "flex",
+                flexDirection: "column",
+                background: "#fafafa"
+              }}
+              className="hidden md:flex"
+            >
             <div style={{ padding: 20, borderBottom: "2px solid #e5e7eb", background: "white" }}>
               {level !== "world" && (
                 <button className="secondary" onClick={goBack} style={{ marginBottom: 12, width: "100%" }}>
@@ -1144,7 +1187,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             </div>
           </div>
         </div>
-      </div>
+          </div>
+          )}
+        </div>
       </div>
       
       {/* Scholar Details Modal */}

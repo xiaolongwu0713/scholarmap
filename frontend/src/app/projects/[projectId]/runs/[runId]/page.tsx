@@ -1430,8 +1430,8 @@ function RunPageContent() {
 
     if (activeResultTab === "Aggregated") {
       return (
-        <div style={{ overflow: "auto", maxHeight: 520 }}>
-          <table>
+        <div style={{ overflow: "auto", maxHeight: 520, WebkitOverflowScrolling: "touch" }}>
+          <table style={{ minWidth: "600px" }}>
             <thead>
               <tr>
                 <th style={{ width: "50%" }}>Title</th>
@@ -1483,8 +1483,8 @@ function RunPageContent() {
     }
 
     return (
-      <div style={{ overflow: "auto", maxHeight: 520 }}>
-        <table>
+      <div style={{ overflow: "auto", maxHeight: 520, WebkitOverflowScrolling: "touch" }}>
+        <table style={{ minWidth: "600px" }}>
           <thead>
             <tr>
               <th style={{ width: "50%" }}>Title</th>
