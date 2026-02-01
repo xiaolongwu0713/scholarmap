@@ -51,6 +51,8 @@ class Settings(BaseSettings):
     # Can be loaded from .env file or environment variables
     sendgrid_api_key: str = ""
     email_from: str = "xiaolongwu0713@gmail.com"  # Sender email address for verification codes
+    # TODO: Use a dedicated no-reply address (e.g., noreply@scholarmap.com) to improve deliverability
+    # Must be verified in SendGrid before use
     
     # Super user configuration (can access all projects and runs)
     # Super users can access any project and run, bypassing ownership checks

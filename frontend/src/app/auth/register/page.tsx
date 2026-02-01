@@ -20,6 +20,7 @@ export default function RegisterPage() {
   const [passwordRequirements, setPasswordRequirements] = useState<PasswordRequirements | null>(null);
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [passwordTouched, setPasswordTouched] = useState(false);
+  const [showSpamWarning, setShowSpamWarning] = useState(false);
 
   // Load password requirements from API
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function RegisterPage() {
     try {
       await sendVerificationCode(email.trim());
       setCodeSent(true);
+      setShowSpamWarning(true); // Show spam warning popup
       setCountdown(60); // 60 second countdown
       const interval = setInterval(() => {
         setCountdown((prev) => {
@@ -316,6 +318,50 @@ export default function RegisterPage() {
           Already have an account? <Link href="/auth/login">Login here</Link>
         </p>
       </div>
+
+      {/* Spam Warning Modal */}
+      {showSpamWarning && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowSpamWarning(false)}
+        >
+          <div
+            className="card"
+            style={{
+              maxWidth: "450px",
+              margin: "1rem",
+              padding: "1.5rem",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ marginTop: 0, marginBottom: "1rem" }}>📧 Check Your Email</h3>
+            <p style={{ marginBottom: "1rem", lineHeight: "1.6" }}>
+              A verification code has been sent to your email address.
+            </p>
+            <p style={{ marginBottom: "1.5rem", lineHeight: "1.6", color: "var(--warning)" }}>
+              <strong>⚠️ Important:</strong> If you don't see the email in your inbox, 
+              please check your <strong>spam or junk folder</strong>.
+            </p>
+            <button
+              onClick={() => setShowSpamWarning(false)}
+              style={{ width: "100%" }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
