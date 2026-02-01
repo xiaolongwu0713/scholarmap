@@ -5,6 +5,7 @@ import { Footer } from "@/components/landing/Footer";
 import { LandingCTAs } from "@/components/landing/LandingCTAs";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { PopularResearchFields } from "@/components/landing/PopularResearchFields";
+import { TopCountries } from "@/components/landing/TopCountries";
 import { 
   StructuredData, 
   organizationSchema, 
@@ -31,6 +32,7 @@ export default function LandingPage() {
       <Hero />
       <LandingCTAs />
       <PopularResearchFields />
+      <TopCountries />
       <WhatYouCanDo />
       <HowItWorks />
       <Footer />
