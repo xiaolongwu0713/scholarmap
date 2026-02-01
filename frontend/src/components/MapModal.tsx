@@ -1189,6 +1189,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
           )}
         </div>
       </div>
+      </div>
       
       {/* Scholar Details Modal */}
       {renderScholarModal()}
