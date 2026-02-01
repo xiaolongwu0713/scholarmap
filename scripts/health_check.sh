@@ -496,15 +496,18 @@ echo ""
 echo -e "${CYAN}→ Sitemap Content Validation${NC}"
 check_start
 if [ -n "$BODY" ] && [ "$URL_COUNT" -gt 0 ]; then
-    # Check if key pages are in sitemap
-    HAS_HOMEPAGE=$(echo "$BODY" | grep -c "$FRONTEND_URL<" || echo "0")
-    HAS_RESEARCH_JOBS=$(echo "$BODY" | grep -c "/research-jobs<" || echo "0")
-    HAS_ABOUT=$(echo "$BODY" | grep -c "/about<" || echo "0")
+    # Check if key pages are in sitemap (use tr to remove newlines)
+    HAS_HOMEPAGE=$(echo "$BODY" | grep -c "$FRONTEND_URL<" | tr -d '\n' || echo "0")
+    HAS_RESEARCH_JOBS=$(echo "$BODY" | grep -c "/research-jobs<" | tr -d '\n' || echo "0")
+    HAS_ABOUT=$(echo "$BODY" | grep -c "/about<" | tr -d '\n' || echo "0")
+    
+    # Debug output in verbose mode
+    [ "$VERBOSE" = true ] && echo "  Homepage count: $HAS_HOMEPAGE, Research: $HAS_RESEARCH_JOBS, About: $HAS_ABOUT"
     
     if [ "$HAS_HOMEPAGE" -ge 1 ] && [ "$HAS_RESEARCH_JOBS" -ge 1 ] && [ "$HAS_ABOUT" -ge 1 ]; then
         check_pass "Sitemap contains key pages"
     else
-        check_warn "Sitemap may be missing some key pages"
+        check_warn "Sitemap may be missing some key pages (H:$HAS_HOMEPAGE R:$HAS_RESEARCH_JOBS A:$HAS_ABOUT)"
     fi
 else
     check_skip "Sitemap content validation (sitemap not loaded)"
