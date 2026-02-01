@@ -31,10 +31,10 @@ export default function LandingPage() {
       <LandingNavbar />
       <Hero />
       <LandingCTAs />
-      <PopularResearchFields />
-      <TopCountries />
       <WhatYouCanDo />
       <HowItWorks />
+      <PopularResearchFields />
+      <TopCountries />
       <Footer />
     </div>
     </>
