@@ -445,11 +445,112 @@ done < urls.txt
 - `e32c9db` - Skip empty cities in sitemap
 - `59d23fe` - Fix 30 sitemap 404 errors with country mapping and city validation
 
-**下一步**：
-1. ✅ 等待 Google 重新抓取 sitemap（24-48小时）
-2. ✅ 在 GSC 验证所有 404 已修复
-3. ⚠️ 考虑添加数据清洗脚本，在源头修复城市名称质量
+---
+
+### 2026-02-02: 第二轮验证 - 发现并修复剩余 13 个 404
+
+**用户请求**："再次检查下sitemap里的url是不是都有效"
+
+**检查结果**：
+- URL 数量：551（从 563 减少了 12 个）
+- 发现：**13 个 404 错误**（2.4% 错误率）
+
+**剩余错误分析**：
+
+虽然第一轮修复解决了 30 个 404 中的 17 个，但仍有 13 个错误：
+```
+❌ sa-italy, saarbrucken, tubingen, munchen (德国城市)
+❌ sydney, newcastle-upon-tyne (真实大城市)
+❌ palaiseau (法国城市)
+❌ rio-grande-do-norte, av-carlos-chagas-filho (仍未被过滤)
+❌ pozuelo-de-alarcon, st-paul, meldola-fc
+```
+
+**根本原因**：
+
+Sitemap 生成逻辑与 `generateStaticParams` **不一致**：
+
+| 组件 | 逻辑 | 结果 |
+|------|------|------|
+| **sitemap.ts** | 为每个 field × top 10 countries 生成 **top 5 cities per country** | 最多 50 cities × 5 fields = **250 city URLs** |
+| **generateStaticParams** | 收集所有 countries 的 cities，然后取 **top 5 globally per field** | 仅 5 cities × 5 fields = **25 city URLs** |
+
+**问题**：
+- Sitemap 生成的城市可能不在 `generateStaticParams` 的 top 5 里
+- 这些城市访问时会触发 ISR，但 `findCityCountry()` 可能失败（城市所在国家不在 top 10）
+- 或者城市在多个国家都有同名，但页面只会找到第一个匹配
+
+**最终解决方案**：
+
+修改 `sitemap.ts` 使其与 `generateStaticParams` 完全一致：
+
+```typescript
+// 旧逻辑：每个 country 的 top 5
+for (const country of topFieldCountries) {
+  const topFieldCities = fieldCities.slice(0, 5);
+  topFieldCities.forEach(city => {
+    fieldCityPages.push({ url: ... });
+  });
+}
+
+// 新逻辑：全局 top 5
+const fieldCitySet = new Set();
+const allCities = [];
+
+// 收集所有 countries 的 cities
+for (const country of topFieldCountries) {
+  topFieldCities.forEach(city => {
+    if (!fieldCitySet.has(citySlug)) {
+      fieldCitySet.add(citySlug);
+      allCities.push({ citySlug, scholarCount });
+    }
+  });
+}
+
+// 排序并只取 top 5
+const topGlobalCities = allCities
+  .sort((a, b) => b.scholarCount - a.scholarCount)
+  .slice(0, 5);
+
+topGlobalCities.forEach(city => {
+  fieldCityPages.push({ url: ... });
+});
+```
+
+**修复效果**：
+
+| 指标 | 修复前 | 修复后 | 变化 |
+|------|--------|--------|------|
+| **总 URL 数** | 551 | **341** | ⬇️ 210 (-38%) |
+| **404 错误** | 13 | **0** | ✅ 100% 修复 |
+| **错误率** | 2.4% | **0%** | 🎯 完美 |
+
+**测试验证**：
+```bash
+# 批量检查所有 341 个 URL
+curl -s sitemap.xml | grep -o '<loc>[^<]*</loc>' | \
+  while read url; do
+    curl -s -o /dev/null -w "%{http_code}" "$url"
+  done
+
+# 结果：341/341 URLs 返回 200 OK ✅
+```
+
+**Git Commits**：
+- `19c6f36` - Match sitemap field-city pages with generateStaticParams logic
+
+**关键改进**：
+1. ✅ Sitemap 与 `generateStaticParams` 逻辑完全一致
+2. ✅ 城市去重（避免同名城市重复）
+3. ✅ 只包含全局 top 5 cities per field
+4. ✅ 确保所有 URL 都会被预渲染
+
+**影响分析**：
+- **SEO**：减少 210 个低质量页面，聚焦高价值内容 📈
+- **索引效率**：Google 只需索引 341 个页面而非 551 个 ⚡
+- **用户体验**：0% 404 错误率，所有链接都有效 ✨
+- **爬虫预算**：减少无效页面，提升爬虫效率 🤖
 
 ---
 
-**下次更新**: 2026-02-03（检查首批请求索引的效果 + 验证所有 404 已修复）
+**下次更新**: 2026-02-03（检查首批请求索引的效果 + 验证 GSC 中所有 404 已清除）
