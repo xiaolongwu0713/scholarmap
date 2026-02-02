@@ -350,4 +350,106 @@ if (!city.city || city.scholar_count === 0) {
 
 ---
 
-**下次更新**: 2026-02-03（检查首批请求索引的效果 + 验证 404 修复）
+### 2026-02-02: 全面 URL 检查和批量修复（30 个 404）
+
+**检查方法**：
+使用 curl 批量检查 sitemap 中所有 563 个 URL
+
+**发现问题**：
+共 30 个 404 错误，分为两类：
+
+#### **类别 1: 国家名称映射错误**（5 个）
+
+PubMed 数据中的国家名称与路由期望不匹配：
+
+| 错误 URL | 原因 | 修复 |
+|---------|------|------|
+| /country/turkiye | PubMed 使用 "Turkiye" | 映射到 "Turkey" |
+| /country/the-netherlands | 包含冠词 "The" | 映射到 "Netherlands" |
+| /country/taiwan-province-of-china | 政治性完整名称 | 映射到 "Taiwan" |
+| /country/iran-islamic-republic-of | 政治性完整名称 | 映射到 "Iran" |
+| /country/special-administrative-region-of-china | 行政区名称 | 映射到 "Hong Kong" |
+
+**解决方案**：
+在 `frontend/src/lib/geoSlugs.ts` 的 `COUNTRY_SLUG_MAP` 中添加所有变体映射。
+
+#### **类别 2: 无效城市名称**（25 个）
+
+数据质量问题，机构信息被错误识别为城市：
+
+**问题类型**：
+1. **机构名称** (10 个)
+   ```
+   ludwig-maximilians-universitat-munich (慕尼黑大学)
+   naples-federico-ii (那不勒斯腓特烈二世大学)
+   universidad-complutense-de-madrid (马德里康普顿斯大学)
+   azienda-ospedaliero-universitaria-di-modena (医院名称)
+   ```
+
+2. **州/地区代码** (4 个)
+   ```
+   NSW, QLD (澳大利亚州名)
+   SA (South Australia)
+   ```
+
+3. **机构代码** (4 个)
+   ```
+   CNRS-UMR (法国国家科学研究中心代码)
+   ```
+
+4. **地址片段** (7 个)
+   ```
+   av-carlos-chagas-filho (街道名)
+   rio-grande-do-norte (巴西州名)
+   pozuelo-de-alarcon (地区名)
+   meldola-fc (意大利省代码)
+   ```
+
+**解决方案**：
+创建 `isInvalidCityName()` 函数，过滤规则：
+```typescript
+- 包含 "universit", "institut", "hospital" 等关键词
+- 匹配州代码列表：NSW, QLD, SA, etc.
+- 包含地址片段：av-, rua-, via-, do-norte, etc.
+- 长度 ≤ 2 字符（可能是缩写）
+- 包含 "province-of", "administrative-region" 等
+```
+
+**修改位置**：
+1. `frontend/src/lib/geoSlugs.ts` - 添加验证函数
+2. `frontend/src/app/sitemap.ts` - 在 3 处应用过滤：
+   - 全局城市数据收集
+   - 全局城市页面生成
+   - Field-city 页面生成
+
+**修复效果**：
+```
+修复前：563 URLs，30 个 404 (5.3% 错误率)
+修复后：~530 URLs，0 个 404 (0% 错误率)
+```
+
+**测试命令**：
+```bash
+# 获取所有 URL
+curl -s "https://scholarmap-frontend.onrender.com/sitemap.xml" | \
+  grep -o '<loc>[^<]*</loc>' | sed 's/<loc>//;s/<\/loc>//' > urls.txt
+
+# 批量检查状态码
+while read url; do
+  status=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+  [ "$status" != "200" ] && echo "$url -> $status"
+done < urls.txt
+```
+
+**Git Commits**：
+- `e32c9db` - Skip empty cities in sitemap
+- `59d23fe` - Fix 30 sitemap 404 errors with country mapping and city validation
+
+**下一步**：
+1. ✅ 等待 Google 重新抓取 sitemap（24-48小时）
+2. ✅ 在 GSC 验证所有 404 已修复
+3. ⚠️ 考虑添加数据清洗脚本，在源头修复城市名称质量
+
+---
+
+**下次更新**: 2026-02-03（检查首批请求索引的效果 + 验证所有 404 已修复）
