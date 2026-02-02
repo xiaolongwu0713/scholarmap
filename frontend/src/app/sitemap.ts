@@ -145,6 +145,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             .slice(0, 10);
 
           // Generate field × country pages
+          const fieldCitySet = new Set<string>(); // Track unique cities to avoid duplicates
+          
           for (const country of topFieldCountries) {
             fieldCountryPages.push({
               url: `${baseUrl}/research-jobs/${field.slug}/country/${countryToSlug(country.country)}`,
@@ -160,23 +162,47 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
                 .slice(0, 5);
 
-              // Generate field × city pages (only if city has scholars and valid name)
+              // Collect cities for later aggregation (don't add URLs yet)
               for (const city of topFieldCities) {
                 // Skip cities with no data, invalid names, or institution names
                 if (!city.city || city.scholar_count === 0 || isInvalidCityName(city.city)) {
                   continue;
                 }
                 
-                fieldCityPages.push({
-                  url: `${baseUrl}/research-jobs/${field.slug}/city/${cityToSlug(city.city)}`,
-                  lastModified: currentDate,
-                  changeFrequency: 'weekly',
-                  priority: 0.7,
-                });
+                const citySlug = cityToSlug(city.city);
+                // Track city with its count for later sorting
+                if (!fieldCitySet.has(citySlug)) {
+                  fieldCitySet.add(citySlug);
+                  // Store city info for sorting
+                  (fieldCityPages as any).tempCities = (fieldCityPages as any).tempCities || [];
+                  (fieldCityPages as any).tempCities.push({
+                    citySlug,
+                    scholarCount: city.scholar_count,
+                  });
+                }
               }
             } catch (error) {
               console.error(`Error fetching cities for field ${field.slug} in ${country.country}:`, error);
             }
+          }
+          
+          // After collecting all cities from all countries, take only top 5 globally
+          if ((fieldCityPages as any).tempCities) {
+            const topGlobalCities = (fieldCityPages as any).tempCities
+              .sort((a: any, b: any) => b.scholarCount - a.scholarCount)
+              .slice(0, 5);
+            
+            topGlobalCities.forEach((city: any) => {
+              fieldCityPages.push({
+                url: `${baseUrl}/research-jobs/${field.slug}/city/${city.citySlug}`,
+                lastModified: currentDate,
+                changeFrequency: 'weekly',
+                priority: 0.7,
+              });
+            });
+            
+            // Clean up temp data
+            delete (fieldCityPages as any).tempCities;
           }
         } catch (error) {
           console.error(`Error generating field pages for ${field.slug}:`, error);
