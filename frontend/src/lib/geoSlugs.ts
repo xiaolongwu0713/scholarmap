@@ -23,6 +23,17 @@ export const COUNTRY_SLUG_MAP: Record<string, string> = {
   'trinidad-and-tobago': 'Trinidad and Tobago',
   'antigua-and-barbuda': 'Antigua and Barbuda',
   'saint-vincent-and-the-grenadines': 'Saint Vincent and the Grenadines',
+  // Fix common country name variations from PubMed data
+  'turkiye': 'Turkey',
+  'turkey': 'Turkey',
+  'the-netherlands': 'Netherlands',
+  'netherlands': 'Netherlands',
+  'taiwan-province-of-china': 'Taiwan',
+  'taiwan': 'Taiwan',
+  'iran-islamic-republic-of': 'Iran',
+  'iran': 'Iran',
+  'special-administrative-region-of-china': 'Hong Kong',
+  'hong-kong': 'Hong Kong',
 };
 
 /**
@@ -128,4 +139,59 @@ export function buildCountrySlugMap(countries: string[]): Record<string, string>
  */
 export function isValidSlug(slug: string): boolean {
   return /^[a-z0-9-]+$/.test(slug);
+}
+
+/**
+ * Check if a city name is likely invalid (institution, state code, etc.)
+ * Returns true if the city name should be filtered out
+ */
+export function isInvalidCityName(cityName: string): boolean {
+  const lowerCity = cityName.toLowerCase();
+  
+  // Institution indicators
+  const institutionPatterns = [
+    'universit', 'university', 'institut', 'college', 'school',
+    'hospital', 'ospedaliero', 'azienda', 'medical center',
+    'research center', 'laboratory', 'cnrs', 'umr', 'inra',
+    'federico ii', 'ludwig-maximilians', 'complutense',
+  ];
+  
+  // State/region codes (mainly Australia, Brazil, USA)
+  const stateCodes = [
+    'nsw', 'qld', 'vic', 'sa', 'wa', 'tas', 'nt', 'act', // Australia
+    'sp', 'rj', 'mg', 'rs', 'pr', 'ba', 'ce', 'pe', // Brazil states (abbreviated)
+  ];
+  
+  // Address fragments that shouldn't be cities
+  const addressFragments = [
+    'av-', 'avenue', 'street', 'rua-', 'via-',
+    'do-norte', 'do-sul', 'de-', 'chagas-filho',
+    'province-of', 'administrative-region',
+  ];
+  
+  // Check for institution patterns
+  for (const pattern of institutionPatterns) {
+    if (lowerCity.includes(pattern)) {
+      return true;
+    }
+  }
+  
+  // Check for exact state code matches
+  if (stateCodes.includes(lowerCity)) {
+    return true;
+  }
+  
+  // Check for address fragments
+  for (const fragment of addressFragments) {
+    if (lowerCity.includes(fragment)) {
+      return true;
+    }
+  }
+  
+  // City names that are too short (likely acronyms or codes)
+  if (cityName.length <= 2) {
+    return true;
+  }
+  
+  return false;
 }

@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 import { fetchWorldMap, fetchCountryMap } from '@/lib/seoApi';
-import { countryToSlug, cityToSlug } from '@/lib/geoSlugs';
+import { countryToSlug, cityToSlug, isInvalidCityName } from '@/lib/geoSlugs';
 import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
 import { fetchFieldWorldData, fetchFieldCountryData } from '@/lib/seoFieldApi';
 
@@ -85,11 +85,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         batch.map(async (country) => {
           try {
             const cities = await fetchCountryMap(country.country);
-            return cities.map(city => ({
-              city: city.city,
-              country: country.country,
-              scholar_count: city.scholar_count,
-            }));
+            // Filter out invalid city names
+            return cities
+              .filter(city => !isInvalidCityName(city.city))
+              .map(city => ({
+                city: city.city,
+                country: country.country,
+                scholar_count: city.scholar_count,
+              }));
           } catch (error) {
             console.error(`Error fetching cities for ${country.country}:`, error);
             return [];
@@ -107,7 +110,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .sort((a, b) => b.scholar_count - a.scholar_count)
       .slice(0, 200);
 
-    const cityPages: MetadataRoute.Sitemap = topCities.map((city) => ({
+    // Filter out invalid city names before generating URLs
+    const validCities = topCities.filter(city => !isInvalidCityName(city.city));
+    
+    const cityPages: MetadataRoute.Sitemap = validCities.map((city) => ({
       url: `${baseUrl}/research-jobs/city/${cityToSlug(city.city)}`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
@@ -154,10 +160,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
                 .slice(0, 5);
 
-              // Generate field × city pages (only if city has scholars)
+              // Generate field × city pages (only if city has scholars and valid name)
               for (const city of topFieldCities) {
-                // Skip cities with no data
-                if (!city.city || city.scholar_count === 0) {
+                // Skip cities with no data, invalid names, or institution names
+                if (!city.city || city.scholar_count === 0 || isInvalidCityName(city.city)) {
                   continue;
                 }
                 
