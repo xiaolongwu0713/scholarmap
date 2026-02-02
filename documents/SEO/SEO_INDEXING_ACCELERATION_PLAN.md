@@ -302,4 +302,52 @@
 
 ---
 
-**下次更新**: 2026-02-03（检查首批请求索引的效果）
+## 问题修复记录
+
+### 2026-02-02: Field-City 页面 404 错误
+
+**问题**：
+GSC 报告部分 field-city 页面返回 404：
+- `/research-jobs/ai-drug-discovery/city/newcastle-upon-tyne`
+- `/research-jobs/neural-modulation/city/stirling`
+
+**原因分析**：
+1. Sitemap 生成逻辑（`frontend/src/app/sitemap.ts`）包含了没有数据的城市
+2. 页面组件（`[fieldSlug]/city/[citySlug]/page.tsx`）正确返回 404
+3. 冲突：sitemap 说页面存在，但实际访问返回 404
+
+**根本原因**：
+- Field-city 页面只预生成 top 5 cities（`generateStaticParams`）
+- 页面访问时检查城市是否在 top 20 国家中有数据
+- 某些城市（如 Newcastle, Stirling）可能：
+  - 在该 field 中没有数据
+  - 所属国家不在该 field 的 top 20
+  - 学者数量为 0
+
+**解决方案**：
+修改 `frontend/src/app/sitemap.ts` line 158-172：
+```typescript
+// Skip cities with no data
+if (!city.city || city.scholar_count === 0) {
+  continue;
+}
+```
+
+**效果**：
+- ✅ 防止空数据城市出现在 sitemap
+- ✅ GSC 不会再发现这些 404 URL
+- ✅ 减少无效的索引请求
+
+**下一步行动**：
+1. 等待 Google 重新抓取 sitemap（24-48 小时）
+2. 在 GSC 中标记这些 404 URL 为 "已修复"
+3. 如果 URL 仍存在，使用 GSC 的 "Remove URL" 工具手动移除
+
+**相关文件**：
+- `frontend/src/app/sitemap.ts` - Sitemap 生成逻辑
+- `frontend/src/app/research-jobs/[fieldSlug]/city/[citySlug]/page.tsx` - 页面组件
+- Git commit: `e32c9db` - Skip empty cities in sitemap generation
+
+---
+
+**下次更新**: 2026-02-03（检查首批请求索引的效果 + 验证 404 修复）
