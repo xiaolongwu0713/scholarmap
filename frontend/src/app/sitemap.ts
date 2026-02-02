@@ -154,8 +154,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
                 .slice(0, 5);
 
-              // Generate field × city pages
+              // Generate field × city pages (only if city has scholars)
               for (const city of topFieldCities) {
+                // Skip cities with no data
+                if (!city.city || city.scholar_count === 0) {
+                  continue;
+                }
+                
                 fieldCityPages.push({
                   url: `${baseUrl}/research-jobs/${field.slug}/city/${cityToSlug(city.city)}`,
                   lastModified: currentDate,
