@@ -45,11 +45,8 @@ export function WhatYouCanDo() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <h2 style={{ fontSize: "2.6rem", fontWeight: 700, color: "#0f172a", marginBottom: "0.75rem" }}>
-            Find Research Labs and Postdoc Positions Worldwide
+          Know in 10 seconds if ScholarMap is worth your time
           </h2>
-          <p style={{ maxWidth: "720px", margin: "0 auto", color: "#475569", fontSize: "1.05rem" }}>
-            Discover researchers, institutions, and collaboration opportunities across 150+ countries. Get comprehensive search coverage, location-based insights, and instant results.
-          </p>
         </div>
 
         <div
