@@ -24,9 +24,16 @@ export function Hero() {
     {
       key: "hero",
       heading: (
-        <h1 className="text-4xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Biomedical and Life Sciences Research Opportunities by Country, City, and Institution.
-        </h1>
+        <>
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Biomedical and Life Sciences Research Opportunities by Country, City, and Institution.
+          </h1>
+          <p className="text-lg md:text-xl text-gray-700 mb-10 max-w-3xl mx-auto">
+            Discover research labs, postdoc positions, and collaborators across 150+ countries. 
+            Map global biomedical research opportunities based on 36+ million PubMed publications. 
+            Free interactive tool for PhD students and researchers.
+          </p>
+        </>
       ),
       image: (
         <div className="relative max-w-4xl mx-auto w-full">
@@ -48,9 +55,15 @@ export function Hero() {
     {
       key: "discover",
       heading: (
-        <h1 className="text-5xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Where Your Work Matters — Explore Global Opportunities by Location.
-        </h1>
+        <>
+          <h1 className="text-5xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Find Research Labs by Country, City, and Institution
+          </h1>
+          <p className="text-lg md:text-xl text-gray-700 mb-10 max-w-3xl mx-auto">
+            Explore biomedical research opportunities worldwide. Identify potential collaborators 
+            and institutions in your field. Make data-driven career decisions.
+          </p>
+        </>
       ),
       image: (
         <div className="relative max-w-4xl mx-auto w-full">
