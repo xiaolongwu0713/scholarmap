@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: "ScholarMap - Global Biomedical Research Network",
     template: "%s | ScholarMap"
   },
-  description: "Map biomedical research opportunities worldwide. Find life sciences researchers, collaborators, and academic institutions by country and city. Based on PubMed data covering medicine, biology, neuroscience, and health sciences.",
+  description: "ScholarMap is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution using PubMed data.",
   keywords: [
     // Field-specific keywords
     "biomedical research opportunities",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     url: "https://scholarmap-frontend.onrender.com",
     siteName: "ScholarMap",
     title: "ScholarMap - Global Biomedical Research Network",
-    description: "Map biomedical research opportunities worldwide. Find life sciences researchers and academic institutions in medicine, biology, and health sciences.",
+    description: "ScholarMap is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution.",
     images: [
       {
         url: "/landing_page_figures_optimized/0.webp",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ScholarMap - Global Biomedical Research Network",
-    description: "Map biomedical research opportunities worldwide. Find life sciences researchers and institutions in medicine, biology, and health sciences.",
+    description: "Global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by location.",
     images: ["/landing_page_figures_optimized/0.webp"],
     creator: "@scholarmap",
   },

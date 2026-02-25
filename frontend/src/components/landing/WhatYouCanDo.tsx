@@ -45,11 +45,8 @@ export function WhatYouCanDo() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <h2 style={{ fontSize: "2.6rem", fontWeight: 700, color: "#0f172a", marginBottom: "0.75rem" }}>
-            Know in 10 seconds if ScholarMap is worth your time
+          Know in 10 seconds if ScholarMap is worth your time
           </h2>
-          <p style={{ maxWidth: "720px", margin: "0 auto", color: "#475569", fontSize: "1.05rem" }}>
-            Four outcomes you can get immediately — search strength, global fit, collaborator discovery, and instant sharing.
-          </p>
         </div>
 
         <div

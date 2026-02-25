@@ -23,50 +23,46 @@ export function Hero() {
   const slides = [
     {
       key: "hero",
-      heading: (
-        <h1 className="text-4xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Biomedical and Life Sciences Research Opportunities by Country, City, and Institution.
-        </h1>
-      ),
-      image: (
-        <div className="relative max-w-4xl mx-auto w-full">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
-            <Image
-              src="/landing_page_figures_optimized/0.webp"
-              alt="Global research network visualization"
-              width={1000}
-              height={700}
-              priority
-              quality={80}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
-              className="w-full h-auto"
-            />
+      content: (
+        <>
+
+          <div className="relative max-w-4xl mx-auto w-full">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+              <Image
+                src="/landing_page_figures_optimized/0.webp"
+                alt="Global research network visualization"
+                width={1000}
+                height={700}
+                priority
+                quality={80}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
+                className="w-full h-auto"
+              />
+            </div>
           </div>
-        </div>
+        </>
       )
     },
     {
       key: "discover",
-      heading: (
-        <h1 className="text-5xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Where Your Work Matters — Explore Global Opportunities by Location.
-        </h1>
-      ),
-      image: (
-        <div className="relative max-w-4xl mx-auto w-full">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
-            <Image
-              src="/landing_page_figures_optimized/10.webp"
-              alt="ScholarMap use case"
-              width={1000}
-              height={700}
-              quality={75}
-              loading="lazy"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1000px"
-              className="w-full h-auto"
-            />
+      content: (
+        <>
+
+          <div className="relative max-w-4xl mx-auto w-full">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
+              <Image
+                src="/landing_page_figures_optimized/12.webp"
+                alt="ScholarMap use case"
+                width={1536}
+                height={1024}
+                quality={75}
+                loading="lazy"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1536px"
+                className="w-full h-auto"
+              />
+            </div>
           </div>
-        </div>
+        </>
       )
     }
   ];
@@ -91,6 +87,13 @@ export function Hero() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+        {/* Fixed title - outside slider */}
+        <h1 className="text-4xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          Biomedical and Life Sciences Research Opportunities by Country, City, and Institution.
+        </h1>
+        <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto">
+          ScholarMap helps researchers discover labs, postdoc positions, and collaborators across 150+ countries using PubMed data.
+        </p>
         <div style={{ position: "relative" }}>
           <button
             onClick={handlePrev}
@@ -158,8 +161,7 @@ export function Hero() {
                     gap: "2rem"
                   }}
                 >
-                  {slide.heading}
-                  {slide.image}
+                  {slide.content}
                 </div>
               ))}
             </div>
