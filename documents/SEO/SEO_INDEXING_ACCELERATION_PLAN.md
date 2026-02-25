@@ -553,4 +553,32 @@ curl -s sitemap.xml | grep -o '<loc>[^<]*</loc>' | \
 
 ---
 
-**下次更新**: 2026-02-03（检查首批请求索引的效果 + 验证 GSC 中所有 404 已清除）
+---
+
+### 2026-02-25: Content Summary for AI Engines Schema.org 结构化数据修复
+
+**问题**：GSC URL Inspection 报告 "Content Summary for AI Engines" Dataset 结构化数据存在错误：
+- **1 Critical**: Missing field 'description'
+- **4 Non-critical**: Missing 'license', Invalid 'creator', Missing 'contentUrl'/'encodingFormat' in distribution
+
+**修复文件**：`frontend/src/components/AIContentSummary.tsx`
+
+**修复内容**：
+
+| 错误 | 修复 |
+|------|------|
+| Missing 'description' | 添加 `meta itemProp="description"`，由 `buildDatasetDescription()` 动态生成 |
+| Invalid 'creator' | 将纯文本改为 `Organization` 嵌套结构，与 DataSourceCitation 一致 |
+| Missing 'license' | 添加 `meta itemProp="license" content="https://creativecommons.org/licenses/by/4.0/"` |
+| Missing contentUrl/encodingFormat | 将 distribution 包装为 `DataDownload`，添加 contentUrl、encodingFormat |
+| spatialCoverage 错误 | 原先使用 topLocations（机构）错误；改为 `Place` 结构，使用 city/country |
+| variableMeasured 错误 | 原先混入数值；改为 meta 标签，content="Researcher count" 等 |
+
+**影响页面**：所有使用 AIContentSummary 的页面（5 种类型）：
+- field, country, city, field-country, field-city
+
+**验证**：部署后在 GSC URL Inspection 或 [Rich Results Test](https://search.google.com/test/rich-results) 测试 Melbourne URL。
+
+---
+
+**下次更新**: 2026-03-01（验证 Schema 修复 + 索引进展）

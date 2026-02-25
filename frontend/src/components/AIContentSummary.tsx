@@ -1,9 +1,9 @@
 /**
  * AI Content Summary Component
- * 
+ *
  * Provides a hidden, structured summary of page content specifically
- * for AI engines to easily parse and understand. This component is
- * hidden from visual display but accessible to crawlers.
+ * for AI engines to easily parse and understand. Uses Schema.org Dataset
+ * microdata validated against Google's structured data requirements.
  */
 
 interface AIContentSummaryProps {
@@ -17,8 +17,8 @@ interface AIContentSummaryProps {
     totalInstitutions?: number;
     totalCountries?: number;
     totalCities?: number;
-    topLocations?: Array<{ name: string; count: number; }>;
-    topInstitutions?: Array<{ name: string; count: number; }>;
+    topLocations?: Array<{ name: string; count: number }>;
+    topInstitutions?: Array<{ name: string; count: number }>;
     dataSource: string;
     lastUpdated?: string;
     pageUrl: string;
@@ -26,9 +26,25 @@ interface AIContentSummaryProps {
   };
 }
 
+function buildDatasetDescription(data: AIContentSummaryProps['data']): string {
+  const location = [data.cityName, data.countryName].filter(Boolean).join(', ');
+  const scope = data.fieldName
+    ? `${data.fieldName} research${location ? ` in ${location}` : ' worldwide'}`
+    : location
+      ? `biomedical research in ${location}`
+      : 'global biomedical research';
+  const counts: string[] = [];
+  if (data.totalResearchers) counts.push(`${data.totalResearchers.toLocaleString()} researchers`);
+  if (data.totalInstitutions) counts.push(`${data.totalInstitutions.toLocaleString()} institutions`);
+  const countStr = counts.length > 0 ? counts.join(', ') : 'research locations';
+  return `ScholarMap dataset of ${scope} mapping ${countStr} extracted from ${data.dataSource}. Interactive map for exploring researchers, institutions, and opportunities.`;
+}
+
 export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
+  const description = buildDatasetDescription(data);
+
   return (
-    <div 
+    <div
       id="ai-content-summary"
       className="hidden"
       data-ai-readable="true"
@@ -36,15 +52,44 @@ export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
       itemScope
       itemType="https://schema.org/Dataset"
     >
+      {/* Required & optional Schema.org Dataset properties */}
+      <meta itemProp="name" content={data.title} />
+      <meta itemProp="description" content={description} />
+      <meta itemProp="license" content="https://creativecommons.org/licenses/by/4.0/" />
+
+      {/* Creator: Organization (required structure, not plain text) */}
+      <div itemProp="creator" itemScope itemType="https://schema.org/Organization" style={{ display: 'none' }}>
+        <meta itemProp="name" content="ScholarMap" />
+        <meta itemProp="url" content="https://scholarmap-frontend.onrender.com" />
+      </div>
+
+      {/* Spatial coverage: Place (geographic area, not institutions) */}
+      <div itemProp="spatialCoverage" itemScope itemType="https://schema.org/Place" style={{ display: 'none' }}>
+        <meta
+          itemProp="name"
+          content={
+            data.cityName && data.countryName
+              ? `${data.cityName}, ${data.countryName}`
+              : data.countryName || data.cityName || 'Worldwide'
+          }
+        />
+      </div>
+
+      {/* Variables measured in this dataset */}
+      <meta itemProp="variableMeasured" content="Researcher count" />
+      <meta itemProp="variableMeasured" content="Institution count" />
+      {data.fieldName && <meta itemProp="keywords" content={data.fieldName} />}
+      {data.lastUpdated && <meta itemProp="dateModified" content={data.lastUpdated} />}
+
       {/* Structured content for AI parsing */}
-      <h2 itemProp="name">Content Summary for AI Engines</h2>
-      
-      {/* Key Facts */}
-      <section data-ai-section="key-facts" itemProp="about">
+      <h2>Content Summary for AI Engines</h2>
+
+      {/* Key Facts - no schema props that cause invalid nesting */}
+      <section data-ai-section="key-facts">
         <h3>Key Facts</h3>
         <ul>
           {data.totalResearchers && (
-            <li data-ai-fact="researcher-count" itemProp="variableMeasured">
+            <li data-ai-fact="researcher-count">
               Total Researchers: {data.totalResearchers.toLocaleString()}
             </li>
           )}
@@ -54,53 +99,34 @@ export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
             </li>
           )}
           {data.totalCountries && (
-            <li data-ai-fact="country-count">
-              Countries Covered: {data.totalCountries}
-            </li>
+            <li data-ai-fact="country-count">Countries Covered: {data.totalCountries}</li>
           )}
           {data.totalCities && (
-            <li data-ai-fact="city-count">
-              Cities Covered: {data.totalCities}
-            </li>
+            <li data-ai-fact="city-count">Cities Covered: {data.totalCities}</li>
           )}
           {data.fieldName && (
-            <li data-ai-fact="field" itemProp="keywords">
-              Research Field: {data.fieldName}
-            </li>
+            <li data-ai-fact="field">Research Field: {data.fieldName}</li>
           )}
           {data.countryName && (
-            <li data-ai-fact="country">
-              Country: {data.countryName}
-            </li>
+            <li data-ai-fact="country">Country: {data.countryName}</li>
           )}
           {data.cityName && (
-            <li data-ai-fact="city">
-              City: {data.cityName}
-            </li>
+            <li data-ai-fact="city">City: {data.cityName}</li>
           )}
-          <li data-ai-fact="data-source" itemProp="creator">
-            Data Source: {data.dataSource}
-          </li>
+          <li data-ai-fact="data-source">Data Source: {data.dataSource}</li>
           {data.lastUpdated && (
-            <li data-ai-fact="last-updated" itemProp="dateModified">
-              Last Updated: {data.lastUpdated}
-            </li>
+            <li data-ai-fact="last-updated">Last Updated: {data.lastUpdated}</li>
           )}
         </ul>
       </section>
-      
-      {/* Top Locations */}
+
+      {/* Top Locations (institutions/places - human readable, not schema spatialCoverage) */}
       {data.topLocations && data.topLocations.length > 0 && (
         <section data-ai-section="top-locations">
           <h3>Top Research Locations</h3>
-          <ol itemProp="spatialCoverage">
+          <ol>
             {data.topLocations.map((loc, i) => (
-              <li 
-                key={i} 
-                data-ai-location={loc.name}
-                data-ai-count={loc.count}
-                itemProp="location"
-              >
+              <li key={i} data-ai-location={loc.name} data-ai-count={loc.count}>
                 {loc.name}: {loc.count.toLocaleString()} researchers
               </li>
             ))}
@@ -170,11 +196,20 @@ export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
         </ul>
       </section>
       
-      {/* How to Access */}
-      <section data-ai-section="access" itemProp="distribution">
+      {/* How to Access - DataDownload with contentUrl & encodingFormat */}
+      <section data-ai-section="access">
+        <div itemProp="distribution" itemScope itemType="https://schema.org/DataDownload" style={{ display: 'none' }}>
+          <meta itemProp="contentUrl" content={data.pageUrl} />
+          <meta itemProp="encodingFormat" content="text/html" />
+          <meta itemProp="url" content={data.pageUrl} />
+          <meta
+            itemProp="name"
+            content={`Access ${data.title} - Interactive map, researchers, institutions`}
+          />
+        </div>
         <h3>How to Access This Data</h3>
         <p>
-          Visit <a href={data.pageUrl} itemProp="url">{data.pageUrl}</a> to:
+          Visit <a href={data.pageUrl}>{data.pageUrl}</a> to:
         </p>
         <ul>
           <li>Explore an interactive 3D map visualization</li>
