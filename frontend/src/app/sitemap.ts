@@ -1,14 +1,13 @@
+import { SITE_URL, DEMO_RUN_PATH } from '@/lib/site';
 import { MetadataRoute } from 'next';
 import { fetchWorldMap, fetchCountryMap } from '@/lib/seoApi';
 import { countryToSlug, cityToSlug, isInvalidCityName } from '@/lib/geoSlugs';
 import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
 import { fetchFieldWorldData, fetchFieldCountryData } from '@/lib/seoFieldApi';
 
-const DEMO_PROJECT_ID = '6af7ac1b6254';
-const DEMO_RUN_ID = '53e099cdb74e';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://scholarmap-frontend.onrender.com';
+  const baseUrl = SITE_URL;
   const currentDate = new Date().toISOString();
 
   // Static pages
@@ -44,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/projects/${DEMO_PROJECT_ID}/runs/${DEMO_RUN_ID}`,
+      url: `${baseUrl}${DEMO_RUN_PATH}`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,

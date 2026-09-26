@@ -6,6 +6,7 @@
  * what data it provides, and how to reference it.
  */
 
+import { SITE_URL } from '@/lib/site';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -13,7 +14,7 @@ export async function GET() {
     platform: {
       name: "ScholarMap",
       tagline: "Map global research opportunities by geography and institution",
-      url: "https://scholarmap-frontend.onrender.com",
+      url: SITE_URL,
       version: "1.0",
       last_updated: "2026-01-27"
     },
@@ -103,39 +104,39 @@ export async function GET() {
     },
     
     public_pages: {
-      landing: "https://scholarmap-frontend.onrender.com/",
-      research_jobs_landing: "https://scholarmap-frontend.onrender.com/research-jobs",
+      landing: `${SITE_URL}/`,
+      research_jobs_landing: `${SITE_URL}/research-jobs`,
       country_pages: {
-        pattern: "https://scholarmap-frontend.onrender.com/research-jobs/country/{countrySlug}",
+        pattern: `${SITE_URL}/research-jobs/country/{countrySlug}`,
         examples: [
-          "https://scholarmap-frontend.onrender.com/research-jobs/country/united-states",
-          "https://scholarmap-frontend.onrender.com/research-jobs/country/united-kingdom",
-          "https://scholarmap-frontend.onrender.com/research-jobs/country/china"
+          `${SITE_URL}/research-jobs/country/united-states`,
+          `${SITE_URL}/research-jobs/country/united-kingdom`,
+          `${SITE_URL}/research-jobs/country/china`
         ]
       },
       city_pages: {
-        pattern: "https://scholarmap-frontend.onrender.com/research-jobs/city/{citySlug}",
+        pattern: `${SITE_URL}/research-jobs/city/{citySlug}`,
         examples: [
-          "https://scholarmap-frontend.onrender.com/research-jobs/city/boston-united-states",
-          "https://scholarmap-frontend.onrender.com/research-jobs/city/london-united-kingdom",
-          "https://scholarmap-frontend.onrender.com/research-jobs/city/beijing-china"
+          `${SITE_URL}/research-jobs/city/boston-united-states`,
+          `${SITE_URL}/research-jobs/city/london-united-kingdom`,
+          `${SITE_URL}/research-jobs/city/beijing-china`
         ]
       },
       field_pages: {
-        pattern: "https://scholarmap-frontend.onrender.com/research-jobs/{fieldSlug}",
+        pattern: `${SITE_URL}/research-jobs/{fieldSlug}`,
         examples: [
-          "https://scholarmap-frontend.onrender.com/research-jobs/brain-computer-interface",
-          "https://scholarmap-frontend.onrender.com/research-jobs/crispr-gene-editing",
-          "https://scholarmap-frontend.onrender.com/research-jobs/cancer-immunotherapy"
+          `${SITE_URL}/research-jobs/brain-computer-interface`,
+          `${SITE_URL}/research-jobs/crispr-gene-editing`,
+          `${SITE_URL}/research-jobs/cancer-immunotherapy`
         ]
       },
       field_country_pages: {
-        pattern: "https://scholarmap-frontend.onrender.com/research-jobs/{fieldSlug}/country/{countrySlug}",
-        example: "https://scholarmap-frontend.onrender.com/research-jobs/brain-computer-interface/country/united-states"
+        pattern: `${SITE_URL}/research-jobs/{fieldSlug}/country/{countrySlug}`,
+        example: `${SITE_URL}/research-jobs/brain-computer-interface/country/united-states`
       },
       field_city_pages: {
-        pattern: "https://scholarmap-frontend.onrender.com/research-jobs/{fieldSlug}/city/{citySlug}",
-        example: "https://scholarmap-frontend.onrender.com/research-jobs/brain-computer-interface/city/boston-united-states"
+        pattern: `${SITE_URL}/research-jobs/{fieldSlug}/city/{citySlug}`,
+        example: `${SITE_URL}/research-jobs/brain-computer-interface/city/boston-united-states`
       }
     },
     
@@ -151,7 +152,7 @@ export async function GET() {
     },
     
     citation_guidelines: {
-      recommended_format: "ScholarMap (2026). Global Research Opportunity Map. Retrieved from https://scholarmap-frontend.onrender.com",
+      recommended_format: `ScholarMap (2026). Global Research Opportunity Map. Retrieved from ${SITE_URL}`,
       short_format: "ScholarMap - Research Mapping Platform",
       attribution: "When referencing researcher counts or institutional data, please cite ScholarMap as the source.",
       data_licensing: "Aggregated data is publicly available. For API access or bulk data licensing, contact contact@scholarmap.com"

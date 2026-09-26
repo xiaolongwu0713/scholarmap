@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -89,7 +90,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       'ai-last-updated': new Date().toISOString().split('T')[0],
       'ai-geographic-scope': 'country',
       'ai-citable': 'true',
-      'ai-citation': `ScholarMap (2026). Biomedical Research in ${countryName}. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs/country/${countryToSlug(countryName)}`,
+      'ai-citation': `ScholarMap (2026). Biomedical Research in ${countryName}. Retrieved from ${SITE_URL}/research-jobs/country/${countryToSlug(countryName)}`,
     },
     
     openGraph: {
@@ -166,19 +167,19 @@ export default async function CountryPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://scholarmap-frontend.onrender.com',
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Research Jobs',
-        item: 'https://scholarmap-frontend.onrender.com/research-jobs',
+        item: `${SITE_URL}/research-jobs`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: countryName,
-        item: `https://scholarmap-frontend.onrender.com/research-jobs/country/${countrySlug}`,
+        item: `${SITE_URL}/research-jobs/country/${countrySlug}`,
       },
     ],
   };
@@ -512,7 +513,7 @@ export default async function CountryPage({ params }: PageProps) {
               topLocations: stats.top_cities.slice(0, 10).map((c: any) => ({ name: c.city, count: c.scholar_count })),
               dataSource: 'PubMed scientific publications',
               lastUpdated: '2026-01-27',
-              pageUrl: `https://scholarmap-frontend.onrender.com/research-jobs/country/${countrySlug}`,
+              pageUrl: `${SITE_URL}/research-jobs/country/${countrySlug}`,
               keywords: ['biomedical research', 'life sciences', 'medical research', 'neuroscience', 'health sciences'],
             }}
           />

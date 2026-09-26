@@ -1,5 +1,7 @@
 "use client";
 
+import { SITE_URL, DEMO_PROJECT_ID, DEMO_RUN_ID } from '@/lib/site';
+import { SEO_PROJECT_ID } from '@/lib/seoFieldConfig';
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -422,8 +424,8 @@ function RunPageContent() {
   const projectId = params.projectId as string;
   const runId = params.runId as string;
   // Original demo run or any run in the SEO project
-  const isDemoRun = (projectId === "6af7ac1b6254" && runId === "53e099cdb74e") || 
-                     projectId === "3b9280a68d3d";
+  const isDemoRun = (projectId === DEMO_PROJECT_ID && runId === DEMO_RUN_ID) ||
+                     projectId === SEO_PROJECT_ID;
 
   // Load configuration from backend (with fallback defaults)
   const [config, setConfig] = useState<FrontendConfig>({
@@ -898,7 +900,7 @@ function RunPageContent() {
       if (exportTitleRef.current === null) {
         exportTitleRef.current = document.title;
       }
-      document.title = "https://scholarmap-frontend.onrender.com/";
+      document.title = `${SITE_URL}/`;
       return;
     }
     if (exportTitleRef.current !== null) {
@@ -2607,7 +2609,7 @@ function RunPageContent() {
                   Run {runId}
                 </h1>
                 <div className="muted">
-                  The PDF is created by scholarMap (https://scholarmap-frontend.onrender.com/) on {new Date().toLocaleString()}
+                  The PDF is created by scholarMap ({SITE_URL}/) on {new Date().toLocaleString()}
                 </div>
               </div>
             </div>
@@ -2882,8 +2884,8 @@ export default function RunPage() {
   }, []);
 
   // Allow public access to demo run or SEO project runs
-  const isDemoRun = (projectId === "6af7ac1b6254" && runId === "53e099cdb74e") || 
-                     projectId === "3b9280a68d3d";
+  const isDemoRun = (projectId === DEMO_PROJECT_ID && runId === DEMO_RUN_ID) ||
+                     projectId === SEO_PROJECT_ID;
   
   if (isDemoRun) {
     return <RunPageContent />;

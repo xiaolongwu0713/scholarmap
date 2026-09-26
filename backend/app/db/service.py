@@ -62,11 +62,8 @@ class DatabaseStore:
     
     async def get_project(self, project_id: str, user_id: str) -> ProjectDTO | None:
         """Get project by ID for a user. Super users, demo users, and public share users can access any project."""
-        # Demo project ID that is publicly accessible
-        DEMO_PROJECT_ID = "6af7ac1b6254"
-        
         # Check if user is super user or demo user accessing demo project
-        is_demo_access = (user_id == "demo_user" and project_id == DEMO_PROJECT_ID)
+        is_demo_access = (user_id == "demo_user" and project_id == settings.demo_project_id)
         is_public_share_access = (
             user_id == "public_share_user"
             and not settings.share_run_auth_check_enabled

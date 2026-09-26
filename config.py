@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     geocoding_cache_max_affiliations: int = 50  # Maximum number of affiliations to store per location in geocoding_cache
     
     # Database configuration
-    database_url: str = "postgresql://scholarmap_db_user:eA7MfK5KbhHmwORToRe27Xa1ZHkXGRDM@dpg-d5408om3jp1c738ud660-a.virginia-postgres.render.com/scholarmap_db"
+    database_url: str = ""  # Set via DATABASE_URL env var
     
     # Authentication
     jwt_secret_key: str = "change-this-secret-key-in-production"  # Should be set via environment variable
@@ -57,12 +57,26 @@ class Settings(BaseSettings):
     # Super user configuration (can access all projects and runs)
     # Super users can access any project and run, bypassing ownership checks
     super_user_email: str = "xiaolongwu0713@gmail.com"
-    super_user_password: str = "xiaowu"
+    super_user_password: str = ""  # Set via SUPER_USER_PASSWORD env var
 
     # Run sharing access control
     # True: require login + ownership for run access
     # False: allow public read-only access to run pages and data
     share_run_auth_check_enabled: bool = False
+
+    # Public site URL (used for CORS and origin checks)
+    frontend_url: str = "https://scholarmap-frontend.onrender.com"
+    # Extra allowed CORS origins, comma-separated (e.g. old domain during migration)
+    cors_extra_origins: str = ""
+
+    # Public demo run and SEO project (readable without login)
+    demo_project_id: str = "6af7ac1b6254"
+    demo_run_id: str = "53e099cdb74e"
+
+    @property
+    def cors_allowed_origins(self) -> list[str]:
+        extra = [o.strip().rstrip("/") for o in self.cors_extra_origins.split(",") if o.strip()]
+        return ["http://localhost:3000", "http://localhost:8000", self.frontend_url.rstrip("/"), *extra]
 
     # ============================================================================
     # User Quotas and Limits

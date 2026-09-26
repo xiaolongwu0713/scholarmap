@@ -1,5 +1,6 @@
 "use client";
 
+import { DEMO_RUN_PATH } from '@/lib/site';
 import Link from "next/link";
 import { isAuthenticated } from "@/lib/auth";
 
@@ -46,7 +47,7 @@ export function LandingCTAs() {
             gap: "8px"
           }}
           onClick={() => {
-            window.open("/projects/6af7ac1b6254/runs/53e099cdb74e", "_blank");
+            window.open(DEMO_RUN_PATH, "_blank");
           }}
         >
           Try Demo

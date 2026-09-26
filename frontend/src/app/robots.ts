@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/site';
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
@@ -7,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/api/', '/projects/*/runs/*/edit'],
     },
-    sitemap: 'https://scholarmap-frontend.onrender.com/sitemap.xml',
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }
 

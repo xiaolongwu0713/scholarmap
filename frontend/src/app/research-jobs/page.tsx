@@ -1,3 +1,4 @@
+import { SITE_URL, DEMO_RUN_PATH } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchCountryMap, fetchWorldMap } from '@/lib/seoApi';
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
     'ai-last-updated': new Date().toISOString().split('T')[0],
     'ai-geographic-scope': 'global',
     'ai-citable': 'true',
-    'ai-citation': 'ScholarMap (2026). Global Biomedical Research Opportunities by Country. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs',
+    'ai-citation': `ScholarMap (2026). Global Biomedical Research Opportunities by Country. Retrieved from ${SITE_URL}/research-jobs`,
   },
   
   openGraph: {
@@ -168,7 +169,7 @@ export default async function ResearchJobsLanding() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <TrackedLink
-                href="/projects/6af7ac1b6254/runs/53e099cdb74e"
+                href={DEMO_RUN_PATH}
                 trackingType="demo"
                 trackingSource="landing_page"
                 className="inline-flex items-center bg-white hover:bg-gray-50 text-blue-700 font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg border-2 border-blue-300"

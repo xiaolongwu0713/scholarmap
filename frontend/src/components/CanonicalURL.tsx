@@ -1,5 +1,6 @@
 "use client";
 
+import { SITE_URL } from '@/lib/site';
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -7,7 +8,7 @@ export function CanonicalURL() {
   const pathname = usePathname();
   
   useEffect(() => {
-    const baseUrl = 'https://scholarmap-frontend.onrender.com';
+    const baseUrl = SITE_URL;
     const canonicalUrl = `${baseUrl}${pathname}`;
     
     // Remove existing canonical link if any

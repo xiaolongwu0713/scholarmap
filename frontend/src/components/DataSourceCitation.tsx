@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/site';
 /**
  * Data Source Citation Component
  * 
@@ -13,12 +14,12 @@ export function DataSourceCitation() {
     "@type": "Dataset",
     "name": "ScholarMap Global Biomedical Research Database",
     "description": "ScholarMap provides a comprehensive database of biomedical researchers and institutions worldwide, extracted from 36+ million PubMed publications. The dataset includes geographic coordinates, institutional affiliations, and research output metrics for researchers in medicine, biology, neuroscience, pharmacology, public health, and related life sciences fields. Data spans publications from 2000-2026 with AI-powered extraction accuracy of approximately 95% for major research institutions.",
-    "url": "https://scholarmap-frontend.onrender.com/research-jobs",
+    "url": `${SITE_URL}/research-jobs`,
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "creator": {
       "@type": "Organization",
       "name": "ScholarMap",
-      "url": "https://scholarmap-frontend.onrender.com",
+      "url": SITE_URL,
       "contactPoint": {
         "@type": "ContactPoint",
         "email": "contact@scholarmap.com",
@@ -29,7 +30,7 @@ export function DataSourceCitation() {
       {
         "@type": "DataDownload",
         "encodingFormat": "application/json",
-        "contentUrl": "https://scholarmap-frontend.onrender.com/api/ai/context"
+        "contentUrl": `${SITE_URL}/api/ai/context`
       }
     ],
     "temporalCoverage": "2000/2026",
@@ -123,7 +124,7 @@ export function DataSourceCitation() {
               </p>
               <blockquote className="border-l-4 border-gray-300 pl-4 my-2 italic">
                 ScholarMap (2026). Global Research Opportunity Map. Retrieved from
-                https://scholarmap-frontend.onrender.com
+                {SITE_URL}
               </blockquote>
             </div>
             

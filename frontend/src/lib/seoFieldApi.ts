@@ -6,8 +6,9 @@
  */
 
 import { getFieldConfig, getFieldRunId } from './seoFieldConfig';
+import { API_URL } from './site';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://scholarmap-backend.onrender.com';
+const API_BASE_URL = API_URL;
 
 /**
  * Fetch world map data for a specific research field

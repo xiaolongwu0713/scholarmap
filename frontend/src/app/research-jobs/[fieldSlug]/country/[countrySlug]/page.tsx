@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -108,7 +109,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'ai-last-updated': new Date().toISOString().split('T')[0],
         'ai-geographic-scope': 'country',
         'ai-citable': 'true',
-        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research in ${countryName}. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}/country/${countrySlug}`,
+        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research in ${countryName}. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}/country/${countrySlug}`,
       },
       
       openGraph: {
@@ -194,25 +195,25 @@ export default async function FieldCountryPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://scholarmap-frontend.onrender.com',
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Research Jobs',
-        item: 'https://scholarmap-frontend.onrender.com/research-jobs',
+        item: `${SITE_URL}/research-jobs`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: fieldConfig.name,
-        item: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}`,
+        item: `${SITE_URL}/research-jobs/${fieldSlug}`,
       },
       {
         '@type': 'ListItem',
         position: 4,
         name: countryName,
-        item: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}/country/${countrySlug}`,
+        item: `${SITE_URL}/research-jobs/${fieldSlug}/country/${countrySlug}`,
       },
     ],
   };
@@ -479,7 +480,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
               topLocations: topCities.map((c: any) => ({ name: c.city, count: c.scholar_count })),
               dataSource: 'PubMed scientific publications',
               lastUpdated: '2026-01-27',
-              pageUrl: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}/country/${countrySlug}`,
+              pageUrl: `${SITE_URL}/research-jobs/${fieldSlug}/country/${countrySlug}`,
               keywords: fieldConfig.keywords,
             }}
           />

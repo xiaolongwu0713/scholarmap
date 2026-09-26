@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -98,7 +99,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'ai-citable': 'true',
         
         // Suggested citation format
-        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research Map. Retrieved from https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}`,
+        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research Map. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}`,
       },
       
       openGraph: {
@@ -170,19 +171,19 @@ export default async function FieldOverviewPage({ params }: PageProps) {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://scholarmap-frontend.onrender.com',
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Research Jobs',
-        item: 'https://scholarmap-frontend.onrender.com/research-jobs',
+        item: `${SITE_URL}/research-jobs`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: fieldConfig.name,
-        item: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}`,
+        item: `${SITE_URL}/research-jobs/${fieldSlug}`,
       },
     ],
   };
@@ -420,7 +421,7 @@ export default async function FieldOverviewPage({ params }: PageProps) {
               topLocations: topCountries.map((c: any) => ({ name: c.country, count: c.scholar_count })),
               dataSource: 'PubMed scientific publications',
               lastUpdated: '2026-01-27',
-              pageUrl: `https://scholarmap-frontend.onrender.com/research-jobs/${fieldSlug}`,
+              pageUrl: `${SITE_URL}/research-jobs/${fieldSlug}`,
               keywords: fieldConfig.keywords,
             }}
           />

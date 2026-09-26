@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/site';
 /**
  * AI Content Summary Component
  *
@@ -60,7 +61,7 @@ export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
       {/* Creator: Organization (required structure, not plain text) */}
       <div itemProp="creator" itemScope itemType="https://schema.org/Organization" style={{ display: 'none' }}>
         <meta itemProp="name" content="ScholarMap" />
-        <meta itemProp="url" content="https://scholarmap-frontend.onrender.com" />
+        <meta itemProp="url" content={SITE_URL} />
       </div>
 
       {/* Spatial coverage: Place (geographic area, not institutions) */}

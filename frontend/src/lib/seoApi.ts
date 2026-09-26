@@ -3,9 +3,7 @@
  * Wrapper functions for fetching data from demo run map APIs
  */
 
-const DEMO_PROJECT_ID = '6af7ac1b6254';
-const DEMO_RUN_ID = '53e099cdb74e';
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://scholarmap-backend.onrender.com';
+import { API_URL as API_BASE, DEMO_PROJECT_ID, DEMO_RUN_ID } from './site';
 
 // Cache duration for ISR (24 hours in seconds)
 export const SEO_CACHE_DURATION = 86400;

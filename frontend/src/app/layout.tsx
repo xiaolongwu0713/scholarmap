@@ -1,3 +1,4 @@
+import { SITE_URL } from '@/lib/site';
 import "./globals.css";
 import type { Metadata } from "next";
 import Script from "next/script";
@@ -6,7 +7,7 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { CanonicalURL } from "@/components/CanonicalURL";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://scholarmap-frontend.onrender.com'),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "ScholarMap - Global Biomedical Research Network",
     template: "%s | ScholarMap"
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://scholarmap-frontend.onrender.com",
+    url: SITE_URL,
     siteName: "ScholarMap",
     title: "ScholarMap - Global Biomedical Research Network",
     description: "ScholarMap is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution.",

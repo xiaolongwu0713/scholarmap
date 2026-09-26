@@ -19,16 +19,11 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
+from config import settings
 
-# Allowed frontend origins
-ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "https://scholarmap-frontend.onrender.com",
-]
 
-# Regex pattern for allowed origins (e.g., any Render subdomain)
-ALLOWED_ORIGIN_REGEX = re.compile(r"https://.*\.onrender\.com")
+# Allowed frontend origins (configured via FRONTEND_URL / CORS_EXTRA_ORIGINS)
+ALLOWED_ORIGINS = settings.cors_allowed_origins
 
 # Endpoints that should be protected (require frontend origin)
 PROTECTED_ENDPOINTS = [
@@ -53,14 +48,7 @@ def _is_allowed_origin(origin: str | None) -> bool:
         return False
     
     # Check exact matches
-    if origin in ALLOWED_ORIGINS:
-        return True
-    
-    # Check regex pattern
-    if ALLOWED_ORIGIN_REGEX.match(origin):
-        return True
-    
-    return False
+    return origin.rstrip("/") in ALLOWED_ORIGINS
 
 
 def _is_protected_endpoint(path: str) -> bool:

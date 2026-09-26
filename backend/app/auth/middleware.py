@@ -60,8 +60,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
     }
     
     # Demo run that is publicly accessible (read-only)
-    DEMO_PROJECT_ID = "6af7ac1b6254"
-    DEMO_RUN_ID = "53e099cdb74e"
+    DEMO_PROJECT_ID = settings.demo_project_id
+    DEMO_RUN_ID = settings.demo_run_id
     PUBLIC_SHARE_USER_ID = "public_share_user"
     
     async def dispatch(self, request: Request, call_next) -> Response:
