@@ -35,7 +35,7 @@ This data covers medical research, biological sciences, neuroscience, pharmacolo
 indexed in PubMed. Whether you're a PhD student exploring postdoctoral positions in life sciences, a medical researcher seeking 
 international collaborations, or a biomedical professional planning your next career move, understanding the geographic distribution 
 of biomedical research activity can help you identify the right opportunities. This page provides insights into the biomedical research 
-landscape of ${country}, illustrating how ScholarMap can help you discover and connect with institutions in medicine, biology, and health sciences.
+landscape of ${country}, illustrating how LabScout can help you discover and connect with institutions in medicine, biology, and health sciences.
     `.trim(),
     
     researchLandscape: `
@@ -102,7 +102,7 @@ To explore biomedical research opportunities in ${country}, start by understandi
 research activity. Our interactive research map provides a powerful way to visualize biomedical scholars, medical institutions, 
 and their research output across ${city_count} cities in ${country}.
 
-Using ScholarMap for biomedical research, you can:
+Using LabScout for biomedical research, you can:
 - Browse life sciences researchers by city and institution in your specific biomedical field
 - Explore PubMed publication patterns and collaboration networks in medicine and biology
 - Identify potential mentors or collaborators in neuroscience, pharmacology, or other health sciences
@@ -131,23 +131,23 @@ export function generateCountryFAQs(country: string, stats: CountryStats): Array
   return [
     {
       question: `What biomedical research data is shown for ${country}?`,
-      answer: `The data shown represents biomedical and life sciences research from PubMed, with ${stats.scholar_count.toLocaleString()} researchers across ${stats.institution_count.toLocaleString()} institutions in ${country}. This covers medicine, biology, neuroscience, pharmacology, public health, and related health sciences. When you create a free ScholarMap account, you can generate a similar map for your specific biomedical research field.`,
+      answer: `The data shown represents biomedical and life sciences research from PubMed, with ${stats.scholar_count.toLocaleString()} researchers across ${stats.institution_count.toLocaleString()} institutions in ${country}. This covers medicine, biology, neuroscience, pharmacology, public health, and related health sciences. When you create a free LabScout account, you can generate a similar map for your specific biomedical research field.`,
     },
     {
-      question: `What research fields does ScholarMap cover?`,
-      answer: `ScholarMap uses PubMed data, covering biomedical and life sciences research including medicine, biology, neuroscience, pharmacology, public health, genetics, immunology, and related health sciences. It does not include social sciences, economics, engineering (except biomedical), or humanities.`,
+      question: `What research fields does LabScout cover?`,
+      answer: `LabScout uses PubMed data, covering biomedical and life sciences research including medicine, biology, neuroscience, pharmacology, public health, genetics, immunology, and related health sciences. It does not include social sciences, economics, engineering (except biomedical), or humanities.`,
     },
     {
       question: `What are the major biomedical research cities in ${country}?`,
-      answer: `In our PubMed dataset, the top biomedical research cities in ${country} include ${stats.top_cities.slice(0, 5).map(c => c.city).join(', ')}. These cities host major medical schools, research hospitals, and biomedical institutes. Use ScholarMap to discover the geographic distribution of researchers in your specific life sciences area.`,
+      answer: `In our PubMed dataset, the top biomedical research cities in ${country} include ${stats.top_cities.slice(0, 5).map(c => c.city).join(', ')}. These cities host major medical schools, research hospitals, and biomedical institutes. Use LabScout to discover the geographic distribution of researchers in your specific life sciences area.`,
     },
     {
-      question: `How can ScholarMap help me find biomedical opportunities in ${country}?`,
-      answer: `ScholarMap creates an interactive geographic visualization of biomedical researchers in your field using PubMed data. You can discover which cities and medical institutions in ${country} are most active in your area of life sciences, helping you identify postdoc opportunities, clinical research collaborations, and faculty positions in health sciences.`,
+      question: `How can LabScout help me find biomedical opportunities in ${country}?`,
+      answer: `LabScout creates an interactive geographic visualization of biomedical researchers in your field using PubMed data. You can discover which cities and medical institutions in ${country} are most active in your area of life sciences, helping you identify postdoc opportunities, clinical research collaborations, and faculty positions in health sciences.`,
     },
     {
-      question: `Is ScholarMap free to use?`,
-      answer: `Yes! You can create a free account to generate biomedical research maps for your specific field of interest in medicine, biology, or health sciences. Simply describe your research area, and ScholarMap will analyze PubMed publication data to show you the geographic distribution of active biomedical scholars and institutions worldwide, including in ${country}.`,
+      question: `Is LabScout free to use?`,
+      answer: `Yes! You can create a free account to generate biomedical research maps for your specific field of interest in medicine, biology, or health sciences. Simply describe your research area, and LabScout will analyze PubMed publication data to show you the geographic distribution of active biomedical scholars and institutions worldwide, including in ${country}.`,
     },
   ];
 }

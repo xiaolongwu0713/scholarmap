@@ -164,8 +164,8 @@ async def send_verification_email(email: str, code: str) -> None:
         message = Mail(
             from_email=settings.email_from,
             to_emails=email,
-            subject="ScholarMap Email Verification Code",
-            plain_text_content=f"""Your ScholarMap verification code is: {code}
+            subject="LabScout Email Verification Code",
+            plain_text_content=f"""Your LabScout verification code is: {code}
 
 This code will expire in 10 minutes.
 

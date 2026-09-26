@@ -4,11 +4,11 @@
  */
 
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || 'https://scholarmap-frontend.onrender.com'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://labscout.io'
 ).replace(/\/$/, '');
 
 export const API_URL = (
-  process.env.NEXT_PUBLIC_API_URL || 'https://scholarmap-backend.onrender.com'
+  process.env.NEXT_PUBLIC_API_URL || 'https://api.labscout.io'
 ).replace(/\/$/, '');
 
 /** Public demo run (readable without login). Must match backend DEMO_PROJECT_ID / DEMO_RUN_ID. */

@@ -347,7 +347,7 @@ export function generateFieldOverviewFAQs(
     },
     {
       question: `How can I find collaborators in ${name} research?`,
-      answer: `ScholarMap's interactive map allows you to explore researchers by geographic location and institution. You can discover experts in ${keywords[1]} worldwide and identify potential collaborators based on their research profiles.`,
+      answer: `LabScout's interactive map allows you to explore researchers by geographic location and institution. You can discover experts in ${keywords[1]} worldwide and identify potential collaborators based on their research profiles.`,
     },
   ];
 }
@@ -410,7 +410,7 @@ export function generateFieldCityFAQs(
     },
     {
       question: `How can I connect with ${name} researchers in ${city}?`,
-      answer: `Use ScholarMap's interactive map to explore researchers and institutions in ${city}. You can view publication profiles and identify potential collaborators or mentors in ${keywords[0]} research.`,
+      answer: `Use LabScout's interactive map to explore researchers and institutions in ${city}. You can view publication profiles and identify potential collaborators or mentors in ${keywords[0]} research.`,
     },
   ];
 }

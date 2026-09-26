@@ -4,8 +4,8 @@ import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 
 export const metadata: Metadata = {
-  title: 'Methodology - How We Map Biomedical Research | ScholarMap',
-  description: 'Learn how ScholarMap collects and processes PubMed data to map global biomedical research networks. Understand our data sources, extraction methods, and quality assurance processes.',
+  title: 'Methodology - How We Map Biomedical Research | LabScout',
+  description: 'Learn how LabScout collects and processes PubMed data to map global biomedical research networks. Understand our data sources, extraction methods, and quality assurance processes.',
   keywords: [
     'PubMed data analysis',
     'research methodology',
@@ -485,7 +485,7 @@ export default function MethodologyPage() {
                   href="/about" 
                   className="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-md transition-all"
                 >
-                  <h4 className="font-semibold text-gray-900 mb-2">About ScholarMap</h4>
+                  <h4 className="font-semibold text-gray-900 mb-2">About LabScout</h4>
                   <p className="text-sm text-gray-600">Learn about our mission and team</p>
                 </Link>
                 

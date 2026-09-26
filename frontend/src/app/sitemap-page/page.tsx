@@ -12,8 +12,8 @@ import { Footer } from '@/components/landing/Footer';
 import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
 
 export const metadata: Metadata = {
-  title: 'Sitemap | ScholarMap',
-  description: 'Complete sitemap of ScholarMap - explore all research fields, countries, and cities.',
+  title: 'Sitemap | LabScout',
+  description: 'Complete sitemap of LabScout - explore all research fields, countries, and cities.',
 };
 
 export default function SitemapPage() {

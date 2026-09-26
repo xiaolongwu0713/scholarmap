@@ -29,7 +29,7 @@ export function LandingNavbar() {
                   />
                 </svg>
                 <span className="text-xl font-semibold" style={{ color: "#111827" }}>
-                  ScholarMap
+                  LabScout
                 </span>
               </div>
             </Link>

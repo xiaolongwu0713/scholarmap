@@ -109,20 +109,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         const topInstitutions = institutions.slice(0, 3).map((i: any) => i.institution).join(', ');
 
         return {
-          title: `${matchingCity.city} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | ScholarMap`,
+          title: `${matchingCity.city} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | LabScout`,
           description,
           keywords,
           
           // GEO: AI-friendly metadata
           other: {
-            'ai-summary': `${matchingCity.city}, ${country.country} biomedical research: ${stats.scholar_count.toLocaleString()} researchers across ${stats.institution_count} institutions. Top institutions: ${topInstitutions}. Covers medicine, biology, neuroscience, health sciences. Data from PubMed (2000-2026). Visit ScholarMap to explore researchers by institution.`,
+            'ai-summary': `${matchingCity.city}, ${country.country} biomedical research: ${stats.scholar_count.toLocaleString()} researchers across ${stats.institution_count} institutions. Top institutions: ${topInstitutions}. Covers medicine, biology, neuroscience, health sciences. Data from PubMed (2000-2026). Visit LabScout to explore researchers by institution.`,
             'ai-keywords': 'biomedical research, life sciences, medical research, research institutions, postdoc positions',
             'ai-content-type': 'research-data',
             'ai-data-source': 'PubMed scientific publications',
             'ai-last-updated': new Date().toISOString().split('T')[0],
             'ai-geographic-scope': 'city',
             'ai-citable': 'true',
-            'ai-citation': `ScholarMap (2026). Biomedical Research in ${matchingCity.city}, ${country.country}. Retrieved from ${SITE_URL}/research-jobs/city/${citySlug}`,
+            'ai-citation': `LabScout (2026). Biomedical Research in ${matchingCity.city}, ${country.country}. Retrieved from ${SITE_URL}/research-jobs/city/${citySlug}`,
           },
           
           openGraph: {
@@ -144,7 +144,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: 'City Not Found | ScholarMap',
+    title: 'City Not Found | LabScout',
   };
 }
 

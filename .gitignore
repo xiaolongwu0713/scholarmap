@@ -33,3 +33,6 @@ log.txt
 
 # Personal files
 documents/*.pdf
+
+# Credentials notes
+backend/app/render_config.txt

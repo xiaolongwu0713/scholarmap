@@ -1,4 +1,4 @@
-"""SQLAlchemy models for ScholarMap database."""
+"""SQLAlchemy models for LabScout database."""
 from __future__ import annotations
 
 from datetime import datetime

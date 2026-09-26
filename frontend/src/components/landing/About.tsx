@@ -16,7 +16,7 @@ export function About() {
               backgroundClip: "text"
             }}
           >
-            About ScholarMap
+            About LabScout
           </h2>
           <p style={{ fontSize: "1.25rem", color: "#4b5563", maxWidth: "48rem", margin: "0 auto" }}>
             Transforming academic research discovery through AI and interactive visualization

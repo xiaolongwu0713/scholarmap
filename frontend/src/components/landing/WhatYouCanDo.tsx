@@ -4,7 +4,7 @@ const cards = [
   {
     title: "Built for biomedical and life science scholars",
     description:
-      "ScholarMap focuses on biomedical and life science research, so the insights and discovery workflows fit your field.",
+      "LabScout focuses on biomedical and life science research, so the insights and discovery workflows fit your field.",
     accent: "#0ea5e9",
     icon: "🧬"
   },
@@ -45,7 +45,7 @@ export function WhatYouCanDo() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <h2 style={{ fontSize: "2.6rem", fontWeight: 700, color: "#0f172a", marginBottom: "0.75rem" }}>
-          Know in 10 seconds if ScholarMap is worth your time
+          Know in 10 seconds if LabScout is worth your time
           </h2>
         </div>
 

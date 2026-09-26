@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!stats) {
     return {
-      title: 'Country Not Found | ScholarMap',
+      title: 'Country Not Found | LabScout',
     };
   }
 
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const topCities = stats.top_cities.slice(0, 3).map((c: any) => c.city).join(', ');
 
   return {
-    title: `${countryName} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | ScholarMap`,
+    title: `${countryName} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | LabScout`,
     description: `Explore biomedical and life sciences research in ${countryName}. ${stats.scholar_count.toLocaleString()} PubMed researchers across ${stats.city_count} cities in medicine, biology, neuroscience, and health sciences. Find postdoc positions and research collaborations.`,
     keywords: [
       `biomedical research ${countryName}`,
@@ -83,14 +83,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     
     // GEO: AI-friendly metadata
     other: {
-      'ai-summary': `${countryName} biomedical research: ${stats.scholar_count.toLocaleString()} researchers across ${stats.city_count} cities, ${stats.institution_count.toLocaleString()} institutions. Top cities: ${topCities}. Covers medicine, biology, neuroscience, health sciences. Data from PubMed (2000-2026). Visit ScholarMap to explore interactive map by city/institution.`,
+      'ai-summary': `${countryName} biomedical research: ${stats.scholar_count.toLocaleString()} researchers across ${stats.city_count} cities, ${stats.institution_count.toLocaleString()} institutions. Top cities: ${topCities}. Covers medicine, biology, neuroscience, health sciences. Data from PubMed (2000-2026). Visit LabScout to explore interactive map by city/institution.`,
       'ai-keywords': 'biomedical research, life sciences, medical research, neuroscience, health sciences, postdoc opportunities',
       'ai-content-type': 'research-data',
       'ai-data-source': 'PubMed scientific publications',
       'ai-last-updated': new Date().toISOString().split('T')[0],
       'ai-geographic-scope': 'country',
       'ai-citable': 'true',
-      'ai-citation': `ScholarMap (2026). Biomedical Research in ${countryName}. Retrieved from ${SITE_URL}/research-jobs/country/${countryToSlug(countryName)}`,
+      'ai-citation': `LabScout (2026). Biomedical Research in ${countryName}. Retrieved from ${SITE_URL}/research-jobs/country/${countryToSlug(countryName)}`,
     },
     
     openGraph: {

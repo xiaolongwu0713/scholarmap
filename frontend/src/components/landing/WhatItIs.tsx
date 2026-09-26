@@ -25,7 +25,7 @@ export function WhatItIs() {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Image
             src="/landing_page_figures_optimized/10.webp"
-            alt="ScholarMap use case"
+            alt="LabScout use case"
             width={1100}
             height={1000}
             quality={75}

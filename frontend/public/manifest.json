@@ -1,6 +1,6 @@
 {
-  "name": "ScholarMap - Discover Global Research Opportunities",
-  "short_name": "ScholarMap",
+  "name": "LabScout - Discover Global Research Opportunities",
+  "short_name": "LabScout",
   "description": "Map global research opportunities by country, city, and institution. Find collaborators and discover your dream research destination.",
   "start_url": "/",
   "display": "standalone",

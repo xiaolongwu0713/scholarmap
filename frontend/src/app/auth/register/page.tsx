@@ -146,7 +146,7 @@ export default function RegisterPage() {
   return (
     <div className="stack" style={{ maxWidth: "400px", margin: "2rem auto" }}>
       <div className="card">
-        <h1>Register for ScholarMap</h1>
+        <h1>Register for LabScout</h1>
         <p className="muted">Create a new account to get started.</p>
       </div>
 

@@ -33,7 +33,7 @@ export default function LoginPage() {
   return (
     <div className="stack" style={{ maxWidth: "400px", margin: "2rem auto" }}>
       <div className="card">
-        <h1>Login to ScholarMap</h1>
+        <h1>Login to LabScout</h1>
         <p className="muted">Enter your email and password to continue.</p>
       </div>
 

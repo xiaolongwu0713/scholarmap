@@ -4,10 +4,10 @@ import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 
 export const metadata: Metadata = {
-  title: 'About ScholarMap - Biomedical Research Network Mapping',
-  description: 'Learn about ScholarMap\'s mission to make biomedical research networks transparent and accessible. Discover how we help researchers find collaborations and opportunities worldwide.',
+  title: 'About LabScout - Biomedical Research Network Mapping',
+  description: 'Learn about LabScout\'s mission to make biomedical research networks transparent and accessible. Discover how we help researchers find collaborations and opportunities worldwide.',
   keywords: [
-    'about scholarmap',
+    'about labscout',
     'biomedical research mapping',
     'academic collaboration',
     'research network',
@@ -34,7 +34,7 @@ export default function AboutPage() {
           {/* Header */}
           <header className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              About ScholarMap
+              About LabScout
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
               Making biomedical research networks transparent and accessible to researchers worldwide
@@ -48,7 +48,7 @@ export default function AboutPage() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                  ScholarMap helps biomedical researchers discover global research opportunities by 
+                  LabScout helps biomedical researchers discover global research opportunities by 
                   visualizing PubMed data geographically.
                 </p>
                 <p className="text-gray-700 leading-relaxed">
@@ -65,12 +65,12 @@ export default function AboutPage() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Who We Are</h2>
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <p className="text-gray-700 leading-relaxed mb-6">
-                  ScholarMap is built by researchers who have experienced firsthand the challenges of 
+                  LabScout is built by researchers who have experienced firsthand the challenges of 
                   navigating the global biomedical research landscape. As a neural engineering researcher 
                   searching for postdoc positions and collaboration opportunities, I found myself spending 
                   countless hours manually searching university websites and relying on incomplete rankings. 
                   I realized that the data already existed in PubMed—it just needed to be organized and 
-                  visualized geographically. ScholarMap was born from this need.
+                  visualized geographically. LabScout was born from this need.
                 </p>
 
                 {/* Core Team Member */}
@@ -190,7 +190,7 @@ export default function AboutPage() {
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                   <h4 className="font-semibold text-gray-800 mb-2">Building for the Community</h4>
                   <p className="text-sm text-gray-700">
-                    ScholarMap is more than just a tool—it's a growing platform built by researchers, 
+                    LabScout is more than just a tool—it's a growing platform built by researchers, 
                     for researchers. We're continually expanding our coverage, improving our algorithms, 
                     and adding new features based on feedback from the research community. If you have 
                     ideas or want to contribute, we'd love to hear from you.
@@ -221,7 +221,7 @@ export default function AboutPage() {
                   <li>How does research density in my field compare across different countries?</li>
                 </ul>
                 <p className="text-gray-700 leading-relaxed">
-                  ScholarMap makes these insights accessible through interactive visualizations and 
+                  LabScout makes these insights accessible through interactive visualizations and 
                   comprehensive geographic breakdowns.
                 </p>
               </div>
@@ -291,7 +291,7 @@ export default function AboutPage() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6">How It Works</h2>
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <p className="text-gray-700 leading-relaxed mb-4">
-                  ScholarMap processes data from PubMed to create geographic visualizations of research 
+                  LabScout processes data from PubMed to create geographic visualizations of research 
                   networks. Our methodology is fully transparent:
                 </p>
                 <ol className="list-decimal list-inside text-gray-700 space-y-3 ml-4 mb-6">
@@ -334,15 +334,7 @@ export default function AboutPage() {
                           <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
                           <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
                         </svg>
-                        <span>contact@scholarmap.org</span>
-                      </div>
-                      <div className="flex items-center text-gray-700">
-                        <svg className="w-5 h-5 mr-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd"/>
-                        </svg>
-                        <a href="https://github.com/scholarmap" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
-                          GitHub
-                        </a>
+                        <span>contact@labscout.io</span>
                       </div>
                     </div>
                   </div>
@@ -350,7 +342,7 @@ export default function AboutPage() {
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-3">We'd Love to Hear From You</h3>
                     <p className="text-gray-700 text-sm leading-relaxed mb-3">
-                      Whether you have feedback, questions, or suggestions for improving ScholarMap, 
+                      Whether you have feedback, questions, or suggestions for improving LabScout, 
                       we're always eager to connect with the research community.
                     </p>
                     <p className="text-gray-700 text-sm leading-relaxed">

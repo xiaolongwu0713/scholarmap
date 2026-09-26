@@ -41,9 +41,9 @@ async def search_openalex(query: str, max_results: int) -> list[Paper]:
     page = 1
     papers: list[Paper] = []
 
-    headers = {"user-agent": "ScholarMap/0.1 (mailto:unknown)"}
+    headers = {"user-agent": "LabScout/0.1 (mailto:unknown)"}
     if settings.openalex_mailto:
-        headers["user-agent"] = f"ScholarMap/0.1 (mailto:{settings.openalex_mailto})"
+        headers["user-agent"] = f"LabScout/0.1 (mailto:{settings.openalex_mailto})"
 
     async with httpx.AsyncClient(timeout=60) as client:
         while len(papers) < max_results:

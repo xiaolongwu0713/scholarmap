@@ -125,7 +125,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   if (!isValidFieldSlug(fieldSlug)) {
     return {
-      title: 'Field Not Found | ScholarMap',
+      title: 'Field Not Found | LabScout',
     };
   }
 
@@ -136,7 +136,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const country = await findCityCountry(fieldSlug, cityName);
     if (!country) {
       return {
-        title: `${fieldConfig.name} Research in ${cityName} | ScholarMap`,
+        title: `${fieldConfig.name} Research in ${cityName} | LabScout`,
         description: `Explore ${fieldConfig.name} research opportunities in ${cityName}.`,
       };
     }
@@ -161,20 +161,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const institutionList = Array.from(institutions).slice(0, 3).join(', ');
 
     return {
-      title: `${fieldConfig.name} Research in ${cityName} | Leading Labs & Researchers | ScholarMap`,
+      title: `${fieldConfig.name} Research in ${cityName} | Leading Labs & Researchers | LabScout`,
       description,
       keywords,
       
       // GEO: AI-friendly metadata
       other: {
-        'ai-summary': `${fieldConfig.name} research in ${cityName}, ${country}: ${scholarCount} researchers across ${institutionCount} institutions. Top institutions: ${institutionList}. Keywords: ${fieldConfig.keywords.slice(0, 3).join(', ')}. Data from PubMed (2000-2026). Visit ScholarMap to explore by institution.`,
+        'ai-summary': `${fieldConfig.name} research in ${cityName}, ${country}: ${scholarCount} researchers across ${institutionCount} institutions. Top institutions: ${institutionList}. Keywords: ${fieldConfig.keywords.slice(0, 3).join(', ')}. Data from PubMed (2000-2026). Visit LabScout to explore by institution.`,
         'ai-keywords': fieldConfig.keywords.join(', '),
         'ai-content-type': 'research-data',
         'ai-data-source': 'PubMed scientific publications',
         'ai-last-updated': new Date().toISOString().split('T')[0],
         'ai-geographic-scope': 'city',
         'ai-citable': 'true',
-        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research in ${cityName}, ${country}. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}/city/${citySlug}`,
+        'ai-citation': `LabScout (2026). ${fieldConfig.name} Research in ${cityName}, ${country}. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}/city/${citySlug}`,
       },
       
       openGraph: {
@@ -192,7 +192,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch (error) {
     console.error('Error generating field-city metadata:', error);
     return {
-      title: `${fieldConfig.name} Research in ${cityName} | ScholarMap`,
+      title: `${fieldConfig.name} Research in ${cityName} | LabScout`,
       description: `Explore ${fieldConfig.name} research opportunities and institutions in ${cityName}.`,
     };
   }
@@ -528,7 +528,7 @@ export default async function FieldCityPage({ params }: PageProps) {
                 Discover {fieldConfig.name} Researchers in {cityName}
               </h3>
               <p className="text-gray-700 mb-4">
-                Use ScholarMap's interactive map to explore research groups and identify opportunities in {fieldConfig.keywords[0]}.
+                Use LabScout's interactive map to explore research groups and identify opportunities in {fieldConfig.keywords[0]}.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <TrackedLink

@@ -55,7 +55,7 @@ class PostgresGeocoder:
         """Lazy initialize geocoder (synchronous)."""
         if self._geocoder is None:
             self._geocoder = Nominatim(
-                user_agent="ScholarMap/1.0",
+                user_agent="LabScout/1.0",
                 timeout=10
             )
         return self._geocoder

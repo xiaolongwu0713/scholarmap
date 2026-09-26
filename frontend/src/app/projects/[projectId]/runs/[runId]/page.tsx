@@ -2599,7 +2599,7 @@ function RunPageContent() {
       {isExportMode && (
       <div className="export-only" style={{ display: "block" }}>
         <div className="export-watermark" aria-hidden="true">
-          scholarMap
+          LabScout
         </div>
         <div className="container stack export-page">
           <div className="card stack">
@@ -2609,7 +2609,7 @@ function RunPageContent() {
                   Run {runId}
                 </h1>
                 <div className="muted">
-                  The PDF is created by scholarMap ({SITE_URL}/) on {new Date().toLocaleString()}
+                  The PDF is created by LabScout ({SITE_URL}/) on {new Date().toLocaleString()}
                 </div>
               </div>
             </div>

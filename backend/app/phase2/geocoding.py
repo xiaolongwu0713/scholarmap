@@ -23,7 +23,7 @@ class Geocoder:
     """
     
     NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
-    USER_AGENT = "ScholarMap/1.0"
+    USER_AGENT = "LabScout/1.0"
     RATE_LIMIT_DELAY = 1.0  # Nominatim requires 1 request per second
     
     def __init__(self, db_conn: sqlite3.Connection) -> None:

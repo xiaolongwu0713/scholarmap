@@ -19,11 +19,11 @@ export function StructuredData({ data }: StructuredDataProps) {
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "ScholarMap",
+  "name": "LabScout",
   "url": SITE_URL,
   "logo": `${SITE_URL}/landing_page_figures_optimized/0.webp`,
   "description": "Map global research opportunities by country, city, and institution. Auto-build literature queries, find collaborators, and discover your dream research destination.",
-  "email": "contact@scholarmap.com",
+  "email": "contact@labscout.io",
   "foundingDate": "2026",
   "sameAs": []
 };
@@ -32,7 +32,7 @@ export const organizationSchema = {
 export const webApplicationSchema = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "ScholarMap",
+  "name": "LabScout",
   "url": SITE_URL,
   "applicationCategory": "ResearchTool",
   "operatingSystem": "Web Browser",
@@ -63,7 +63,7 @@ export const webApplicationSchema = {
 export const softwareApplicationSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "ScholarMap",
+  "name": "LabScout",
   "applicationCategory": "BusinessApplication",
   "applicationSubCategory": "Research & Academic Tools",
   "operatingSystem": "Any (Web-based)",
@@ -74,9 +74,9 @@ export const softwareApplicationSchema = {
   },
   "creator": {
     "@type": "Organization",
-    "name": "ScholarMap Team"
+    "name": "LabScout Team"
   },
-  "description": "ScholarMap is a research mapping platform that transforms research descriptions into comprehensive literature queries and visualizes global research opportunities by geographic location and institution.",
+  "description": "LabScout is a research mapping platform that transforms research descriptions into comprehensive literature queries and visualizes global research opportunities by geographic location and institution.",
   "url": SITE_URL,
   "screenshot": [
     `${SITE_URL}/landing_page_figures_optimized/0.webp`,
@@ -114,42 +114,42 @@ export const faqSchema = {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "What is ScholarMap?",
+      "name": "What is LabScout?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ScholarMap is a research mapping platform that helps you discover global research opportunities grouped by country, city, and institution. It automatically builds literature queries from your research description and visualizes the global distribution of scholars in your field."
+        "text": "LabScout is a research mapping platform that helps you discover global research opportunities grouped by country, city, and institution. It automatically builds literature queries from your research description and visualizes the global distribution of scholars in your field."
       }
     },
     {
       "@type": "Question",
-      "name": "How does ScholarMap work?",
+      "name": "How does LabScout work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ScholarMap works in two phases: (1) You describe your research in natural language, and the system generates comprehensive PubMed queries to retrieve relevant literature. (2) The system extracts author affiliations, geocodes them, and visualizes the results on an interactive map showing country, city, institution, and author-level distributions."
+        "text": "LabScout works in two phases: (1) You describe your research in natural language, and the system generates comprehensive PubMed queries to retrieve relevant literature. (2) The system extracts author affiliations, geocodes them, and visualizes the results on an interactive map showing country, city, institution, and author-level distributions."
       }
     },
     {
       "@type": "Question",
-      "name": "Who can benefit from ScholarMap?",
+      "name": "Who can benefit from LabScout?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ScholarMap is valuable for researchers seeking international collaboration opportunities, PhD students exploring potential institutions, grant writers identifying research networks, and anyone wanting to understand the global landscape of research in their field."
+        "text": "LabScout is valuable for researchers seeking international collaboration opportunities, PhD students exploring potential institutions, grant writers identifying research networks, and anyone wanting to understand the global landscape of research in their field."
       }
     },
     {
       "@type": "Question",
-      "name": "Is ScholarMap free to use?",
+      "name": "Is LabScout free to use?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ScholarMap offers free access with usage quotas. You can create a limited number of projects and runs per project. You can also try our public demo without registration to explore the platform's capabilities."
+        "text": "LabScout offers free access with usage quotas. You can create a limited number of projects and runs per project. You can also try our public demo without registration to explore the platform's capabilities."
       }
     },
     {
       "@type": "Question",
-      "name": "How do I find collaborators using ScholarMap?",
+      "name": "How do I find collaborators using LabScout?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "After running a search, ScholarMap displays all scholars working in your research area, organized by institution. You can drill down to any institution to see individual researchers, their publication counts, and their affiliations, making it easy to identify potential collaborators."
+        "text": "After running a search, LabScout displays all scholars working in your research area, organized by institution. You can drill down to any institution to see individual researchers, their publication counts, and their affiliations, making it easy to identify potential collaborators."
       }
     }
   ]
@@ -159,8 +159,8 @@ export const faqSchema = {
 export const howToSchema = {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "name": "How to Use ScholarMap to Discover Research Opportunities",
-  "description": "Learn how to use ScholarMap to map global research opportunities and find collaborators",
+  "name": "How to Use LabScout to Discover Research Opportunities",
+  "description": "Learn how to use LabScout to map global research opportunities and find collaborators",
   "image": `${SITE_URL}/landing_page_figures_optimized/0.webp`,
   "totalTime": "PT10M",
   "step": [
@@ -182,7 +182,7 @@ export const howToSchema = {
       "@type": "HowToStep",
       "position": 3,
       "name": "Retrieve and Parse Affiliations",
-      "text": "ScholarMap retrieves relevant papers from PubMed and extracts author affiliation information from the literature.",
+      "text": "LabScout retrieves relevant papers from PubMed and extracts author affiliation information from the literature.",
       "image": `${SITE_URL}/landing_page_figures_optimized/3.webp`
     },
     {

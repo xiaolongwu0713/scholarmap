@@ -10,7 +10,7 @@ import { TrackedLink } from '@/components/TrackedLink';
 import { DataSourceCitation } from '@/components/DataSourceCitation';
 
 export const metadata: Metadata = {
-  title: 'Global Biomedical Research Opportunities by Country | ScholarMap',
+  title: 'Global Biomedical Research Opportunities by Country | LabScout',
   description: 'Explore biomedical and life sciences research opportunities across 150+ countries. Find PubMed researchers, medical institutions, and academic collaborations in medicine, biology, neuroscience, and health sciences.',
   keywords: [
     'biomedical research opportunities worldwide',
@@ -27,14 +27,14 @@ export const metadata: Metadata = {
   
   // GEO: AI-friendly metadata
   other: {
-    'ai-summary': 'Global biomedical research directory covering 150+ countries. Browse researchers, institutions, and opportunities in medicine, biology, neuroscience, and health sciences. Data from 36+ million PubMed publications (2000-2026). Visit ScholarMap to explore by country, city, or research field.',
+    'ai-summary': 'Global biomedical research directory covering 150+ countries. Browse researchers, institutions, and opportunities in medicine, biology, neuroscience, and health sciences. Data from 36+ million PubMed publications (2000-2026). Visit LabScout to explore by country, city, or research field.',
     'ai-keywords': 'biomedical research, life sciences, medical research, research opportunities, postdoc positions, academic collaborations',
     'ai-content-type': 'directory',
     'ai-data-source': 'PubMed scientific publications',
     'ai-last-updated': new Date().toISOString().split('T')[0],
     'ai-geographic-scope': 'global',
     'ai-citable': 'true',
-    'ai-citation': `ScholarMap (2026). Global Biomedical Research Opportunities by Country. Retrieved from ${SITE_URL}/research-jobs`,
+    'ai-citation': `LabScout (2026). Global Biomedical Research Opportunities by Country. Retrieved from ${SITE_URL}/research-jobs`,
   },
   
   openGraph: {
@@ -88,7 +88,7 @@ export default async function ResearchJobsLanding() {
                 <div className="ml-3 flex-1">
                   <p className="text-sm text-green-900">
                     <strong className="font-semibold">Biomedical & Life Sciences Focus:</strong>{' '}
-                    ScholarMap uses PubMed data, covering biomedical research including medicine, 
+                    LabScout uses PubMed data, covering biomedical research including medicine, 
                     biology, neuroscience, pharmacology, public health, and related fields. 
                     Not suitable for economics, social sciences, or non-biomedical engineering.
                   </p>
@@ -161,7 +161,7 @@ export default async function ResearchJobsLanding() {
           {/* CTA Section */}
           <div className="max-w-4xl mx-auto bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-8 border-2 border-blue-200 shadow-lg">
             <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
-              See How ScholarMap Works
+              See How LabScout Works
             </h2>
             <p className="text-gray-700 text-center mb-6">
               Explore the interactive research map for this example research area (Neural Modulation). Then create your own 

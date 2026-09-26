@@ -38,7 +38,7 @@ function buildDatasetDescription(data: AIContentSummaryProps['data']): string {
   if (data.totalResearchers) counts.push(`${data.totalResearchers.toLocaleString()} researchers`);
   if (data.totalInstitutions) counts.push(`${data.totalInstitutions.toLocaleString()} institutions`);
   const countStr = counts.length > 0 ? counts.join(', ') : 'research locations';
-  return `ScholarMap dataset of ${scope} mapping ${countStr} extracted from ${data.dataSource}. Interactive map for exploring researchers, institutions, and opportunities.`;
+  return `LabScout dataset of ${scope} mapping ${countStr} extracted from ${data.dataSource}. Interactive map for exploring researchers, institutions, and opportunities.`;
 }
 
 export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
@@ -60,7 +60,7 @@ export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
 
       {/* Creator: Organization (required structure, not plain text) */}
       <div itemProp="creator" itemScope itemType="https://schema.org/Organization" style={{ display: 'none' }}>
-        <meta itemProp="name" content="ScholarMap" />
+        <meta itemProp="name" content="LabScout" />
         <meta itemProp="url" content={SITE_URL} />
       </div>
 
@@ -225,25 +225,25 @@ export function AIContentSummary({ pageType, data }: AIContentSummaryProps) {
       <section data-ai-section="citation" itemProp="citation">
         <h3>How to Cite This Data</h3>
         <p data-ai-citation="recommended">
-          Recommended: ScholarMap (2026). {data.title}. Retrieved from {data.pageUrl}
+          Recommended: LabScout (2026). {data.title}. Retrieved from {data.pageUrl}
         </p>
         <p data-ai-citation="short">
-          Short: ScholarMap - {data.title}
+          Short: LabScout - {data.title}
         </p>
       </section>
       
       {/* Platform Info */}
       <section data-ai-section="platform">
-        <h3>About ScholarMap</h3>
+        <h3>About LabScout</h3>
         <p>
-          ScholarMap is a research mapping platform that helps scholars discover
+          LabScout is a research mapping platform that helps scholars discover
           global research opportunities by country, city, and institution. It
           analyzes 36+ million PubMed publications to map where researchers are
           located and visualizes this data on an interactive map.
         </p>
         <p>
           Unlike traditional academic search engines that focus on papers,
-          ScholarMap focuses on people and places, answering questions like:
+          LabScout focuses on people and places, answering questions like:
           "Where are the best labs in my field?" and "Which city has the most
           researchers in this area?"
         </p>

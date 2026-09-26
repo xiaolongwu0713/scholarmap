@@ -79,24 +79,24 @@ The life sciences job market in ${city} benefits from the city's position within
     `.trim(),
 
     howToConnect: `
-ScholarMap provides tools to explore and connect with biomedical researchers in ${city}:
+LabScout provides tools to explore and connect with biomedical researchers in ${city}:
 
 **Interactive Research Map**: Our platform visualizes the distribution of ${scholar_count.toLocaleString()} researchers across ${city}'s ${institution_count} institutions. Filter by institution to see research concentrations and identify potential collaborators or host laboratories for postdoctoral positions.
 
 **Institution Discovery**: Browse specific institutions to understand their research strengths, active researcher counts, and publication patterns. This helps you identify which institutions align best with your research interests in life sciences and biomedical research.
 
-**Researcher Networks**: See the network of scientists contributing to PubMed from ${city}. While ScholarMap doesn't provide direct contact information, knowing who is actively publishing in your area of biomedical interest helps you identify potential mentors, collaborators, or positions to pursue.
+**Researcher Networks**: See the network of scientists contributing to PubMed from ${city}. While LabScout doesn't provide direct contact information, knowing who is actively publishing in your area of biomedical interest helps you identify potential mentors, collaborators, or positions to pursue.
 
 **Publication Analysis**: Explore the research output from ${city} to understand trending topics, active research areas, and publication patterns in life sciences. This intelligence helps you assess the city's fit for your specific biomedical research interests.
 
-For those considering postdoctoral positions or research careers in ${city}, use ScholarMap to:
+For those considering postdoctoral positions or research careers in ${city}, use LabScout to:
 
 - Identify institutions with strong research activity in your specific field (neuroscience, molecular biology, pharmacology, etc.)
 - Discover which laboratories are most actively publishing in areas related to your expertise
 - Understand the scale and scope of biomedical research in ${city}
 - Compare ${city} with other potential research destinations in ${country} or globally
 
-While ScholarMap provides data based on PubMed publications (covering biomedical and life sciences), it's important to complement this information with direct outreach to institutions, review of specific laboratory websites, and exploration of job postings in your field.
+While LabScout provides data based on PubMed publications (covering biomedical and life sciences), it's important to complement this information with direct outreach to institutions, review of specific laboratory websites, and exploration of job postings in your field.
     `.trim(),
   };
 }
@@ -154,7 +154,7 @@ export function generateCityFAQs(city: string, country: string, stats: CityStats
     },
     {
       question: `How can I find postdoc positions in ${city}?`,
-      answer: `Use ScholarMap to identify active research groups in ${city} within your field of interest. Browse institutions with high publication activity in your area (e.g., neuroscience, molecular biology), then visit their websites for postdoctoral opportunities. Many institutions in ${city} regularly recruit postdocs in life sciences and biomedical research.`,
+      answer: `Use LabScout to identify active research groups in ${city} within your field of interest. Browse institutions with high publication activity in your area (e.g., neuroscience, molecular biology), then visit their websites for postdoctoral opportunities. Many institutions in ${city} regularly recruit postdocs in life sciences and biomedical research.`,
     },
     {
       question: `Is ${city} good for biomedical research careers?`,

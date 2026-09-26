@@ -1,4 +1,4 @@
-"""Logging configuration for ScholarMap application.
+"""Logging configuration for LabScout application.
 
 This module configures logging to output to both:
 1. Console (stdout/stderr)

@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   if (!isValidFieldSlug(fieldSlug)) {
     return {
-      title: 'Field Not Found | ScholarMap',
+      title: 'Field Not Found | LabScout',
     };
   }
 
@@ -96,20 +96,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .join(', ');
 
     return {
-      title: `${fieldConfig.name} Research in ${countryName} | Top Institutions & Opportunities | ScholarMap`,
+      title: `${fieldConfig.name} Research in ${countryName} | Top Institutions & Opportunities | LabScout`,
       description,
       keywords,
       
       // GEO: AI-friendly metadata
       other: {
-        'ai-summary': `${fieldConfig.name} research in ${countryName}: ${scholarCount.toLocaleString()} researchers across ${institutionCount} institutions. Top cities: ${topCities}. Keywords: ${fieldConfig.keywords.slice(0, 3).join(', ')}. Data from PubMed (2000-2026). Visit ScholarMap to explore by city/institution.`,
+        'ai-summary': `${fieldConfig.name} research in ${countryName}: ${scholarCount.toLocaleString()} researchers across ${institutionCount} institutions. Top cities: ${topCities}. Keywords: ${fieldConfig.keywords.slice(0, 3).join(', ')}. Data from PubMed (2000-2026). Visit LabScout to explore by city/institution.`,
         'ai-keywords': fieldConfig.keywords.join(', '),
         'ai-content-type': 'research-data',
         'ai-data-source': 'PubMed scientific publications',
         'ai-last-updated': new Date().toISOString().split('T')[0],
         'ai-geographic-scope': 'country',
         'ai-citable': 'true',
-        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research in ${countryName}. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}/country/${countrySlug}`,
+        'ai-citation': `LabScout (2026). ${fieldConfig.name} Research in ${countryName}. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}/country/${countrySlug}`,
       },
       
       openGraph: {
@@ -127,7 +127,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch (error) {
     console.error('Error generating field-country metadata:', error);
     return {
-      title: `${fieldConfig.name} Research in ${countryName} | ScholarMap`,
+      title: `${fieldConfig.name} Research in ${countryName} | LabScout`,
       description: `Explore ${fieldConfig.name} research opportunities and institutions in ${countryName}.`,
     };
   }
@@ -442,7 +442,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
                 Ready to Explore {fieldConfig.name} in {countryName}?
               </h3>
               <p className="text-gray-700 mb-4">
-                Use ScholarMap's interactive map to discover researchers and institutions in {fieldConfig.keywords[0]} across {countryName}.
+                Use LabScout's interactive map to discover researchers and institutions in {fieldConfig.keywords[0]} across {countryName}.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <TrackedLink

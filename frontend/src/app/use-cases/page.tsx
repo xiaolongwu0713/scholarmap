@@ -5,19 +5,19 @@ import { Footer } from '@/components/landing/Footer';
 import { TrackedLink } from '@/components/TrackedLink';
 
 export const metadata: Metadata = {
-  title: 'Use Cases - How to Use ScholarMap for Research | ScholarMap',
-  description: 'Learn how to use ScholarMap to find postdoc positions, discover collaboration opportunities, and compare research environments across cities. Step-by-step guides with real examples.',
+  title: 'Use Cases - How to Use LabScout for Research | LabScout',
+  description: 'Learn how to use LabScout to find postdoc positions, discover collaboration opportunities, and compare research environments across cities. Step-by-step guides with real examples.',
   keywords: [
     'find postdoc positions',
     'research collaboration opportunities',
     'compare research cities',
     'academic job search',
     'biomedical research opportunities',
-    'how to use scholarmap',
+    'how to use labscout',
   ],
   openGraph: {
-    title: 'Use Cases - How to Use ScholarMap for Research',
-    description: 'Discover how researchers use ScholarMap to find postdoc positions, collaborations, and compare research environments.',
+    title: 'Use Cases - How to Use LabScout for Research',
+    description: 'Discover how researchers use LabScout to find postdoc positions, collaborations, and compare research environments.',
   },
 };
 
@@ -40,10 +40,10 @@ export default function UseCasesPage() {
           {/* Header */}
           <header className="mb-12 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              How Researchers Use ScholarMap
+              How Researchers Use LabScout
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
-              Real-world examples of how ScholarMap helps biomedical researchers discover 
+              Real-world examples of how LabScout helps biomedical researchers discover 
               opportunities, find collaborators, and make informed career decisions
             </p>
           </header>
@@ -114,7 +114,7 @@ export default function UseCasesPage() {
                   </h3>
                   <div className="bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 rounded-lg p-6">
                     <p className="text-gray-700 mb-4">
-                      ScholarMap shows you exactly where CRISPR research is happening globally, broken 
+                      LabScout shows you exactly where CRISPR research is happening globally, broken 
                       down by country, city, and institution—all based on actual PubMed publication data.
                     </p>
                     
@@ -563,7 +563,7 @@ export default function UseCasesPage() {
           <section className="mb-16">
             <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl p-8 border border-indigo-200">
               <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-                💡 5 Tips for Using ScholarMap Effectively
+                💡 5 Tips for Using LabScout Effectively
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="bg-white p-5 rounded-lg border border-indigo-200">
@@ -605,7 +605,7 @@ export default function UseCasesPage() {
                     Use as a Starting Point
                   </h3>
                   <p className="text-sm text-gray-700">
-                    ScholarMap helps you narrow down options. Follow up by checking lab websites, 
+                    LabScout helps you narrow down options. Follow up by checking lab websites, 
                     recent publications, and funding status for final decisions.
                   </p>
                 </div>
@@ -627,7 +627,7 @@ export default function UseCasesPage() {
                     Combine with Other Resources
                   </h3>
                   <p className="text-sm text-gray-700">
-                    Use ScholarMap alongside job boards, university career services, and your professional 
+                    Use LabScout alongside job boards, university career services, and your professional 
                     network for the most comprehensive search.
                   </p>
                 </div>

@@ -9,10 +9,10 @@ import { CanonicalURL } from "@/components/CanonicalURL";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ScholarMap - Global Biomedical Research Network",
-    template: "%s | ScholarMap"
+    default: "LabScout - Global Biomedical Research Network",
+    template: "%s | LabScout"
   },
-  description: "ScholarMap is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution using PubMed data.",
+  description: "LabScout is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution using PubMed data.",
   keywords: [
     // Field-specific keywords
     "biomedical research opportunities",
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
     "PubMed search",
     "scholar discovery",
   ],
-  authors: [{ name: "ScholarMap Team" }],
-  creator: "ScholarMap",
-  publisher: "ScholarMap",
+  authors: [{ name: "LabScout Team" }],
+  creator: "LabScout",
+  publisher: "LabScout",
   formatDetection: {
     email: false,
     address: false,
@@ -45,24 +45,23 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: SITE_URL,
-    siteName: "ScholarMap",
-    title: "ScholarMap - Global Biomedical Research Network",
-    description: "ScholarMap is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution.",
+    siteName: "LabScout",
+    title: "LabScout - Global Biomedical Research Network",
+    description: "LabScout is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution.",
     images: [
       {
         url: "/landing_page_figures_optimized/0.webp",
         width: 1200,
         height: 630,
-        alt: "ScholarMap - Global Research Network Visualization",
+        alt: "LabScout - Global Research Network Visualization",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ScholarMap - Global Biomedical Research Network",
+    title: "LabScout - Global Biomedical Research Network",
     description: "Global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by location.",
     images: ["/landing_page_figures_optimized/0.webp"],
-    creator: "@scholarmap",
   },
   robots: {
     index: true,

@@ -52,7 +52,7 @@ export function Hero() {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-200 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
               <Image
                 src="/landing_page_figures_optimized/12.webp"
-                alt="ScholarMap use case"
+                alt="LabScout use case"
                 width={1536}
                 height={1024}
                 quality={75}
@@ -92,7 +92,7 @@ export function Hero() {
           Biomedical and Life Sciences Research Opportunities by Country, City, and Institution.
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto">
-          ScholarMap helps researchers discover labs, postdoc positions, and collaborators across 150+ countries using PubMed data.
+          LabScout helps researchers discover labs, postdoc positions, and collaborators across 150+ countries using PubMed data.
         </p>
         <div style={{ position: "relative" }}>
           <button

@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   if (!isValidFieldSlug(fieldSlug)) {
     return {
-      title: 'Field Not Found | ScholarMap',
+      title: 'Field Not Found | LabScout',
     };
   }
 
@@ -71,14 +71,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const keywords = generateFieldOverviewKeywords(fieldConfig);
 
     return {
-      title: `${fieldConfig.name} Research Opportunities | Find Labs & Researchers Globally | ScholarMap`,
+      title: `${fieldConfig.name} Research Opportunities | Find Labs & Researchers Globally | LabScout`,
       description,
       keywords,
       
       // GEO: AI-friendly metadata
       other: {
         // AI can quickly understand the page summary
-        'ai-summary': `${fieldConfig.name} research data: ${totalScholars.toLocaleString()} researchers across ${totalCountries} countries. Top locations: ${topCountries.join(', ')}. Data from PubMed publications (2000-2026). Visit ScholarMap to explore interactive map, find collaborators, and discover research opportunities. Free account available.`,
+        'ai-summary': `${fieldConfig.name} research data: ${totalScholars.toLocaleString()} researchers across ${totalCountries} countries. Top locations: ${topCountries.join(', ')}. Data from PubMed publications (2000-2026). Visit LabScout to explore interactive map, find collaborators, and discover research opportunities. Free account available.`,
         
         // Structured AI keywords
         'ai-keywords': fieldConfig.keywords.join(', '),
@@ -99,7 +99,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         'ai-citable': 'true',
         
         // Suggested citation format
-        'ai-citation': `ScholarMap (2026). ${fieldConfig.name} Research Map. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}`,
+        'ai-citation': `LabScout (2026). ${fieldConfig.name} Research Map. Retrieved from ${SITE_URL}/research-jobs/${fieldSlug}`,
       },
       
       openGraph: {
@@ -117,7 +117,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch (error) {
     console.error('Error generating field overview metadata:', error);
     return {
-      title: `${fieldConfig.name} Research Opportunities | ScholarMap`,
+      title: `${fieldConfig.name} Research Opportunities | LabScout`,
       description: fieldConfig.description,
     };
   }
@@ -196,7 +196,7 @@ export default async function FieldOverviewPage({ params }: PageProps) {
     keywords: fieldConfig.keywords.join(', '),
     sponsor: {
       '@type': 'Organization',
-      name: 'ScholarMap',
+      name: 'LabScout',
     },
   };
 
@@ -387,7 +387,7 @@ export default async function FieldOverviewPage({ params }: PageProps) {
                 Ready to Explore {fieldConfig.name} Research?
               </h3>
               <p className="text-gray-700 mb-4">
-                Use ScholarMap's interactive map to discover researchers, institutions, and opportunities in {fieldConfig.keywords[0]} worldwide.
+                Use LabScout's interactive map to discover researchers, institutions, and opportunities in {fieldConfig.keywords[0]} worldwide.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <TrackedLink

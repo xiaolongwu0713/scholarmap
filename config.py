@@ -1,4 +1,4 @@
-"""Configuration settings for ScholarMap application."""
+"""Configuration settings for LabScout application."""
 
 from __future__ import annotations
 from pathlib import Path
@@ -51,7 +51,7 @@ class Settings(BaseSettings):
     # Can be loaded from .env file or environment variables
     sendgrid_api_key: str = ""
     email_from: str = "xiaolongwu0713@gmail.com"  # Sender email address for verification codes
-    # TODO: Use a dedicated no-reply address (e.g., noreply@scholarmap.com) to improve deliverability
+    # TODO: Use a dedicated no-reply address (e.g., noreply@labscout.io) to improve deliverability
     # Must be verified in SendGrid before use
     
     # Super user configuration (can access all projects and runs)
@@ -65,7 +65,7 @@ class Settings(BaseSettings):
     share_run_auth_check_enabled: bool = False
 
     # Public site URL (used for CORS and origin checks)
-    frontend_url: str = "https://scholarmap-frontend.onrender.com"
+    frontend_url: str = "https://labscout.io"
     # Extra allowed CORS origins, comma-separated (e.g. old domain during migration)
     cors_extra_origins: str = ""
 

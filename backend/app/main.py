@@ -85,7 +85,7 @@ async def lifespan(app: FastAPI):
     print("✅ Database connection closed")
 
 
-app = FastAPI(title="ScholarMap API", lifespan=lifespan)
+app = FastAPI(title="LabScout API", lifespan=lifespan)
 
 # Add CORS middleware first
 app.add_middleware(
