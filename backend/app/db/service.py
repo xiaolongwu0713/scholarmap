@@ -133,6 +133,13 @@ class DatabaseStore:
                 description=run.description
             )
     
+    async def run_belongs_to_project(self, project_id: str, run_id: str) -> bool:
+        """Check that a run exists and belongs to the given project."""
+        async with db_manager.session() as session:
+            repo = RunRepository(session)
+            run = await repo.get_run(run_id)
+            return run is not None and run.project_id == project_id
+
     async def read_run_file(
         self,
         project_id: str,

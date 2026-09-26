@@ -1,8 +1,6 @@
 1, 机构解析错误，比如有的机构解析为了Ltd
 
 
-2，后端 run 授权存在薄弱点：`RunRepository.get_run` / `DatabaseStore.read_run_file` 等接口仅按 `run_id` 查询，不校验该 run 是否属于当前请求的 `project_id`/`user_id`，导致猜到 run_id 即可跨项目读取、修改甚至删除他人 run。需要对所有 run 操作增加 project->run 的绑定校验，或在 run 表冗余 user_id 做过滤。
-
 4，可以考虑在ingestion结束后，自动预处理聚合操作，这样点击地图就可以直接看到结果。
       
 

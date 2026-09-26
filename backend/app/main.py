@@ -111,6 +111,12 @@ app.add_middleware(FrontendOnlyMiddleware)
 
 # Use database store instead of file store
 store = DatabaseStore()
+
+
+async def require_run_in_project(project_id: str, run_id: str) -> None:
+    """Reject access to runs that do not belong to the (already authorized) project."""
+    if not await store.run_belongs_to_project(project_id, run_id):
+        raise HTTPException(status_code=404, detail="Run not found")
 # Also initialize file store for deleting local files if they exist
 file_store = FileStore(get_data_dir())
 
@@ -479,6 +485,7 @@ async def delete_run(request: Request, project_id: str, run_id: str) -> dict:
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     # Delete from database
     await store.delete_run(project_id, run_id)
@@ -511,6 +518,7 @@ async def get_run_file(request: Request, project_id: str, run_id: str, filename:
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         data = await store.read_run_file(project_id, run_id, filename)
     except FileNotFoundError:
@@ -527,6 +535,7 @@ async def list_run_files(request: Request, project_id: str, run_id: str) -> dict
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         files = await store.list_run_files(project_id, run_id)
     except FileNotFoundError:
@@ -544,6 +553,7 @@ async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     # Execute query
     try:
@@ -618,6 +628,7 @@ async def update_research_description(request: Request, project_id: str, run_id:
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         understanding = await store.read_run_file(project_id, run_id, "understanding.json")
         understanding["research_description"] = req.research_description
@@ -678,6 +689,7 @@ async def parse_stage1_route(request: Request, project_id: str, run_id: str, req
         project = await store.get_project(project_id, user_id)
         if project is None:
             raise HTTPException(status_code=404, detail="Project not found")
+        await require_run_in_project(project_id, run_id)
         
         tv = input_text_validate(req.candidate_description)
         if not tv.get("ok"):
@@ -738,6 +750,7 @@ async def parse_stage2_route(request: Request, project_id: str, run_id: str, req
         project = await store.get_project(project_id, user_id)
         if project is None:
             raise HTTPException(status_code=404, detail="Project not found")
+        await require_run_in_project(project_id, run_id)
         
         # Use lighter validation for parse stage 2 (allows some repetition, focuses on word quality)
         from app.input_text_validate import input_text_validate_for_adjustment
@@ -770,6 +783,7 @@ async def phase1_parse(request: Request, project_id: str, run_id: str, req: Upda
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     # Backend validation (quality checks - frontend already did format checks)
     # Skip validation if skip_validation flag is set (e.g., for normalized_understanding from LLM)
     if not req.skip_validation:
@@ -791,6 +805,7 @@ async def phase1_update_slots(request: Request, project_id: str, run_id: str, re
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         understanding = await store.read_run_file(project_id, run_id, "understanding.json")
         understanding["slots_normalized"] = req.slots_normalized.model_dump()
@@ -806,6 +821,7 @@ async def phase1_synonyms(request: Request, project_id: str, run_id: str) -> dic
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         data = await step_synonyms(store, project_id, run_id)
     except FileNotFoundError:
@@ -821,6 +837,7 @@ async def phase1_update_keywords(request: Request, project_id: str, run_id: str,
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         keywords = await store.read_run_file(project_id, run_id, "keywords.json")
         keywords["canonical_terms"] = req.canonical_terms
@@ -837,6 +854,7 @@ async def phase1_query_build(request: Request, project_id: str, run_id: str) -> 
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         q = await step_query_build(store, project_id, run_id)
     except FileNotFoundError:
@@ -852,6 +870,7 @@ async def phase1_update_queries(request: Request, project_id: str, run_id: str, 
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         await store.write_run_file(project_id, run_id, "queries.json", req.model_dump())
     except FileNotFoundError:
@@ -865,6 +884,7 @@ async def phase1_update_retrieval_framework(request: Request, project_id: str, r
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     try:
         understanding = await store.read_run_file(project_id, run_id, "understanding.json")
         understanding["retrieval_framework"] = req.retrieval_framework
@@ -884,6 +904,7 @@ async def adjust_retrieval_framework_route(request: Request, project_id: str, ru
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     # Backend validation (lighter validation for adjustment inputs - no repetition checks)
     from app.input_text_validate import input_text_validate_for_adjustment
@@ -947,6 +968,7 @@ async def phase2_authorship_stats(request: Request, project_id: str, run_id: str
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     try:
         async with db_manager.session() as session:
@@ -1025,6 +1047,7 @@ async def phase2_ingest(request: Request, project_id: str, run_id: str, req: Ing
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     logger = logging.getLogger(__name__)
     
@@ -1127,6 +1150,7 @@ async def get_ingest_status(request: Request, project_id: str, run_id: str) -> d
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     from app.background_tasks import background_ingest_manager
     
@@ -1187,6 +1211,7 @@ async def phase2_validate_affiliations(request: Request, project_id: str, run_id
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     logger = logging.getLogger(__name__)
     
@@ -1249,6 +1274,7 @@ async def phase2_map_world(
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     logger = logging.getLogger(__name__)
     
@@ -1306,6 +1332,7 @@ async def phase2_map_country(request: Request,
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     logger = logging.getLogger(__name__)
     
@@ -1362,6 +1389,7 @@ async def phase2_map_city(request: Request,
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     logger = logging.getLogger(__name__)
     
@@ -1420,6 +1448,7 @@ async def phase2_map_institution(request: Request,
     project = await store.get_project(project_id, user_id)
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
     
     if not country or not city:
         raise HTTPException(status_code=400, detail="country and city are required")
