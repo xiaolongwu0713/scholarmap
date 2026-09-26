@@ -24,3 +24,12 @@ pnpm-debug.log*
 # Data
 data/
 
+
+# Logs & build caches
+*.log
+log.txt
+*.tsbuildinfo
+*.bak
+
+# Personal files
+documents/*.pdf
