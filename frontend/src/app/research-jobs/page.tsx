@@ -10,7 +10,7 @@ import { TrackedLink } from '@/components/TrackedLink';
 import { DataSourceCitation } from '@/components/DataSourceCitation';
 
 export const metadata: Metadata = {
-  title: 'Global Biomedical Research Opportunities by Country | LabScout',
+  title: 'Global Biomedical Research Opportunities by Country',
   description: 'Explore biomedical and life sciences research opportunities across 150+ countries. Find PubMed researchers, medical institutions, and academic collaborations in medicine, biology, neuroscience, and health sciences.',
   keywords: [
     'biomedical research opportunities worldwide',

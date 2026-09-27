@@ -68,7 +68,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   if (!isValidFieldSlug(fieldSlug)) {
     return {
-      title: 'Field Not Found | LabScout',
+      title: 'Field Not Found',
     };
   }
 
@@ -96,7 +96,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .join(', ');
 
     return {
-      title: `${fieldConfig.name} Research in ${countryName} | Top Institutions & Opportunities | LabScout`,
+      title: `${fieldConfig.name} Research in ${countryName} | Top Institutions & Opportunities`,
       description,
       keywords,
       
@@ -127,7 +127,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch (error) {
     console.error('Error generating field-country metadata:', error);
     return {
-      title: `${fieldConfig.name} Research in ${countryName} | LabScout`,
+      title: `${fieldConfig.name} Research in ${countryName}`,
       description: `Explore ${fieldConfig.name} research opportunities and institutions in ${countryName}.`,
     };
   }

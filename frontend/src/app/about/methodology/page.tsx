@@ -4,7 +4,7 @@ import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 
 export const metadata: Metadata = {
-  title: 'Methodology - How We Map Biomedical Research | LabScout',
+  title: 'Methodology - How We Map Biomedical Research',
   description: 'Learn how LabScout collects and processes PubMed data to map global biomedical research networks. Understand our data sources, extraction methods, and quality assurance processes.',
   keywords: [
     'PubMed data analysis',

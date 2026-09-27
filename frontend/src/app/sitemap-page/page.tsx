@@ -12,7 +12,7 @@ import { Footer } from '@/components/landing/Footer';
 import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
 
 export const metadata: Metadata = {
-  title: 'Sitemap | LabScout',
+  title: 'Sitemap',
   description: 'Complete sitemap of LabScout - explore all research fields, countries, and cities.',
 };
 

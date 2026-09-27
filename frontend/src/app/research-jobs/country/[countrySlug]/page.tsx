@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!stats) {
     return {
-      title: 'Country Not Found | LabScout',
+      title: 'Country Not Found',
     };
   }
 
@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const topCities = stats.top_cities.slice(0, 3).map((c: any) => c.city).join(', ');
 
   return {
-    title: `${countryName} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | LabScout`,
+    title: `${countryName} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers`,
     description: `Explore biomedical and life sciences research in ${countryName}. ${stats.scholar_count.toLocaleString()} PubMed researchers across ${stats.city_count} cities in medicine, biology, neuroscience, and health sciences. Find postdoc positions and research collaborations.`,
     keywords: [
       `biomedical research ${countryName}`,

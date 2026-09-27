@@ -125,7 +125,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   if (!isValidFieldSlug(fieldSlug)) {
     return {
-      title: 'Field Not Found | LabScout',
+      title: 'Field Not Found',
     };
   }
 
@@ -136,7 +136,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const country = await findCityCountry(fieldSlug, cityName);
     if (!country) {
       return {
-        title: `${fieldConfig.name} Research in ${cityName} | LabScout`,
+        title: `${fieldConfig.name} Research in ${cityName}`,
         description: `Explore ${fieldConfig.name} research opportunities in ${cityName}.`,
       };
     }
@@ -161,7 +161,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const institutionList = Array.from(institutions).slice(0, 3).join(', ');
 
     return {
-      title: `${fieldConfig.name} Research in ${cityName} | Leading Labs & Researchers | LabScout`,
+      title: `${fieldConfig.name} Research in ${cityName} | Leading Labs & Researchers`,
       description,
       keywords,
       
@@ -192,7 +192,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch (error) {
     console.error('Error generating field-city metadata:', error);
     return {
-      title: `${fieldConfig.name} Research in ${cityName} | LabScout`,
+      title: `${fieldConfig.name} Research in ${cityName}`,
       description: `Explore ${fieldConfig.name} research opportunities and institutions in ${cityName}.`,
     };
   }

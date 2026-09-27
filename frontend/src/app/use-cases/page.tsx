@@ -5,7 +5,7 @@ import { Footer } from '@/components/landing/Footer';
 import { TrackedLink } from '@/components/TrackedLink';
 
 export const metadata: Metadata = {
-  title: 'Use Cases - How to Use LabScout for Research | LabScout',
+  title: 'Use Cases - How to Use LabScout for Research',
   description: 'Learn how to use LabScout to find postdoc positions, discover collaboration opportunities, and compare research environments across cities. Step-by-step guides with real examples.',
   keywords: [
     'find postdoc positions',

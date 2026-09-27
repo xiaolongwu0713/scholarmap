@@ -109,7 +109,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         const topInstitutions = institutions.slice(0, 3).map((i: any) => i.institution).join(', ');
 
         return {
-          title: `${matchingCity.city} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers | LabScout`,
+          title: `${matchingCity.city} Biomedical Research - ${stats.scholar_count.toLocaleString()} Researchers`,
           description,
           keywords,
           
@@ -144,7 +144,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: 'City Not Found | LabScout',
+    title: 'City Not Found',
   };
 }
 

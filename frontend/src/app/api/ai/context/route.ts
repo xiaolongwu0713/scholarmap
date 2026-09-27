@@ -117,9 +117,9 @@ export async function GET() {
       city_pages: {
         pattern: `${SITE_URL}/research-jobs/city/{citySlug}`,
         examples: [
-          `${SITE_URL}/research-jobs/city/boston-united-states`,
-          `${SITE_URL}/research-jobs/city/london-united-kingdom`,
-          `${SITE_URL}/research-jobs/city/beijing-china`
+          `${SITE_URL}/research-jobs/city/boston`,
+          `${SITE_URL}/research-jobs/city/london`,
+          `${SITE_URL}/research-jobs/city/beijing`
         ]
       },
       field_pages: {
@@ -136,7 +136,7 @@ export async function GET() {
       },
       field_city_pages: {
         pattern: `${SITE_URL}/research-jobs/{fieldSlug}/city/{citySlug}`,
-        example: `${SITE_URL}/research-jobs/brain-computer-interface/city/boston-united-states`
+        example: `${SITE_URL}/research-jobs/brain-computer-interface/city/beijing`
       }
     },
     

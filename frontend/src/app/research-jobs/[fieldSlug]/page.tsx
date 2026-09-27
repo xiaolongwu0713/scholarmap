@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   if (!isValidFieldSlug(fieldSlug)) {
     return {
-      title: 'Field Not Found | LabScout',
+      title: 'Field Not Found',
     };
   }
 
@@ -71,7 +71,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const keywords = generateFieldOverviewKeywords(fieldConfig);
 
     return {
-      title: `${fieldConfig.name} Research Opportunities | Find Labs & Researchers Globally | LabScout`,
+      title: `${fieldConfig.name} Research Opportunities | Find Labs & Researchers Globally`,
       description,
       keywords,
       
@@ -117,7 +117,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch (error) {
     console.error('Error generating field overview metadata:', error);
     return {
-      title: `${fieldConfig.name} Research Opportunities | LabScout`,
+      title: `${fieldConfig.name} Research Opportunities`,
       description: fieldConfig.description,
     };
   }
