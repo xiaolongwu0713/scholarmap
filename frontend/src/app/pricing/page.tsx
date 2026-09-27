@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
-import { CONTACT_EMAIL, PLANS } from '@/lib/site';
+import { CONTACT_EMAIL, PLANS, REFUND_DAYS } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Pricing - Free and Pro Plans',
@@ -43,7 +43,7 @@ const faqs = [
   },
   {
     q: 'Can I cancel or get a refund?',
-    a: 'Yes. Cancel anytime and keep access until the end of your paid period. New subscriptions have a 14-day money-back guarantee — see our Refund Policy.',
+    a: `Yes. Cancel anytime and keep access until the end of your paid period. New subscriptions have a ${REFUND_DAYS}-day money-back guarantee — see our Refund Policy.`,
   },
   {
     q: 'How is payment handled?',
@@ -147,7 +147,7 @@ export default function PricingPage() {
 
           <p className="text-center text-sm text-gray-500 mt-6">
             Prices in USD. Taxes may apply. Pro checkout is launching soon — create a free account now and upgrade when it
-            opens. 14-day money-back guarantee on new subscriptions.
+            opens. {REFUND_DAYS}-day money-back guarantee on new subscriptions.
           </p>
 
           <section className="mt-16 max-w-3xl mx-auto">

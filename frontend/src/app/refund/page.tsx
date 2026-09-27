@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { LegalPage } from '@/components/LegalPage';
-import { CONTACT_EMAIL } from '@/lib/site';
+import { CONTACT_EMAIL, REFUND_DAYS } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Refund Policy',
-  description: 'LabScout offers a 14-day money-back guarantee on Pro subscriptions. Learn how to cancel and request a refund.',
+  description: `LabScout offers a ${REFUND_DAYS}-day money-back guarantee on Pro subscriptions. Learn how to cancel and request a refund.`,
   alternates: { canonical: '/refund' },
 };
 
@@ -13,9 +13,9 @@ export default function RefundPage() {
   return (
     <LegalPage title="Refund Policy">
       <section>
-        <h2>14-day money-back guarantee</h2>
+        <h2>{REFUND_DAYS}-day money-back guarantee</h2>
         <p>
-          If LabScout Pro is not right for you, you can request a full refund within <strong>14 days</strong> of your
+          If LabScout Pro is not right for you, you can request a full refund within <strong>{REFUND_DAYS} days</strong> of your
           first payment for a new subscription — no questions asked. This applies to both the monthly and the 3-month
           plan.
         </p>
@@ -24,7 +24,7 @@ export default function RefundPage() {
       <section>
         <h2>Renewals</h2>
         <p>
-          Renewal payments can be refunded if you request it within 14 days of the renewal charge and have not run more
+          Renewal payments can be refunded if you request it within {REFUND_DAYS} days of the renewal charge and have not run more
           than 5 searches since that renewal. Outside these conditions, renewal payments are non-refundable, but you can
           cancel at any time to stop future charges.
         </p>

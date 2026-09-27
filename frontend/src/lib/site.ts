@@ -12,9 +12,11 @@ export const API_URL = (
 ).replace(/\/$/, '');
 
 /** Legal operator of the service (an individual). Shown in Terms, Privacy and Refund pages. */
-export const OPERATOR_NAME = 'TODO: YOUR FULL LEGAL NAME';
+export const OPERATOR_NAME = 'Xiaolong Wu';
 export const CONTACT_EMAIL = 'contact@labscout.io';
 export const LEGAL_EFFECTIVE_DATE = 'September 27, 2026';
+/** Money-back window for new subscriptions and renewals. */
+export const REFUND_DAYS = 7;
 
 /** Plans — keep in sync with backend USER_QUOTAS. */
 export const PLANS = {
