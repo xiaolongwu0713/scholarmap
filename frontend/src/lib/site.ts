@@ -8,7 +8,7 @@ export const SITE_URL = (
 ).replace(/\/$/, '');
 
 export const API_URL = (
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.labscout.io'
+  process.env.NEXT_PUBLIC_API_URL || 'https://scholarmap-q1k1.onrender.com'
 ).replace(/\/$/, '');
 
 /** Public demo run (readable without login). Must match backend DEMO_PROJECT_ID / DEMO_RUN_ID. */

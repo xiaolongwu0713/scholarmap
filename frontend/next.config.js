@@ -3,6 +3,14 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
 
+  // SEO pages are prerendered from the backend API; keep build-time load on the
+  // small backend instance low and retry transient failures.
+  experimental: {
+    cpus: 1,
+    staticGenerationMaxConcurrency: 2,
+    staticGenerationRetryCount: 3,
+  },
+
   // Enable trailing slash for better SEO consistency
   trailingSlash: false,
 
@@ -18,6 +26,18 @@ const nextConfig = {
 
   // SWC minification is enabled by default in Next.js 15+
   // swcMinify: true, // Removed - deprecated in Next.js 15
+
+  // Old Render domain → permanent redirect to the new site (keeps SEO equity)
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'scholarmap-frontend.onrender.com' }],
+        destination: 'https://labscout.io/:path*',
+        permanent: true,
+      },
+    ];
+  },
 
   // Headers for better SEO and security
   async headers() {
