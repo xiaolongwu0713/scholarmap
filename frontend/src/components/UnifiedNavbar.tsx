@@ -39,8 +39,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
     color: hoveredLink === linkName ? "#2563eb" : "#1f4ed8",
     transition: "all 0.2s ease",
     cursor: "pointer",
-    textDecoration: "none",
-    display: "inline-block"
+    textDecoration: "none"
   });
 
   return (
@@ -68,11 +67,12 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
           </Link>
 
           {/* Navigation Links - Different based on variant */}
-          <div className="flex items-center gap-6 md:gap-10">
+          <div className="flex items-center gap-2 md:gap-10">
             {variant === "landing" ? (
               <>
                 <a
                   href={pathname === "/" ? "#what-it-is" : "/#what-it-is"}
+                  className="hidden md:inline-block"
                   style={linkStyle("what-it-is")}
                   onMouseEnter={() => setHoveredLink("what-it-is")}
                   onMouseLeave={() => setHoveredLink(null)}
@@ -81,6 +81,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                 </a>
                 <a
                   href={pathname === "/" ? "#what-you-can-do" : "/#what-you-can-do"}
+                  className="hidden md:inline-block"
                   style={linkStyle("what-you-can-do")}
                   onMouseEnter={() => setHoveredLink("what-you-can-do")}
                   onMouseLeave={() => setHoveredLink(null)}
@@ -89,6 +90,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                 </a>
                 <a
                   href={pathname === "/" ? "#how-it-works" : "/#how-it-works"}
+                  className="hidden md:inline-block"
                   style={linkStyle("how-it-works")}
                   onMouseEnter={() => setHoveredLink("how-it-works")}
                   onMouseLeave={() => setHoveredLink(null)}
@@ -97,6 +99,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                 </a>
                 <a
                   href="/pricing"
+                  className="inline-block"
                   style={linkStyle("pricing")}
                   onMouseEnter={() => setHoveredLink("pricing")}
                   onMouseLeave={() => setHoveredLink(null)}
@@ -105,6 +108,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                 </a>
                 <a
                   href={pathname === "/" ? "#contact" : "/#contact"}
+                  className="hidden md:inline-block"
                   style={linkStyle("contact")}
                   onMouseEnter={() => setHoveredLink("contact")}
                   onMouseLeave={() => setHoveredLink(null)}
