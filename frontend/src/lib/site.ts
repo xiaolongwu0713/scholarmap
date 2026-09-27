@@ -11,6 +11,17 @@ export const API_URL = (
   process.env.NEXT_PUBLIC_API_URL || 'https://scholarmap-q1k1.onrender.com'
 ).replace(/\/$/, '');
 
+/** Legal operator of the service (an individual). Shown in Terms, Privacy and Refund pages. */
+export const OPERATOR_NAME = 'TODO: YOUR FULL LEGAL NAME';
+export const CONTACT_EMAIL = 'contact@labscout.io';
+export const LEGAL_EFFECTIVE_DATE = 'September 27, 2026';
+
+/** Plans — keep in sync with backend USER_QUOTAS. */
+export const PLANS = {
+  free: { name: 'Free', searchesPerWeek: 2 },
+  pro: { name: 'Pro', searchesPerWeek: 30, monthlyPrice: 20, quarterlyPrice: 50 },
+} as const;
+
 /** Public demo run (readable without login). Must match backend DEMO_PROJECT_ID / DEMO_RUN_ID. */
 export const DEMO_PROJECT_ID = process.env.NEXT_PUBLIC_DEMO_PROJECT_ID || '6af7ac1b6254';
 export const DEMO_RUN_ID = process.env.NEXT_PUBLIC_DEMO_RUN_ID || '53e099cdb74e';

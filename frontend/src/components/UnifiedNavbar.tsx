@@ -96,6 +96,14 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   How It Works
                 </a>
                 <a
+                  href="/pricing"
+                  style={linkStyle("pricing")}
+                  onMouseEnter={() => setHoveredLink("pricing")}
+                  onMouseLeave={() => setHoveredLink(null)}
+                >
+                  Pricing
+                </a>
+                <a
                   href={pathname === "/" ? "#contact" : "/#contact"}
                   style={linkStyle("contact")}
                   onMouseEnter={() => setHoveredLink("contact")}

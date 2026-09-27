@@ -31,6 +31,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/pricing" className="hover:text-blue-400 transition-colors">
+                  Pricing
+                </Link>
+              </li>
+              <li>
                 <Link href="/about/methodology" className="hover:text-blue-400 transition-colors">
                   Methodology
                 </Link>
@@ -60,6 +65,21 @@ export function Footer() {
               <li>
                 <Link href="/sitemap-page" className="hover:text-blue-400 transition-colors">
                   Sitemap
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-blue-400 transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-blue-400 transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/refund" className="hover:text-blue-400 transition-colors">
+                  Refund Policy
                 </Link>
               </li>
             </ul>
