@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { createRun, textValidate, searchLimitMessage } from "@/lib/api";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
+import { trackConversion } from "@/lib/analytics";
 
 function validateClientInput(text: string): string[] {
   const s = text ?? "";
@@ -68,10 +69,12 @@ export default function NewRunPage() {
       }
 
       const run = await createRun(projectId, trimmed);
+      trackConversion("search_started");
       router.push(`/projects/${projectId}/runs/${run.run_id}`);
     } catch (e) {
       const errorMessage = String(e);
       if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
+        trackConversion("search_limit_hit");
         const displayMessage = await searchLimitMessage();
         setError(displayMessage);
       } else {

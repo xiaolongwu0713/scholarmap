@@ -30,6 +30,7 @@ import ProgressSteps from "@/components/ProgressSteps";
 import AuthGuard from "@/components/AuthGuard";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 import Map, { Layer, Source, type MapRef } from "react-map-gl";
+import { trackConversion } from "@/lib/analytics";
 
 const MapModal = dynamic(() => import("@/components/MapModal"), { ssr: false });
 
@@ -1409,7 +1410,9 @@ function RunPageContent() {
       }
       // Mark ingestion as completed on success
       setIngestionCompleted(true);
+      trackConversion("search_completed");
     } catch (e) {
+      trackConversion("search_failed");
       setError(String(e));
     } finally {
       setBusy(null);

@@ -113,11 +113,13 @@ function ProjectPageContent() {
               // Create run with empty description - user will enter it in the Run page
               // The placeholder will be shown via the placeholder attribute
               const run = await createRun(projectId, "");
+              trackConversion("search_started");
               router.push(`/projects/${projectId}/runs/${run.run_id}`);
             } catch (e) {
               const errorMessage = String(e);
               // Check if it's a quota error (403 with quota-related message)
               if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
+                trackConversion("search_limit_hit");
                 const displayMessage = await searchLimitMessage();
                 setQuotaErrorModal({ show: true, message: displayMessage });
               } else {

@@ -11,7 +11,11 @@ export type ConversionEvent =
   | 'signup_complete'
   | 'upgrade_click'
   | 'checkout_open'
-  | 'industry_contact_click';
+  | 'industry_contact_click'
+  | 'search_started'
+  | 'search_completed'
+  | 'search_failed'
+  | 'search_limit_hit';
 
 /**
  * Revenue-funnel step, sent to Vercel Web Analytics (custom events need the Vercel Pro

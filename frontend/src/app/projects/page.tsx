@@ -17,6 +17,7 @@ import { getUser, removeToken, isSuperUser } from "@/lib/auth";
 import { trackConversion } from "@/lib/analytics";
 import AuthGuard from "@/components/AuthGuard";
 import QuotaDisplay from "@/components/QuotaDisplay";
+import BusinessMetricsPanel from "@/components/BusinessMetricsPanel";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
 function ProjectsPageContent() {
@@ -302,6 +303,8 @@ function ProjectsPageContent() {
               ))}
             </div>
           ) : null}
+
+      {isSuper && <BusinessMetricsPanel />}
 
       {/* Resource Monitoring Panel (Super User Only) */}
       {isSuper && (

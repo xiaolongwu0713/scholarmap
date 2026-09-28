@@ -680,3 +680,35 @@ export async function getOnlineUsers(): Promise<OnlineUsersResponse> {
   await throwIfNotOk(res, "getOnlineUsers");
   return await res.json();
 }
+
+/** Revenue-funnel metrics (admin only), see backend app/metrics.py. */
+export type BusinessMetrics = {
+  window_days: number;
+  as_of: string;
+  users_total: number;
+  signups: number;
+  activated_signups: number;
+  activation_rate: number | null;
+  searches: number;
+  searchers: number;
+  runs_started: number;
+  runs_completed: number;
+  runs_failed: number;
+  run_completion_rate: number | null;
+  free_users_at_limit: number;
+  pro_active: number;
+  pro_monthly: number;
+  pro_quarterly: number;
+  pro_canceling: number;
+  mrr_usd: number;
+  churned: number;
+};
+
+export async function getBusinessMetrics(days: number): Promise<BusinessMetrics> {
+  const res = await fetch(`${baseUrl}/api/admin/metrics?days=${days}`, {
+    cache: "no-store",
+    headers: getDefaultHeaders(),
+  });
+  await throwIfNotOk(res, "getBusinessMetrics");
+  return await res.json();
+}
