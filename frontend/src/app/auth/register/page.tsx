@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { sendVerificationCode, register, getPasswordRequirements, type PasswordRequirements } from "@/lib/api";
-import { setToken, setUser } from "@/lib/auth";
+import { setToken, setUser, postAuthRedirect } from "@/lib/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -135,7 +135,7 @@ export default function RegisterPage() {
       const response = await register(email.trim(), verificationCode.trim(), password, passwordRetype);
       setToken(response.access_token);
       setUser({ user_id: response.user_id, email: response.email });
-      router.push("/projects");
+      router.push(postAuthRedirect());
     } catch (e: any) {
       setError(e.message || "Registration failed");
     } finally {

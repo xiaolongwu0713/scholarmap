@@ -73,3 +73,12 @@ export function getAuthHeaders(): Record<string, string> {
   return headers;
 }
 
+
+/** Where to go after login/register: the ?next= path if it is a same-site path, else /projects. */
+export function postAuthRedirect(): string {
+  if (typeof window === "undefined") return "/projects";
+  const next = new URLSearchParams(window.location.search).get("next");
+  // Only allow local paths; "//host" and "/\host" would leave the site.
+  if (next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")) return next;
+  return "/projects";
+}

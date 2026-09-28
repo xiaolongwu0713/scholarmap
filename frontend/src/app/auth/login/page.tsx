@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { login } from "@/lib/api";
-import { setToken, setUser } from "@/lib/auth";
+import { setToken, setUser, postAuthRedirect } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function LoginPage() {
       const response = await login(email.trim(), password);
       setToken(response.access_token);
       setUser({ user_id: response.user_id, email: response.email });
-      router.push("/projects");
+      router.push(postAuthRedirect());
     } catch (e: any) {
       setError(e.message || "Login failed");
     } finally {

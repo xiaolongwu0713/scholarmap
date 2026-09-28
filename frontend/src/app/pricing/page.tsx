@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { CONTACT_EMAIL, PLANS, REFUND_DAYS } from '@/lib/site';
+import { checkoutEnabled } from '@/lib/paddle';
+import { CheckoutButton } from '@/components/CheckoutButton';
 
 export const metadata: Metadata = {
   title: 'Pricing - Free and Pro Plans',
@@ -110,12 +112,12 @@ export default function PricingPage() {
                   <li key={f} className="flex gap-2"><Check />{f}</li>
                 ))}
               </ul>
-              <Link
-                href="/auth/register?plan=pro-monthly"
-                className="mt-8 block text-center rounded-lg bg-gray-900 px-4 py-3 font-semibold text-white hover:bg-gray-800"
+              <CheckoutButton
+                period="monthly"
+                className="mt-8 block w-full text-center rounded-lg bg-gray-900 px-4 py-3 font-semibold text-white hover:bg-gray-800 disabled:opacity-60"
               >
                 Choose monthly
-              </Link>
+              </CheckoutButton>
             </section>
 
             {/* Pro quarterly */}
@@ -136,18 +138,21 @@ export default function PricingPage() {
                   <li key={f} className="flex gap-2"><Check />{f}</li>
                 ))}
               </ul>
-              <Link
-                href="/auth/register?plan=pro-quarterly"
-                className="mt-8 block text-center rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700"
+              <CheckoutButton
+                period="quarterly"
+                className="mt-8 block w-full text-center rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
               >
                 Choose 3 months
-              </Link>
+              </CheckoutButton>
             </section>
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            Prices in USD. Taxes may apply. Pro checkout is launching soon — create a free account now and upgrade when it
-            opens. {REFUND_DAYS}-day money-back guarantee on new subscriptions.
+            Prices in USD. Taxes may apply.{' '}
+            {checkoutEnabled
+              ? 'Secure checkout by Paddle.'
+              : 'Pro checkout is launching soon — create a free account now and upgrade when it opens.'}{' '}
+            {REFUND_DAYS}-day money-back guarantee on new subscriptions.
           </p>
 
           <section className="mt-16 max-w-3xl mx-auto">

@@ -28,6 +28,30 @@ class User(Base):
         nullable=False
     )
 
+    # Billing (Paddle). Pro access lasts until pro_until; updated by webhooks.
+    pro_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    subscription_status: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    paddle_customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    paddle_subscription_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    # occurred_at of the last applied Paddle event, to ignore out-of-order deliveries
+    paddle_event_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class SearchUsage(Base):
+    """One row per custom search a user starts. Kept when runs are deleted so quotas can't be reset."""
+    __tablename__ = "search_usage"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    run_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+
+    __table_args__ = (Index("ix_search_usage_user_created", "user_id", "created_at"),)
+
 
 class EmailVerificationCode(Base):
     """Email verification code model."""

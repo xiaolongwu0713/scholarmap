@@ -126,33 +126,20 @@ export async function login(email: string, password: string): Promise<LoginRespo
 // ============================================================================
 
 export type UserQuotaInfo = {
-  tier: string;
-  quotas: {
-    max_projects: {
-      limit: number;
-      current: number;
-      remaining: number;
-      unlimited: boolean;
-    };
-    max_runs_per_project: {
-      limit: number;
-      current: number;
-      remaining: number;
-      unlimited: boolean;
-    };
-    max_papers_per_run: {
-      limit: number;
-      current: number;
-      remaining: number;
-      unlimited: boolean;
-    };
-    max_ingestion_per_day: {
-      limit: number;
-      current: number;
-      remaining: number;
-      unlimited: boolean;
-    };
+  tier: "free_user" | "pro_user" | "super_user";
+  plan: "free" | "pro";
+  pro_until: string | null;
+  subscription_status: string | null;
+  searches: {
+    limit: number; // -1 = unlimited
+    used: number;
+    remaining: number;
+    unlimited: boolean;
+    window_days: number;
+    next_slot_at: string | null;
   };
+  list_limit: number; // rows per location in results, -1 = all
+  can_export: boolean;
 };
 
 export async function getUserQuota(): Promise<UserQuotaInfo> {
@@ -162,6 +149,40 @@ export async function getUserQuota(): Promise<UserQuotaInfo> {
   });
   await throwIfNotOk(res, "getUserQuota");
   return await res.json();
+}
+
+/** Human-readable explanation shown when a new search is refused by the weekly limit. */
+export async function searchLimitMessage(): Promise<string> {
+  try {
+    const q = await getUserQuota();
+    const next = q.searches.next_slot_at
+      ? ` Your next search becomes available on ${new Date(q.searches.next_slot_at).toLocaleString()}.`
+      : "";
+    const upsell = q.plan === "free" ? " Upgrade to Pro for 30 searches every 7 days." : "";
+    return `You've used ${q.searches.used} of ${q.searches.limit} searches in the last ${q.searches.window_days} days.${next}${upsell}`;
+  } catch {
+    return "You've reached your search limit for this 7-day period. Upgrade to Pro for more searches.";
+  }
+}
+
+/** Open the Paddle customer portal (manage payment method, cancel). */
+export async function getBillingPortalUrl(): Promise<string> {
+  const res = await fetch(`${baseUrl}/api/billing/portal`, { method: "POST", headers: getDefaultHeaders() });
+  await throwIfNotOk(res, "getBillingPortalUrl");
+  return (await res.json()).url;
+}
+
+/** URL for the Pro CSV export of a run (needs the auth header, so fetch it rather than linking). */
+export async function downloadRunCsv(projectId: string, runId: string): Promise<void> {
+  const res = await fetch(`${baseUrl}/api/projects/${projectId}/runs/${runId}/export.csv`, { headers: getDefaultHeaders() });
+  await throwIfNotOk(res, "downloadRunCsv");
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `labscout-${runId}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ============================================================================
@@ -518,7 +539,7 @@ export async function getCityMap(
   country: string,
   city: string,
   min_confidence = "low"
-): Promise<CityMapData[]> {
+): Promise<ListResult<CityMapData>> {
   const res = await fetch(
     `${baseUrl}/api/projects/${projectId}/runs/${runId}/map/city/${encodeURIComponent(country)}/${encodeURIComponent(city)}?min_confidence=${min_confidence}`,
     { cache: "no-store" ,
@@ -527,8 +548,11 @@ export async function getCityMap(
   );
   await throwIfNotOk(res, "getCityMap");
   const json = await res.json();
-  return json.data as CityMapData[];
+  return { items: json.data as CityMapData[], total: json.total ?? json.data.length, truncated: Boolean(json.truncated) };
 }
+
+/** A result list that Free plans may receive truncated (see list_limit). */
+export type ListResult<T> = { items: T[]; total: number; truncated: boolean };
 
 export async function getInstitutionScholars(
   projectId: string,
@@ -539,7 +563,7 @@ export async function getInstitutionScholars(
   min_confidence = "low",
   limit = 100,
   offset = 0
-): Promise<{ scholars: Scholar[]; total_count: number; limit: number; offset: number }> {
+): Promise<{ scholars: Scholar[]; total: number; truncated: boolean }> {
   const params = new URLSearchParams({
     institution,
     min_confidence,

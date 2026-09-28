@@ -478,6 +478,51 @@ class PostgresMapAggregator:
         logger.info(f"   ✅ Institution scholars aggregation complete: {len(scholars_data)} scholars at {institution}")
         return scholars_data
     
+    async def get_run_export_rows(
+        self,
+        session: AsyncSession,
+        run_id: str,
+        min_confidence: str = "low"
+    ) -> list[dict[str, Any]]:
+        """One row per researcher per institution for CSV export.
+
+        Only names and locations are returned — raw affiliation text is left out
+        because it can contain email addresses.
+        """
+        pmids = await self._get_run_pmids(session, run_id)
+        if not pmids:
+            return []
+
+        query = select(
+            Authorship.country,
+            Authorship.city,
+            Authorship.institution,
+            Authorship.author_name_raw,
+            func.count(func.distinct(Authorship.pmid)).label('paper_count')
+        ).where(
+            and_(
+                Authorship.country.isnot(None),
+                Authorship.pmid.in_(pmids),
+                Authorship.affiliation_confidence.in_(self._get_confidence_levels(min_confidence))
+            )
+        ).group_by(
+            Authorship.country, Authorship.city, Authorship.institution, Authorship.author_name_raw
+        ).order_by(
+            Authorship.country, Authorship.city, Authorship.institution, text('paper_count DESC')
+        )
+
+        result = await session.execute(query)
+        return [
+            {
+                "country": row.country,
+                "city": row.city or "",
+                "institution": row.institution or "",
+                "researcher": row.author_name_raw,
+                "paper_count": row.paper_count,
+            }
+            for row in result.all()
+        ]
+
     async def _get_run_pmids(
         self,
         session: AsyncSession,

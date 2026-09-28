@@ -36,3 +36,6 @@ documents/*.pdf
 
 # Credentials notes
 backend/app/render_config.txt
+
+# Local Python env
+backend/.venv/

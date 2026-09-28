@@ -79,69 +79,40 @@ class Settings(BaseSettings):
         return ["http://localhost:3000", "http://localhost:8000", self.frontend_url.rstrip("/"), *extra]
 
     # ============================================================================
-    # User Quotas and Limits
+    # Plans and limits
     # ============================================================================
-    # User tier definitions and their resource quotas
-    # Format: {user_tier: {resource: limit}}
-    # Special value -1 means unlimited
-    #
-    # User Tiers:
-    # - super_user: Admin users with unlimited access
-    # - regular_user: Standard registered users (current default)
-    # - premium_user: Paid subscription users (future)
-    # - free_user: Free tier users with strict limits (future)
-    #
-    # How to use:
-    #   1. Get user tier: get_user_tier(user_email)
-    #   2. Get quota: USER_QUOTAS[user_tier][resource_name]
-    #   3. Check limit: current_count < quota (if quota != -1)
-    
-    # User quota configuration
+    # Tiers: super_user (admin, SUPER_USER_EMAIL), pro_user (active Paddle
+    # subscription, users.pro_until in the future), free_user (everyone else).
+    # -1 means unlimited. Keep in sync with PLANS in frontend/src/lib/site.ts.
     USER_QUOTAS: dict[str, dict[str, int]] = {
-        # Super users: unlimited resources
         "super_user": {
-            "max_projects": -1,              # -1 = unlimited
-            "max_runs_per_project": -1,      # -1 = unlimited
-            "max_papers_per_run": -1,        # -1 = unlimited (future use)
-            "max_ingestion_per_day": -1,     # -1 = unlimited (future use)
+            "searches_per_week": -1,    # new custom searches in a rolling 7-day window
+            "max_papers_per_run": -1,
+            "list_limit": -1,           # institutions/researchers shown per location
         },
-        
-        # Regular users: moderate limits (current default for all registered users)
-        "regular_user": {
-            "max_projects": 1,              # Maximum 10 projects
-            "max_runs_per_project": 1,      # Maximum 20 runs per project
-            "max_papers_per_run": 500,      # Maximum 1000 papers per run (future use)
-            "max_ingestion_per_day": 1,      # Maximum 5 ingestion operations per day (future use)
+        "pro_user": {
+            "searches_per_week": 30,
+            "max_papers_per_run": 500,
+            "list_limit": -1,
         },
-        
-        # Premium users: higher limits (future - for paid subscriptions)
-        "premium_user": {
-            "max_projects": 50,              # Maximum 50 projects
-            "max_runs_per_project": 100,     # Maximum 100 runs per project
-            "max_papers_per_run": 5000,      # Maximum 5000 papers per run
-            "max_ingestion_per_day": 50,     # Maximum 50 ingestion operations per day
-        },
-        
-        # Free users: strict limits (future - for free tier with stricter limits)
         "free_user": {
-            "max_projects": 3,               # Maximum 3 projects
-            "max_runs_per_project": 5,       # Maximum 5 runs per project
-            "max_papers_per_run": 100,       # Maximum 100 papers per run
-            "max_ingestion_per_day": 1,      # Maximum 1 ingestion operation per day
+            "searches_per_week": 2,
+            "max_papers_per_run": 500,
+            "list_limit": 10,
         },
     }
-    
-    # Default user tier for new users
-    # When a new user registers, they are assigned this tier
-    default_user_tier: str = "regular_user"
-    
-    # Quota error messages
+
+    default_user_tier: str = "free_user"
+
     QUOTA_ERROR_MESSAGES: dict[str, str] = {
-        "max_projects": "You have reached the maximum number of projects allowed for your account tier.",
-        "max_runs_per_project": "You have reached the maximum number of runs allowed for this project.",
-        "max_papers_per_run": "This run exceeds the maximum number of papers allowed for your account tier.",
-        "max_ingestion_per_day": "You have reached the daily ingestion limit for your account tier.",
+        "searches_per_week": "You have used all custom searches for this 7-day period. Upgrade to Pro for more searches.",
+        "max_papers_per_run": "This run exceeds the maximum number of papers allowed for your plan.",
     }
+
+    # Paddle billing (sandbox or production). Secrets come from env vars.
+    paddle_environment: str = "sandbox"   # "sandbox" | "production"
+    paddle_api_key: str = ""              # PADDLE_API_KEY, server-side only
+    paddle_webhook_secret: str = ""       # PADDLE_WEBHOOK_SECRET, from the notification destination
 
 
 settings = Settings()

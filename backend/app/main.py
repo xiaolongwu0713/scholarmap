@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import csv
+import io
+import json
 import logging
 import sys
 from contextlib import asynccontextmanager
@@ -15,7 +18,7 @@ settings = config.settings
 from app.core.logging_config import setup_logging
 setup_logging(level=logging.INFO)
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
@@ -112,6 +115,25 @@ async def require_run_in_project(project_id: str, run_id: str) -> None:
     """Reject access to runs that do not belong to the (already authorized) project."""
     if not await store.run_belongs_to_project(project_id, run_id):
         raise HTTPException(status_code=404, detail="Run not found")
+
+
+async def project_list_limit(project_id: str) -> int:
+    """Rows per location shown for a project's results, based on the project owner's plan (-1 = all).
+
+    Demo/SEO projects belong to the super user, so public pages always show full lists.
+    """
+    from app.quota import get_limit, get_user_tier
+
+    async with db_manager.session() as session:
+        project = await ProjectRepository(session).get_project(project_id, None)
+        owner = await UserRepository(session).get_user_by_id(project.user_id) if project else None
+        if owner is None:
+            return -1
+        return get_limit(get_user_tier(owner), "list_limit")
+
+
+def _limit_list(items: list, limit: int) -> list:
+    return items if limit == -1 else items[:limit]
 # Also initialize file store for deleting local files if they exist
 file_store = FileStore(get_data_dir())
 
@@ -352,43 +374,14 @@ async def login_user(req: LoginRequest) -> dict:
 
 @app.get("/api/user/quota")
 async def get_user_quota(request: Request) -> dict:
-    """Get current user's quota information."""
-    user_id = request.state.user_id
-    
+    """Current user's plan and search usage."""
+    from app.quota import get_usage_summary
+
     async with db_manager.session() as session:
-        from app.auth.repository import UserRepository
-        from app.quota import get_user_quota_summary
-        
-        user_repo = UserRepository(session)
-        user = await user_repo.get_user_by_id(user_id)
+        user = await UserRepository(session).get_user_by_id(request.state.user_id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        
-        # Get current usage
-        project_repo = ProjectRepository(session)
-        run_repo = RunRepository(session)
-        
-        projects = await project_repo.list_projects(user_id)
-        
-        # Get max runs from all projects
-        max_runs_in_project = 0
-        total_runs = 0
-        for project in projects:
-            runs_count = await run_repo.count_project_runs(project.project_id)
-            total_runs += runs_count
-            max_runs_in_project = max(max_runs_in_project, runs_count)
-        
-        current_counts = {
-            "projects": len(projects),
-            "runs": max_runs_in_project,  # Use max runs in any single project
-            "papers": 0,  # Would need to count from results
-            "ingestion_today": 0,  # Would need to track ingestion operations
-        }
-        
-        # Get quota summary
-        quota_info = get_user_quota_summary(user.email, current_counts)
-        
-        return quota_info
+        return await get_usage_summary(session, user)
 
 
 @app.get("/api/projects")
@@ -401,26 +394,7 @@ async def list_projects(request: Request) -> dict:
 @app.post("/api/projects")
 async def create_project(request: Request, req: CreateProjectRequest) -> dict:
     user_id = request.state.user_id
-    
-    # Check user quota
-    async with db_manager.session() as session:
-        from app.auth.repository import UserRepository
-        from app.quota import check_can_create_project
-        
-        user_repo = UserRepository(session)
-        user = await user_repo.get_user_by_id(user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        
-        # Count current projects
-        project_repo = ProjectRepository(session)
-        current_project_count = await project_repo.count_user_projects(user_id)
-        
-        # Check quota
-        can_create, error_msg = await check_can_create_project(user.email, current_project_count)
-        if not can_create:
-            raise HTTPException(status_code=403, detail=error_msg)
-    
+
     # Create project
     project = await store.create_project(user_id, req.name)
     return {"project": project.__dict__}
@@ -443,25 +417,16 @@ async def create_run(request: Request, project_id: str, req: CreateRunRequest) -
     if project is None:
         raise HTTPException(status_code=404, detail="Project not found")
     
-    # Check user quota
+    # Weekly search limit (one run = one search)
+    from app.quota import check_can_start_search
     async with db_manager.session() as session:
-        from app.auth.repository import UserRepository
-        from app.quota import check_can_create_run
-        
-        user_repo = UserRepository(session)
-        user = await user_repo.get_user_by_id(user_id)
+        user = await UserRepository(session).get_user_by_id(user_id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        
-        # Count current runs in this project
-        run_repo = RunRepository(session)
-        current_run_count = await run_repo.count_project_runs(project_id)
-        
-        # Check quota
-        can_create, error_msg = await check_can_create_run(user.email, project_id, current_run_count)
+        can_create, error_msg = await check_can_start_search(session, user)
         if not can_create:
             raise HTTPException(status_code=403, detail=error_msg)
-    
+
     # Allow empty description when creating - user will enter it in the Run page
     # Only validate if description is provided and not empty
     if req.research_description and req.research_description.strip():
@@ -469,6 +434,11 @@ async def create_run(request: Request, project_id: str, req: CreateRunRequest) -
         if not tv.get("ok"):
             raise HTTPException(status_code=400, detail=f"Text validate failed: {tv.get('reason') or 'Invalid input.'}")
     run = await store.create_run(project_id, req.research_description)
+
+    from app.quota import record_search
+    async with db_manager.session() as session:
+        await record_search(session, user_id, run.run_id)
+        await session.commit()
     return {"run": run.__dict__}
 
 
@@ -562,8 +532,7 @@ async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
     
     # Check paper count quota after retrieval
     async with db_manager.session() as session:
-        from app.auth.repository import UserRepository
-        from app.quota import check_quota
+        from app.quota import check_paper_limit
         
         user_repo = UserRepository(session)
         user = await user_repo.get_user_by_id(user_id)
@@ -578,7 +547,7 @@ async def phase1_query(request: Request,project_id: str, run_id: str) -> dict:
                 total_papers += len(result["openalex"]["papers"])
             
             # Check quota
-            can_proceed, error_msg = check_quota(user.email, "max_papers_per_run", total_papers)
+            can_proceed, error_msg = check_paper_limit(user, total_papers)
             if not can_proceed:
                 # Log warning but don't block (for backward compatibility)
                 # In the future, you can raise HTTPException here
@@ -1403,7 +1372,8 @@ async def phase2_map_city(request: Request,
         logger.info(f"   Institutions returned: {len(data)}")
         logger.info("=" * 80)
         
-        return {"data": data}
+        limit = await project_list_limit(project_id)
+        return {"data": _limit_list(data, limit), "total": len(data), "truncated": limit != -1 and len(data) > limit}
         
     except Exception as e:
         logger.error(f"❌ MAP OPERATION FAILED - City Map ({city}, {country}): {e}", exc_info=True)
@@ -1473,11 +1443,90 @@ async def phase2_map_institution(request: Request,
         logger.info(f"   Scholars returned: {len(data)}")
         logger.info("=" * 80)
         
-        return {"scholars": data}
+        limit = await project_list_limit(project_id)
+        return {"scholars": _limit_list(data, limit), "total": len(data), "truncated": limit != -1 and len(data) > limit}
         
     except Exception as e:
         logger.error(f"❌ MAP OPERATION FAILED - Institution Scholars ({institution}): {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Aggregation failed: {str(e)}")
+
+
+# ============================================================
+# Pro features and billing
+# ============================================================
+
+def _csv_safe(value: object) -> object:
+    """Neutralise spreadsheet formula injection in exported cells."""
+    if isinstance(value, str) and value[:1] in ("=", "+", "-", "@", "\t", "\r"):
+        return "'" + value
+    return value
+
+
+@app.get("/api/projects/{project_id}/runs/{run_id}/export.csv")
+async def export_run_csv(request: Request, project_id: str, run_id: str, min_confidence: str = "low"):
+    """Download researchers/institutions/cities for a run as CSV (Pro)."""
+    from app.quota import get_user_tier
+
+    user_id = request.state.user_id
+    project = await store.get_project(project_id, user_id)
+    if project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    await require_run_in_project(project_id, run_id)
+
+    async with db_manager.session() as session:
+        user = await UserRepository(session).get_user_by_id(user_id)
+        if user is None:
+            raise HTTPException(status_code=401, detail="Sign in to export data")
+        if get_user_tier(user) not in ("pro_user", "super_user"):
+            raise HTTPException(status_code=403, detail="CSV export is a Pro feature")
+        rows = await PostgresMapAggregator().get_run_export_rows(session, run_id, min_confidence)
+
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=["country", "city", "institution", "researcher", "paper_count"])
+    writer.writeheader()
+    for row in rows:
+        writer.writerow({k: _csv_safe(v) for k, v in row.items()})
+    return Response(
+        content=buf.getvalue(),
+        media_type="text/csv; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="labscout-{run_id}.csv"'},
+    )
+
+
+@app.post("/api/billing/webhook")
+async def paddle_webhook(request: Request) -> dict:
+    """Paddle notification destination. Public; authenticated by signature."""
+    from app.billing import handle_event, verify_signature
+
+    if not settings.paddle_webhook_secret:
+        raise HTTPException(status_code=503, detail="Billing not configured")
+    raw = await request.body()
+    if not verify_signature(raw, request.headers.get("Paddle-Signature"), settings.paddle_webhook_secret):
+        raise HTTPException(status_code=401, detail="Invalid signature")
+    try:
+        event = json.loads(raw)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid JSON")
+    async with db_manager.session() as session:
+        outcome = await handle_event(session, event)
+    return {"ok": True, "result": outcome}
+
+
+@app.post("/api/billing/portal")
+async def billing_portal(request: Request) -> dict:
+    """Return a Paddle customer-portal URL for managing or cancelling the subscription."""
+    from app.billing import create_portal_url
+
+    async with db_manager.session() as session:
+        user = await UserRepository(session).get_user_by_id(request.state.user_id)
+    if user is None or not user.paddle_customer_id:
+        raise HTTPException(status_code=404, detail="No subscription found for this account")
+    try:
+        url = await create_portal_url(user.paddle_customer_id, user.paddle_subscription_id)
+    except (RuntimeError, httpx.HTTPError) as e:
+        logging.getLogger(__name__).error("Paddle portal session failed: %s", e)
+        raise HTTPException(status_code=502, detail="Could not open the billing portal, please try again")
+    return {"url": url}
 
 
 # ============================================================

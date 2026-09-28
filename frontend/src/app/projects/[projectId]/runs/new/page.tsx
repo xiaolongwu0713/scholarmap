@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { createRun, textValidate, getUserQuota } from "@/lib/api";
+import { createRun, textValidate, searchLimitMessage } from "@/lib/api";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
 function validateClientInput(text: string): string[] {
@@ -72,19 +72,7 @@ export default function NewRunPage() {
     } catch (e) {
       const errorMessage = String(e);
       if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
-        let displayMessage = "You can only create a limited number of projects and runs per project. Upgrade to increase your quota.";
-        try {
-          const quota = await getUserQuota();
-          const projectsLimit = quota.quotas.max_projects.unlimited || quota.quotas.max_projects.limit === -1
-            ? "Unlimited"
-            : quota.quotas.max_projects.limit.toString();
-          const runsLimit = quota.quotas.max_runs_per_project.unlimited || quota.quotas.max_runs_per_project.limit === -1
-            ? "Unlimited"
-            : quota.quotas.max_runs_per_project.limit.toString();
-          displayMessage = `You can only create ${projectsLimit} projects, and ${runsLimit} runs per project. Upgrade to increase your quota.`;
-        } catch {
-          // Keep fallback message if quota lookup fails.
-        }
+        const displayMessage = await searchLimitMessage();
         setError(displayMessage);
       } else {
         setError(errorMessage);

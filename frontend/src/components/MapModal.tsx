@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { isAuthenticated } from "@/lib/auth";
 import {
   getWorldMap,
   getCountryMap,
   getCityMap,
   getInstitutionScholars,
+  getUserQuota,
+  downloadRunCsv,
   type WorldMapData,
   type CountryMapData,
   type CityMapData,
@@ -201,6 +204,31 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
   const [error, setError] = useState<string | null>(null);
   const [mapError, setMapError] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  // null = signed-out viewer (no CSV button); otherwise whether the plan includes export
+  const [canExportCsv, setCanExportCsv] = useState<boolean | null>(null);
+  const [csvBusy, setCsvBusy] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated()) return;
+    getUserQuota()
+      .then((q) => setCanExportCsv(q.can_export))
+      .catch(() => setCanExportCsv(null));
+  }, []);
+
+  async function handleCsvExport() {
+    if (!canExportCsv) {
+      window.location.href = "/pricing";
+      return;
+    }
+    setCsvBusy(true);
+    try {
+      await downloadRunCsv(projectId, runId);
+    } catch (e) {
+      setError(`CSV export failed: ${String(e)}`);
+    } finally {
+      setCsvBusy(false);
+    }
+  }
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Data for each level
@@ -208,6 +236,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
   const [countryData, setCountryData] = useState<CountryMapData[]>([]);
   const [cityData, setCityData] = useState<CityMapData[]>([]);
   const [scholars, setScholars] = useState<Scholar[]>([]);
+  // Free plans get the top rows only; these hold the full counts for the upgrade notice
+  const [cityTotal, setCityTotal] = useState<{ total: number; truncated: boolean }>({ total: 0, truncated: false });
+  const [scholarsTotal, setScholarsTotal] = useState<{ total: number; truncated: boolean }>({ total: 0, truncated: false });
   const [showScholarModal, setShowScholarModal] = useState(false);
   const [selectedInstitutionName, setSelectedInstitutionName] = useState<string | null>(null);
   const [expandedPapers, setExpandedPapers] = useState<Set<string>>(new Set());
@@ -379,8 +410,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
     setLoading(true);
     setError(null);
     try {
-      const data = await getCityMap(projectId, runId, country, city);
-      setCityData(data);
+      const { items, total, truncated } = await getCityMap(projectId, runId, country, city);
+      setCityData(items);
+      setCityTotal({ total, truncated });
       setSelectedCity(city);
       setLevel("city");
       
@@ -416,6 +448,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
     try {
       const data = await getInstitutionScholars(projectId, runId, institution, country, city);
       setScholars(data.scholars);
+      setScholarsTotal({ total: data.total ?? data.scholars.length, truncated: Boolean(data.truncated) });
       setSelectedInstitutionName(institution);
       setShowScholarModal(true);
       setExpandedPapers(new Set()); // Reset expanded papers when opening modal
@@ -584,7 +617,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             </tr>
           </thead>
           <tbody>
-            {cityData.slice(0, 20).map((c, idx) => (
+            {cityData.map((c, idx) => (
               <tr key={idx}>
                 <td>{c.institution}</td>
                 <td>{c.scholar_count}</td>
@@ -600,6 +633,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             ))}
           </tbody>
         </table>
+        {cityTotal.truncated && (
+          <UpgradeNotice shown={cityData.length} total={cityTotal.total} noun="institutions" />
+        )}
       </div>
     );
   }
@@ -662,7 +698,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             <div>
               <h2 style={{ margin: 0, marginBottom: "8px" }}>📚 {selectedInstitutionName}</h2>
               <div style={{ color: "#6b7280", fontSize: 14 }}>
-                {scholars.length} scholar{scholars.length !== 1 ? 's' : ''}
+                {scholarsTotal.truncated
+                  ? `Showing ${scholars.length} of ${scholarsTotal.total} scholars`
+                  : `${scholars.length} scholar${scholars.length !== 1 ? 's' : ''}`}
               </div>
             </div>
             <button className="secondary" onClick={() => setShowScholarModal(false)} style={{ fontSize: "15px" }}>
@@ -672,6 +710,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
           
           {/* Scholars and Papers List */}
           <div style={{ flex: 1, overflow: "auto", padding: 20 }}>
+            {scholarsTotal.truncated && (
+              <UpgradeNotice shown={scholars.length} total={scholarsTotal.total} noun="scholars" />
+            )}
             {scholars.map((scholar, scholarIdx) => (
               <div
                 key={scholar.scholar_name}
@@ -948,6 +989,17 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             >
               {shareCopied ? "Copied!" : "Share"}
             </button>
+            {canExportCsv !== null && (
+              <button
+                className="secondary"
+                onClick={handleCsvExport}
+                disabled={csvBusy}
+                title={canExportCsv ? "Download researchers, institutions and cities as CSV" : "CSV export is a Pro feature"}
+                style={{ fontSize: "15px" }}
+              >
+                {csvBusy ? "Exporting..." : canExportCsv ? "Export CSV" : "Export CSV · Pro"}
+              </button>
+            )}
             <button
               className="secondary"
               onClick={onExport}
@@ -1193,6 +1245,29 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
       
       {/* Scholar Details Modal */}
       {renderScholarModal()}
+    </div>
+  );
+}
+
+
+function UpgradeNotice({ shown, total, noun }: { shown: number; total: number; noun: string }) {
+  return (
+    <div
+      style={{
+        margin: "12px 0",
+        padding: "10px 14px",
+        borderRadius: 8,
+        background: "#eff6ff",
+        border: "1px solid #bfdbfe",
+        fontSize: 14,
+        color: "#1e3a8a",
+      }}
+    >
+      Showing the top {shown} of {total} {noun} on the Free plan.{" "}
+      <a href="/pricing" style={{ fontWeight: 600, color: "#1d4ed8" }}>
+        Upgrade to Pro
+      </a>{" "}
+      to see the full list and export it as CSV.
     </div>
   );
 }

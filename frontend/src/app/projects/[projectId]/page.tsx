@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { getProject, createRun, deleteRun, getUserQuota, type Run } from "@/lib/api";
+import { getProject, createRun, deleteRun, searchLimitMessage, type Run } from "@/lib/api";
 import AuthGuard from "@/components/AuthGuard";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 
@@ -68,7 +68,7 @@ function ProjectPageContent() {
           >
             <div style={{ marginBottom: "16px" }}>
               <h3 style={{ margin: 0, marginBottom: "8px", color: "#dc2626", fontSize: "20px" }}>
-                ⚠️ Quota Limit Reached
+                ⚠️ Search limit reached
               </h3>
               <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.5" }}>
                 {quotaErrorModal.message}
@@ -76,12 +76,17 @@ function ProjectPageContent() {
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
               <button
-                className="primary"
+                className="secondary"
                 onClick={() => setQuotaErrorModal({ show: false, message: "" })}
                 style={{ padding: "8px 16px", fontSize: "14px" }}
               >
-                OK
+                Not now
               </button>
+              <Link href="/pricing">
+                <button className="primary" style={{ padding: "8px 16px", fontSize: "14px" }}>
+                  Upgrade to Pro
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -112,19 +117,7 @@ function ProjectPageContent() {
               const errorMessage = String(e);
               // Check if it's a quota error (403 with quota-related message)
               if (errorMessage.includes("403") || errorMessage.toLowerCase().includes("quota") || errorMessage.toLowerCase().includes("limit") || errorMessage.toLowerCase().includes("maximum")) {
-                let displayMessage = "You can only create a limited number of projects and runs per project. Upgrade to increase your quota.";
-                try {
-                  const quota = await getUserQuota();
-                  const projectsLimit = quota.quotas.max_projects.unlimited || quota.quotas.max_projects.limit === -1
-                    ? "Unlimited"
-                    : quota.quotas.max_projects.limit.toString();
-                  const runsLimit = quota.quotas.max_runs_per_project.unlimited || quota.quotas.max_runs_per_project.limit === -1
-                    ? "Unlimited"
-                    : quota.quotas.max_runs_per_project.limit.toString();
-                  displayMessage = `You can only create ${projectsLimit} projects, and ${runsLimit} runs per project. Upgrade to increase your quota.`;
-                } catch {
-                  // Keep fallback message if quota lookup fails.
-                }
+                const displayMessage = await searchLimitMessage();
                 setQuotaErrorModal({ show: true, message: displayMessage });
               } else {
                 setError(errorMessage);

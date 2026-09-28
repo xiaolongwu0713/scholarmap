@@ -1,251 +1,149 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUserQuota, type UserQuotaInfo } from "@/lib/api";
+import Link from "next/link";
+import { getBillingPortalUrl, getUserQuota, type UserQuotaInfo } from "@/lib/api";
+
+const PLAN_BADGE: Record<UserQuotaInfo["tier"], { label: string; color: string }> = {
+  super_user: { label: "Admin", color: "#4CAF50" },
+  pro_user: { label: "Pro", color: "#2563eb" },
+  free_user: { label: "Free", color: "#6b7280" },
+};
+
+function usageColor(used: number, limit: number): string {
+  const pct = (used / limit) * 100;
+  if (pct >= 100) return "#f44336";
+  if (pct >= 70) return "#FF9800";
+  return "#4CAF50";
+}
 
 export default function QuotaDisplay() {
   const [quota, setQuota] = useState<UserQuotaInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [portalBusy, setPortalBusy] = useState(false);
+  const [activating, setActivating] = useState(false);
 
   useEffect(() => {
-    loadQuota();
+    let cancelled = false;
+    // Returning from Paddle checkout: the webhook may land a few seconds after the redirect.
+    const justPaid = new URLSearchParams(window.location.search).get("upgraded") === "1";
+
+    async function load(attempt = 0) {
+      try {
+        const data = await getUserQuota();
+        if (cancelled) return;
+        setQuota(data);
+        const waiting = justPaid && data.tier === "free_user" && attempt < 20;
+        setActivating(waiting);
+        if (waiting) setTimeout(() => load(attempt + 1), 3000);
+      } catch (e) {
+        if (!cancelled) setError(String(e));
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  async function loadQuota() {
+  async function openPortal() {
+    setPortalBusy(true);
     try {
-      setLoading(true);
-      const data = await getUserQuota();
-      setQuota(data);
-    } catch (e) {
-      setError(String(e));
-    } finally {
-      setLoading(false);
+      window.location.href = await getBillingPortalUrl();
+    } catch {
+      setError("Could not open the billing portal. Please try again or email contact@labscout.io.");
+      setPortalBusy(false);
     }
   }
 
-  if (loading) {
-    return <div className="muted">Loading quota...</div>;
-  }
+  if (loading) return <div className="muted">Loading plan...</div>;
+  if (error && !quota) return <div className="muted">Failed to load plan</div>;
+  if (!quota) return null;
 
-  if (error) {
-    return <div className="muted">Failed to load quota</div>;
-  }
-
-  if (!quota) {
-    return null;
-  }
-
-  const getTierDisplayName = (tier: string): string => {
-    const names: Record<string, string> = {
-      super_user: "Super User",
-      regular_user: "Regular User",
-      premium_user: "Premium User",
-      free_user: "Free User",
-    };
-    return names[tier] || tier;
-  };
-
-  const getTierColor = (tier: string): string => {
-    const colors: Record<string, string> = {
-      super_user: "#4CAF50",
-      premium_user: "#FF9800",
-      regular_user: "#2196F3",
-      free_user: "#9E9E9E",
-    };
-    return colors[tier] || "#666";
-  };
-
-  const getUsageColor = (current: number, limit: number, unlimited: boolean): string => {
-    if (unlimited) return "#4CAF50";
-    const percentage = (current / limit) * 100;
-    if (percentage >= 90) return "#f44336"; // Red
-    if (percentage >= 70) return "#FF9800"; // Orange
-    return "#4CAF50"; // Green
-  };
-
-  const formatQuotaValue = (value: number, unlimited: boolean): string => {
-    if (unlimited || value === -1) return "Unlimited";
-    return value.toLocaleString();
-  };
+  const badge = PLAN_BADGE[quota.tier];
+  const { searches } = quota;
 
   return (
     <div className="card stack" style={{ padding: "1rem" }}>
-      <div
-        className="row"
-        style={{
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "0.5rem",
-        }}
-      >
-        <h3 style={{ margin: 0, fontSize: "1.1rem" }}>Your Account Limits</h3>
+      <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+        <h3 style={{ margin: 0, fontSize: "1.1rem" }}>Your Plan</h3>
         <div
           style={{
             fontSize: "0.85rem",
             fontWeight: "bold",
-            color: getTierColor(quota.tier),
+            color: badge.color,
             padding: "0.25rem 0.75rem",
             borderRadius: "12px",
-            background: `${getTierColor(quota.tier)}15`,
+            background: `${badge.color}15`,
           }}
         >
-          {getTierDisplayName(quota.tier)}
+          {badge.label}
         </div>
       </div>
 
-      <div className="stack" style={{ gap: "0.75rem" }}>
-        {/* Projects Quota */}
-        <div className="stack" style={{ gap: "0.25rem" }}>
-          <div
-            className="row"
-            style={{ justifyContent: "space-between", alignItems: "center" }}
+      <div className="stack" style={{ gap: "0.25rem" }}>
+        <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+          <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+            Searches (last {searches.window_days} days)
+          </span>
+          <span
+            style={{
+              fontSize: "0.9rem",
+              fontWeight: "bold",
+              color: searches.unlimited ? "#4CAF50" : usageColor(searches.used, searches.limit),
+            }}
           >
-            <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>Projects</span>
-            <span
-              style={{
-                fontSize: "0.9rem",
-                fontWeight: "bold",
-                color: getUsageColor(
-                  quota.quotas.max_projects.current,
-                  quota.quotas.max_projects.limit,
-                  quota.quotas.max_projects.unlimited
-                ),
-              }}
-            >
-              {quota.quotas.max_projects.current} /{" "}
-              {formatQuotaValue(
-                quota.quotas.max_projects.limit,
-                quota.quotas.max_projects.unlimited
-              )}
-            </span>
-          </div>
-          {!quota.quotas.max_projects.unlimited && (
+            {searches.used} / {searches.unlimited ? "Unlimited" : searches.limit}
+          </span>
+        </div>
+        {!searches.unlimited && (
+          <div style={{ width: "100%", height: "4px", background: "#e0e0e0", borderRadius: "2px", overflow: "hidden" }}>
             <div
               style={{
-                width: "100%",
-                height: "4px",
-                background: "#e0e0e0",
-                borderRadius: "2px",
-                overflow: "hidden",
+                width: `${Math.min(100, (searches.used / searches.limit) * 100)}%`,
+                height: "100%",
+                background: usageColor(searches.used, searches.limit),
+                transition: "width 0.3s ease",
               }}
-            >
-              <div
-                style={{
-                  width: `${Math.min(
-                    (quota.quotas.max_projects.current /
-                      quota.quotas.max_projects.limit) *
-                      100,
-                    100
-                  )}%`,
-                  height: "100%",
-                  background: getUsageColor(
-                    quota.quotas.max_projects.current,
-                    quota.quotas.max_projects.limit,
-                    false
-                  ),
-                  transition: "width 0.3s ease",
-                }}
-              />
-            </div>
-          )}
-          {!quota.quotas.max_projects.unlimited && (
-            <div style={{ fontSize: "0.75rem", color: "#666" }}>
-              {quota.quotas.max_projects.remaining} remaining
-            </div>
-          )}
-        </div>
-
-        {/* Runs per Project Quota */}
-        <div className="stack" style={{ gap: "0.25rem" }}>
-          <div
-            className="row"
-            style={{ justifyContent: "space-between", alignItems: "center" }}
-          >
-            <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>
-              Runs per Project
-            </span>
-            <span
-              style={{
-                fontSize: "0.9rem",
-                fontWeight: "bold",
-                color: getUsageColor(
-                  quota.quotas.max_runs_per_project.current,
-                  quota.quotas.max_runs_per_project.limit,
-                  quota.quotas.max_runs_per_project.unlimited
-                ),
-              }}
-            >
-              {quota.quotas.max_runs_per_project.current} /{" "}
-              {formatQuotaValue(
-                quota.quotas.max_runs_per_project.limit,
-                quota.quotas.max_runs_per_project.unlimited
-              )}
-            </span>
+            />
           </div>
-          {!quota.quotas.max_runs_per_project.unlimited && (
-            <div
-              style={{
-                width: "100%",
-                height: "4px",
-                background: "#e0e0e0",
-                borderRadius: "2px",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: `${Math.min(
-                    (quota.quotas.max_runs_per_project.current /
-                      quota.quotas.max_runs_per_project.limit) *
-                      100,
-                    100
-                  )}%`,
-                  height: "100%",
-                  background: getUsageColor(
-                    quota.quotas.max_runs_per_project.current,
-                    quota.quotas.max_runs_per_project.limit,
-                    false
-                  ),
-                  transition: "width 0.3s ease",
-                }}
-              />
-            </div>
-          )}
-          {!quota.quotas.max_runs_per_project.unlimited && (
-            <div style={{ fontSize: "0.75rem", color: "#666" }}>
-              Max {quota.quotas.max_runs_per_project.limit} runs per project
-            </div>
-          )}
-        </div>
-
-        {/* Papers per Run Quota */}
-        <div className="stack" style={{ gap: "0.25rem" }}>
-          <div
-            className="row"
-            style={{ justifyContent: "space-between", alignItems: "center" }}
-          >
-            <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>
-              Papers per Run
-            </span>
-            <span
-              style={{
-                fontSize: "0.9rem",
-                fontWeight: "bold",
-                color: "#666",
-              }}
-            >
-              {formatQuotaValue(
-                quota.quotas.max_papers_per_run.limit,
-                quota.quotas.max_papers_per_run.unlimited
-              )}
-            </span>
+        )}
+        {searches.next_slot_at && (
+          <div className="muted" style={{ fontSize: "0.8rem" }}>
+            Next search available {new Date(searches.next_slot_at).toLocaleString()}
           </div>
-          <div style={{ fontSize: "0.75rem", color: "#666" }}>
-            Maximum papers that can be retrieved per run
-          </div>
-        </div>
+        )}
       </div>
+
+      {quota.tier === "pro_user" && quota.pro_until && (
+        <div className="muted" style={{ fontSize: "0.8rem" }}>
+          {quota.subscription_status === "canceled" ? "Pro access ends" : "Renews"}{" "}
+          {new Date(quota.pro_until).toLocaleDateString()}
+        </div>
+      )}
+
+      {activating && (
+        <div style={{ color: "#2563eb", fontSize: "0.85rem" }}>
+          Payment received — activating Pro, this usually takes a few seconds...
+        </div>
+      )}
+      {error && <div style={{ color: "#dc2626", fontSize: "0.8rem" }}>{error}</div>}
+
+      {quota.tier === "free_user" && !activating && (
+        <Link href="/pricing">
+          <button className="primary" style={{ width: "100%", marginTop: "0.5rem" }}>
+            Upgrade to Pro — 30 searches/week, full lists, CSV export
+          </button>
+        </Link>
+      )}
+      {quota.tier === "pro_user" && (
+        <button className="secondary" onClick={openPortal} disabled={portalBusy} style={{ width: "100%", marginTop: "0.5rem" }}>
+          {portalBusy ? "Opening..." : "Manage subscription"}
+        </button>
+      )}
     </div>
   );
 }
