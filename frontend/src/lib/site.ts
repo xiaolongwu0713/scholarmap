@@ -24,6 +24,9 @@ export const PLANS = {
   pro: { name: 'Pro', searchesPerWeek: 30, monthlyPrice: 20, quarterlyPrice: 50 },
 } as const;
 
+/** Done-for-you field report for companies (sold by email, delivered manually). */
+export const CUSTOM_REPORT = { priceFrom: 299, deliveryBusinessDays: 5 } as const;
+
 /** Public demo run (readable without login). Must match backend DEMO_PROJECT_ID / DEMO_RUN_ID. */
 export const DEMO_PROJECT_ID = process.env.NEXT_PUBLIC_DEMO_PROJECT_ID || '6af7ac1b6254';
 export const DEMO_RUN_ID = process.env.NEXT_PUBLIC_DEMO_RUN_ID || '53e099cdb74e';

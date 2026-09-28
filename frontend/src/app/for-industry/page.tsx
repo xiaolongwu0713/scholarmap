@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { ContactSalesButton } from '@/components/ContactSalesButton';
-import { PLANS } from '@/lib/site';
+import { CUSTOM_REPORT, PLANS } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'KOL & Investigator Mapping for Biomedical Teams',
@@ -130,6 +130,33 @@ export default function ForIndustryPage() {
               <li>Publication activity is a signal of expertise, not an endorsement or a measure of availability.</li>
               <li>Affiliations are parsed automatically and can occasionally place an author in the wrong city; verify before outreach.</li>
             </ul>
+          </section>
+
+          <section className="mb-14 rounded-xl border-2 border-blue-600 bg-white p-8">
+            <div className="flex flex-wrap items-start justify-between gap-6">
+              <div className="max-w-2xl">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Custom landscape report</h2>
+                <p className="text-gray-600 mb-4">
+                  Tell us the area, and we map it for you. You get the full researcher and institution lists as
+                  CSV, the country and city maps, and a short summary of where the field is concentrated.
+                </p>
+                <ul className="list-disc space-y-1 pl-5 text-gray-600">
+                  <li>One therapeutic area, target, modality, or method per report</li>
+                  <li>Delivered within {CUSTOM_REPORT.deliveryBusinessDays} business days</li>
+                  <li>One round of adjustments to the scope included</li>
+                </ul>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-gray-500">from</div>
+                <div className="text-4xl font-bold text-gray-900 mb-3">${CUSTOM_REPORT.priceFrom}</div>
+                <ContactSalesButton
+                  source="industry_report"
+                  className="inline-block rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700"
+                >
+                  Request a report
+                </ContactSalesButton>
+              </div>
+            </div>
           </section>
 
           <section className="mb-14 rounded-2xl bg-blue-600 p-8 text-center text-white">
