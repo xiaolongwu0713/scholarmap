@@ -64,7 +64,11 @@ def run_sql_script(sql_file_path: str, dry_run: bool = False):
     print(f"\n🔌 Connecting to database...")
     
     # Create synchronous engine
-    engine = create_engine(settings.database_url, echo=False)
+    # SQLAlchemy 2.1 defaults postgresql:// to psycopg 3; we ship psycopg2.
+    db_url = settings.database_url
+    if db_url.startswith("postgresql://"):
+        db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    engine = create_engine(db_url, echo=False)
     
     try:
         print(f"⚙️  Executing SQL script...")
