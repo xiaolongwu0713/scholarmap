@@ -26,6 +26,8 @@ export default function BusinessMetricsPanel() {
         ["Searches completed / failed", `${m.runs_completed} / ${m.runs_failed} (${pct(m.run_completion_rate)} done)`],
         ["Free users at their limit now", m.free_users_at_limit],
         ["Churned (canceled)", m.churned],
+        ["AI cost per completed search", m.ai_cost_per_completed_search_usd === null ? "–" : `$${m.ai_cost_per_completed_search_usd.toFixed(3)}`],
+        ["AI cost: customer searches / other", `$${m.ai_cost_searches_usd.toFixed(2)} / $${m.ai_cost_other_usd.toFixed(2)}`],
         ["Users total", m.users_total],
       ]
     : [];
@@ -55,7 +57,8 @@ export default function BusinessMetricsPanel() {
         </table>
       )}
       <div className="muted" style={{ fontSize: "0.8rem" }}>
-        Excludes the admin account. MRR counts 3-month plans as a third of their price per month.
+        Excludes the admin account. MRR counts 3-month plans as a third of their price per month. AI cost is
+        tracked from 2026-09-29; "other" covers SEO field builds and admin use.
       </div>
     </div>
   );

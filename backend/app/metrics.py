@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import config
-from app.db.models import Project, Run, RunPaper, SearchUsage, User
+from app.db.models import LLMUsage, Project, Run, RunPaper, SearchUsage, User
 from app.quota import SEARCH_WINDOW, get_limit
 
 
@@ -95,6 +95,31 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         .where(customer, User.subscription_status == "canceled", User.paddle_event_at >= since)
     )
 
+    # AI cost: customer searches started in the window vs everything else (SEO builds, admin, unattributed)
+    price_in = config.settings.llm_price_input_per_mtok / 1_000_000
+    price_out = config.settings.llm_price_output_per_mtok / 1_000_000
+
+    async def ai_cost(*where) -> float:
+        row = (await session.execute(
+            select(func.coalesce(func.sum(LLMUsage.prompt_tokens), 0),
+                   func.coalesce(func.sum(LLMUsage.completion_tokens), 0)).where(*where)
+        )).one()
+        return row[0] * price_in + row[1] * price_out
+
+    customer_run_ids = customer_runs.subquery()
+    completed_run_ids = customer_runs.where(_completed(Run.run_id)).subquery()
+    ai_cost_searches = await ai_cost(LLMUsage.run_id.in_(select(customer_run_ids.c.run_id)))
+    ai_cost_completed = await ai_cost(LLMUsage.run_id.in_(select(completed_run_ids.c.run_id)))
+    admin_runs = (
+        select(Run.run_id)
+        .join(Project, Project.project_id == Run.project_id)
+        .where(Project.user_id.not_in(customer_ids))
+    )
+    ai_cost_other = await ai_cost(
+        LLMUsage.created_at >= since,
+        LLMUsage.run_id.is_(None) | LLMUsage.run_id.in_(admin_runs),
+    )
+
     def rate(part: int, whole: int) -> float | None:
         return round(part / whole, 3) if whole else None
 
@@ -118,4 +143,7 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         "pro_canceling": sum(1 for s, _, _ in pro_users if s == "canceled"),
         "mrr_usd": round(mrr_cents / 100, 2),
         "churned": churned,
+        "ai_cost_searches_usd": round(ai_cost_searches, 4),
+        "ai_cost_per_completed_search_usd": round(ai_cost_completed / runs_completed, 4) if runs_completed else None,
+        "ai_cost_other_usd": round(ai_cost_other, 4),
     }

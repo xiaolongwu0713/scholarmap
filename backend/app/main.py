@@ -115,6 +115,10 @@ app.add_middleware(AuthMiddleware)
 # Add frontend-only middleware (after auth)
 app.add_middleware(FrontendOnlyMiddleware)
 
+# Attribute OpenAI usage in /api/projects/{p}/runs/{r}/ requests to that run (cost per search)
+from app.llm_usage import RunContextMiddleware
+app.add_middleware(RunContextMiddleware)
+
 # Use database store instead of file store
 store = DatabaseStore()
 

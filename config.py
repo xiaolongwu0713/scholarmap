@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     # Priority: environment variable > .env file > default value
     openai_api_key: str = ""
     openai_model: str = "gpt-5.2"
+    # USD per 1M tokens for openai_model, used to report AI cost per search.
+    # gpt-5.2 standard tier, developers.openai.com/api/docs/pricing (checked 2026-09-29).
+    llm_price_input_per_mtok: float = 1.75
+    llm_price_output_per_mtok: float = 14.0
     openai_reasoning_effort: str = "high"
     openai_api_base: str = "https://api.openai.com"
 

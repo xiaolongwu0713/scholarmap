@@ -56,6 +56,22 @@ class SearchUsage(Base):
     __table_args__ = (Index("ix_search_usage_user_created", "user_id", "created_at"),)
 
 
+class LLMUsage(Base):
+    """Tokens used by one OpenAI call, attributed to a search run when known."""
+    __tablename__ = "llm_usage"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    run_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
+    model: Mapped[str] = mapped_column(String(100), nullable=False)
+    prompt_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
+    completion_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+
+
 class EmailVerificationCode(Base):
     """Email verification code model."""
     __tablename__ = "email_verification_codes"

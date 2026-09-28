@@ -13,7 +13,7 @@ import pytest
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 import config
-from app.db.models import Base, Project, Run, RunPaper, SearchUsage, User
+from app.db.models import Base, LLMUsage, Project, Run, RunPaper, SearchUsage, User
 from app.metrics import business_metrics
 
 NOW = datetime(2026, 9, 29, 12, 0, tzinfo=timezone.utc)
@@ -39,7 +39,7 @@ def searches(uid, n, days_ago=1):
 
 async def compute(rows):
     engine = create_async_engine("sqlite+aiosqlite://")
-    tables = [t.__table__ for t in (User, SearchUsage, Project, Run, RunPaper)]
+    tables = [t.__table__ for t in (User, SearchUsage, Project, Run, RunPaper, LLMUsage)]
     async with engine.begin() as conn:
         await conn.run_sync(lambda c: Base.metadata.create_all(c, tables=tables))
     async with async_sessionmaker(engine)() as session:
@@ -53,6 +53,13 @@ async def compute(rows):
 @pytest.fixture(autouse=True)
 def admin_email(monkeypatch):
     monkeypatch.setattr(config.settings, "super_user_email", ADMIN)
+    monkeypatch.setattr(config.settings, "llm_price_input_per_mtok", 2.0)
+    monkeypatch.setattr(config.settings, "llm_price_output_per_mtok", 10.0)
+
+
+def usage(run_id, prompt, completion):
+    return LLMUsage(run_id=run_id, model="m", prompt_tokens=prompt, completion_tokens=completion,
+                    created_at=NOW - timedelta(hours=2))
 
 
 def test_funnel_counts():
@@ -75,7 +82,16 @@ def test_funnel_counts():
         user("old", pro_until=NOW - timedelta(days=1), subscription_status="past_due",
              subscription_interval_months=1, subscription_amount_cents=2000),
     ]
+    rows += [
+        usage("r1", 1_000_000, 100_000),   # completed customer search: $2 + $1
+        usage("r2", 500_000, 0),           # failed customer search: $1
+        usage("seo", 1_000_000, 0),        # admin/SEO build: $2 (other)
+        usage(None, 0, 100_000),           # unattributed call: $1 (other)
+    ]
     m = asyncio.run(compute(rows))
+    assert m["ai_cost_searches_usd"] == pytest.approx(4.0)
+    assert m["ai_cost_per_completed_search_usd"] == pytest.approx(3.0)
+    assert m["ai_cost_other_usd"] == pytest.approx(3.0)
     assert m["users_total"] == 5
     assert m["signups"] == 2
     assert (m["activated_signups"], m["activation_rate"]) == (1, 0.5)

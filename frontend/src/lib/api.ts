@@ -702,6 +702,9 @@ export type BusinessMetrics = {
   pro_canceling: number;
   mrr_usd: number;
   churned: number;
+  ai_cost_searches_usd: number;
+  ai_cost_per_completed_search_usd: number | null;
+  ai_cost_other_usd: number;
 };
 
 export async function getBusinessMetrics(days: number): Promise<BusinessMetrics> {

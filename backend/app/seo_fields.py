@@ -167,6 +167,9 @@ async def build_field(field: dict[str, Any], run_id: str | None = None) -> str:
     if run_id is None:
         run = await store.create_run(project_id, f"{RUN_PREFIX}{slug}] {field['name']}")
         run_id = run.run_id
+    from app.llm_usage import current_run_id
+
+    current_run_id.set(run_id)  # attribute any LLM calls during the build to this run
     now = datetime.now(timezone.utc).isoformat()
     await _set_state(run_id, status="building", started_at=now, query=field["pubmedQuery"])
     logger.info("SEO field %s: building in run %s", slug, run_id)

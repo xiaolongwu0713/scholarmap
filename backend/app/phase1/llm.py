@@ -6,6 +6,7 @@ from typing import Any
 import httpx
 
 from app.core.audit_log import append_log
+from app.llm_usage import record_usage
 import sys
 from pathlib import Path
 
@@ -105,6 +106,7 @@ class OpenAIClient:
             resp = await client.post(f"{self.api_base}/v1/chat/completions", json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
+        await record_usage(self.model, data.get("usage"), (log_context or {}).get("run_id"))
 
         content = data["choices"][0]["message"]["content"]
         
@@ -151,6 +153,7 @@ class OpenAIClient:
                     pass
             resp.raise_for_status()
             data = resp.json()
+        await record_usage(self.model, data.get("usage"), (log_context or {}).get("run_id"))
 
         parts: list[str] = []
         for out in data.get("output", []) or []:
@@ -215,6 +218,7 @@ class OpenAIClient:
             resp = await client.post(f"{self.api_base}/v1/chat/completions", json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
+        await record_usage(self.model, data.get("usage"), (log_context or {}).get("run_id"))
         raw_content = data["choices"][0]["message"]["content"]
         
         # Log raw response for debugging
