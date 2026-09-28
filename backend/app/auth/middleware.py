@@ -61,6 +61,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/billing/webhook",  # authenticated by Paddle signature instead
         "/api/seo/fields",
         "/api/seo/sitemap",
+        "/api/admin/metrics",  # checks the metrics token or an admin login itself
     }
     
     # Demo run that is publicly accessible (read-only)

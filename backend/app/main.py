@@ -1609,6 +1609,25 @@ async def verify_super_user(request: Request) -> None:
             )
 
 
+@app.get("/api/admin/metrics")
+async def admin_metrics(request: Request, days: int = 7) -> dict:
+    """Revenue-funnel metrics. Accepts the X-Metrics-Token header or an admin login."""
+    import hmac
+    from app.auth.middleware import get_current_user_id
+    from app.metrics import business_metrics
+
+    token = request.headers.get("X-Metrics-Token", "")
+    if not (settings.metrics_token and hmac.compare_digest(token, settings.metrics_token)):
+        request.state.user_id = await get_current_user_id(request)
+        if not request.state.user_id:
+            raise HTTPException(status_code=401, detail="Not authenticated")
+        await verify_super_user(request)
+
+    days = max(1, min(days, 365))
+    async with db_manager.session() as session:
+        return await business_metrics(session, days=days)
+
+
 @app.post("/api/admin/resource-monitor/snapshot")
 async def admin_take_snapshot(request: Request) -> dict:
     """

@@ -117,5 +117,8 @@ class Settings(BaseSettings):
     paddle_api_key: str = ""              # PADDLE_API_KEY, server-side only
     paddle_webhook_secret: str = ""       # PADDLE_WEBHOOK_SECRET, from the notification destination
 
+    # Read-only access to /api/admin/metrics for the weekly check (METRICS_TOKEN); empty = admin login only
+    metrics_token: str = ""
+
 
 settings = Settings()
