@@ -51,3 +51,29 @@ def test_without_key_prints_code_instead_of_sending(monkeypatch, capsys):
 
     run_with_transport(monkeypatch, handler, api_key="")
     assert "123456" in capsys.readouterr().out
+
+
+def test_welcome_email_has_tips_and_reply_to(monkeypatch):
+    seen = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen["body"] = json.loads(request.content)
+        return httpx.Response(200, json={"id": "email_2"})
+
+    monkeypatch.setattr(auth.settings, "resend_api_key", "re_test")
+    real_client = httpx.AsyncClient
+    monkeypatch.setattr(auth.httpx, "AsyncClient",
+                        lambda **kw: real_client(transport=httpx.MockTransport(handler), **kw))
+    asyncio.run(auth.send_welcome_email("new@example.com"))
+    body = seen["body"]
+    assert body["to"] == ["new@example.com"]
+    assert body["reply_to"] == auth.settings.contact_email
+    assert "Generate my map" in body["text"] and "/research-jobs/" in body["text"]
+
+
+def test_welcome_email_failure_is_swallowed(monkeypatch):
+    monkeypatch.setattr(auth.settings, "resend_api_key", "re_test")
+    real_client = httpx.AsyncClient
+    monkeypatch.setattr(auth.httpx, "AsyncClient",
+                        lambda **kw: real_client(transport=httpx.MockTransport(lambda r: httpx.Response(500)), **kw))
+    asyncio.run(auth.send_welcome_email("new@example.com"))  # must not raise

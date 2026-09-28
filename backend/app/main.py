@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import csv
 import io
 import json
@@ -32,6 +33,7 @@ from app.core.storage import FileStore
 from app.db.service import DatabaseStore
 from app.auth.middleware import AuthMiddleware
 from app.auth.auth import (
+    send_welcome_email,
     get_password_hash,
     verify_password,
     validate_password_strength,
@@ -309,6 +311,16 @@ async def send_verification_code(req: SendVerificationCodeRequest) -> dict:
     return {"ok": True, "message": "Verification code sent"}
 
 
+_background_tasks: set[asyncio.Task] = set()
+
+
+def _spawn_background(coro) -> None:
+    """Run a best-effort coroutine without awaiting it (kept referenced so it isn't collected)."""
+    task = asyncio.create_task(coro)
+    _background_tasks.add(task)
+    task.add_done_callback(_background_tasks.discard)
+
+
 @app.post("/api/auth/register")
 async def register_user(req: RegisterRequest) -> dict:
     """Register a new user."""
@@ -350,6 +362,9 @@ async def register_user(req: RegisterRequest) -> dict:
         
         # Generate JWT token
         token = create_access_token(data={"sub": user_id})
+
+        # First-search tips; sent in the background so a slow email never delays signup
+        _spawn_background(send_welcome_email(user.email))
         
         return {
             "ok": True,

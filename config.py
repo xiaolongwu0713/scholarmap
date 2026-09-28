@@ -55,6 +55,7 @@ class Settings(BaseSettings):
     # Can be loaded from .env file or environment variables
     resend_api_key: str = ""  # RESEND_API_KEY; labscout.io is verified in Resend
     email_from: str = "LabScout <noreply@labscout.io>"  # Sender for verification codes
+    contact_email: str = "contact@labscout.io"  # Reply-to for emails people may answer
     
     # Super user configuration (can access all projects and runs)
     # Super users can access any project and run, bypassing ownership checks

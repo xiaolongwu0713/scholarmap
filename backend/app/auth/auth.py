@@ -134,34 +134,67 @@ def decode_access_token(token: str) -> dict | None:
         return None
 
 
-async def send_verification_email(email: str, code: str) -> None:
-    """Send a verification code via Resend.
+async def _send_email(to: str, subject: str, text: str, reply_to: str | None = None) -> bool:
+    """Send a plain-text email via Resend. Returns False (and prints it) without RESEND_API_KEY.
 
-    Without RESEND_API_KEY (local development) the code is printed to the console.
     Raises if the key is set but sending fails.
     """
     api_key = settings.resend_api_key.strip()
     if not api_key:
-        print(f"[DEV] Email verification code for {email}: {code}")
+        print(f"[DEV] Email to {to}: {subject}\n{text}")
         print("[DEV] Set RESEND_API_KEY to send real emails")
-        return
+        return False
 
+    payload = {"from": settings.email_from, "to": [to], "subject": subject, "text": text}
+    if reply_to:
+        payload["reply_to"] = reply_to
     async with httpx.AsyncClient(timeout=15) as client:
         resp = await client.post(
             "https://api.resend.com/emails",
             headers={"Authorization": f"Bearer {api_key}"},
-            json={
-                "from": settings.email_from,
-                "to": [email],
-                "subject": "Your LabScout verification code",
-                "text": (
-                    f"Your LabScout verification code is: {code}\n\n"
-                    "This code will expire in 10 minutes.\n\n"
-                    "If you did not request this code, please ignore this email."
-                ),
-            },
+            json=payload,
         )
     if resp.status_code >= 300:
         raise Exception(f"Resend returned {resp.status_code}: {resp.text[:300]}")
-    print(f"[EMAIL] Verification code sent to {email} via Resend")
+    return True
+
+
+async def send_verification_email(email: str, code: str) -> None:
+    """Send a verification code. Without RESEND_API_KEY (local development) it is printed."""
+    sent = await _send_email(
+        email,
+        "Your LabScout verification code",
+        f"Your LabScout verification code is: {code}\n\n"
+        "This code will expire in 10 minutes.\n\n"
+        "If you did not request this code, please ignore this email.",
+    )
+    if sent:
+        print(f"[EMAIL] Verification code sent to {email} via Resend")
+
+
+WELCOME_EXAMPLE = "CRISPR base editing to correct inherited retinal disease mutations in human retinal organoids"
+
+
+async def send_welcome_email(email: str) -> None:
+    """First-search tips for a new user. Best effort: never fails registration."""
+    site = settings.frontend_url.rstrip("/")
+    text = (
+        "Hi,\n\n"
+        "Thanks for joining LabScout. Here's how to get a useful map on your first try:\n\n"
+        f"1. Open your projects ({site}/projects) and create a project.\n"
+        "2. Describe one research topic in a sentence or two (5-30 English words). Name the disease, "
+        "method, or target, and the model system if it matters. For example:\n"
+        f"   \"{WELCOME_EXAMPLE}\"\n"
+        "3. Click \"Generate my map\". LabScout searches PubMed and maps the labs and researchers "
+        "publishing on it, by country, city, and institution. It takes a few minutes.\n\n"
+        "The Free plan includes 2 searches a week. Want to see a map first? "
+        f"Here's one for CRISPR gene editing: {site}/research-jobs/crispr-gene-editing\n\n"
+        "Questions? Just reply to this email.\n\n"
+        "LabScout"
+    )
+    try:
+        await _send_email(email, "Welcome to LabScout: map your first research area", text,
+                          reply_to=settings.contact_email)
+    except Exception as e:
+        print(f"[EMAIL] Welcome email to {email} failed: {e}")
 
