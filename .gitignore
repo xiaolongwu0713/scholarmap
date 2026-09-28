@@ -23,6 +23,7 @@ pnpm-debug.log*
 
 # Data
 data/
+!frontend/src/data/
 
 
 # Logs & build caches

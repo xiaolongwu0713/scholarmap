@@ -2,7 +2,7 @@ import { SITE_URL, DEMO_RUN_PATH } from '@/lib/site';
 import { MetadataRoute } from 'next';
 import { fetchWorldMap, fetchCountryMap } from '@/lib/seoApi';
 import { countryToSlug, cityToSlug, isInvalidCityName } from '@/lib/geoSlugs';
-import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
+import { getReadyFieldConfigs } from '@/lib/seoFieldConfig';
 import { fetchFieldWorldData, fetchFieldCountryData } from '@/lib/seoFieldApi';
 
 
@@ -137,7 +137,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const fieldCityPages: MetadataRoute.Sitemap = [];
 
     try {
-      const fields = getAllFieldConfigs();
+      const fields = await getReadyFieldConfigs();
       
       for (const field of fields) {
         // Field overview page

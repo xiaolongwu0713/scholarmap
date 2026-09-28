@@ -5,7 +5,7 @@
  * using the field configurations from seoFieldConfig.ts
  */
 
-import { getFieldConfig, getFieldRunId } from './seoFieldConfig';
+import { getReadyFieldConfig, type FieldConfig } from './seoFieldConfig';
 import { API_URL } from './site';
 
 const API_BASE_URL = API_URL;
@@ -14,7 +14,7 @@ const API_BASE_URL = API_URL;
  * Fetch world map data for a specific research field
  */
 export async function fetchFieldWorldData(fieldSlug: string, minConfidence: string = 'low') {
-  const config = getFieldConfig(fieldSlug);
+  const config = await getReadyFieldConfig(fieldSlug);
   if (!config) {
     throw new Error(`Invalid field slug: ${fieldSlug}`);
   }
@@ -41,7 +41,7 @@ export async function fetchFieldCountryData(
   country: string, 
   minConfidence: string = 'low'
 ) {
-  const config = getFieldConfig(fieldSlug);
+  const config = await getReadyFieldConfig(fieldSlug);
   if (!config) {
     throw new Error(`Invalid field slug: ${fieldSlug}`);
   }
@@ -69,7 +69,7 @@ export async function fetchFieldCityData(
   city: string,
   minConfidence: string = 'low'
 ) {
-  const config = getFieldConfig(fieldSlug);
+  const config = await getReadyFieldConfig(fieldSlug);
   if (!config) {
     throw new Error(`Invalid field slug: ${fieldSlug}`);
   }
@@ -98,7 +98,7 @@ export async function fetchFieldInstitutionScholars(
   city: string,
   minConfidence: string = 'low'
 ) {
-  const config = getFieldConfig(fieldSlug);
+  const config = await getReadyFieldConfig(fieldSlug);
   if (!config) {
     throw new Error(`Invalid field slug: ${fieldSlug}`);
   }
@@ -127,12 +127,7 @@ export async function fetchFieldInstitutionScholars(
 /**
  * Generate demo run URL for a specific field
  */
-export function getFieldDemoRunUrl(fieldSlug: string): string {
-  const config = getFieldConfig(fieldSlug);
-  if (!config) {
-    throw new Error(`Invalid field slug: ${fieldSlug}`);
-  }
-
+export function getFieldDemoRunUrl(config: FieldConfig): string {
   return `/projects/${config.projectId}/runs/${config.runId}`;
 }
 

@@ -9,15 +9,15 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
-import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
+import { getReadyFieldConfigs } from '@/lib/seoFieldConfig';
 
 export const metadata: Metadata = {
   title: 'Sitemap',
   description: 'Complete sitemap of LabScout - explore all research fields, countries, and cities.',
 };
 
-export default function SitemapPage() {
-  const fields = getAllFieldConfigs();
+export default async function SitemapPage() {
+  const fields = await getReadyFieldConfigs();
 
   return (
     <>

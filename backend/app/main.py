@@ -80,8 +80,15 @@ async def lifespan(app: FastAPI):
     from app.background_tasks import background_ingest_manager
     await background_ingest_manager.start_periodic_cleanup(interval_hours=1)
     print("✅ Background task manager initialized with periodic cleanup")
-    
+
+    # Build any missing programmatic-SEO field runs (sequential, low priority)
+    import asyncio
+    from app.seo_fields import build_pending_fields
+    seo_builder_task = asyncio.create_task(build_pending_fields())
+
     yield
+
+    seo_builder_task.cancel()
     
     # Shutdown: close database connection
     await db_manager.close()
@@ -370,6 +377,13 @@ async def login_user(req: LoginRequest) -> dict:
             "user_id": user.user_id,
             "email": user.email,
         }
+
+
+@app.get("/api/seo/fields")
+async def seo_fields() -> dict:
+    """Research fields whose data is ready for the public field pages (public)."""
+    from app.seo_fields import ready_fields
+    return {"fields": await ready_fields()}
 
 
 @app.get("/api/user/quota")

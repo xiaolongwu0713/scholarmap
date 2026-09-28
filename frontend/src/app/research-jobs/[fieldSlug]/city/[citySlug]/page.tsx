@@ -2,11 +2,7 @@ import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import {
-  getFieldConfig,
-  getAllFieldConfigs,
-  isValidFieldSlug,
-} from '@/lib/seoFieldConfig';
+import { getReadyFieldConfig, getReadyFieldConfigs } from '@/lib/seoFieldConfig';
 import { fetchFieldWorldData, fetchFieldCityData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
 import { countryToSlug, slugToCityName, cityToSlug } from '@/lib/geoSlugs';
 import {
@@ -28,7 +24,7 @@ export const revalidate = 86400;
 
 // Generate static params for top 5 cities × all fields
 export async function generateStaticParams() {
-  const fields = getAllFieldConfigs();
+  const fields = await getReadyFieldConfigs();
   
   // For each field, generate top 5 cities
   const params: Array<{ fieldSlug: string; citySlug: string }> = [];
@@ -123,13 +119,13 @@ async function findCityCountry(fieldSlug: string, cityName: string): Promise<str
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { fieldSlug, citySlug } = await params;
   
-  if (!isValidFieldSlug(fieldSlug)) {
+  const fieldConfig = await getReadyFieldConfig(fieldSlug);
+  if (!fieldConfig) {
     return {
       title: 'Field Not Found',
     };
   }
 
-  const fieldConfig = getFieldConfig(fieldSlug)!;
   const cityName = slugToCityName(citySlug);
   
   try {
@@ -201,11 +197,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function FieldCityPage({ params }: PageProps) {
   const { fieldSlug, citySlug } = await params;
   
-  if (!isValidFieldSlug(fieldSlug)) {
+  const fieldConfig = await getReadyFieldConfig(fieldSlug);
+  if (!fieldConfig) {
     notFound();
   }
 
-  const fieldConfig = getFieldConfig(fieldSlug)!;
   const cityName = slugToCityName(citySlug);
   
   // Find which country this city belongs to
@@ -257,7 +253,7 @@ export default async function FieldCityPage({ params }: PageProps) {
     notFound();
   }
 
-  const demoRunUrl = getFieldDemoRunUrl(fieldSlug);
+  const demoRunUrl = getFieldDemoRunUrl(fieldConfig);
 
   // Structured data
   const breadcrumbList = {

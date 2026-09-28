@@ -1,9 +1,13 @@
 /**
- * SEO Field-Specific Run Configuration
- * 
- * This file maps research field slugs to their corresponding run IDs
- * in the SEO project. Update this file when creating new field-specific runs.
+ * SEO research-field configuration.
+ *
+ * Field metadata lives in src/data/seo-fields.json (shared with the backend).
+ * Fields with a fixed `runId` are always published; the others are built by the
+ * backend in the background and only published once /api/seo/fields reports them ready.
  */
+
+import fieldsFile from '@/data/seo-fields.json';
+import { API_URL } from './site';
 
 export interface FieldConfig {
   slug: string;
@@ -12,122 +16,62 @@ export interface FieldConfig {
   projectId: string;
   description: string;
   keywords: string[];
-  priority: number; // 1 = highest priority
+  priority: number; // 1 = highest priority (order in seo-fields.json)
+}
+
+interface FieldDefinition {
+  slug: string;
+  name: string;
+  description: string;
+  keywords: string[];
+  runId?: string;
+}
+
+/** SEO project (owned by the admin account). Must match backend SEO_PROJECT_ID. */
+export const SEO_PROJECT_ID = '3b9280a68d3d';
+
+const DEFINITIONS: FieldDefinition[] = fieldsFile.fields;
+
+function toConfig(def: FieldDefinition, index: number, runId: string, projectId = SEO_PROJECT_ID): FieldConfig {
+  return {
+    slug: def.slug,
+    name: def.name,
+    description: def.description,
+    keywords: def.keywords,
+    runId,
+    projectId,
+    priority: index + 1,
+  };
+}
+
+/** Fields with a fixed run ID — used if the backend can't be reached. */
+function staticFieldConfigs(): FieldConfig[] {
+  return DEFINITIONS.flatMap((def, i) => (def.runId ? [toConfig(def, i, def.runId)] : []));
 }
 
 /**
- * SEO Project ID (under super user account)
+ * Published fields (data ready), in priority order.
+ * Revalidated hourly so newly built fields appear without a redeploy.
  */
-export const SEO_PROJECT_ID = "3b9280a68d3d"; // TODO: Replace with actual SEO project ID
-
-/**
- * Field-specific run configurations
- */
-export const FIELD_CONFIGS: Record<string, FieldConfig> = {
-  "brain-computer-interface": {
-    slug: "brain-computer-interface",
-    name: "Brain-Computer Interface (BCI)",
-    runId: "b6b977aeeed1", // TODO: Replace after creating BCI run
-    projectId: SEO_PROJECT_ID,
-    description: "Brain-computer interfaces, neural interfaces, and direct brain communication systems",
-    keywords: ["BCI", "brain-computer interface", "neural interface", "EEG", "brain signals"],
-    priority: 1,
-  },
-  
-  "neural-modulation": {
-    slug: "neural-modulation",
-    name: "Neural Modulation (tDCS/TMS)",
-    runId: "19d981d1d732", // TODO: Replace after creating neural modulation run
-    projectId: SEO_PROJECT_ID,
-    description: "Non-invasive brain stimulation including tDCS, TMS, and other neuromodulation techniques",
-    keywords: ["tDCS", "TMS", "transcranial magnetic stimulation", "neuromodulation", "brain stimulation"],
-    priority: 2,
-  },
-  
-  "crispr-gene-editing": {
-    slug: "crispr-gene-editing",
-    name: "CRISPR Gene Editing",
-    runId: "16d4c49fc4f6", // TODO: Replace after creating CRISPR run
-    projectId: SEO_PROJECT_ID,
-    description: "CRISPR-Cas9 and other gene editing technologies for therapeutic and research applications",
-    keywords: ["CRISPR", "gene editing", "CRISPR-Cas9", "genome editing", "genetic engineering"],
-    priority: 3,
-  },
-  
-  "cancer-immunotherapy": {
-    slug: "cancer-immunotherapy",
-    name: "Cancer Immunotherapy",
-    runId: "1893fb47f453", // TODO: Replace after creating immunotherapy run
-    projectId: SEO_PROJECT_ID,
-    description: "Cancer immunotherapy including CAR-T, checkpoint inhibitors, and immune-based cancer treatments",
-    keywords: ["immunotherapy", "CAR-T", "checkpoint inhibitors", "cancer vaccines", "immune therapy"],
-    priority: 4,
-  },
-  
-  "ai-drug-discovery": {
-    slug: "ai-drug-discovery",
-    name: "AI in Drug Discovery",
-    runId: "597675a5f9fb", // TODO: Replace after creating AI drug discovery run
-    projectId: SEO_PROJECT_ID,
-    description: "Artificial intelligence and machine learning applications in drug discovery and development",
-    keywords: ["AI drug discovery", "machine learning", "computational drug design", "AI pharmacology"],
-    priority: 5,
-  },
-  
-  // Tier 2 fields (add after validating Tier 1)
-  // "neurodegenerative-diseases": { ... },
-  // "stem-cell-research": { ... },
-  // "microbiome-research": { ... },
-  // "precision-medicine": { ... },
-  // "organoid-technology": { ... },
-};
-
-/**
- * Get field configuration by slug
- */
-export function getFieldConfig(slug: string): FieldConfig | undefined {
-  return FIELD_CONFIGS[slug];
+export async function getReadyFieldConfigs(): Promise<FieldConfig[]> {
+  try {
+    const res = await fetch(`${API_URL}/api/seo/fields`, { next: { revalidate: 3600 } });
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const { fields } = (await res.json()) as {
+      fields: { slug: string; run_id: string; project_id: string }[];
+    };
+    const ready = new Map(fields.map((f) => [f.slug, f]));
+    return DEFINITIONS.flatMap((def, i) => {
+      const f = ready.get(def.slug);
+      return f ? [toConfig(def, i, f.run_id, f.project_id)] : [];
+    });
+  } catch (error) {
+    console.error('Could not load ready SEO fields, using static list:', error);
+    return staticFieldConfigs();
+  }
 }
 
-/**
- * Get all field configurations sorted by priority
- */
-export function getAllFieldConfigs(): FieldConfig[] {
-  return Object.values(FIELD_CONFIGS).sort((a, b) => a.priority - b.priority);
+/** A published field by slug, or undefined if unknown or not built yet. */
+export async function getReadyFieldConfig(slug: string): Promise<FieldConfig | undefined> {
+  return (await getReadyFieldConfigs()).find((f) => f.slug === slug);
 }
-
-/**
- * Get run ID for a specific field
- */
-export function getFieldRunId(fieldSlug: string): string | undefined {
-  return FIELD_CONFIGS[fieldSlug]?.runId;
-}
-
-/**
- * Check if a field slug is valid
- */
-export function isValidFieldSlug(slug: string): boolean {
-  return slug in FIELD_CONFIGS;
-}
-
-/**
- * Get field name from slug
- */
-export function getFieldName(slug: string): string | undefined {
-  return FIELD_CONFIGS[slug]?.name;
-}
-
-/**
- * Convert field slug to URL-friendly format
- */
-export function fieldSlugToUrl(slug: string): string {
-  return slug; // Already in URL-friendly format
-}
-
-/**
- * Extract field slug from URL
- */
-export function urlToFieldSlug(url: string): string {
-  return url; // Already in slug format
-}
-

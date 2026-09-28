@@ -58,6 +58,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/auth/send-verification-code",
         "/api/auth/password-requirements",
         "/api/billing/webhook",  # authenticated by Paddle signature instead
+        "/api/seo/fields",
     }
     
     # Demo run that is publicly accessible (read-only)

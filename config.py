@@ -71,6 +71,11 @@ class Settings(BaseSettings):
     demo_project_id: str = "6af7ac1b6254"
     demo_run_id: str = "53e099cdb74e"
 
+    # Programmatic SEO field pages: runs live in this admin-owned project and are
+    # built in the background from frontend/src/data/seo-fields.json.
+    seo_project_id: str = "3b9280a68d3d"
+    seo_field_builder_enabled: bool = True  # SEO_FIELD_BUILDER_ENABLED=false to pause
+
     @property
     def cors_allowed_origins(self) -> list[str]:
         extra = [o.strip().rstrip("/") for o in self.cors_extra_origins.split(",") if o.strip()]

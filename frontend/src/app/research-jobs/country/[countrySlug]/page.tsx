@@ -10,7 +10,7 @@ import {
   generateCountryMetaDescription,
   generateCountryKeywords,
 } from '@/lib/seoContent';
-import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
+import { getReadyFieldConfigs } from '@/lib/seoFieldConfig';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
@@ -108,6 +108,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CountryPage({ params }: PageProps) {
+  const relatedFields = (await getReadyFieldConfigs()).slice(0, 6);
   const { countrySlug } = await params;
   const countryName = slugToCountryName(countrySlug);
   const stats = await fetchCountryStats(countryName);
@@ -447,7 +448,7 @@ export default async function CountryPage({ params }: PageProps) {
               Discover field-specific research opportunities and institutions in {countryName}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getAllFieldConfigs().slice(0, 6).map((field) => (
+              {relatedFields.map((field) => (
                 <Link
                   key={field.slug}
                   href={`/research-jobs/${field.slug}/country/${countrySlug}`}

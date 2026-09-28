@@ -2,11 +2,7 @@ import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import {
-  getFieldConfig,
-  getAllFieldConfigs,
-  isValidFieldSlug,
-} from '@/lib/seoFieldConfig';
+import { getReadyFieldConfig, getReadyFieldConfigs } from '@/lib/seoFieldConfig';
 import { fetchFieldWorldData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
 import { countryToSlug } from '@/lib/geoSlugs';
 import {
@@ -28,7 +24,7 @@ export const revalidate = 86400;
 
 // Generate static params for all configured fields
 export async function generateStaticParams() {
-  const fields = getAllFieldConfigs();
+  const fields = await getReadyFieldConfigs();
   return fields.map((field) => ({
     fieldSlug: field.slug,
   }));
@@ -44,13 +40,13 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { fieldSlug } = await params;
   
-  if (!isValidFieldSlug(fieldSlug)) {
+  const fieldConfig = await getReadyFieldConfig(fieldSlug);
+  if (!fieldConfig) {
     return {
       title: 'Field Not Found',
     };
   }
 
-  const fieldConfig = getFieldConfig(fieldSlug)!;
   
   try {
     const worldData = await fetchFieldWorldData(fieldSlug);
@@ -126,11 +122,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function FieldOverviewPage({ params }: PageProps) {
   const { fieldSlug } = await params;
   
-  if (!isValidFieldSlug(fieldSlug)) {
+  const fieldConfig = await getReadyFieldConfig(fieldSlug);
+  if (!fieldConfig) {
     notFound();
   }
 
-  const fieldConfig = getFieldConfig(fieldSlug)!;
   
   let worldData, totalScholars, totalCountries, topCountries, content, faqs;
   
@@ -160,7 +156,7 @@ export default async function FieldOverviewPage({ params }: PageProps) {
     notFound();
   }
 
-  const demoRunUrl = getFieldDemoRunUrl(fieldSlug);
+  const demoRunUrl = getFieldDemoRunUrl(fieldConfig);
 
   // Structured data
   const breadcrumbList = {

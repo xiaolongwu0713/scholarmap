@@ -1,0 +1,329 @@
+{
+  "_comment": "Programmatic SEO research fields. Fields with runId use an existing run; others are built by the backend (app/seo_fields.py) from pubmedQuery.",
+  "fields": [
+    {
+      "slug": "brain-computer-interface",
+      "name": "Brain-Computer Interface (BCI)",
+      "runId": "b6b977aeeed1",
+      "description": "Brain-computer interfaces, neural interfaces, and direct brain communication systems",
+      "keywords": [
+        "BCI",
+        "brain-computer interface",
+        "neural interface",
+        "EEG",
+        "brain signals"
+      ]
+    },
+    {
+      "slug": "neural-modulation",
+      "name": "Neural Modulation (tDCS/TMS)",
+      "runId": "19d981d1d732",
+      "description": "Non-invasive brain stimulation including tDCS, TMS, and other neuromodulation techniques",
+      "keywords": [
+        "tDCS",
+        "TMS",
+        "transcranial magnetic stimulation",
+        "neuromodulation",
+        "brain stimulation"
+      ]
+    },
+    {
+      "slug": "crispr-gene-editing",
+      "name": "CRISPR Gene Editing",
+      "runId": "16d4c49fc4f6",
+      "description": "CRISPR-Cas9 and other gene editing technologies for therapeutic and research applications",
+      "keywords": [
+        "CRISPR",
+        "gene editing",
+        "CRISPR-Cas9",
+        "genome editing",
+        "genetic engineering"
+      ]
+    },
+    {
+      "slug": "cancer-immunotherapy",
+      "name": "Cancer Immunotherapy",
+      "runId": "1893fb47f453",
+      "description": "Cancer immunotherapy including CAR-T, checkpoint inhibitors, and immune-based cancer treatments",
+      "keywords": [
+        "immunotherapy",
+        "CAR-T",
+        "checkpoint inhibitors",
+        "cancer vaccines",
+        "immune therapy"
+      ]
+    },
+    {
+      "slug": "ai-drug-discovery",
+      "name": "AI in Drug Discovery",
+      "runId": "597675a5f9fb",
+      "description": "Artificial intelligence and machine learning applications in drug discovery and development",
+      "keywords": [
+        "AI drug discovery",
+        "machine learning",
+        "computational drug design",
+        "AI pharmacology"
+      ]
+    },
+    {
+      "slug": "alzheimers-disease",
+      "name": "Alzheimer's Disease",
+      "description": "Alzheimer's disease mechanisms, biomarkers, and therapeutics",
+      "keywords": [
+        "Alzheimer's disease",
+        "amyloid",
+        "tau",
+        "dementia research",
+        "neurodegeneration"
+      ],
+      "pubmedQuery": "(\"Alzheimer Disease\"[MeSH] OR alzheimer*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "parkinsons-disease",
+      "name": "Parkinson's Disease",
+      "description": "Parkinson's disease biology, alpha-synuclein, and treatment research",
+      "keywords": [
+        "Parkinson's disease",
+        "alpha-synuclein",
+        "dopaminergic neurons",
+        "deep brain stimulation",
+        "movement disorders"
+      ],
+      "pubmedQuery": "(\"Parkinson Disease\"[MeSH] OR parkinson*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "single-cell-sequencing",
+      "name": "Single-Cell Sequencing",
+      "description": "Single-cell RNA sequencing and single-cell genomics",
+      "keywords": [
+        "single-cell RNA-seq",
+        "scRNA-seq",
+        "single-cell genomics",
+        "cell atlas",
+        "single-cell multiomics"
+      ],
+      "pubmedQuery": "(\"Single-Cell Analysis\"[MeSH] OR \"single-cell RNA\"[tiab] OR \"single cell RNA\"[tiab] OR scRNA-seq[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "spatial-transcriptomics",
+      "name": "Spatial Transcriptomics",
+      "description": "Spatially resolved transcriptomics and tissue omics",
+      "keywords": [
+        "spatial transcriptomics",
+        "Visium",
+        "MERFISH",
+        "spatial omics",
+        "tissue atlas"
+      ],
+      "pubmedQuery": "(\"spatial transcriptomics\"[tiab] OR \"spatial transcriptomic\"[tiab] OR \"spatially resolved transcriptomics\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "organoids",
+      "name": "Organoid Research",
+      "description": "Organoids and 3D stem cell-derived tissue models",
+      "keywords": [
+        "organoids",
+        "brain organoids",
+        "tumor organoids",
+        "3D culture",
+        "organ-on-chip"
+      ],
+      "pubmedQuery": "(\"Organoids\"[MeSH] OR organoid*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "stem-cell-research",
+      "name": "Stem Cell Research",
+      "description": "Stem cell biology, iPSCs, and stem cell therapies",
+      "keywords": [
+        "stem cells",
+        "iPSC",
+        "induced pluripotent stem cells",
+        "regenerative medicine",
+        "stem cell therapy"
+      ],
+      "pubmedQuery": "(\"Stem Cells\"[MeSH] OR \"induced pluripotent stem cells\"[tiab] OR iPSC*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "gene-therapy",
+      "name": "Gene Therapy",
+      "description": "Viral and non-viral gene therapy and AAV vectors",
+      "keywords": [
+        "gene therapy",
+        "AAV",
+        "viral vectors",
+        "lentiviral",
+        "genetic medicine"
+      ],
+      "pubmedQuery": "(\"Genetic Therapy\"[MeSH] OR \"gene therapy\"[tiab] OR \"AAV vector\"[tiab] OR \"adeno-associated virus\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "mrna-therapeutics",
+      "name": "mRNA Vaccines & Therapeutics",
+      "description": "mRNA vaccines, mRNA therapeutics, and lipid nanoparticle delivery",
+      "keywords": [
+        "mRNA vaccine",
+        "mRNA therapeutics",
+        "lipid nanoparticles",
+        "LNP",
+        "RNA medicine"
+      ],
+      "pubmedQuery": "(\"mRNA Vaccines\"[MeSH] OR \"mRNA vaccine\"[tiab] OR \"mRNA therapeutic\"[tiab] OR \"mRNA therapeutics\"[tiab] OR (\"lipid nanoparticle\"[tiab] AND mRNA[tiab])) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "gut-microbiome",
+      "name": "Gut Microbiome",
+      "description": "Gut microbiota and its role in health and disease",
+      "keywords": [
+        "gut microbiome",
+        "microbiota",
+        "metagenomics",
+        "probiotics",
+        "host-microbe interactions"
+      ],
+      "pubmedQuery": "(\"Gastrointestinal Microbiome\"[MeSH] OR \"gut microbiome\"[tiab] OR \"gut microbiota\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "antimicrobial-resistance",
+      "name": "Antimicrobial Resistance",
+      "description": "Antibiotic resistance, resistant pathogens, and new antimicrobials",
+      "keywords": [
+        "antimicrobial resistance",
+        "AMR",
+        "antibiotic resistance",
+        "superbugs",
+        "new antibiotics"
+      ],
+      "pubmedQuery": "(\"Drug Resistance, Bacterial\"[MeSH] OR \"antimicrobial resistance\"[tiab] OR \"antibiotic resistance\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "car-t-cell-therapy",
+      "name": "CAR-T Cell Therapy",
+      "description": "Chimeric antigen receptor T-cell therapy for cancer and beyond",
+      "keywords": [
+        "CAR-T",
+        "CAR T cells",
+        "chimeric antigen receptor",
+        "cell therapy",
+        "adoptive cell therapy"
+      ],
+      "pubmedQuery": "(\"Receptors, Chimeric Antigen\"[MeSH] OR \"CAR-T\"[tiab] OR \"CAR T cell\"[tiab] OR \"CAR T cells\"[tiab] OR \"chimeric antigen receptor\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "tumor-microenvironment",
+      "name": "Tumor Microenvironment",
+      "description": "Tumor microenvironment, stroma, and tumor immunology",
+      "keywords": [
+        "tumor microenvironment",
+        "TME",
+        "cancer-associated fibroblasts",
+        "tumor immunology",
+        "stroma"
+      ],
+      "pubmedQuery": "(\"Tumor Microenvironment\"[MeSH] OR \"tumor microenvironment\"[tiab] OR \"tumour microenvironment\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "liquid-biopsy",
+      "name": "Liquid Biopsy",
+      "description": "Liquid biopsy, circulating tumor DNA, and cell-free DNA diagnostics",
+      "keywords": [
+        "liquid biopsy",
+        "ctDNA",
+        "circulating tumor DNA",
+        "cell-free DNA",
+        "cancer diagnostics"
+      ],
+      "pubmedQuery": "(\"Liquid Biopsy\"[MeSH] OR \"liquid biopsy\"[tiab] OR \"circulating tumor DNA\"[tiab] OR ctDNA[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "ai-medical-imaging",
+      "name": "AI in Medical Imaging",
+      "description": "Deep learning and AI for radiology and medical image analysis",
+      "keywords": [
+        "AI radiology",
+        "deep learning",
+        "medical image analysis",
+        "computer-aided diagnosis",
+        "computer vision"
+      ],
+      "pubmedQuery": "((\"Deep Learning\"[MeSH] OR \"deep learning\"[tiab] OR \"artificial intelligence\"[tiab]) AND (\"Diagnostic Imaging\"[MeSH] OR radiology[tiab] OR \"medical imaging\"[tiab] OR \"medical image\"[tiab])) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "protein-design",
+      "name": "Protein Design & Structure Prediction",
+      "description": "Computational protein design and structure prediction",
+      "keywords": [
+        "protein design",
+        "AlphaFold",
+        "structure prediction",
+        "de novo proteins",
+        "computational biology"
+      ],
+      "pubmedQuery": "(\"protein design\"[tiab] OR \"protein structure prediction\"[tiab] OR AlphaFold*[tiab] OR \"de novo designed\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "functional-mri",
+      "name": "Functional MRI (fMRI)",
+      "description": "Functional neuroimaging and brain connectivity research",
+      "keywords": [
+        "fMRI",
+        "functional MRI",
+        "neuroimaging",
+        "brain connectivity",
+        "resting-state"
+      ],
+      "pubmedQuery": "(\"functional MRI\"[tiab] OR \"functional magnetic resonance imaging\"[tiab] OR fMRI[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "epigenetics",
+      "name": "Epigenetics",
+      "description": "DNA methylation, chromatin, and epigenetic regulation",
+      "keywords": [
+        "epigenetics",
+        "DNA methylation",
+        "chromatin",
+        "histone modification",
+        "epigenome"
+      ],
+      "pubmedQuery": "(\"Epigenesis, Genetic\"[MeSH] OR \"DNA Methylation\"[MeSH] OR epigenetic*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "synthetic-biology",
+      "name": "Synthetic Biology",
+      "description": "Engineering biological systems, genetic circuits, and biofoundries",
+      "keywords": [
+        "synthetic biology",
+        "genetic circuits",
+        "metabolic engineering",
+        "bioengineering",
+        "biofoundry"
+      ],
+      "pubmedQuery": "(\"Synthetic Biology\"[MeSH] OR \"synthetic biology\"[tiab] OR \"genetic circuit\"[tiab] OR \"genetic circuits\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "aging-senescence",
+      "name": "Aging & Cellular Senescence",
+      "description": "Biology of aging, cellular senescence, and senolytics",
+      "keywords": [
+        "aging research",
+        "cellular senescence",
+        "senolytics",
+        "longevity",
+        "geroscience"
+      ],
+      "pubmedQuery": "(\"Cellular Senescence\"[MeSH] OR \"cellular senescence\"[tiab] OR senolytic*[tiab] OR geroscience[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "nanomedicine",
+      "name": "Nanomedicine & Drug Delivery",
+      "description": "Nanoparticle drug delivery and nanomedicine",
+      "keywords": [
+        "nanomedicine",
+        "drug delivery",
+        "nanoparticles",
+        "targeted delivery",
+        "nanotechnology"
+      ],
+      "pubmedQuery": "(\"Nanomedicine\"[MeSH] OR nanomedicine[tiab] OR (nanoparticle*[tiab] AND \"drug delivery\"[tiab])) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import {
   generateCityKeywords,
   CityStats,
 } from '@/lib/seoCityContent';
-import { getAllFieldConfigs } from '@/lib/seoFieldConfig';
+import { getReadyFieldConfigs } from '@/lib/seoFieldConfig';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
@@ -149,6 +149,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CityPage({ params }: PageProps) {
+  const relatedFields = (await getReadyFieldConfigs()).slice(0, 6);
   const { citySlug } = await params;
   
   // Fetch city data
@@ -567,7 +568,7 @@ export default async function CityPage({ params }: PageProps) {
               Discover field-specific research opportunities and institutions in {cityData.city}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {getAllFieldConfigs().slice(0, 6).map((field) => (
+              {relatedFields.map((field) => (
                 <Link
                   key={field.slug}
                   href={`/research-jobs/${field.slug}/city/${citySlug}`}
