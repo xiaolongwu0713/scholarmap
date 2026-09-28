@@ -29,8 +29,8 @@ import asyncio
 
 async def setup_super_user():
     """Setup or update super user account."""
-    if len(settings.super_user_password) < 12:
-        print("❌ SUPER_USER_PASSWORD must be set and at least 12 characters. Aborting.")
+    if len(settings.super_user_password) < 8:
+        print("❌ SUPER_USER_PASSWORD must be set and at least 8 characters. Aborting.")
         sys.exit(1)
 
     print("Setting up super user account...")
