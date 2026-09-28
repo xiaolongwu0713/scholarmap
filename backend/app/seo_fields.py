@@ -29,7 +29,9 @@ RUN_PREFIX = "[seo:"          # run.description starts with "[seo:<slug>]"
 MIN_PAPERS = 100               # below this a field is too thin to publish
 STALE_BUILD = timedelta(minutes=30)  # a "building" claim older than this was interrupted (e.g. by a deploy)
 STARTUP_DELAY_SECONDS = 90     # let the service pass health checks first
-RECHECK_SECONDS = 3600         # retry interrupted or failed fields hourly
+RECHECK_SECONDS = 3600         # re-check for new or outdated fields hourly
+RETRY_SECONDS = 300            # after a failed pass (e.g. the database restarted), retry sooner
+MAX_QUICK_RETRIES = 3          # then fall back to hourly, so a broken field can't loop forever
 # Bump to rebuild every field (e.g. after a parser or geocoding fix). The previous
 # run stays published until its replacement is ready.
 BUILD_VERSION = 2
@@ -126,8 +128,22 @@ async def build_field(field: dict[str, Any], run_id: str | None = None) -> str:
         return "ready"
     except Exception as e:  # keep going with the other fields
         logger.error("SEO field %s failed: %s", slug, e, exc_info=True)
-        await _set_state(run_id, status="failed", error=str(e)[:500])
+        await _mark_failed(run_id, e)
         return "failed"
+
+
+async def _mark_failed(run_id: str, error: Exception) -> None:
+    """Record the failure so the run is retried in place, not left 'building' for 30 minutes.
+
+    The database itself may be what failed, so try a few times before giving up.
+    """
+    for attempt in range(3):
+        try:
+            await _set_state(run_id, status="failed", error=str(error)[:500])
+            return
+        except Exception as e:
+            logger.warning("SEO run %s: could not record failure (attempt %d): %s", run_id, attempt + 1, e)
+            await asyncio.sleep(20)
 
 
 def _needs_build(runs: list) -> tuple[bool, str | None]:
@@ -153,18 +169,22 @@ async def build_pending_fields() -> None:
     if not config.settings.seo_field_builder_enabled or not config.settings.database_url:
         return
     await asyncio.sleep(STARTUP_DELAY_SECONDS)
+    quick_retries = 0
     while True:
+        failed = False
         try:
             fields = [f for f in load_field_definitions() if not f.get("runId")]
             by_slug = await _runs_by_slug()
             for field in fields:
                 build, run_id = _needs_build(by_slug.get(field["slug"], []))
                 if build:
-                    await build_field(field, run_id)
+                    failed |= await build_field(field, run_id) == "failed"
                     await asyncio.sleep(5)  # breathe between fields
-            logger.info("SEO field builder: pass complete")
+            logger.info("SEO field builder: pass complete%s", " with failures" if failed else "")
         except asyncio.CancelledError:
             raise
         except Exception as e:
+            failed = True
             logger.error("SEO field builder pass failed: %s", e, exc_info=True)
-        await asyncio.sleep(RECHECK_SECONDS)
+        quick_retries = quick_retries + 1 if failed else 0
+        await asyncio.sleep(RETRY_SECONDS if 0 < quick_retries <= MAX_QUICK_RETRIES else RECHECK_SECONDS)
