@@ -163,3 +163,33 @@ def test_renewal_extends_access():
     apply_subscription(user, sub("active"), NOW)
     apply_subscription(user, sub("active", ends=NOW + timedelta(days=60)), NOW + timedelta(days=30))
     assert user.pro_until == NOW + timedelta(days=60)
+
+
+def subscription(interval="month", frequency=1, amount="2000", status="active"):
+    return {
+        "id": "sub_1", "status": status, "customer_id": "ctm_1",
+        "billing_cycle": {"interval": interval, "frequency": frequency},
+        "items": [{"quantity": 1, "price": {"unit_price": {"amount": amount, "currency_code": "USD"}}}],
+        "current_billing_period": {"ends_at": "2026-10-28T00:00:00Z"},
+    }
+
+
+def test_monthly_price_is_recorded():
+    user = make_user()
+    apply_subscription(user, subscription(), None)
+    assert (user.subscription_interval_months, user.subscription_amount_cents) == (1, 2000)
+
+
+def test_three_month_price_is_recorded():
+    user = make_user()
+    apply_subscription(user, subscription(frequency=3, amount="5000"), None)
+    assert (user.subscription_interval_months, user.subscription_amount_cents) == (3, 5000)
+
+
+def test_event_without_billing_cycle_keeps_known_price():
+    user = make_user()
+    apply_subscription(user, subscription(), None)
+    data = subscription(status="canceled")
+    del data["billing_cycle"]
+    apply_subscription(user, data, None)
+    assert user.subscription_amount_cents == 2000

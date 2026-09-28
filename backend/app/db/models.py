@@ -35,6 +35,9 @@ class User(Base):
     paddle_subscription_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
     # occurred_at of the last applied Paddle event, to ignore out-of-order deliveries
     paddle_event_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Current subscription price, for revenue (MRR) reporting
+    subscription_interval_months: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    subscription_amount_cents: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class SearchUsage(Base):

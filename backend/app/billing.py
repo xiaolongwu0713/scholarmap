@@ -80,6 +80,21 @@ async def _find_user(session: AsyncSession, data: dict[str, Any]) -> User | None
     return result.scalars().first()
 
 
+def _price(data: dict[str, Any]) -> tuple[int | None, int | None]:
+    """Billing period in months and price per period in cents, from a subscription entity."""
+    cycle = data.get("billing_cycle") or {}
+    per_unit = {"month": 1, "year": 12}.get(cycle.get("interval"))
+    if not per_unit:
+        return None, None
+    months = per_unit * int(cycle.get("frequency") or 1)
+    cents = 0
+    for item in data.get("items") or []:
+        amount = ((item.get("price") or {}).get("unit_price") or {}).get("amount")
+        if amount is not None:
+            cents += int(amount) * int(item.get("quantity") or 1)
+    return months, cents
+
+
 def apply_subscription(user: User, data: dict[str, Any], occurred_at: datetime | None, now: datetime | None = None) -> bool:
     """Update a user's plan from a Paddle subscription entity. Returns False if the event was stale."""
     if occurred_at and user.paddle_event_at and occurred_at < user.paddle_event_at:
@@ -90,6 +105,10 @@ def apply_subscription(user: User, data: dict[str, Any], occurred_at: datetime |
     period_end = _parse_time(period.get("ends_at"))
 
     user.subscription_status = status
+    months, amount_cents = _price(data)
+    if months:
+        user.subscription_interval_months = months
+        user.subscription_amount_cents = amount_cents
     user.paddle_subscription_id = data.get("id") or user.paddle_subscription_id
     user.paddle_customer_id = data.get("customer_id") or user.paddle_customer_id
 
