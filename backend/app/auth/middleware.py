@@ -56,6 +56,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/auth/register",
         "/api/auth/login",
         "/api/auth/send-verification-code",
+        "/api/auth/reset-password",
         "/api/auth/password-requirements",
         "/api/billing/webhook",  # authenticated by Paddle signature instead
         "/api/seo/fields",

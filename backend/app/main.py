@@ -7,6 +7,7 @@ import logging
 import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Literal
 
 # Add repo root to path to import config (must be before other imports that use config)
 # From backend/app/main.py: parent.parent.parent = repo root
@@ -200,6 +201,7 @@ class AdjustRetrievalFrameworkRequest(BaseModel):
 # Authentication request models
 class SendVerificationCodeRequest(BaseModel):
     email: str = Field(min_length=1, max_length=255)
+    purpose: Literal["register", "reset"] = "register"
 
 
 class RegisterRequest(BaseModel):
@@ -207,6 +209,12 @@ class RegisterRequest(BaseModel):
     verification_code: str = Field(min_length=6, max_length=6)
     password: str = Field(min_length=PASSWORD_MIN_LENGTH, max_length=PASSWORD_MAX_LENGTH)
     password_retype: str | None = None  # Optional, validated on frontend
+
+
+class ResetPasswordRequest(BaseModel):
+    email: str = Field(min_length=1, max_length=255)
+    verification_code: str = Field(min_length=6, max_length=6)
+    password: str = Field(min_length=PASSWORD_MIN_LENGTH, max_length=PASSWORD_MAX_LENGTH)
 
 
 class LoginRequest(BaseModel):
@@ -274,11 +282,15 @@ async def send_verification_code(req: SendVerificationCodeRequest) -> dict:
     except EmailNotValidError:
         raise HTTPException(status_code=400, detail="Invalid email format")
     
-    # Generate verification code
     code = generate_verification_code()
-    
-    # Store code in database
     async with db_manager.session() as session:
+        existing_user = await UserRepository(session).get_user_by_email(email)
+        if req.purpose == "register" and existing_user:
+            # Say so now, not after the user has filled in the whole form
+            raise HTTPException(status_code=409, detail="This email is already registered. Log in or reset your password.")
+        if req.purpose == "reset" and not existing_user:
+            # Don't reveal whether an account exists; just send nothing
+            return {"ok": True, "message": "Verification code sent"}
         code_repo = EmailVerificationCodeRepository(session)
         await code_repo.create_code(email, code, expire_minutes=10)
         await session.commit()
@@ -317,11 +329,12 @@ async def register_user(req: RegisterRequest) -> dict:
         # Check if user already exists
         existing_user = await user_repo.get_user_by_email(email)
         if existing_user:
-            raise HTTPException(status_code=400, detail="User with this email already exists")
+            raise HTTPException(status_code=409, detail="This email is already registered. Log in or reset your password.")
         
         # Verify code
         code_valid = await code_repo.verify_code(email, req.verification_code)
         if not code_valid:
+            await session.commit()  # keep the wrong-guess count
             raise HTTPException(status_code=400, detail="Invalid or expired verification code")
         
         # Create user
@@ -337,6 +350,35 @@ async def register_user(req: RegisterRequest) -> dict:
         return {
             "ok": True,
             "access_token": token,
+            "token_type": "bearer",
+            "user_id": user.user_id,
+            "email": user.email,
+        }
+
+
+@app.post("/api/auth/reset-password")
+async def reset_password(req: ResetPasswordRequest) -> dict:
+    """Set a new password using an emailed code, then log the user in."""
+    from email_validator import validate_email, EmailNotValidError
+
+    try:
+        email = validate_email(req.email, check_deliverability=False).email.lower().strip()
+    except EmailNotValidError:
+        raise HTTPException(status_code=400, detail="Invalid email format")
+
+    async with db_manager.session() as session:
+        user_repo = UserRepository(session)
+        user = await user_repo.get_user_by_email(email)
+        code_valid = await EmailVerificationCodeRepository(session).verify_code(email, req.verification_code)
+        if not user or not code_valid:
+            await session.commit()  # keep the wrong-guess count
+            raise HTTPException(status_code=400, detail="Invalid or expired verification code")
+        await user_repo.update_password(user, get_password_hash(req.password))
+        await session.commit()
+
+        return {
+            "ok": True,
+            "access_token": create_access_token(data={"sub": user.user_id}),
             "token_type": "bearer",
             "user_id": user.user_id,
             "email": user.email,

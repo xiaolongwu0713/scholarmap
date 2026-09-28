@@ -67,6 +67,7 @@ class EmailVerificationCode(Base):
     )
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    attempts: Mapped[int] = mapped_column(Integer, default=0, server_default="0", nullable=False)
     
     __table_args__ = (
         Index("idx_email_code_active", "email", "code", "used"),

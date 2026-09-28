@@ -15,6 +15,9 @@ def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+MAX_CODE_ATTEMPTS = 5  # wrong guesses before a code is burned
+
+
 class UserRepository:
     """Repository for User operations."""
     
@@ -48,6 +51,10 @@ class UserRepository:
         await self.session.flush()
         return user
     
+    async def update_password(self, user: User, password_hash: str) -> None:
+        user.password_hash = password_hash
+        await self.session.flush()
+
     async def update_user_email_verified(self, user_id: str, verified: bool = True) -> None:
         """Update user email verification status."""
         user = await self.get_user_by_id(user_id)
@@ -82,23 +89,35 @@ class EmailVerificationCodeRepository:
         return verification_code
     
     async def verify_code(self, email: str, code: str) -> bool:
-        """Verify a code and mark it as used if valid."""
+        """Verify a code and mark it as used if valid.
+
+        A code is burned after MAX_CODE_ATTEMPTS wrong guesses, so the 6 digits can't be
+        brute-forced (codes also reset passwords).
+        """
         now = _utc_now()
         result = await self.session.execute(
             select(EmailVerificationCode)
             .where(
                 EmailVerificationCode.email == email.lower().strip(),
-                EmailVerificationCode.code == code,
                 EmailVerificationCode.used == False,
                 EmailVerificationCode.expires_at > now
             )
+            .order_by(EmailVerificationCode.created_at.desc())
+            .limit(1)
         )
         verification_code = result.scalar_one_or_none()
-        
-        if verification_code:
+        if verification_code is None:
+            return False
+
+        if verification_code.code == code:
             verification_code.used = True
             await self.session.flush()
             return True
+
+        verification_code.attempts += 1
+        if verification_code.attempts >= MAX_CODE_ATTEMPTS:
+            verification_code.used = True
+        await self.session.flush()
         return False
     
     async def cleanup_expired_codes(self) -> None:
