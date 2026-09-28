@@ -2,8 +2,8 @@ import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getReadyFieldConfig, getReadyFieldConfigs } from '@/lib/seoFieldConfig';
-import { fetchFieldWorldData, fetchFieldCityData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
+import { getReadyFieldConfig } from '@/lib/seoFieldConfig';
+import { fetchFieldWorldData, fetchFieldCountryData, fetchFieldCityData, getFieldDemoRunUrl, fetchFieldSitemapData } from '@/lib/seoFieldApi';
 import { countryToSlug, slugToCityName, cityToSlug } from '@/lib/geoSlugs';
 import {
   generateFieldCityContent,
@@ -22,60 +22,10 @@ import { DataSourceCitation } from '@/components/DataSourceCitation';
 // Enable ISR with 24 hour revalidation
 export const revalidate = 86400;
 
-// Generate static params for top 5 cities × all fields
+// Rendered on first request, then cached (ISR). Prerendering hundreds of these at build
+// time overloaded the backend database; the sitemap lists them for crawlers.
 export async function generateStaticParams() {
-  const fields = await getReadyFieldConfigs();
-  
-  // For each field, generate top 5 cities
-  const params: Array<{ fieldSlug: string; citySlug: string }> = [];
-  
-  for (const field of fields) {
-    try {
-      const { fetchFieldWorldData } = await import('@/lib/seoFieldApi');
-      const worldData = await fetchFieldWorldData(field.slug);
-      
-      // Collect all cities across countries
-      const allCities: Array<{ city: string; country: string; scholar_count: number }> = [];
-      
-      // Get top 10 countries
-      const topCountries = worldData
-        .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
-        .slice(0, 10);
-      
-      // Fetch cities from top countries
-      for (const countryData of topCountries) {
-        try {
-          const { fetchFieldCountryData } = await import('@/lib/seoFieldApi');
-          const cities = await fetchFieldCountryData(field.slug, countryData.country);
-          cities.forEach((city: any) => {
-            allCities.push({
-              city: city.city,
-              country: countryData.country,
-              scholar_count: city.scholar_count,
-            });
-          });
-        } catch (error) {
-          console.error(`Error fetching cities for ${countryData.country}:`, error);
-        }
-      }
-      
-      // Sort by scholar count and take top 5
-      const topCities = allCities
-        .sort((a, b) => b.scholar_count - a.scholar_count)
-        .slice(0, 5);
-      
-      topCities.forEach((city) => {
-        params.push({
-          fieldSlug: field.slug,
-          citySlug: cityToSlug(city.city),
-        });
-      });
-    } catch (error) {
-      console.error(`Error generating params for field ${field.slug}:`, error);
-    }
-  }
-  
-  return params;
+  return [];
 }
 
 interface PageProps {
@@ -85,34 +35,25 @@ interface PageProps {
   }>;
 }
 
-// Helper to find city's country
+// Find which country a field city is in. Top cities come from the (cached) sitemap data;
+// others are searched country by country. Errors propagate so an outage isn't cached as a 404.
 async function findCityCountry(fieldSlug: string, cityName: string): Promise<string | null> {
-  try {
-    const worldData = await fetchFieldWorldData(fieldSlug);
-    
-    // Check top countries
-    const topCountries = worldData
-      .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
-      .slice(0, 20);
-    
-    for (const countryData of topCountries) {
-      try {
-        const { fetchFieldCountryData } = await import('@/lib/seoFieldApi');
-        const cities = await fetchFieldCountryData(fieldSlug, countryData.country);
-        const foundCity = cities.find((c: any) => c.city.toLowerCase() === cityName.toLowerCase());
-        if (foundCity) {
-          return countryData.country;
-        }
-      } catch (error) {
-        continue;
-      }
+  const target = cityName.toLowerCase();
+  const field = (await fetchFieldSitemapData()).find((f) => f.slug === fieldSlug);
+  const top = field?.cities.find((c) => c.city.toLowerCase() === target);
+  if (top) return top.country;
+
+  const worldData = await fetchFieldWorldData(fieldSlug);
+  const topCountries = worldData
+    .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
+    .slice(0, 20);
+  for (const countryData of topCountries) {
+    const cities = await fetchFieldCountryData(fieldSlug, countryData.country);
+    if (cities.some((c: any) => c.city.toLowerCase() === target)) {
+      return countryData.country;
     }
-    
-    return null;
-  } catch (error) {
-    console.error('Error finding city country:', error);
-    return null;
   }
+  return null;
 }
 
 // Generate metadata
@@ -249,8 +190,9 @@ export default async function FieldCityPage({ params }: PageProps) {
 
     faqs = generateFieldCityFAQs(fieldConfig, cityName, country, scholarCount, institutionCount);
   } catch (error) {
+    // Rethrows notFound() from above as-is; a backend outage must not be cached as a 404
     console.error('Error fetching field-city data:', error);
-    notFound();
+    throw error;
   }
 
   const demoRunUrl = getFieldDemoRunUrl(fieldConfig);

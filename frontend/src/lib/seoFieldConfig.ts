@@ -54,6 +54,10 @@ function staticFieldConfigs(): FieldConfig[] {
  * Revalidated hourly so newly built fields appear without a redeploy.
  */
 export async function getReadyFieldConfigs(): Promise<FieldConfig[]> {
+  return (await loadReadyFieldConfigs()).configs;
+}
+
+async function loadReadyFieldConfigs(): Promise<{ configs: FieldConfig[]; complete: boolean }> {
   try {
     const res = await fetch(`${API_URL}/api/seo/fields`, { next: { revalidate: 3600 } });
     if (!res.ok) throw new Error(`status ${res.status}`);
@@ -61,17 +65,27 @@ export async function getReadyFieldConfigs(): Promise<FieldConfig[]> {
       fields: { slug: string; run_id: string; project_id: string }[];
     };
     const ready = new Map(fields.map((f) => [f.slug, f]));
-    return DEFINITIONS.flatMap((def, i) => {
+    const configs = DEFINITIONS.flatMap((def, i) => {
       const f = ready.get(def.slug);
       return f ? [toConfig(def, i, f.run_id, f.project_id)] : [];
     });
+    return { configs, complete: true };
   } catch (error) {
     console.error('Could not load ready SEO fields, using static list:', error);
-    return staticFieldConfigs();
+    return { configs: staticFieldConfigs(), complete: false };
   }
 }
 
-/** A published field by slug, or undefined if unknown or not built yet. */
+/**
+ * A published field by slug, or undefined if unknown or not built yet.
+ * Throws if the backend is unreachable and the field isn't in the static list, so the
+ * page fails (and is retried) instead of caching a 404 for a field that does exist.
+ */
 export async function getReadyFieldConfig(slug: string): Promise<FieldConfig | undefined> {
-  return (await getReadyFieldConfigs()).find((f) => f.slug === slug);
+  const { configs, complete } = await loadReadyFieldConfigs();
+  const config = configs.find((f) => f.slug === slug);
+  if (!config && !complete && DEFINITIONS.some((def) => def.slug === slug)) {
+    throw new Error(`SEO field list unavailable; cannot resolve ${slug}`);
+  }
+  return config;
 }

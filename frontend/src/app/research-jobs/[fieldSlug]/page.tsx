@@ -152,8 +152,9 @@ export default async function FieldOverviewPage({ params }: PageProps) {
 
     faqs = generateFieldOverviewFAQs(fieldConfig, totalScholars, totalCountries);
   } catch (error) {
+    // Don't cache a backend outage as a 404; throwing serves a retryable error instead
     console.error('Error fetching field overview data:', error);
-    notFound();
+    throw error;
   }
 
   const demoRunUrl = getFieldDemoRunUrl(fieldConfig);

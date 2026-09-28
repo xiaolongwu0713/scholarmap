@@ -2,7 +2,7 @@ import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getReadyFieldConfig, getReadyFieldConfigs } from '@/lib/seoFieldConfig';
+import { getReadyFieldConfig } from '@/lib/seoFieldConfig';
 import { fetchFieldCountryData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
 import { countryToSlug, slugToCountryName, cityToSlug } from '@/lib/geoSlugs';
 import {
@@ -22,33 +22,10 @@ import { DataSourceCitation } from '@/components/DataSourceCitation';
 // Enable ISR with 24 hour revalidation
 export const revalidate = 86400;
 
-// Generate static params for top 10 countries × all fields
+// Rendered on first request, then cached (ISR). Prerendering hundreds of these at build
+// time overloaded the backend database; the sitemap lists them for crawlers.
 export async function generateStaticParams() {
-  const fields = await getReadyFieldConfigs();
-  
-  // For each field, generate top 10 countries
-  const params: Array<{ fieldSlug: string; countrySlug: string }> = [];
-  
-  for (const field of fields) {
-    try {
-      const { fetchFieldWorldData } = await import('@/lib/seoFieldApi');
-      const worldData = await fetchFieldWorldData(field.slug);
-      const topCountries = worldData
-        .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
-        .slice(0, 10);
-      
-      topCountries.forEach((country: any) => {
-        params.push({
-          fieldSlug: field.slug,
-          countrySlug: countryToSlug(country.country),
-        });
-      });
-    } catch (error) {
-      console.error(`Error generating params for field ${field.slug}:`, error);
-    }
-  }
-  
-  return params;
+  return [];
 }
 
 interface PageProps {
@@ -176,8 +153,9 @@ export default async function FieldCountryPage({ params }: PageProps) {
 
     faqs = generateFieldCountryFAQs(fieldConfig, countryName, scholarCount, institutionCount);
   } catch (error) {
+    // Rethrows notFound() from above as-is; a backend outage must not be cached as a 404
     console.error('Error fetching field-country data:', error);
-    notFound();
+    throw error;
   }
 
   const demoRunUrl = getFieldDemoRunUrl(fieldConfig);

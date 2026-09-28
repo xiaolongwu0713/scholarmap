@@ -7,8 +7,42 @@
 
 import { getReadyFieldConfig, type FieldConfig } from './seoFieldConfig';
 import { API_URL } from './site';
+import { cityToSlug, isInvalidCityName } from './geoSlugs';
 
 const API_BASE_URL = API_URL;
+
+export interface FieldSitemapEntry {
+  slug: string;
+  countries: Array<{ country: string; scholar_count: number }>;
+  cities: Array<{ country: string; city: string; scholar_count: number }>;
+}
+
+/**
+ * Top countries and cities of every ready field in one request.
+ * Used for the sitemap and static params, which would otherwise make hundreds of map calls.
+ */
+export async function fetchFieldSitemapData(): Promise<FieldSitemapEntry[]> {
+  const response = await fetch(`${API_BASE_URL}/api/seo/sitemap`, {
+    next: { revalidate: 3600 },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch field sitemap data: ${response.statusText}`);
+  }
+  const json = await response.json();
+  return json.fields || [];
+}
+
+/** A field's top cities that have a valid name, one per URL slug. */
+export function topFieldCitySlugs(entry: FieldSitemapEntry, limit: number = 5): string[] {
+  const slugs: string[] = [];
+  for (const city of entry.cities) {
+    if (isInvalidCityName(city.city)) continue;
+    const slug = cityToSlug(city.city);
+    if (!slugs.includes(slug)) slugs.push(slug);
+    if (slugs.length === limit) break;
+  }
+  return slugs;
+}
 
 /**
  * Fetch world map data for a specific research field
