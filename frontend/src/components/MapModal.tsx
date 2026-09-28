@@ -635,7 +635,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
           </tbody>
         </table>
         {cityTotal.truncated && (
-          <UpgradeNotice shown={cityData.length} total={cityTotal.total} noun="institutions" />
+          <LockedRows hidden={cityTotal.total - cityData.length} noun="institutions" />
         )}
       </div>
     );
@@ -795,6 +795,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
                 </div>
               </div>
             ))}
+            {scholarsTotal.truncated && (
+              <LockedRows hidden={scholarsTotal.total - scholars.length} noun="scholars" />
+            )}
           </div>
         </div>
       </div>
@@ -1250,6 +1253,63 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
   );
 }
 
+
+// Generic sample rows, blurred: the real hidden rows are never sent to Free users.
+const LOCKED_SAMPLES: Record<string, string[][]> = {
+  institutions: [
+    ["Department of Molecular Medicine", "12 scholars"],
+    ["Institute for Translational Research", "9 scholars"],
+    ["Center for Genomic Sciences", "7 scholars"],
+  ],
+  scholars: [
+    ["Researcher, Alex M.", "6 papers"],
+    ["Researcher, Jordan K.", "4 papers"],
+    ["Researcher, Sam T.", "3 papers"],
+  ],
+};
+
+/** Blurred teaser for the rows a Free user can't see, with the count and an unlock link. */
+function LockedRows({ hidden, noun }: { hidden: number; noun: string }) {
+  if (hidden <= 0) return null;
+  return (
+    <div style={{ position: "relative", marginTop: 8, minHeight: 132 }}>
+      <div aria-hidden style={{ filter: "blur(5px)", userSelect: "none", pointerEvents: "none" }}>
+        {(LOCKED_SAMPLES[noun] ?? LOCKED_SAMPLES.institutions).map(([name, detail]) => (
+          <div
+            key={name}
+            style={{ display: "flex", justifyContent: "space-between", padding: "12px 8px", borderTop: "1px solid #e5e7eb" }}
+          >
+            <span>{name}</span>
+            <span>{detail}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div
+          style={{
+            background: "white",
+            border: "1px solid #bfdbfe",
+            borderRadius: 10,
+            padding: "12px 18px",
+            boxShadow: "0 6px 20px rgba(15, 23, 42, 0.12)",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontWeight: 600, color: "#111827", marginBottom: 4 }}>
+            🔒 {hidden} more {noun} on Pro
+          </div>
+          <a
+            href="/pricing"
+            onClick={() => trackConversion("upgrade_click", { source: "locked_rows" })}
+            style={{ fontWeight: 600, color: "#1d4ed8" }}
+          >
+            Unlock the full list →
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function UpgradeNotice({ shown, total, noun }: { shown: number; total: number; noun: string }) {
   return (
