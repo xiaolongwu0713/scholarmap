@@ -9,7 +9,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         # Most configuration values are set directly in the class
-        # openai_api_key and sendgrid_api_key can be loaded from .env file or environment variables
+        # openai_api_key and resend_api_key can be loaded from .env file or environment variables
         # Environment variables take precedence over .env file, which takes precedence over defaults
         env_file=str(Path(__file__).parent / ".env"),  # Load from .env file in the same directory as config.py (repo root)
         env_file_encoding="utf-8",
@@ -49,10 +49,8 @@ class Settings(BaseSettings):
     
     # Email configuration (for verification codes)
     # Can be loaded from .env file or environment variables
-    sendgrid_api_key: str = ""
-    email_from: str = "xiaolongwu0713@gmail.com"  # Sender email address for verification codes
-    # TODO: Use a dedicated no-reply address (e.g., noreply@labscout.io) to improve deliverability
-    # Must be verified in SendGrid before use
+    resend_api_key: str = ""  # RESEND_API_KEY; labscout.io is verified in Resend
+    email_from: str = "LabScout <noreply@labscout.io>"  # Sender for verification codes
     
     # Super user configuration (can access all projects and runs)
     # Super users can access any project and run, bypassing ownership checks

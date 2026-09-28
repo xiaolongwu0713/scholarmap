@@ -276,12 +276,12 @@ async def send_verification_code(req: SendVerificationCodeRequest) -> dict:
         await code_repo.create_code(email, code, expire_minutes=10)
         await session.commit()
     
-    # Send email (or print to console if SENDGRID_API_KEY not set)
-    # If SENDGRID_API_KEY is set, send_verification_email will raise exception on failure
     try:
         await send_verification_email(email, code)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to send verification code: {str(e)}")
+        # Log the provider error; don't expose it to the client
+        logging.getLogger(__name__).error("Verification email to %s failed: %s", email, e)
+        raise HTTPException(status_code=502, detail="Could not send the verification email. Please try again in a few minutes.")
     
     return {"ok": True, "message": "Verification code sent"}
 

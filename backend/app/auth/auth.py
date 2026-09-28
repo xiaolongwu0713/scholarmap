@@ -9,8 +9,7 @@ from datetime import datetime, timezone, timedelta
 
 import bcrypt
 from jose import JWTError, jwt
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+import httpx
 
 import sys
 from pathlib import Path
@@ -136,56 +135,33 @@ def decode_access_token(token: str) -> dict | None:
 
 
 async def send_verification_email(email: str, code: str) -> None:
+    """Send a verification code via Resend.
+
+    Without RESEND_API_KEY (local development) the code is printed to the console.
+    Raises if the key is set but sending fails.
     """
-    Send verification code via email using SendGrid.
-    
-    Behavior:
-    - If SENDGRID_API_KEY is set (in .env file or environment variable), 
-      must send email via SendGrid API. Raises exception if sending fails.
-    - If SENDGRID_API_KEY is not set (or empty), prints code to console.
-    
-    Raises:
-        Exception: If SENDGRID_API_KEY is set but email sending fails
-    """
-    # Check if SENDGRID_API_KEY is configured (from .env file or environment variable)
-    sendgrid_api_key = settings.sendgrid_api_key
-    if not sendgrid_api_key or not sendgrid_api_key.strip():
-        # SENDGRID_API_KEY not set - print to console for development
+    api_key = settings.resend_api_key.strip()
+    if not api_key:
         print(f"[DEV] Email verification code for {email}: {code}")
-        print(f"[DEV] To enable email sending, set SENDGRID_API_KEY in .env file or as environment variable")
+        print("[DEV] Set RESEND_API_KEY to send real emails")
         return
-    
-    # SENDGRID_API_KEY is set - must send email via SendGrid
-    try:
-        # Create SendGrid client
-        sg = SendGridAPIClient(sendgrid_api_key.strip())
-        
-        # Create email message
-        message = Mail(
-            from_email=settings.email_from,
-            to_emails=email,
-            subject="LabScout Email Verification Code",
-            plain_text_content=f"""Your LabScout verification code is: {code}
 
-This code will expire in 10 minutes.
-
-If you did not request this code, please ignore this email."""
+    async with httpx.AsyncClient(timeout=15) as client:
+        resp = await client.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={
+                "from": settings.email_from,
+                "to": [email],
+                "subject": "Your LabScout verification code",
+                "text": (
+                    f"Your LabScout verification code is: {code}\n\n"
+                    "This code will expire in 10 minutes.\n\n"
+                    "If you did not request this code, please ignore this email."
+                ),
+            },
         )
-        
-        # Send email
-        response = sg.send(message)
-        
-        # Check response status
-        if response.status_code >= 200 and response.status_code < 300:
-            print(f"[EMAIL] Verification code sent to {email} via SendGrid (status: {response.status_code})")
-        else:
-            error_msg = f"SendGrid API returned error status {response.status_code}: {response.body}"
-            print(f"[ERROR] {error_msg}")
-            raise Exception(error_msg)
-            
-    except Exception as e:
-        # Email sending failed - raise exception since SENDGRID_API_KEY was set
-        error_msg = f"Failed to send verification email to {email} via SendGrid: {e}"
-        print(f"[ERROR] {error_msg}")
-        raise Exception(error_msg) from e
+    if resp.status_code >= 300:
+        raise Exception(f"Resend returned {resp.status_code}: {resp.text[:300]}")
+    print(f"[EMAIL] Verification code sent to {email} via Resend")
 
