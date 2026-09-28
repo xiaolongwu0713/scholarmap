@@ -241,6 +241,13 @@ type AutoStep = Exclude<AutoStage, "understand">;
 const AUTO_STEPS: AutoStep[] = ["framework", "query", "search", "map"];
 const MANUAL_STEPS_KEY = "labscout_manual_steps";
 
+/** Starting points for people unsure what to write (5–30 English words each). */
+const EXAMPLE_DESCRIPTIONS = [
+  "CRISPR base editing to correct inherited retinal disease mutations in human retinal organoids",
+  "Single-cell RNA sequencing of the tumor microenvironment in colorectal cancer immunotherapy",
+  "Deep learning on brain MRI for early detection of Alzheimer's disease",
+];
+
 function extractFinalPubMedQuery(text: string): string {
   const m = text.match(/##\s*Final Combined PubMed Query[\s\S]*?```text\s*([\s\S]*?)\s*```/i);
   if (m?.[1]) return m[1].trim();
@@ -2111,6 +2118,22 @@ function RunPageContent() {
                 {!parseCompleted ? charLimitHint(researchDescription) : ""}
               </div>
             </div>
+            {!isDemoRun && !researchDescription.trim() && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                <span className="muted" style={{ fontSize: 13 }}>Try an example:</span>
+                {EXAMPLE_DESCRIPTIONS.map((example) => (
+                  <button
+                    key={example}
+                    type="button"
+                    className="secondary"
+                    onClick={() => setResearchDescription(example)}
+                    style={{ fontSize: 13, padding: "4px 10px", textAlign: "left", whiteSpace: "normal" }}
+                  >
+                    {example}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="row" style={{ justifyContent: "center" }}>
               <button
                 onClick={() => {
