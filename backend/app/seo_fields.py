@@ -213,6 +213,29 @@ async def _mark_failed(run_id: str, error: Exception) -> None:
             await asyncio.sleep(20)
 
 
+def _superseded_runs(runs: list) -> list[str]:
+    """Runs older than the field's published (latest ready) run: safe to delete.
+
+    Each run keeps its full retrieval output, so rebuilds would otherwise fill the database.
+    A newer run (a build in progress) is kept.
+    """
+    ready = [r for r in runs if _seo_state(r).get("status") == "ready"]
+    if not ready:
+        return []
+    published = max(ready, key=lambda r: r.created_at)
+    return [r.run_id for r in runs if r.created_at < published.created_at]
+
+
+async def _prune_superseded_runs() -> None:
+    from app.db.service import DatabaseStore
+
+    store = DatabaseStore()
+    for slug, runs in (await _runs_by_slug()).items():
+        for run_id in _superseded_runs(runs):
+            await store.delete_run(config.settings.seo_project_id, run_id)
+            logger.info("SEO field %s: deleted superseded run %s", slug, run_id)
+
+
 def _release_memory() -> None:
     """Hand memory freed by an ingest back to the OS.
 
@@ -258,6 +281,7 @@ async def build_pending_fields() -> None:
     while True:
         failed = False
         try:
+            await _prune_superseded_runs()
             fields = [f for f in load_field_definitions() if not f.get("runId")]
             by_slug = await _runs_by_slug()
             for field in fields:

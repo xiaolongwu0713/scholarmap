@@ -10,7 +10,7 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from app.seo_fields import BUILD_VERSION, RUN_PREFIX, _needs_build, _run_slug, load_field_definitions
+from app.seo_fields import BUILD_VERSION, RUN_PREFIX, _needs_build, _run_slug, _superseded_runs, load_field_definitions
 
 NOW = datetime.now(timezone.utc)
 
@@ -69,3 +69,15 @@ def test_latest_run_decides():
     old_failed = run({"status": "failed"}, created=NOW - timedelta(days=1), run_id="a")
     new_ready = run({"status": "ready", "build_version": BUILD_VERSION}, created=NOW, run_id="b")
     assert _needs_build([old_failed, new_ready]) == (False, None)
+
+
+def test_runs_older_than_the_published_one_are_superseded():
+    old_ready = run({"status": "ready"}, created=NOW - timedelta(days=2), run_id="old")
+    old_failed = run({"status": "failed"}, created=NOW - timedelta(days=1), run_id="bad")
+    published = run({"status": "ready", "build_version": BUILD_VERSION}, created=NOW - timedelta(hours=1), run_id="live")
+    building = run({"status": "building", "started_at": NOW.isoformat()}, created=NOW, run_id="next")
+    assert sorted(_superseded_runs([old_ready, old_failed, published, building])) == ["bad", "old"]
+
+
+def test_nothing_is_superseded_without_a_published_run():
+    assert _superseded_runs([run({"status": "failed"}, run_id="a"), run({"status": "building"}, run_id="b")]) == []
