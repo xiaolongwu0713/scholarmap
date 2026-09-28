@@ -29,6 +29,10 @@ import asyncio
 
 async def setup_super_user():
     """Setup or update super user account."""
+    if len(settings.super_user_password) < 12:
+        print("❌ SUPER_USER_PASSWORD must be set and at least 12 characters. Aborting.")
+        sys.exit(1)
+
     print("Setting up super user account...")
     print("=" * 70)
     print(f"Email: {settings.super_user_email}")
@@ -73,9 +77,7 @@ async def setup_super_user():
             print("=" * 70)
             print("✅ Super user setup complete!")
             print()
-            print("You can now login with:")
-            print(f"  Email: {settings.super_user_email}")
-            print(f"  Password: {settings.super_user_password}")
+            print(f"You can now log in as {settings.super_user_email} with the password from SUPER_USER_PASSWORD.")
             
         await db_manager.close()
         
