@@ -27,9 +27,11 @@ _postal_re = re.compile(
     r"\b[0-9]{5}(-[0-9]{4})?\b|"  # US format (5 digits, optional -4)
     r"\b[0-9]{6}\b|"  # China and other 6-digit formats
     r"\b[0-9]{3}-[0-9]{4}\b|"  # Japan format (3-4 digits)
+    r"\b[0-9]{4}\b|"  # 4-digit postcodes (New Zealand, Australia, Switzerland, Denmark, ...)
     r"\b[A-Z]\d[A-Z]\s?\d[A-Z]\d\b",  # Canada format
     re.I
 )
+_city_chars_re = re.compile(r"^[^\W\d_](?:[^\W\d_]|[\s.'\u2019-])*$", re.U)
 _tail_abbr_re = re.compile(r"^(?P<prefix>.*?)(?:\s+|,)(?P<abbr>[A-Z]{2})$", re.U)
 
 # --------------------
@@ -98,6 +100,7 @@ COUNTRY_SYNONYMS = {
     "pr china": "China",
     "republic of korea": "Korea, Republic of",
     "south korea": "Korea, Republic of",
+    "korea": "Korea, Republic of",  # affiliations name North Korea explicitly
     "north korea": "Korea, Democratic People's Republic of",
     "russia": "Russian Federation",
     "iran": "Iran, Islamic Republic of",
@@ -418,6 +421,9 @@ def _is_valid_city_name(city: str) -> bool:
     """
     if not city or len(city.strip()) == 0:
         return False
+    # Letters (any script), spaces, and . - ' only: rules out tokens like "A*STAR" or "R&D"
+    if not _city_chars_re.match(city.strip()):
+        return False
     
     city_upper = city.upper()
     city_lower = city.lower()
@@ -623,8 +629,25 @@ def _parse_affiliation(affiliation_raw: str) -> dict:
     
     # Normalize country and city names (convert abbreviations to full names)
     result = _normalize_country_city_names(result)
-    
+    _apply_city_state(result, loc_tokens)
+
     return result
+
+
+# The city of these is the city-state itself; districts (e.g. Pokfulam) map to it too.
+CITY_STATES = {"singapore": "Singapore", "hong kong": "Hong Kong", "macau": "Macau", "macao": "Macau"}
+
+
+def _apply_city_state(result: dict, loc_tokens: list[str]) -> None:
+    names = [CITY_STATES[k] for k in CITY_STATES
+             if any(_norm_token(t).lower().replace(" sar", "") == k for t in loc_tokens)]
+    country = (result.get("country") or "").lower()
+    if country in CITY_STATES:
+        names.append(CITY_STATES[country])
+    if names:
+        # "Hong Kong SAR, China" -> Hong Kong, as the site lists it separately
+        result["country"] = names[0]
+        result["city"] = names[0]
 
 
 def _normalize_country_city_names(geo_data: dict) -> dict:
@@ -714,6 +737,30 @@ def _normalize_country_city_names(geo_data: dict) -> dict:
         geo_data["city"] = None
     
     return geo_data
+
+
+def _fill_from_institution(result_map: dict[str, GeoData], aff: str, match: GeoData) -> bool:
+    """Fill a parsed result's missing country/city from a matched institution.
+
+    Only when the countries agree (or the text named none), so the table never overrides
+    what the affiliation says. Returns True if anything was filled.
+    """
+    parsed = result_map.get(aff) or GeoData()
+    if parsed.country and match.country and parsed.country != match.country:
+        return False
+    filled = parsed.model_copy()
+    if not filled.country and match.country:
+        filled.country = match.country
+    if not filled.city and match.city and filled.country == match.country:
+        filled.city = match.city
+    if not filled.institution and match.institution:
+        filled.institution = match.institution
+    if filled == parsed:
+        return False
+    if parsed.confidence == "none":
+        filled.confidence = match.confidence
+    result_map[aff] = filled
+    return True
 
 
 class RuleBasedExtractor:
@@ -947,48 +994,38 @@ class RuleBasedExtractor:
         # Track affiliations that were cached (from affiliation_cache table)
         cached_affiliations = set(result_map.keys())
         
-        # Step 1: Try institution matcher for affiliations not in cache
-        logger.info(f"   Trying institution_matcher (institution_geo table) for {len(to_extract)} affiliations...")
-        institution_matches = await self.institution_matcher.match_batch(to_extract)
-        institution_matched_count = len(institution_matches)
-        stats["institution_matcher_hits"] = institution_matched_count
-        
-        if institution_matched_count > 0:
-            logger.info(f"   ✅ institution_geo table: {institution_matched_count} matches found")
-            # Add institution matches to result_map
-            for aff, geo in institution_matches.items():
-                result_map[aff] = geo
-            # Remove matched affiliations from to_extract
-            to_extract = [aff for aff in to_extract if aff not in institution_matches]
-        
-        # Step 2: Rule-based extraction for remaining affiliations
-        if to_extract:
-            logger.info(f"   Extracting {len(to_extract)} affiliations using rule-based parser...")
-            batch_results, batch_stats = await self.extract_batch_with_stats(
-                to_extract,
-                skip_institution_auto_add=skip_institution_auto_add
-            )
-            stats["rule_based_extractions"] = len(to_extract)
-            stats["institution_geo_auto_added"] = batch_stats.get("institution_geo_auto_added", 0)
-            stats["pending_auto_add"] = batch_stats.get("pending_auto_add", [])
-            
-            logger.info(f"   ✅ Rule-based extraction complete: {len(batch_results)} results")
-            if stats["institution_geo_auto_added"] > 0:
-                logger.info(f"      Auto-added to institution_geo table: {stats['institution_geo_auto_added']} institutions")
-            if skip_institution_auto_add and len(stats["pending_auto_add"]) > 0:
-                logger.info(f"      Pending validation: {len(stats['pending_auto_add'])} institutions")
-            
-            # Map results back to affiliations
-            for aff, geo in zip(to_extract, batch_results):
-                result_map[aff] = geo
-            
-            # Count affiliations that will be cached (rule-based extractions that have valid data)
-            stats["affiliation_cache_updated"] = sum(
-                1 for aff, geo in zip(to_extract, batch_results) 
-                if geo and (geo.country or geo.city or geo.institution)
-            )
-        else:
-            logger.info(f"   ✅ All affiliations matched via institution_geo table")
+        # Step 1: Parse the affiliation text itself; it is the source of truth.
+        logger.info(f"   Extracting {len(to_extract)} affiliations using rule-based parser...")
+        batch_results, batch_stats = await self.extract_batch_with_stats(
+            to_extract,
+            skip_institution_auto_add=skip_institution_auto_add
+        )
+        stats["rule_based_extractions"] = len(to_extract)
+        stats["institution_geo_auto_added"] = batch_stats.get("institution_geo_auto_added", 0)
+        stats["pending_auto_add"] = batch_stats.get("pending_auto_add", [])
+        logger.info(f"   ✅ Rule-based extraction complete: {len(batch_results)} results")
+        if stats["institution_geo_auto_added"] > 0:
+            logger.info(f"      Auto-added to institution_geo table: {stats['institution_geo_auto_added']} institutions")
+        if skip_institution_auto_add and len(stats["pending_auto_add"]) > 0:
+            logger.info(f"      Pending validation: {len(stats['pending_auto_add'])} institutions")
+        for aff, geo in zip(to_extract, batch_results):
+            result_map[aff] = geo
+
+        # Step 2: institution_geo only fills a missing country or city. It used to run first and
+        # override the text, so one stale entry mislocated every affiliation naming that institution.
+        incomplete = [aff for aff in to_extract if not (result_map[aff] and result_map[aff].country and result_map[aff].city)]
+        if incomplete:
+            logger.info(f"   Filling gaps from institution_geo for {len(incomplete)} affiliations...")
+            institution_matches = await self.institution_matcher.match_batch(incomplete)
+            for aff, match in institution_matches.items():
+                if _fill_from_institution(result_map, aff, match):
+                    stats["institution_matcher_hits"] += 1
+            logger.info(f"   ✅ institution_geo filled gaps in {stats['institution_matcher_hits']} affiliations")
+
+        stats["affiliation_cache_updated"] = sum(
+            1 for aff in to_extract
+            if result_map[aff] and (result_map[aff].country or result_map[aff].city or result_map[aff].institution)
+        )
         
         return result_map, stats
 
