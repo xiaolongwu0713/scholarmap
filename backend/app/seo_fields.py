@@ -11,6 +11,7 @@ import asyncio
 import json
 import logging
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -86,6 +87,60 @@ async def ready_fields() -> list[dict[str, Any]]:
             latest = max(built, key=lambda r: r.created_at)
             ready.append({"slug": field["slug"], "run_id": latest.run_id, "project_id": project_id})
     return ready
+
+
+SITEMAP_TTL_SECONDS = 3600
+_sitemap_cache: tuple[float, list[dict[str, Any]]] | None = None
+_sitemap_lock = asyncio.Lock()
+
+
+async def sitemap_data(top_countries: int = 10, top_cities: int = 20) -> list[dict[str, Any]]:
+    """Top countries and cities of each ready field, for sitemap and static-page URLs.
+
+    One SQL query per field and no geocoding, so it stays fast as fields are added.
+    Cities are over-supplied: the frontend drops invalid city names before picking its top 5.
+    Cached for an hour.
+    """
+    global _sitemap_cache
+    async with _sitemap_lock:
+        if _sitemap_cache and time.monotonic() - _sitemap_cache[0] < SITEMAP_TTL_SECONDS:
+            return _sitemap_cache[1]
+        from sqlalchemy import func, select
+        from app.db.models import Authorship, RunPaper
+        from app.phase2.pg_aggregations import normalize_country
+
+        scholar = func.count(func.distinct(func.concat(
+            Authorship.author_name_raw, "|", func.coalesce(Authorship.institution, ""), "|", Authorship.country,
+        )))
+        data = []
+        for field in await ready_fields():
+            query = (
+                select(Authorship.country, Authorship.city, scholar.label("n"))
+                .join(RunPaper, RunPaper.pmid == Authorship.pmid)
+                .where(RunPaper.run_id == field["run_id"], Authorship.country.isnot(None))
+                .group_by(Authorship.country, Authorship.city)
+            )
+            async with db_manager.session() as session:
+                rows = (await session.execute(query)).all()
+            countries: dict[str, int] = {}
+            cities = []
+            for row in rows:
+                country = normalize_country(row.country)
+                if not country:
+                    continue
+                countries[country] = countries.get(country, 0) + row.n
+                if row.city:
+                    cities.append({"country": country, "city": row.city, "scholar_count": row.n})
+            data.append({
+                "slug": field["slug"],
+                "countries": [
+                    {"country": c, "scholar_count": n}
+                    for c, n in sorted(countries.items(), key=lambda kv: -kv[1])[:top_countries]
+                ],
+                "cities": sorted(cities, key=lambda c: -c["scholar_count"])[:top_cities],
+            })
+        _sitemap_cache = (time.monotonic(), data)
+        return data
 
 
 async def build_field(field: dict[str, Any], run_id: str | None = None) -> str:

@@ -386,6 +386,13 @@ async def seo_fields() -> dict:
     return {"fields": await ready_fields()}
 
 
+@app.get("/api/seo/sitemap")
+async def seo_sitemap() -> dict:
+    """Top countries and cities per ready field, for sitemap URLs (public)."""
+    from app.seo_fields import sitemap_data
+    return {"fields": await sitemap_data()}
+
+
 @app.get("/api/user/quota")
 async def get_user_quota(request: Request) -> dict:
     """Current user's plan and search usage."""
