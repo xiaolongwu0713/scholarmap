@@ -8,6 +8,8 @@ Build state is kept in the run's ``understanding`` JSON, so restarts resume safe
 from __future__ import annotations
 
 import asyncio
+import ctypes
+import gc
 import json
 import logging
 import sys
@@ -31,6 +33,7 @@ MIN_PAPERS = 100               # below this a field is too thin to publish
 STALE_BUILD = timedelta(minutes=30)  # a "building" claim older than this was interrupted (e.g. by a deploy)
 STARTUP_DELAY_SECONDS = 90     # let the service pass health checks first
 RECHECK_SECONDS = 3600         # re-check for new or outdated fields hourly
+PAUSE_BETWEEN_FIELDS_SECONDS = 60  # lets the small database and the web process recover
 RETRY_SECONDS = 300            # after a failed pass (e.g. the database restarted), retry sooner
 MAX_QUICK_RETRIES = 3          # then fall back to hourly, so a broken field can't loop forever
 # Bump to rebuild every field (e.g. after a parser or geocoding fix). The previous
@@ -201,6 +204,24 @@ async def _mark_failed(run_id: str, error: Exception) -> None:
             await asyncio.sleep(20)
 
 
+def _release_memory() -> None:
+    """Hand memory freed by an ingest back to the OS.
+
+    Builds run inside the web process, which Render kills above 512 MB.
+    """
+    gc.collect()
+    try:
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except OSError:
+        pass  # not glibc (e.g. local macOS)
+    try:
+        with open("/proc/self/status") as f:
+            rss = next(line.split()[1] for line in f if line.startswith("VmRSS:"))
+        logger.info("SEO field builder: process memory %d MB", int(rss) // 1024)
+    except (OSError, StopIteration):
+        pass
+
+
 def _needs_build(runs: list) -> tuple[bool, str | None]:
     """Decide whether a field needs work; returns (build?, run_id to reuse)."""
     if not runs:
@@ -234,7 +255,8 @@ async def build_pending_fields() -> None:
                 build, run_id = _needs_build(by_slug.get(field["slug"], []))
                 if build:
                     failed |= await build_field(field, run_id) == "failed"
-                    await asyncio.sleep(5)  # breathe between fields
+                    _release_memory()
+                    await asyncio.sleep(PAUSE_BETWEEN_FIELDS_SECONDS)
             logger.info("SEO field builder: pass complete%s", " with failures" if failed else "")
         except asyncio.CancelledError:
             raise
