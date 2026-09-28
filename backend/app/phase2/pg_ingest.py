@@ -372,10 +372,12 @@ class PostgresIngestionPipeline:
             logger.info(f"   Clearing existing data for run {run_id}...")
             # Get PMIDs for this run (if any exist)
             existing_pmids = await run_paper_repo.get_run_pmids(run_id)
-            if existing_pmids:
-                # Delete authorships for these PMIDs
-                await auth_repo.delete_authorships_by_pmids(existing_pmids)
-                logger.info(f"   Deleted authorships for {len(existing_pmids)} existing PMIDs")
+            # Authorships belong to the paper, not the run: also replace those written by
+            # other runs, or re-ingesting a paper stacks a second copy on the old parse.
+            pmids_to_clear = sorted(set(existing_pmids) | {paper.pmid for paper in papers})
+            if pmids_to_clear:
+                await auth_repo.delete_authorships_by_pmids(pmids_to_clear)
+                logger.info(f"   Deleted authorships for {len(pmids_to_clear)} PMIDs")
             # Note: run_papers will be deleted in link_run_to_papers()
             
             # Insert papers (bulk upsert)
