@@ -89,11 +89,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       openGraph: {
         title: `${fieldConfig.name} Research in ${countryName}`,
         description: `${scholarCount.toLocaleString()} researchers in ${fieldConfig.keywords[0]} across ${institutionCount} institutions`,
-        images: ['/landing_page_figures_optimized/0.webp'],
         type: 'article',
+        // This page's own openGraph replaces the field's, so point at the field image explicitly
+        images: [`/research-jobs/${fieldSlug}/opengraph-image`],
       },
       twitter: {
         card: 'summary_large_image',
+        images: [`/research-jobs/${fieldSlug}/twitter-image`],
         title: `${fieldConfig.name} in ${countryName}`,
         description: `${scholarCount.toLocaleString()} researchers | ${institutionCount} institutions`,
       },

@@ -102,7 +102,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       openGraph: {
         title: `${fieldConfig.name} Research Map`,
         description: `${totalScholars.toLocaleString()} researchers in ${fieldConfig.keywords[0]} across ${totalCountries} countries`,
-        images: ['/landing_page_figures_optimized/0.webp'],
         type: 'article',
       },
       twitter: {
