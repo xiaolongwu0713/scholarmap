@@ -155,6 +155,13 @@ export default function PricingPage() {
             {REFUND_DAYS}-day money-back guarantee on new subscriptions.
           </p>
 
+          <p className="text-center text-gray-700 mt-4">
+            Buying for a company team?{' '}
+            <Link href="/for-industry" className="text-blue-600 font-semibold hover:underline">
+              See LabScout for industry
+            </Link>
+          </p>
+
           <section className="mt-16 max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Frequently asked questions</h2>
             <div className="space-y-4">
