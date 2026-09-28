@@ -31,6 +31,7 @@ import AuthGuard from "@/components/AuthGuard";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 import Map, { Layer, Source, type MapRef } from "react-map-gl";
 import { trackConversion } from "@/lib/analytics";
+import { AutoProgress, AUTO_STAGES, type AutoStage, type StageStatus } from "@/components/AutoProgress";
 
 const MapModal = dynamic(() => import("@/components/MapModal"), { ssr: false });
 
@@ -234,6 +235,11 @@ function charLimitHint(text: string, minWords = 5, maxWords = 30): string {
   const count = countEnglishWords(text ?? "");
   return `${count}/${maxWords} words (min ${minWords})`;
 }
+
+/** Steps the one-click flow runs after the description is understood. */
+type AutoStep = Exclude<AutoStage, "understand">;
+const AUTO_STEPS: AutoStep[] = ["framework", "query", "search", "map"];
+const MANUAL_STEPS_KEY = "labscout_manual_steps";
 
 function extractFinalPubMedQuery(text: string): string {
   const m = text.match(/##\s*Final Combined PubMed Query[\s\S]*?```text\s*([\s\S]*?)\s*```/i);
@@ -442,6 +448,11 @@ function RunPageContent() {
     null | "textValidate" | "parse" | "buildFramework" | "adjustFramework" | "queryBuild" | "query" | "ingest"
   >(null);
   const [error, setError] = useState<string | null>(null);
+  // One-click search: after the description is understood, run every remaining step automatically.
+  // Off = "review each step" (the original manual flow).
+  const [autoMode, setAutoMode] = useState(true);
+  const [autoStage, setAutoStage] = useState<AutoStep | null>(null);
+  const [autoFailed, setAutoFailed] = useState<AutoStep | null>(null);
   const [validationErrorModal, setValidationErrorModal] = useState<{ show: boolean; rules: string; failed: string }>({
     show: false,
     rules: "",
@@ -590,10 +601,15 @@ function RunPageContent() {
     const rs2 = await load("results_semantic_scholar.json");
     const roa = await load("results_openalex.json");
     const ra = await load("results_aggregated.json");
-    setPubmed((rp?.items as Paper[]) || null);
+    const loaded = {
+      pubmed: (rp?.items as Paper[]) || null,
+      agg: (ra?.items as AggregatedItem[]) || null,
+    };
+    setPubmed(loaded.pubmed);
     setS2((rs2?.items as Paper[]) || null);
     setOa((roa?.items as Paper[]) || null);
-    setAgg((ra?.items as AggregatedItem[]) || null);
+    setAgg(loaded.agg);
+    return loaded;
   }
 
   async function loadInitial() {
@@ -959,6 +975,122 @@ function RunPageContent() {
   }, [isExportMode, exportLoading, exportMapImage, exportMapLoaded, exportWorldData, ingestStats]);
 
 
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(MANUAL_STEPS_KEY) === "1") setAutoMode(false);
+    } catch {
+      // storage unavailable: keep one-click mode
+    }
+  }, []);
+
+  function setManualSteps(manual: boolean) {
+    setAutoMode(!manual);
+    try {
+      localStorage.setItem(MANUAL_STEPS_KEY, manual ? "1" : "0");
+    } catch {
+      // storage unavailable: the choice lasts for this page only
+    }
+  }
+
+  function latestUnderstanding(): string {
+    return normalizedUnderstandingsHistory.length > 0
+      ? normalizedUnderstandingsHistory[normalizedUnderstandingsHistory.length - 1]
+      : parseCurrentDescription;
+  }
+
+  /** First step the one-click flow still has to do, judged from what this run already has. */
+  function nextAutoStep(): AutoStep | null {
+    if (!frameworkText.trim()) return "framework";
+    if (!pubmedQueryText.trim()) return "query";
+    if (agg === null && pubmed === null) return "search";
+    if (!ingestionCompleted && (agg?.length ?? 0) > 0) return "map";
+    return null;
+  }
+
+  /**
+   * Run the remaining steps with the same API calls as the manual buttons. Values flow
+   * from step to step through locals (state updates land after this function returns).
+   * A failure stops at that step; "Retry" resumes there without redoing earlier steps.
+   */
+  async function runAutoPipeline(from: AutoStep, understanding?: string) {
+    let framework = frameworkText.trim();
+    let fullQuery = pubmedQueryText;
+    let queries = queriesObj;
+    setError(null);
+    setAutoFailed(null);
+    for (const step of AUTO_STEPS.slice(AUTO_STEPS.indexOf(from))) {
+      setAutoStage(step);
+      try {
+        if (step === "framework") {
+          setBusy("buildFramework");
+          const input = (understanding ?? latestUnderstanding()).trim();
+          if (!input) throw new Error("No research description available.");
+          const res = await parseRun(projectId, runId, input, true);
+          framework = String(res.data?.retrieval_framework || "").trim();
+          if (!framework) throw new Error("The search strategy came back empty.");
+          setQuestions([]);
+          setFrameworkText(framework);
+          setFrameworkAdjustHistory([framework]);
+          setParseCompleted(true);
+        } else if (step === "query") {
+          setBusy("queryBuild");
+          await updateRetrievalFramework(projectId, runId, framework);
+          const res = await runQueryBuild(projectId, runId);
+          queries = {
+            pubmed: String(res.data?.pubmed || ""),
+            pubmed_full: String(res.data?.pubmed_full || ""),
+            semantic_scholar: String(res.data?.semantic_scholar || ""),
+            openalex: String(res.data?.openalex || "")
+          };
+          fullQuery = queries.pubmed_full || queries.pubmed;
+          if (!fullQuery.trim()) throw new Error("The PubMed query came back empty.");
+          setQueriesObj(queries);
+          setPubmedQueryText(fullQuery);
+          setFrameworkCompleted(true);
+        } else if (step === "search") {
+          setBusy("query");
+          const finalPubmed = extractFinalPubMedQuery(fullQuery);
+          if (!finalPubmed.trim()) throw new Error("The PubMed query is empty.");
+          const next = {
+            ...(queries || { pubmed: "", pubmed_full: "", semantic_scholar: "", openalex: "" }),
+            pubmed: finalPubmed,
+            pubmed_full: fullQuery
+          };
+          await updateQueries(projectId, runId, next);
+          setQueriesObj(next);
+          await runQuery(projectId, runId);
+          const found = await loadResults();
+          if (!found.agg?.length) {
+            trackConversion("search_failed", { step: "no_results" });
+            return; // nothing to map; the progress card explains
+          }
+        } else {
+          setBusy("ingest");
+          const stats = await runIngest(projectId, runId, false);
+          let finalStats = stats;
+          try {
+            finalStats = (await getAuthorshipStats(projectId, runId)) || stats;
+          } catch {
+            // keep the stats from ingest
+          }
+          if (finalStats) setIngestStats(finalStats);
+          setIngestionCompleted(true);
+          trackConversion("search_completed");
+          setShowMap(true);
+        }
+      } catch (e) {
+        setAutoFailed(step);
+        setError(String(e));
+        trackConversion("search_failed", { step });
+        return;
+      } finally {
+        setBusy(null);
+        setAutoStage(null);
+      }
+    }
+    await refreshFiles();
+  }
+
   async function onParseStage1(candidate: string) {
     if (parseStage1Attempts >= config.parse_stage1_max_attempts) {
       setParseStage1Locked(true);
@@ -971,9 +1103,13 @@ function RunPageContent() {
 
     setBusy("parse");
     setError(null);
+    let autoFrom: string | null = null;
     try {
       const res = await parseStage1(projectId, runId, candidate);
       const d = res.data as ParseResult;
+      if (autoMode && d.plausibility_level === "B_plausible" && d.is_clear_for_search) {
+        autoFrom = d.normalized_understanding || candidate;
+      }
 
       setParseResult(d);
       setParseStage1Attempts((n) => n + 1);
@@ -1009,6 +1145,7 @@ function RunPageContent() {
     } finally {
       setBusy(null);
     }
+    if (autoFrom) await runAutoPipeline("framework", autoFrom);
   }
 
   async function onParseStage2Submit(additionalInfo: string) {
@@ -1024,6 +1161,7 @@ function RunPageContent() {
 
     setBusy("parse");
     setError(null);
+    let autoFrom: string | null = null;
     try {
       // Frontend validation
       const clientIssues = validateClientInput(additionalInfo);
@@ -1043,6 +1181,10 @@ function RunPageContent() {
 
       const res = await parseStage2(projectId, runId, parseCurrentDescription, additionalInfo);
       const d = res.data as ParseResult;
+      if (autoMode && d.plausibility_level === "B_plausible" && d.is_clear_for_search) {
+        autoFrom = (d.is_answered && d.normalized_understanding) ||
+          `${parseCurrentDescription}\n\nAdditional info:\n${additionalInfo}`.trim();
+      }
 
       // Increment counters
       const newTotalAttempts = parseStage2TotalAttempts + 1;
@@ -1104,6 +1246,7 @@ function RunPageContent() {
     } finally {
       setBusy(null);
     }
+    if (autoFrom) await runAutoPipeline("framework", autoFrom);
   }
 
   async function onParseStage2SubmitChecked() {
@@ -1553,6 +1696,50 @@ function RunPageContent() {
   const hasAuthorship = !!ingestStats;
   const exportMaxCount = exportWorldData.reduce((max, item) => Math.max(max, item.scholar_count), 1);
 
+  // One-click progress card
+  const searched = agg !== null || pubmed !== null;
+  const noResults = searched && !(agg?.length);
+  const understandStatus: StageStatus =
+    busy === "textValidate" || busy === "parse" ? "running"
+    : frameworkText || autoStage ? "done"
+    : parseResult?.plausibility_level === "A_impossible" ? "failed"
+    : parseResult && !parseResult.is_clear_for_search ? "waiting"
+    : parseResult ? "done"
+    : "pending";
+  const stepDone: Record<AutoStep, boolean> = {
+    framework: !!frameworkText,
+    query: !!pubmedQueryText,
+    search: searched,
+    map: ingestionCompleted,
+  };
+  const autoStatuses = Object.fromEntries(
+    AUTO_STAGES.map(({ key }) => [
+      key,
+      key === "understand" ? understandStatus
+        : autoStage === key ? "running"
+        : autoFailed === key ? "failed"
+        : stepDone[key] ? "done"
+        : "pending",
+    ])
+  ) as Record<AutoStage, StageStatus>;
+  const failedStage = autoFailed && AUTO_STAGES.find((s) => s.key === autoFailed)?.label;
+  // "Writing the PubMed query" -> "writing the PubMed query" (keep proper nouns)
+  const failedLabel = failedStage && failedStage.charAt(0).toLowerCase() + failedStage.slice(1);
+  const autoNote =
+    understandStatus === "failed"
+      ? "This doesn't read like a searchable research topic yet. Rewrite your description above and click Generate my map again."
+    : understandStatus === "waiting"
+      ? "Answer the question above so LabScout can narrow the search. It continues automatically once your topic is clear."
+    : failedLabel
+      ? `Something went wrong while ${failedLabel}. The earlier steps are saved, so retrying continues from here.`
+    : noResults
+      ? "No PubMed papers matched this topic. Try a new search with a broader description (fewer specific terms)."
+    : null;
+  const autoCanContinue =
+    autoStage === null && understandStatus === "done" && !noResults && nextAutoStep() !== null;
+  const showAutoProgress =
+    autoMode && !isDemoRun && (understandStatus !== "pending" || autoStage !== null || ingestionCompleted);
+
   const pipelineSteps = [
     { label: "Parse", status: hasFramework ? ("completed" as const) : ("pending" as const) },
     { label: "Framework", status: hasFramework ? ("completed" as const) : ("pending" as const) },
@@ -1860,8 +2047,24 @@ function RunPageContent() {
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
           <div>
             <h2 style={{ margin: 0 }}>🔍 Research Description</h2>
-            <div className="muted">Instructions: Describe your research and submit to the system. → System will try to understand it and ask questions if necessary. → You answer the questions and the system generates new understanding. → Finish this step by clicking 'Use the current understanding'.</div>
+            {autoMode ? (
+              <div className="muted">Describe your research in a sentence or two (5–30 English words), then click Generate my map. LabScout asks a follow-up question only if something is unclear, then builds the map for you.</div>
+            ) : (
+              <div className="muted">Instructions: Describe your research and submit to the system. → System will try to understand it and ask questions if necessary. → You answer the questions and the system generates new understanding. → Finish this step by clicking 'Use the current understanding'.</div>
+            )}
           </div>
+          {!isDemoRun && (
+            <label className="muted" style={{ fontSize: 13, display: "flex", gap: 6, alignItems: "center", whiteSpace: "nowrap" }}>
+              <input
+                type="checkbox"
+                checked={!autoMode}
+                onChange={(e) => setManualSteps(e.target.checked)}
+                disabled={autoStage !== null}
+                style={{ width: "auto" }}
+              />
+              Advanced: review each step
+            </label>
+          )}
         </div>
         {!textValidateMode ? (
           <>
@@ -1917,7 +2120,7 @@ function RunPageContent() {
                 disabled={busy !== null || !researchDescription.trim() || researchClientIssues.length > 0}
                 className="gradient-blue"
               >
-                {busy === "textValidate" ? "🔄 Checking…" : busy === "parse" ? "🔄 Parsing…" : "parse"}
+                {busy === "textValidate" ? "🔄 Checking…" : busy === "parse" ? "🔄 Understanding…" : autoMode ? "Generate my map" : "parse"}
               </button>
             </div>
           </>
@@ -1994,7 +2197,7 @@ function RunPageContent() {
                 {parseResult?.plausibility_level === "B_plausible" && parseResult.is_clear_for_search ? (
                   <div className="row" style={{ justifyContent: "center" }}>
                     <button 
-                      onClick={onBuildFramework} 
+                      onClick={autoMode ? () => runAutoPipeline("framework") : onBuildFramework} 
                       disabled={
                         parseCompleted ||
                         busy !== null || 
@@ -2003,7 +2206,7 @@ function RunPageContent() {
                       } 
                       className="gradient-green"
                     >
-                      {busy === "buildFramework" ? "🔄 Building…" : "Build Retrieval Framework"}
+                      {busy === "buildFramework" ? "🔄 Building…" : autoMode ? "Generate my map" : "Build Retrieval Framework"}
                     </button>
                   </div>
                 ) : parseResult?.plausibility_level === "B_plausible" &&
@@ -2137,7 +2340,7 @@ function RunPageContent() {
                         }
                         className="gradient-blue"
                       >
-                        {busy === "textValidate" ? "🔄 Checking…" : busy === "parse" ? "🔄 Parsing…" : "parse"}
+                        {busy === "textValidate" ? "🔄 Checking…" : busy === "parse" ? "🔄 Understanding…" : autoMode ? "Generate my map" : "parse"}
                       </button>
                     </div>
                   </div>
@@ -2178,7 +2381,7 @@ function RunPageContent() {
               {/* Button to use current understanding and build framework */}
               {parseResult?.is_answered && (
                 <button
-                  onClick={onBuildFramework}
+                  onClick={autoMode ? () => runAutoPipeline("framework") : onBuildFramework}
                   disabled={parseCompleted || busy !== null || parseStage2Locked}
                   className="gradient-green"
                   style={{ width: "100%" }}
@@ -2202,6 +2405,17 @@ function RunPageContent() {
           </div>
         ) : null}
       </div>
+
+      {showAutoProgress && (
+        <AutoProgress
+          statuses={autoStatuses}
+          note={autoNote}
+          title={noResults ? "No papers found for this topic" : undefined}
+          onContinue={autoCanContinue ? () => runAutoPipeline(nextAutoStep()!) : undefined}
+          onOpenMap={() => setShowMap(true)}
+          busy={busy !== null}
+        />
+      )}
 
       {/* Retrieval Framework area - always shown to indicate next step */}
       {showFrameworkAdjustUI ? (
