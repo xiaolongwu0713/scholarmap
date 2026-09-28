@@ -1,0 +1,5 @@
+DELETE FROM affiliation_cache
+WHERE created_at < '2026-09-28T11:30:00+00:00'
+  AND country IS DISTINCT FROM 'United States'
+  AND (affiliation_raw ~ '(^|[^A-Za-z])(AB|AK|AL|AR|AZ|BC|CA|CO|CT|DC|DE|FL|GA|HI|IA|ID|IL|IN|KS|KY|LA|MA|MB|MD|ME|MI|MN|MO|MS|MT|NB|NC|ND|NE|NH|NJ|NL|NM|NS|NT|NU|NV|NY|OH|OK|ON|OR|PA|PE|QC|RI|SC|SD|SK|TN|TX|UT|VA|VT|WA|WI|WV|WY|YT)([^A-Za-z]|$)'
+       OR affiliation_raw ~* '(^|[^a-z])(alabama|alaska|alberta|arizona|arkansas|british columbia|california|colorado|connecticut|delaware|district of columbia|florida|georgia|hawaii|idaho|illinois|indiana|iowa|kansas|kentucky|louisiana|maine|manitoba|maryland|massachusetts|michigan|minnesota|mississippi|missouri|montana|nebraska|nevada|new brunswick|new hampshire|new jersey|new mexico|new york|newfoundland and labrador|north carolina|north dakota|northwest territories|nova scotia|nunavut|ohio|oklahoma|ontario|oregon|pennsylvania|prince edward island|quebec|rhode island|saskatchewan|south carolina|south dakota|tennessee|texas|utah|vermont|virginia|washington|west virginia|wisconsin|wyoming|yukon)([^a-z]|$)')
