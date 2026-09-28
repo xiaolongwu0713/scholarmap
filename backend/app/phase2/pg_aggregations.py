@@ -37,6 +37,10 @@ def normalize_country(country: str | None) -> str | None:
     return COUNTRY_ALIASES.get(country, country)
 
 
+# Uncached cities geocoded per map request (~1s each under Nominatim's rate limit)
+MAX_GEOCODE_PER_REQUEST = 25
+
+
 class PostgresMapAggregator:
     """Async aggregator for PostgreSQL."""
     
@@ -272,8 +276,9 @@ class PostgresMapAggregator:
             new_cache_entries: dict[str, tuple[float | None, float | None]] = {}
             affiliations_map: dict[str, str | None] = {}
             
-            # Geocode sequentially to respect rate limits
-            for city in to_geocode:
+            # Geocode sequentially to respect rate limits. Cities come largest first; the rest
+            # get coordinates on later views, so one request never waits minutes on Nominatim.
+            for city in to_geocode[:MAX_GEOCODE_PER_REQUEST]:
                 # Get sample affiliation for this city for better error logging
                 sample_affiliation = city_map.get(city, {}).get("sample_affiliation")
                 try:

@@ -50,9 +50,14 @@ def cache(monkeypatch):
     return FakeCache
 
 
-def geocoder_returning(behaviour):
+def geocoder_returning(behaviour, calls=None):
+    def geocode(query, **kwargs):
+        if calls is not None:
+            calls.append(kwargs)
+        return behaviour(query)
+
     g = geo.PostgresGeocoder()
-    g._geocoder = SimpleNamespace(geocode=behaviour)
+    g._geocoder = SimpleNamespace(geocode=geocode)
     return g
 
 
@@ -97,3 +102,11 @@ def test_success_is_cached(cache):
     result = asyncio.run(geocoder_returning(lambda q: loc).get_coordinates("Bolivia"))
     assert result == (1.5, 2.5)
     assert cache.stored == [("country:Bolivia", 1.5, 2.5)]
+
+
+def test_address_details_are_requested_for_the_country_check(cache):
+    calls = []
+    loc = SimpleNamespace(latitude=41.4, longitude=-73.5, raw={"address": {"country": "United States"}})
+    result = asyncio.run(geocoder_returning(lambda q: loc, calls).get_coordinates("United States", "Danbury"))
+    assert result == (41.4, -73.5)
+    assert calls == [{"addressdetails": True, "language": "en"}]

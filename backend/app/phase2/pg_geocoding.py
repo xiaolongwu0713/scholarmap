@@ -140,7 +140,10 @@ class PostgresGeocoder:
                 }
                 query_str = country_normalized
             
-            location = await _nominatim_call(lambda: geocoder.geocode(query_params))
+            # addressdetails is needed for the country check below; English names match ours
+            location = await _nominatim_call(
+                lambda: geocoder.geocode(query_params, addressdetails=True, language="en")
+            )
             
             if location:
                 # Validate that the returned location matches the requested country
@@ -160,7 +163,9 @@ class PostgresGeocoder:
                     )
                     # Try fallback: simple string query
                     logger.info(f"Attempting fallback query: '{query_str}'")
-                    location_fallback = await _nominatim_call(lambda: geocoder.geocode(query_str))
+                    location_fallback = await _nominatim_call(
+                        lambda: geocoder.geocode(query_str, addressdetails=True, language="en")
+                    )
                     if location_fallback:
                         fallback_address = location_fallback.raw.get('address', {})
                         fallback_country = fallback_address.get('country', '')
