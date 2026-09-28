@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { getUser } from "@/lib/auth";
 import { checkoutEnabled, openCheckout, type BillingPeriod } from "@/lib/paddle";
+import { trackConversion } from "@/lib/analytics";
 
 interface CheckoutButtonProps {
   period: BillingPeriod;
@@ -36,6 +37,7 @@ export function CheckoutButton({ period, className, children }: CheckoutButtonPr
     setBusy(true);
     setError(null);
     try {
+      trackConversion("checkout_open", { period });
       await openCheckout(period, user);
     } catch {
       setError("Checkout could not be opened. Please disable ad blockers for this site and try again.");

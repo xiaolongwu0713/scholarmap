@@ -14,6 +14,7 @@ import {
   type OnlineUsersResponse,
 } from "@/lib/api";
 import { getUser, removeToken, isSuperUser } from "@/lib/auth";
+import { trackConversion } from "@/lib/analytics";
 import AuthGuard from "@/components/AuthGuard";
 import QuotaDisplay from "@/components/QuotaDisplay";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
@@ -175,7 +176,7 @@ function ProjectsPageContent() {
               >
                 Not now
               </button>
-              <Link href="/pricing">
+              <Link href="/pricing" onClick={() => trackConversion("upgrade_click", { source: "limit_modal" })}>
                 <button className="primary" style={{ padding: "8px 16px", fontSize: "14px" }}>
                   Upgrade to Pro
                 </button>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { sendVerificationCode, register, getPasswordRequirements, EmailTakenError, type PasswordRequirements } from "@/lib/api";
 import { setToken, setUser, postAuthRedirect } from "@/lib/auth";
 import { passwordProblems } from "@/lib/password";
+import { trackConversion } from "@/lib/analytics";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -102,6 +103,7 @@ export default function RegisterPage() {
 
     try {
       const response = await register(email.trim(), verificationCode.trim(), password, passwordRetype);
+      trackConversion("signup_complete");
       setToken(response.access_token);
       setUser({ user_id: response.user_id, email: response.email });
       router.push(postAuthRedirect());

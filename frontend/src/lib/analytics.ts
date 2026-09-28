@@ -5,6 +5,24 @@
  * Note: gtag types are defined globally in src/types/gtag.d.ts
  */
 
+import { track } from '@vercel/analytics';
+
+export type ConversionEvent =
+  | 'signup_complete'
+  | 'upgrade_click'
+  | 'checkout_open'
+  | 'industry_contact_click';
+
+/**
+ * Revenue-funnel step, sent to Vercel Web Analytics (custom events need the Vercel Pro
+ * plan; ignored until then) and to Google Analytics when it is loaded.
+ */
+export function trackConversion(event: ConversionEvent, props: Record<string, string> = {}) {
+  if (typeof window === 'undefined') return;
+  track(event, props);
+  window.gtag?.('event', event, { ...props, event_category: 'Conversion' });
+}
+
 /**
  * Track SEO page view
  * Use this to track when users land on SEO pages

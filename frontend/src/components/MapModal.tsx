@@ -16,6 +16,7 @@ import {
   type CityMapData,
   type Scholar
 } from "@/lib/api";
+import { trackConversion } from "@/lib/analytics";
 
 type MapLevel = "world" | "country" | "city";
 
@@ -1264,7 +1265,7 @@ function UpgradeNotice({ shown, total, noun }: { shown: number; total: number; n
       }}
     >
       Showing the top {shown} of {total} {noun} on the Free plan.{" "}
-      <a href="/pricing" style={{ fontWeight: 600, color: "#1d4ed8" }}>
+      <a href="/pricing" onClick={() => trackConversion("upgrade_click", { source: "map_list_limit" })} style={{ fontWeight: 600, color: "#1d4ed8" }}>
         Upgrade to Pro
       </a>{" "}
       to see the full list and export it as CSV.

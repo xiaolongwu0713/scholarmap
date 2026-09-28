@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Suspense } from "react";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { Analytics } from "@vercel/analytics/next";
 import { CanonicalURL } from "@/components/CanonicalURL";
 
 export const metadata: Metadata = {
@@ -106,6 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CanonicalURL />
         </Suspense>
         {children}
+        <Analytics />
       </body>
     </html>
   );

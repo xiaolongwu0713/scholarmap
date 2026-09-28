@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getProject, createRun, deleteRun, searchLimitMessage, type Run } from "@/lib/api";
 import AuthGuard from "@/components/AuthGuard";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
+import { trackConversion } from "@/lib/analytics";
 
 function ProjectPageContent() {
   const params = useParams();
@@ -82,7 +83,7 @@ function ProjectPageContent() {
               >
                 Not now
               </button>
-              <Link href="/pricing">
+              <Link href="/pricing" onClick={() => trackConversion("upgrade_click", { source: "limit_modal" })}>
                 <button className="primary" style={{ padding: "8px 16px", fontSize: "14px" }}>
                   Upgrade to Pro
                 </button>

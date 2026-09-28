@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getBillingPortalUrl, getUserQuota, type UserQuotaInfo } from "@/lib/api";
+import { trackConversion } from "@/lib/analytics";
 
 const PLAN_BADGE: Record<UserQuotaInfo["tier"], { label: string; color: string }> = {
   super_user: { label: "Admin", color: "#4CAF50" },
@@ -134,7 +135,7 @@ export default function QuotaDisplay() {
 
       {quota.tier === "free_user" && !activating && (
         <>
-          <Link href="/pricing">
+          <Link href="/pricing" onClick={() => trackConversion("upgrade_click", { source: "plan_card" })}>
             <button className="primary" style={{ width: "100%", marginTop: "0.5rem" }}>
               Upgrade to Pro
             </button>
