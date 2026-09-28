@@ -56,8 +56,17 @@ def _run_slug(run) -> str | None:
 
 
 async def _runs_by_slug() -> dict[str, list]:
+    from sqlalchemy import select
+    from app.db.models import Run
+
+    # Only the small columns: each run's `results` holds its full retrieval output, and
+    # loading every SEO run's rows at once ran the web process out of memory.
+    query = select(Run.run_id, Run.description, Run.created_at, Run.understanding).where(
+        Run.project_id == config.settings.seo_project_id,
+        Run.description.startswith(RUN_PREFIX),
+    )
     async with db_manager.session() as session:
-        runs = await RunRepository(session).list_runs(config.settings.seo_project_id)
+        runs = (await session.execute(query)).all()
     by_slug: dict[str, list] = {}
     for run in runs:
         slug = _run_slug(run)
