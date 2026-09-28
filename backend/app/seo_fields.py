@@ -38,7 +38,7 @@ RETRY_SECONDS = 300            # after a failed pass (e.g. the database restarte
 MAX_QUICK_RETRIES = 3          # then fall back to hourly, so a broken field can't loop forever
 # Bump to rebuild every field (e.g. after a parser or geocoding fix). The previous
 # run stays published until its replacement is ready.
-BUILD_VERSION = 4
+BUILD_VERSION = 5
 
 
 def load_field_definitions() -> list[dict[str, Any]]:
