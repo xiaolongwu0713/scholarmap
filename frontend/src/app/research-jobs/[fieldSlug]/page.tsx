@@ -16,6 +16,7 @@ import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
 import { SEOPageTracker } from '@/components/SEOPageTracker';
 import { TrackedLink } from '@/components/TrackedLink';
+import { MapYourFieldCTA } from '@/components/MapYourFieldCTA';
 import { AIContentSummary } from '@/components/AIContentSummary';
 import { DataSourceCitation } from '@/components/DataSourceCitation';
 
@@ -255,6 +256,13 @@ export default async function FieldOverviewPage({ params }: PageProps) {
             </div>
           </div>
 
+          {/* Main CTA: map your own area */}
+          <MapYourFieldCTA
+            fieldName={fieldConfig.name}
+            demoHref={demoRunUrl}
+            source={`field_overview_${fieldSlug}`}
+          />
+
           {/* Main Content */}
           <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
             {/* Introduction */}
@@ -266,23 +274,6 @@ export default async function FieldOverviewPage({ params }: PageProps) {
               </div>
             </section>
 
-            {/* CTA */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mb-8">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                Explore Interactive {fieldConfig.name} Research Map
-              </h3>
-              <p className="text-gray-700 mb-4">
-                Discover researchers, institutions, and opportunities in {fieldConfig.keywords[0]} worldwide with our interactive geographic visualization.
-              </p>
-              <TrackedLink
-                href={demoRunUrl}
-                trackingType="demo"
-                trackingSource={`field_overview_${fieldSlug}`}
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-              >
-                View Interactive Map →
-              </TrackedLink>
-            </div>
 
             {/* Why This Field Matters */}
             <section className="mb-8">
@@ -379,32 +370,11 @@ export default async function FieldOverviewPage({ params }: PageProps) {
             </section>
 
             {/* Final CTA */}
-            <div className="bg-gray-50 rounded-lg p-6 text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                Ready to Explore {fieldConfig.name} Research?
-              </h3>
-              <p className="text-gray-700 mb-4">
-                Use LabScout's interactive map to discover researchers, institutions, and opportunities in {fieldConfig.keywords[0]} worldwide.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <TrackedLink
-                  href={demoRunUrl}
-                  trackingType="demo"
-                  trackingSource={`field_overview_${fieldSlug}_bottom`}
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
-                >
-                  Explore Interactive Map
-                </TrackedLink>
-                <TrackedLink
-                  href="/auth/register"
-                  trackingType="signup"
-                  trackingSource={`field_overview_${fieldSlug}`}
-                  className="inline-block bg-white hover:bg-gray-50 text-blue-600 font-semibold px-8 py-3 rounded-lg border-2 border-blue-600 transition-colors"
-                >
-                  Create Free Account
-                </TrackedLink>
-              </div>
-            </div>
+            <MapYourFieldCTA
+              fieldName={fieldConfig.name}
+              demoHref={demoRunUrl}
+              source={`field_overview_${fieldSlug}_bottom`}
+            />
           </div>
           
           {/* GEO: AI Content Summary (hidden, for AI crawlers only) */}
