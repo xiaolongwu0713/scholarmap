@@ -2,30 +2,30 @@
 
 const cards = [
   {
-    title: "Built for biomedical and life science scholars",
+    title: "See who is publishing in your niche",
     description:
-      "LabScout focuses on biomedical and life science research, so the insights and discovery workflows fit your field.",
+      "Built on PubMed, so it covers biomedical and life-science research in depth — down to specific methods, diseases, and targets.",
     accent: "#0ea5e9",
     icon: "🧬"
   },
   {
-    title: "LLM-generated literature queries",
+    title: "No search syntax needed",
     description:
-      "Describe your research in natural language and get a full-strength retrieval script with broader coverage than manual search.",
+      "Describe your interest in natural language; LabScout writes a full-strength literature query with broader coverage than manual search.",
     accent: "#2563eb",
     icon: "🧠"
   },
   {
-    title: "Global fit and collaborator discovery",
+    title: "Shortlist labs and PIs anywhere",
     description:
-      "Find your best-fit country, city, or institution and list scholars there to discover potential collaborators in your field.",
+      "Compare countries, cities, and institutions, then list the researchers behind the papers — your contact list for applications or collaboration.",
     accent: "#059669",
     icon: "🌍"
   },
   {
-    title: "Share and export",
+    title: "Take your shortlist with you",
     description:
-      "Share and export the workflow as a PDF for reporting or distributing to your team.",
+      "Save any map as a PDF. Pro adds full researcher and institution lists and CSV export for your applications or team.",
     accent: "#c2410c",
     icon: "📤"
   }
@@ -45,7 +45,7 @@ export function WhatYouCanDo() {
       <div style={{ maxWidth: "1280px", margin: "0 auto", paddingLeft: "1rem", paddingRight: "1rem" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <h2 style={{ fontSize: "2.6rem", fontWeight: 700, color: "#0f172a", marginBottom: "0.75rem" }}>
-          Know in 10 seconds if LabScout is worth your time
+          From research interest to a shortlist of labs
           </h2>
         </div>
 

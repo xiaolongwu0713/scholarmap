@@ -10,10 +10,10 @@ import { CanonicalURL } from "@/components/CanonicalURL";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "LabScout - Global Biomedical Research Network",
+    default: "LabScout – Find Biomedical Labs and PIs Worldwide",
     template: "%s | LabScout"
   },
-  description: "LabScout is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution using PubMed data.",
+  description: "Find the biomedical and life-science labs working on your research, and who leads them. LabScout maps labs, PIs, and institutions by country and city from PubMed data, for PhD, postdoc, and collaboration searches.",
   keywords: [
     // Field-specific keywords
     "biomedical research opportunities",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: SITE_URL,
     siteName: "LabScout",
-    title: "LabScout - Global Biomedical Research Network",
+    title: "LabScout – Find Biomedical Labs and PIs Worldwide",
     description: "LabScout is a global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by country, city, and institution.",
     images: [
       {
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "LabScout - Global Biomedical Research Network",
+    title: "LabScout – Find Biomedical Labs and PIs Worldwide",
     description: "Global research opportunity map for biomedical and life science researchers. Explore labs, institutions, and collaborators by location.",
     images: ["/landing_page_figures_optimized/0.webp"],
   },

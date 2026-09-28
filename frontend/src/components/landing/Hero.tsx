@@ -89,10 +89,12 @@ export function Hero() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         {/* Fixed title - outside slider */}
         <h1 className="text-4xl md:text-5xl font-bold mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Biomedical and Life Sciences Research Opportunities by Country, City, and Institution.
+          Find the labs working on your research — and who leads them.
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto">
-          LabScout helps researchers discover labs, postdoc positions, and collaborators across 150+ countries using PubMed data.
+          Describe your research interest in plain words. LabScout maps the biomedical and life-science labs
+          publishing on it — by country, city, and institution — so you can shortlist PhD, postdoc, and
+          collaboration targets in minutes, not weeks.
         </p>
         <div style={{ position: "relative" }}>
           <button

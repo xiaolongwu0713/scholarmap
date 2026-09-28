@@ -1,11 +1,17 @@
 "use client";
 
-import { DEMO_RUN_PATH } from '@/lib/site';
+import { DEMO_RUN_PATH, PLANS } from '@/lib/site';
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { isAuthenticated } from "@/lib/auth";
 
 export function LandingCTAs() {
-  const startHref = isAuthenticated() ? "/projects" : "/auth/register";
+  // Decided after mount: the server can't see the login token, and React doesn't
+  // patch a mismatched href, so logged-in users were sent to the register page.
+  const [startHref, setStartHref] = useState("/auth/register");
+  useEffect(() => {
+    if (isAuthenticated()) setStartHref("/projects");
+  }, []);
 
   return (
     <section style={{ paddingBottom: "4rem", backgroundColor: "white" }}>
@@ -66,6 +72,13 @@ export function LandingCTAs() {
           </svg>
         </button>
       </div>
+      <p style={{ textAlign: "center", marginTop: "1rem", color: "#64748b", fontSize: "0.95rem", padding: "0 1rem" }}>
+        Free to start with {PLANS.free.searchesPerWeek} searches a week. Applying this season?{" "}
+        <Link href="/pricing" style={{ color: "#2563eb", fontWeight: 600 }}>
+          Pro is ${PLANS.pro.quarterlyPrice} for 3 months
+        </Link>
+        .
+      </p>
     </section>
   );
 }

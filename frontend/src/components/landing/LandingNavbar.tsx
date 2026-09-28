@@ -33,34 +33,40 @@ export function LandingNavbar() {
                 </span>
               </div>
             </Link>
-            <span className="text-xs sm:text-sm font-semibold text-emerald-600 text-center">
+            <span className="hidden xl:block text-sm font-semibold text-emerald-600 text-center">
               For Biomedical and Life Sciences Research
             </span>
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-6 md:gap-10">
+          <div className="hidden lg:flex items-center gap-2 xl:gap-4">
             <a
               href="#what-it-is"
-              className="text-sm md:text-base px-4 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+              className="whitespace-nowrap text-sm xl:text-base px-3 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
             >
               What It Is
             </a>
             <a
               href="#what-you-can-do"
-              className="text-sm md:text-base px-4 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+              className="whitespace-nowrap text-sm xl:text-base px-3 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
             >
               Who It's For
             </a>
             <a
               href="#how-it-works"
-              className="text-sm md:text-base px-4 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+              className="whitespace-nowrap text-sm xl:text-base px-3 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
             >
               How It Works
             </a>
             <a
+              href="/for-industry"
+              className="whitespace-nowrap text-sm xl:text-base px-3 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+            >
+              For Industry
+            </a>
+            <a
               href="#contact"
-              className="text-sm md:text-base px-4 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+              className="whitespace-nowrap text-sm xl:text-base px-3 py-2 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
             >
               Contact
             </a>
@@ -73,7 +79,7 @@ export function LandingNavbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
+              className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? (
@@ -91,7 +97,7 @@ export function LandingNavbar() {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200">
+          <div className="lg:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col gap-2">
               <a
                 href="#what-it-is"
@@ -113,6 +119,13 @@ export function LandingNavbar() {
                 className="px-4 py-3 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
               >
                 How It Works
+              </a>
+              <a
+                href="/for-industry"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 rounded-lg font-medium bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+              >
+                For Industry
               </a>
               <a
                 href="#contact"
