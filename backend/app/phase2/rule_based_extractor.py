@@ -129,6 +129,12 @@ for v in COUNTRY_SYNONYMS.values():
 
 AMBIGUOUS_COUNTRY = {"georgia"}  # minimal guard; expand if needed
 
+# State / province names that contain or equal a country name ("New Jersey" -> Jersey,
+# "New Mexico" -> Mexico, "Georgia"). They are regions, not countries.
+_REGION_NAMES_LOWER = {n.lower() for n in (*US_STATE_NAMES, *CAN_PROV_NAMES)}
+# Georgia the country is meant only when one of its cities is mentioned.
+_GEORGIA_COUNTRY_HINTS = ("tbilisi", "batumi", "kutaisi", "rustavi", "zugdidi", "telavi", "republic of georgia")
+
 
 # --------------------
 # Normalization helpers
@@ -169,6 +175,9 @@ def _strip_postal(t: str) -> str:
 # --------------------
 def _find_country_substring(token: str) -> Optional[str]:
     tl = " " + _norm_token(token).lower() + " "
+    for region in _REGION_NAMES_LOWER:
+        if " " in region:  # "University of New Mexico" must not match Mexico
+            tl = tl.replace(f" {region} ", " ")
     matches = []
     for name in _country_names:
         if len(name) < 4:
@@ -192,6 +201,10 @@ def _detect_country(tokens):
         if len(t_norm) == 2 and (t_norm.upper() in US_STATES or t_norm.upper() in CAN_PROV_ABBR):
             continue
         t0 = t_norm.lower().strip(".")
+        if t0 in _REGION_NAMES_LOWER:
+            joined = " ".join(tokens).lower()
+            if t0 != "georgia" or not any(h in joined for h in _GEORGIA_COUNTRY_HINTS):
+                continue
         t0 = COUNTRY_SYNONYMS.get(t0, t0)
         try:
             c = pycountry.countries.lookup(t0)
