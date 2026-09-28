@@ -87,13 +87,34 @@ export async function getPasswordRequirements(): Promise<PasswordRequirements> {
   return await res.json();
 }
 
-export async function sendVerificationCode(email: string): Promise<void> {
+/** Thrown by sendVerificationCode when registering an email that already has an account. */
+export class EmailTakenError extends Error {}
+
+export async function sendVerificationCode(
+  email: string,
+  purpose: "register" | "reset" = "register"
+): Promise<void> {
   const res = await fetch(`${baseUrl}/api/auth/send-verification-code`, {
     method: "POST",
     headers: getDefaultHeaders(),
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, purpose }),
   });
+  if (res.status === 409) throw new EmailTakenError(await readErrorDetail(res));
   await throwIfNotOk(res, "sendVerificationCode");
+}
+
+export async function resetPassword(
+  email: string,
+  verification_code: string,
+  password: string
+): Promise<LoginResponse> {
+  const res = await fetch(`${baseUrl}/api/auth/reset-password`, {
+    method: "POST",
+    headers: getDefaultHeaders(),
+    body: JSON.stringify({ email, verification_code, password }),
+  });
+  await throwIfNotOk(res, "resetPassword");
+  return await res.json();
 }
 
 export async function register(

@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { sendVerificationCode, register, getPasswordRequirements, type PasswordRequirements } from "@/lib/api";
+import { sendVerificationCode, register, getPasswordRequirements, EmailTakenError, type PasswordRequirements } from "@/lib/api";
 import { setToken, setUser, postAuthRedirect } from "@/lib/auth";
+import { passwordProblems } from "@/lib/password";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function RegisterPage() {
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [showSpamWarning, setShowSpamWarning] = useState(false);
+  const [emailTaken, setEmailTaken] = useState(false);
 
   // Load password requirements from API
   useEffect(() => {
@@ -35,6 +37,7 @@ export default function RegisterPage() {
   async function handleSendCode(e: React.MouseEvent) {
     e.preventDefault();
     setError(null);
+    setEmailTaken(false);
     setSendingCode(true);
 
     try {
@@ -52,7 +55,8 @@ export default function RegisterPage() {
         });
       }, 1000);
     } catch (e: any) {
-      setError(e.message || "Failed to send verification code");
+      if (e instanceof EmailTakenError) setEmailTaken(true);
+      else setError(e.message || "Failed to send verification code");
     } finally {
       setSendingCode(false);
     }
@@ -60,42 +64,7 @@ export default function RegisterPage() {
 
   // Real-time password validation using API configuration
   function validatePasswordRealTime(pwd: string): string[] {
-    if (!passwordRequirements) return [];
-    
-    const errors: string[] = [];
-    const req = passwordRequirements;
-    
-    // Minimum length
-    if (pwd.length < req.min_length) {
-      errors.push(`At least ${req.min_length} characters`);
-    }
-    // Maximum length
-    if (pwd.length > req.max_length) {
-      errors.push(`At most ${req.max_length} characters`);
-    }
-    // Require digit
-    if (req.require_digit && !/\d/.test(pwd)) {
-      errors.push("At least one digit (0-9)");
-    }
-    // Require letter
-    if (req.require_letter && !/[a-zA-Z]/.test(pwd)) {
-      errors.push("At least one letter (a-z, A-Z)");
-    }
-    // Require uppercase letter
-    if (req.require_capital && !/[A-Z]/.test(pwd)) {
-      errors.push("At least one uppercase letter (A-Z)");
-    }
-    // Require special character
-    if (req.require_special) {
-      // Escape special regex characters
-      const escapedSpecial = req.special_chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const specialPattern = new RegExp(`[${escapedSpecial}]`);
-      if (!specialPattern.test(pwd)) {
-        errors.push(`At least one special character from: ${req.special_chars}`);
-      }
-    }
-    
-    return errors;
+    return passwordRequirements ? passwordProblems(pwd, passwordRequirements) : [];
   }
 
   // Full password validation for form submission
@@ -181,6 +150,16 @@ export default function RegisterPage() {
           {codeSent && (
             <div style={{ fontSize: "0.85rem", color: "var(--muted)" }}>
               Verification code sent to your email
+            </div>
+          )}
+          {emailTaken && (
+            <div style={{ fontSize: "0.9rem", color: "var(--error)" }}>
+              This email is already registered.{" "}
+              <Link href="/auth/login">Log in</Link> or{" "}
+              <Link href={`/auth/forgot-password?email=${encodeURIComponent(email.trim())}`}>
+                reset your password
+              </Link>
+              .
             </div>
           )}
         </div>

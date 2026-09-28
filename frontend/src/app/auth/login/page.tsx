@@ -64,6 +64,9 @@ export default function LoginPage() {
             disabled={loading}
             autoComplete="current-password"
           />
+          <Link href="/auth/forgot-password" style={{ fontSize: "0.85rem", alignSelf: "flex-end" }}>
+            Forgot password?
+          </Link>
         </div>
 
         {error && <div style={{ color: "var(--error)", fontSize: "0.9rem" }}>{error}</div>}
