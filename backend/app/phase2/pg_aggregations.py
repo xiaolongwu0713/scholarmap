@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.connection import db_manager
 from app.db.models import Authorship, RunPaper
-from app.phase2.pg_geocoding import PostgresGeocoder
+from app.phase2.pg_geocoding import PostgresGeocoder, TransientGeocodingError
 
 # Country name normalization
 COUNTRY_ALIASES = {
@@ -142,8 +142,10 @@ class PostgresMapAggregator:
         
         for country, location_key in zip(country_map.keys(), country_keys):
             cached = cached_items.get(location_key)
-            if cached and cached.latitude is not None and cached.longitude is not None:
-                cached_coords[country] = (cached.latitude, cached.longitude)
+            if cached:
+                # A cached "not found" is final too; re-querying Nominatim on every view is slow
+                found = cached.latitude is not None and cached.longitude is not None
+                cached_coords[country] = (cached.latitude, cached.longitude) if found else None
             else:
                 to_geocode.append(country)
         
@@ -257,8 +259,10 @@ class PostgresMapAggregator:
         
         for city, location_key in zip(city_map.keys(), city_keys):
             cached = cached_items.get(location_key)
-            if cached and cached.latitude is not None and cached.longitude is not None:
-                cached_coords[city] = (cached.latitude, cached.longitude)
+            if cached:
+                # A cached "not found" is final too; re-querying Nominatim on every view is slow
+                found = cached.latitude is not None and cached.longitude is not None
+                cached_coords[city] = (cached.latitude, cached.longitude) if found else None
             else:
                 to_geocode.append(city)
         
@@ -272,11 +276,16 @@ class PostgresMapAggregator:
             for city in to_geocode:
                 # Get sample affiliation for this city for better error logging
                 sample_affiliation = city_map.get(city, {}).get("sample_affiliation")
-                coords = await geocoder._geocode_external(
-                    country_normalized, 
-                    city,
-                    original_affiliation=sample_affiliation
-                )
+                try:
+                    coords = await geocoder._geocode_external(
+                        country_normalized,
+                        city,
+                        original_affiliation=sample_affiliation
+                    )
+                except TransientGeocodingError as e:
+                    # Rate limited: show the rest without coordinates now, geocode on a later request
+                    logger.warning(f"   Geocoding unavailable ({e}); skipping {len(to_geocode)} uncached cities for now")
+                    break
                 cached_coords[city] = coords
                 location_key = PostgresGeocoder.make_location_key(country_normalized, city)
                 new_cache_entries[location_key] = (coords[0] if coords else None, coords[1] if coords else None)
