@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import Tuple
 
+from geopy.exc import GeocoderQuotaExceeded, GeocoderTimedOut, GeocoderUnavailable
 from geopy.geocoders import Nominatim
 
 from app.db.connection import db_manager
@@ -13,6 +15,42 @@ from app.db.repository import GeocodingCacheRepository
 from config import settings
 
 logger = logging.getLogger(__name__)
+
+# Nominatim's usage policy allows at most 1 request/second per application, so the
+# limit is shared by every geocoder instance in the process (builder + web requests).
+_MIN_INTERVAL = 1.1
+_RETRY_BACKOFF = (30, 90, 240)  # seconds to wait after a rate-limit / outage
+_rate_lock = asyncio.Lock()
+_last_request = 0.0
+_executor = ThreadPoolExecutor(max_workers=1)
+
+# Errors that say "try later", not "this place doesn't exist". Never cached.
+_TRANSIENT_ERRORS = (GeocoderQuotaExceeded, GeocoderTimedOut, GeocoderUnavailable, OSError)
+
+
+class TransientGeocodingError(Exception):
+    """Geocoding temporarily unavailable (rate limit, timeout, outage)."""
+
+
+async def _nominatim_call(fn):
+    """Run one Nominatim request under the shared rate limit, retrying transient errors."""
+    global _last_request
+    for attempt in range(len(_RETRY_BACKOFF) + 1):
+        async with _rate_lock:
+            wait = _MIN_INTERVAL - (time.monotonic() - _last_request)
+            if wait > 0:
+                await asyncio.sleep(wait)
+            try:
+                return await asyncio.get_running_loop().run_in_executor(_executor, fn)
+            except _TRANSIENT_ERRORS as e:
+                if attempt == len(_RETRY_BACKOFF):
+                    raise TransientGeocodingError(str(e)) from e
+                delay = _RETRY_BACKOFF[attempt]
+                logger.warning("Nominatim unavailable (%s); pausing %ss before retry", e, delay)
+                # Hold the lock while backing off so no other caller hammers the API
+                await asyncio.sleep(delay)
+            finally:
+                _last_request = time.monotonic()
 
 # Country name normalization (shared with pg_aggregations)
 COUNTRY_ALIASES = {
@@ -48,8 +86,6 @@ class PostgresGeocoder:
     
     def __init__(self) -> None:
         self._geocoder: Nominatim | None = None
-        self._rate_limit_delay = 1.0  # Nominatim requires 1 second between requests
-        self._executor = ThreadPoolExecutor(max_workers=1)  # Single worker for rate limiting
     
     def _get_geocoder(self) -> Nominatim:
         """Lazy initialize geocoder (synchronous)."""
@@ -89,11 +125,6 @@ class PostgresGeocoder:
             # Normalize country name before querying Nominatim
             country_normalized = normalize_country(country) or country
             
-            # Rate limiting
-            await asyncio.sleep(self._rate_limit_delay)
-            
-            # Run synchronous geocoding in thread pool
-            loop = asyncio.get_event_loop()
             geocoder = self._get_geocoder()
             
             # Use structured query to enforce country constraint
@@ -109,10 +140,7 @@ class PostgresGeocoder:
                 }
                 query_str = country_normalized
             
-            location = await loop.run_in_executor(
-                self._executor,
-                lambda: geocoder.geocode(query_params)
-            )
+            location = await _nominatim_call(lambda: geocoder.geocode(query_params))
             
             if location:
                 # Validate that the returned location matches the requested country
@@ -132,10 +160,7 @@ class PostgresGeocoder:
                     )
                     # Try fallback: simple string query
                     logger.info(f"Attempting fallback query: '{query_str}'")
-                    location_fallback = await loop.run_in_executor(
-                        self._executor,
-                        lambda: geocoder.geocode(query_str)
-                    )
+                    location_fallback = await _nominatim_call(lambda: geocoder.geocode(query_str))
                     if location_fallback:
                         fallback_address = location_fallback.raw.get('address', {})
                         fallback_country = fallback_address.get('country', '')
@@ -167,6 +192,8 @@ class PostgresGeocoder:
                     logger.warning(f"Could not geocode '{query_str}'")
                 return None
             
+        except TransientGeocodingError:
+            raise
         except Exception as e:
             if original_affiliation:
                 logger.error(f"Geocoding failed for '{country}, {city}' (from affiliation: {original_affiliation}): {e}")
@@ -242,7 +269,12 @@ class PostgresGeocoder:
             logger.warning(f"Cache lookup failed for {location_key}: {e}, falling back to API")
         
         # Cache miss - call external API
-        coords = await self._geocode_external(country, city, original_affiliation=affiliation)
+        try:
+            coords = await self._geocode_external(country, city, original_affiliation=affiliation)
+        except TransientGeocodingError as e:
+            # Don't cache: the place may well exist, the service just refused us for now
+            logger.error(f"Geocoding temporarily unavailable for {location_key}, not caching: {e}")
+            return None
         
         # Store in cache (even if None, to avoid repeated failed lookups with rate limiting)
         try:

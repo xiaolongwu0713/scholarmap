@@ -10,7 +10,7 @@ from types import SimpleNamespace
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from app.seo_fields import RUN_PREFIX, _needs_build, _run_slug, load_field_definitions
+from app.seo_fields import BUILD_VERSION, RUN_PREFIX, _needs_build, _run_slug, load_field_definitions
 
 NOW = datetime.now(timezone.utc)
 
@@ -40,9 +40,14 @@ def test_no_run_means_build_new():
     assert _needs_build([]) == (True, None)
 
 
-def test_ready_or_too_small_is_left_alone():
-    assert _needs_build([run({"status": "ready"})]) == (False, None)
-    assert _needs_build([run({"status": "too_small"})]) == (False, None)
+def test_current_ready_or_too_small_is_left_alone():
+    assert _needs_build([run({"status": "ready", "build_version": BUILD_VERSION})]) == (False, None)
+    assert _needs_build([run({"status": "too_small", "build_version": BUILD_VERSION})]) == (False, None)
+
+
+def test_outdated_build_is_rebuilt_in_new_run():
+    assert _needs_build([run({"status": "ready"})]) == (True, None)  # pre-versioning = v1
+    assert _needs_build([run({"status": "ready", "build_version": BUILD_VERSION - 1})]) == (True, None)
 
 
 def test_failed_run_is_retried_in_place():
@@ -62,5 +67,5 @@ def test_unclaimed_run_is_reused():
 
 def test_latest_run_decides():
     old_failed = run({"status": "failed"}, created=NOW - timedelta(days=1), run_id="a")
-    new_ready = run({"status": "ready"}, created=NOW, run_id="b")
+    new_ready = run({"status": "ready", "build_version": BUILD_VERSION}, created=NOW, run_id="b")
     assert _needs_build([old_failed, new_ready]) == (False, None)

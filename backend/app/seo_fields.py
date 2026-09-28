@@ -30,6 +30,9 @@ MIN_PAPERS = 100               # below this a field is too thin to publish
 STALE_BUILD = timedelta(minutes=30)  # a "building" claim older than this was interrupted (e.g. by a deploy)
 STARTUP_DELAY_SECONDS = 90     # let the service pass health checks first
 RECHECK_SECONDS = 3600         # retry interrupted or failed fields hourly
+# Bump to rebuild every field (e.g. after a parser or geocoding fix). The previous
+# run stays published until its replacement is ready.
+BUILD_VERSION = 2
 
 
 def load_field_definitions() -> list[dict[str, Any]]:
@@ -115,7 +118,7 @@ async def build_field(field: dict[str, Any], run_id: str | None = None) -> str:
             project_id=project_id, api_key=config.settings.pubmed_api_key or None
         ).ingest_run(run_id=run_id, store=store)
         await _set_state(
-            run_id, status="ready", papers=papers,
+            run_id, status="ready", papers=papers, build_version=BUILD_VERSION,
             authorships=stats.authorships_created,
             finished_at=datetime.now(timezone.utc).isoformat(),
         )
@@ -135,6 +138,8 @@ def _needs_build(runs: list) -> tuple[bool, str | None]:
     state = _seo_state(latest)
     status = state.get("status")
     if status in ("ready", "too_small"):
+        if state.get("build_version", 1) < BUILD_VERSION:
+            return True, None  # outdated: rebuild in a fresh run
         return False, None
     if status == "building":
         started = datetime.fromisoformat(state.get("started_at", "1970-01-01T00:00:00+00:00"))
