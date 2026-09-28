@@ -133,11 +133,19 @@ export default function QuotaDisplay() {
       {error && <div style={{ color: "#dc2626", fontSize: "0.8rem" }}>{error}</div>}
 
       {quota.tier === "free_user" && !activating && (
-        <Link href="/pricing">
-          <button className="primary" style={{ width: "100%", marginTop: "0.5rem" }}>
-            Upgrade to Pro — 30 searches/week, full lists, CSV export
-          </button>
-        </Link>
+        <>
+          <Link href="/pricing">
+            <button className="primary" style={{ width: "100%", marginTop: "0.5rem" }}>
+              Upgrade to Pro
+            </button>
+          </Link>
+          {/* Benefits only in the desktop sidebar; on phones the card stays compact */}
+          <ul className="hidden lg:block muted" style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.85rem", lineHeight: 1.7 }}>
+            <li>30 searches per week</li>
+            <li>Full researcher and institution lists</li>
+            <li>CSV export</li>
+          </ul>
+        </>
       )}
       {quota.tier === "pro_user" && (
         <button className="secondary" onClick={openPortal} disabled={portalBusy} style={{ width: "100%", marginTop: "0.5rem" }}>

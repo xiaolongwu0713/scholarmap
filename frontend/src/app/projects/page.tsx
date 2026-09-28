@@ -22,6 +22,7 @@ function ProjectsPageContent() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [name, setName] = useState("");
+  const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<{ user_id: string; email: string } | null>(null);
   const [isSuper, setIsSuper] = useState(false);
@@ -76,6 +77,7 @@ function ProjectsPageContent() {
     try {
       await createProject(trimmed);
       setName("");
+      setCreating(false);
       await refresh();
     } catch (e) {
       const errorMessage = String(e);
@@ -184,79 +186,121 @@ function ProjectsPageContent() {
       )}
 
       <div
-        className="row"
-        style={{
-          gap: "1.5rem",
-          flexWrap: "wrap",
-          alignItems: "stretch"
-        }}
+        className={
+          isSuper ? "stack" : "grid gap-6 items-start lg:grid-cols-[minmax(0,1fr)_320px]"
+        }
       >
-        <div className="card" style={{ flex: "1 1 420px", maxWidth: "640px" }}>
-          <div>
-            <h1 style={{ margin: 0 }}>My Projects</h1>
-            <p className="muted" style={{ margin: "0.5rem 0 0 0" }}>
-              Create a project, then run searches from a research description.
-            </p>
-          </div>
-        </div>
-
+        {/* Plan: fixed sidebar on desktop, compact card above the list on small screens */}
         {!isSuper && (
-          <div style={{ flex: "1 1 320px", maxWidth: "460px" }}>
+          <aside className="lg:col-start-2 lg:row-start-1 lg:sticky lg:top-24">
             <QuotaDisplay />
-          </div>
+          </aside>
         )}
-      </div>
 
-      <div className="card stack">
-        <div className="row">
-          <div style={{ position: "relative", flex: 1 }}>
-            {validateProjectName(name).length > 0 && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: 8,
-                  right: 10,
-                  zIndex: 1,
-                  fontSize: 12,
-                  color: "#b91c1c",
-                  background: "#fee2e2",
-                  border: "1px solid #fecaca",
-                  borderRadius: 999,
-                  padding: "2px 8px"
-                }}
-              >
-                {validateProjectName(name).join(" · ")}
-              </div>
-            )}
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Project name"
-              maxLength={50}
-            />
-          </div>
-          <button onClick={onCreate} disabled={validateProjectName(name).length > 0}>
-            Create
-          </button>
-        </div>
-        {error ? <div className="muted">Error: {error}</div> : null}
-      </div>
-
-      <div className="card stack">
-        <h2>Projects</h2>
-        {projects.length === 0 ? <div className="muted">No projects yet.</div> : null}
-        {projects.map((p) => (
-          <div key={p.project_id} className="row" style={{ justifyContent: "space-between" }}>
-            <div className="stack" style={{ gap: 4 }}>
-              <div>{p.name}</div>
-              <div className="muted">{p.project_id}</div>
+        <main className="stack lg:col-start-1 lg:row-start-1" style={{ minWidth: 0 }}>
+          <div className="row" style={{ justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
+            <div>
+              <h1 style={{ margin: 0 }}>My Projects</h1>
+              <p className="muted" style={{ margin: "0.5rem 0 0 0" }}>
+                Create a project, then run searches from a research description.
+              </p>
             </div>
-            <Link href={`/projects/${p.project_id}`}>
-              <button className="secondary">Open</button>
-            </Link>
+            {!creating && projects.length > 0 && (
+              <button onClick={() => setCreating(true)}>+ New project</button>
+            )}
           </div>
-        ))}
-      </div>
+
+          {creating && (
+            <form
+              className="card stack"
+              onSubmit={(e) => {
+                e.preventDefault();
+                onCreate();
+              }}
+            >
+              <label htmlFor="project-name" style={{ fontWeight: 500 }}>
+                Project name
+              </label>
+              <div className="row" style={{ flexWrap: "wrap" }}>
+                <input
+                  id="project-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="e.g. Brain-computer interfaces"
+                  maxLength={50}
+                  autoFocus
+                  style={{ flex: "1 1 220px" }}
+                />
+                <button type="submit" disabled={validateProjectName(name).length > 0}>
+                  Create
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => {
+                    setCreating(false);
+                    setName("");
+                    setError(null);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+              <div className="muted" style={{ fontSize: "0.85rem" }}>
+                3–50 characters: letters, numbers, spaces, - and _
+              </div>
+              {name.trim() && validateProjectName(name).length > 0 && (
+                <div style={{ fontSize: "0.85rem", color: "var(--error)" }}>
+                  {validateProjectName(name).join(" · ")}
+                </div>
+              )}
+            </form>
+          )}
+          {error ? <div className="muted">Error: {error}</div> : null}
+
+          {projects.length === 0 && !creating ? (
+            <div className="card stack" style={{ alignItems: "flex-start" }}>
+              <h2 style={{ margin: 0 }}>Start your first project</h2>
+              <p className="muted" style={{ margin: 0 }}>
+                A project groups your searches. Describe a research area and LabScout maps the labs and
+                researchers working on it.
+              </p>
+              <button onClick={() => setCreating(true)}>+ New project</button>
+              <p className="muted" style={{ margin: 0, fontSize: "0.9rem" }}>
+                Or explore an example map:{" "}
+                <Link href="/research-jobs/brain-computer-interface">Brain-computer interfaces</Link>
+                {" · "}
+                <Link href="/research-jobs/crispr-gene-editing">CRISPR gene editing</Link>
+              </p>
+            </div>
+          ) : projects.length > 0 ? (
+            <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+              {projects.map((p, i) => (
+                <Link
+                  key={p.project_id}
+                  href={`/projects/${p.project_id}`}
+                  className="flex items-center justify-between gap-4 px-6 py-4 hover:bg-slate-50"
+                  style={{
+                    color: "inherit",
+                    textDecoration: "none",
+                    borderTop: i === 0 ? "none" : "1px solid var(--border, #e5e7eb)",
+                  }}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {p.name}
+                    </div>
+                    <div className="muted" style={{ fontSize: "0.85rem" }}>
+                      Created {new Date(p.created_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <span className="muted" style={{ whiteSpace: "nowrap" }}>
+                    Open →
+                  </span>
+                </Link>
+              ))}
+            </div>
+          ) : null}
 
       {/* Resource Monitoring Panel (Super User Only) */}
       {isSuper && (
@@ -334,6 +378,8 @@ function ProjectsPageContent() {
           )}
         </div>
       )}
+        </main>
+      </div>
       </div>
     </>
   );

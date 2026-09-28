@@ -168,11 +168,11 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                       width: "32px",
                       height: "32px",
                       borderRadius: "50%",
-                      backgroundColor: "#e8f0ff",
+                      backgroundColor: "#2563eb",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "#3b82f6",
+                      color: "#ffffff",
                       fontSize: "14px",
                       fontWeight: "600"
                     }}
