@@ -542,7 +542,7 @@ export async function getCountryMap(
   runId: string,
   country: string,
   min_confidence = "low"
-): Promise<CountryMapData[]> {
+): Promise<{ items: CountryMapData[]; withoutCity: number }> {
   const res = await fetch(
     `${baseUrl}/api/projects/${projectId}/runs/${runId}/map/country/${encodeURIComponent(country)}?min_confidence=${min_confidence}`,
     { cache: "no-store" ,
@@ -551,7 +551,8 @@ export async function getCountryMap(
   );
   await throwIfNotOk(res, "getCountryMap");
   const json = await res.json();
-  return json.data as CountryMapData[];
+  // withoutCity: scholars in the country whose city couldn't be determined
+  return { items: json.data as CountryMapData[], withoutCity: Number(json.without_city || 0) };
 }
 
 export async function getCityMap(

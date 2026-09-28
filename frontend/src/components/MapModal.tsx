@@ -235,6 +235,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
   // Data for each level
   const [worldData, setWorldData] = useState<WorldMapData[]>([]);
   const [countryData, setCountryData] = useState<CountryMapData[]>([]);
+  const [countryWithoutCity, setCountryWithoutCity] = useState(0);
   const [cityData, setCityData] = useState<CityMapData[]>([]);
   const [scholars, setScholars] = useState<Scholar[]>([]);
   // Free plans get the top rows only; these hold the full counts for the upgrade notice
@@ -371,8 +372,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
     setLoading(true);
     setError(null);
     try {
-      const data = await getCountryMap(projectId, runId, country);
+      const { items: data, withoutCity } = await getCountryMap(projectId, runId, country);
       setCountryData(data);
+      setCountryWithoutCity(withoutCity);
       setSelectedCountry(country);
       setLevel("country");
 
@@ -578,7 +580,14 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
   }
 
   function renderCountryList() {
-    if (!countryData.length) return <div className="muted">No cities found</div>;
+    const unlocated = countryWithoutCity > 0 && (
+      <div className="muted" style={{ fontSize: 13, marginTop: 8 }}>
+        {countryData.length ? "+ " : ""}
+        {countryWithoutCity} researcher{countryWithoutCity === 1 ? "" : "s"} in {selectedCountry} whose city
+        couldn&apos;t be determined from their affiliation.
+      </div>
+    );
+    if (!countryData.length) return unlocated || <div className="muted">No cities found</div>;
 
     return (
       <div style={{ maxHeight: 400, overflow: "auto" }}>
@@ -600,6 +609,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             ))}
           </tbody>
         </table>
+        {unlocated}
       </div>
     );
   }

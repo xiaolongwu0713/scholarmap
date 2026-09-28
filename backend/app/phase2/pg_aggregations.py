@@ -178,6 +178,33 @@ class PostgresMapAggregator:
         logger.info(f"   ✅ World map aggregation complete: {len(items)} countries")
         return items
     
+    async def count_without_city(
+        self,
+        session: AsyncSession,
+        run_id: str,
+        country: str,
+        min_confidence: str = "low"
+    ) -> int:
+        """Scholars placed in a country whose city couldn't be determined.
+
+        They count on the world map but have no city row, so the country view reports them.
+        """
+        pmids = await self._get_run_pmids(session, run_id)
+        if not pmids:
+            return 0
+        scholars = func.count(func.distinct(func.concat(
+            Authorship.author_name_raw, '|', func.coalesce(Authorship.institution, ''), '|', Authorship.country
+        )))
+        result = await session.execute(
+            select(scholars).where(
+                Authorship.country == normalize_country(country),
+                Authorship.city.is_(None),
+                Authorship.pmid.in_(pmids),
+                Authorship.affiliation_confidence.in_(self._get_confidence_levels(min_confidence)),
+            )
+        )
+        return int(result.scalar() or 0)
+
     async def get_country_map(
         self,
         session: AsyncSession,

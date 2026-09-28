@@ -1392,12 +1392,13 @@ async def phase2_map_country(request: Request,
         async with db_manager.session() as session:
             aggregator = PostgresMapAggregator()
             data = await aggregator.get_country_map(session, run_id, country, min_confidence)
+            without_city = await aggregator.count_without_city(session, run_id, country, min_confidence)
         
         logger.info(f"✅ MAP OPERATION COMPLETED - Country Map: {country}")
         logger.info(f"   Cities returned: {len(data)}")
         logger.info("=" * 80)
         
-        return {"data": data}
+        return {"data": data, "without_city": without_city}
         
     except Exception as e:
         logger.error(f"❌ MAP OPERATION FAILED - Country Map ({country}): {e}", exc_info=True)
