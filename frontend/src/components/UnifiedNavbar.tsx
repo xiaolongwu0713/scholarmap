@@ -179,7 +179,11 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                   >
                     {user?.email?.[0].toUpperCase() || "U"}
                   </div>
-                  <span style={{ maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {/* Avatar only on phones; the email alone overflowed a 375px screen */}
+                  <span
+                    className="hidden sm:inline"
+                    style={{ maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  >
                     {user?.email || "User"}
                   </span>
                   <svg

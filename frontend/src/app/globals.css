@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Colors referenced as var(--x) in page styles; they were never defined, so errors rendered black */
+:root {
+  --text: #111827;
+  --muted: #6b7280;
+  --error: #dc2626;
+  --warning: #b45309;
+  --border: #e5e7eb;
+}
+
 html {
   scroll-behavior: smooth;
 }
