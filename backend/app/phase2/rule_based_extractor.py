@@ -186,6 +186,11 @@ def _find_country_substring(token: str) -> Optional[str]:
 def _detect_country(tokens):
     for t in reversed(tokens):
         t_norm = _norm_token(t)
+        # Two-letter US state / Canadian province codes collide with ISO country codes
+        # (MA=Morocco, PA=Panama, IL=Israel, IN=India, CA=Canada...). Treat them as regions;
+        # _infer_country then derives the country from the region.
+        if len(t_norm) == 2 and (t_norm.upper() in US_STATES or t_norm.upper() in CAN_PROV_ABBR):
+            continue
         t0 = t_norm.lower().strip(".")
         t0 = COUNTRY_SYNONYMS.get(t0, t0)
         try:

@@ -51,7 +51,7 @@ def test_failed_run_is_retried_in_place():
 
 def test_recent_building_claim_is_respected_but_stale_one_retried():
     fresh = run({"status": "building", "started_at": (NOW - timedelta(minutes=10)).isoformat()})
-    stale = run({"status": "building", "started_at": (NOW - timedelta(hours=5)).isoformat()}, run_id="old")
+    stale = run({"status": "building", "started_at": (NOW - timedelta(minutes=45)).isoformat()}, run_id="old")
     assert _needs_build([fresh]) == (False, None)
     assert _needs_build([stale]) == (True, "old")
 

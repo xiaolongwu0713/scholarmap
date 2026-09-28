@@ -27,8 +27,9 @@ logger = logging.getLogger(__name__)
 FIELDS_FILE = repo_root / "frontend" / "src" / "data" / "seo-fields.json"
 RUN_PREFIX = "[seo:"          # run.description starts with "[seo:<slug>]"
 MIN_PAPERS = 100               # below this a field is too thin to publish
-STALE_BUILD = timedelta(hours=3)  # a "building" claim older than this is retried
+STALE_BUILD = timedelta(minutes=30)  # a "building" claim older than this was interrupted (e.g. by a deploy)
 STARTUP_DELAY_SECONDS = 90     # let the service pass health checks first
+RECHECK_SECONDS = 3600         # retry interrupted or failed fields hourly
 
 
 def load_field_definitions() -> list[dict[str, Any]]:
@@ -143,19 +144,22 @@ def _needs_build(runs: list) -> tuple[bool, str | None]:
 
 
 async def build_pending_fields() -> None:
-    """Build every configured field that has no ready run yet, one at a time."""
+    """Build every configured field that has no ready run yet, one at a time; re-check hourly."""
     if not config.settings.seo_field_builder_enabled or not config.settings.database_url:
         return
     await asyncio.sleep(STARTUP_DELAY_SECONDS)
-    try:
-        fields = [f for f in load_field_definitions() if not f.get("runId")]
-        by_slug = await _runs_by_slug()
-    except Exception as e:
-        logger.error("SEO field builder could not start: %s", e, exc_info=True)
-        return
-    for field in fields:
-        build, run_id = _needs_build(by_slug.get(field["slug"], []))
-        if build:
-            await build_field(field, run_id)
-            await asyncio.sleep(5)  # breathe between fields
-    logger.info("SEO field builder: all configured fields processed")
+    while True:
+        try:
+            fields = [f for f in load_field_definitions() if not f.get("runId")]
+            by_slug = await _runs_by_slug()
+            for field in fields:
+                build, run_id = _needs_build(by_slug.get(field["slug"], []))
+                if build:
+                    await build_field(field, run_id)
+                    await asyncio.sleep(5)  # breathe between fields
+            logger.info("SEO field builder: pass complete")
+        except asyncio.CancelledError:
+            raise
+        except Exception as e:
+            logger.error("SEO field builder pass failed: %s", e, exc_info=True)
+        await asyncio.sleep(RECHECK_SECONDS)
