@@ -35,11 +35,11 @@ async def get_current_user_id(request: Request) -> str | None:
 
 
 async def verify_user_exists(user_id: str) -> bool:
-    """Verify that user exists in database."""
+    """Verify that the user exists and hasn't been disabled by an admin."""
     async with db_manager.session() as session:
         repo = UserRepository(session)
         user = await repo.get_user_by_id(user_id)
-        return user is not None
+        return user is not None and user.disabled_at is None
 
 
 class AuthMiddleware(BaseHTTPMiddleware):

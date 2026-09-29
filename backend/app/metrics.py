@@ -84,11 +84,12 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
     )
 
     pro_users = (await session.execute(
-        select(User.subscription_status, User.subscription_interval_months, User.subscription_amount_cents)
+        select(User.subscription_status, User.subscription_interval_months, User.subscription_amount_cents,
+               User.paddle_subscription_id)
         .where(customer, pro_now)
     )).all()
     mrr_cents = sum(
-        cents / months for _, months, cents in pro_users if months and cents is not None
+        cents / months for _, months, cents, _ in pro_users if months and cents is not None
     )
     churned = await scalar(
         select(func.count()).select_from(User)
@@ -138,9 +139,11 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         "run_completion_rate": rate(runs_completed, runs_started),
         "free_users_at_limit": at_limit,
         "pro_active": len(pro_users),
-        "pro_monthly": sum(1 for _, m, _ in pro_users if m == 1),
-        "pro_quarterly": sum(1 for _, m, _ in pro_users if m == 3),
-        "pro_canceling": sum(1 for s, _, _ in pro_users if s == "canceled"),
+        "pro_monthly": sum(1 for _, m, _, _ in pro_users if m == 1),
+        "pro_quarterly": sum(1 for _, m, _, _ in pro_users if m == 3),
+        "pro_canceling": sum(1 for s, _, _, _ in pro_users if s == "canceled"),
+        # Pro granted by the admin, without a paid subscription
+        "pro_comp": sum(1 for *_, sub in pro_users if not sub),
         "mrr_usd": round(mrr_cents / 100, 2),
         "churned": churned,
         "ai_cost_searches_usd": round(ai_cost_searches, 4),

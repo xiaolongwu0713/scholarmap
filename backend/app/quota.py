@@ -37,12 +37,24 @@ def get_limit(tier: str, name: str) -> int:
     return config.settings.USER_QUOTAS[tier][name]
 
 
-async def searches_in_window(session: AsyncSession, user_id: str, now: datetime | None = None) -> list[datetime]:
-    """Start times of the user's searches in the current rolling window, oldest first."""
+def get_search_limit(user: User, now: datetime | None = None) -> int:
+    """Weekly search limit for this user: an admin override, else the plan's (-1 = unlimited)."""
+    if user.search_limit_override is not None:
+        return user.search_limit_override
+    return get_limit(get_user_tier(user, now), "searches_per_week")
+
+
+async def searches_in_window(session: AsyncSession, user: User, now: datetime | None = None) -> list[datetime]:
+    """Start times of the user's searches in the current rolling window, oldest first.
+
+    Searches before an admin quota reset don't count.
+    """
     since = (now or _now()) - SEARCH_WINDOW
+    if user.quota_reset_at is not None and user.quota_reset_at > since:
+        since = user.quota_reset_at
     result = await session.execute(
         select(SearchUsage.created_at)
-        .where(SearchUsage.user_id == user_id, SearchUsage.created_at > since)
+        .where(SearchUsage.user_id == user.user_id, SearchUsage.created_at > since)
         .order_by(SearchUsage.created_at)
     )
     return [row[0] for row in result.all()]
@@ -50,10 +62,10 @@ async def searches_in_window(session: AsyncSession, user_id: str, now: datetime 
 
 async def check_can_start_search(session: AsyncSession, user: User) -> tuple[bool, str | None]:
     """Whether the user may start another custom search now."""
-    limit = get_limit(get_user_tier(user), "searches_per_week")
+    limit = get_search_limit(user)
     if limit == -1:
         return True, None
-    used = len(await searches_in_window(session, user.user_id))
+    used = len(await searches_in_window(session, user))
     if used >= limit:
         return False, config.settings.QUOTA_ERROR_MESSAGES["searches_per_week"]
     return True, None
@@ -79,8 +91,8 @@ async def get_usage_summary(session: AsyncSession, user: User) -> dict:
     """Plan and search usage for the account/quota UI."""
     now = _now()
     tier = get_user_tier(user, now)
-    limit = get_limit(tier, "searches_per_week")
-    starts = await searches_in_window(session, user.user_id, now)
+    limit = get_search_limit(user, now)
+    starts = await searches_in_window(session, user, now)
     unlimited = limit == -1
     remaining = -1 if unlimited else max(0, limit - len(starts))
     next_slot_at = next_slot_time(starts, limit)

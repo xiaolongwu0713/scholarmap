@@ -427,6 +427,9 @@ async def login_user(req: LoginRequest) -> dict:
         # Verify password
         if not verify_password(req.password, user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid email or password")
+
+        if user.disabled_at is not None:
+            raise HTTPException(status_code=403, detail=f"This account has been disabled. Contact {settings.contact_email} for help.")
         
         # Generate JWT token
         token = create_access_token(data={"sub": user.user_id})
@@ -1646,6 +1649,72 @@ async def admin_metrics(request: Request, days: int = 7) -> dict:
     days = max(1, min(days, 365))
     async with db_manager.session() as session:
         return await business_metrics(session, days=days)
+
+
+class AdminUserActionRequest(BaseModel):
+    action: str
+    days: int | None = None
+    limit: int | None = None
+    note: str | None = None
+
+
+@app.get("/api/admin/users")
+async def admin_list_users(request: Request, q: str = "", plan: str = "all", limit: int = 50, offset: int = 0) -> dict:
+    """Users with their plan and usage, newest first (super user only)."""
+    from app.admin import list_users
+
+    await verify_super_user(request)
+    async with db_manager.session() as session:
+        return await list_users(session, q=q, plan=plan, limit=max(1, min(limit, 200)), offset=max(0, offset))
+
+
+@app.get("/api/admin/users/{user_id}")
+async def admin_get_user(request: Request, user_id: str) -> dict:
+    """One user's account, searches and admin history (super user only)."""
+    from app.admin import user_detail
+
+    await verify_super_user(request)
+    async with db_manager.session() as session:
+        detail = await user_detail(session, user_id)
+    if detail is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return detail
+
+
+@app.post("/api/admin/users/{user_id}/actions")
+async def admin_user_action(request: Request, user_id: str, req: AdminUserActionRequest) -> dict:
+    """Change a user's plan, search quota or access; logged to the audit trail (super user only)."""
+    from app.admin import AdminActionError, apply_action
+
+    await verify_super_user(request)
+    async with db_manager.session() as session:
+        try:
+            result = await apply_action(session, request.state.user_id, user_id, req.action,
+                                        days=req.days, limit=req.limit, note=req.note)
+        except AdminActionError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+    logging.getLogger(__name__).info("ADMIN: %s on user %s", req.action, user_id)
+    return result
+
+
+@app.get("/api/admin/searches")
+async def admin_recent_searches(request: Request, limit: int = 50, include_admin: bool = False) -> dict:
+    """Latest searches across all users (super user only)."""
+    from app.admin import recent_searches
+
+    await verify_super_user(request)
+    async with db_manager.session() as session:
+        return {"runs": await recent_searches(session, max(1, min(limit, 200)), include_admin)}
+
+
+@app.get("/api/admin/actions")
+async def admin_audit_log(request: Request, limit: int = 100) -> dict:
+    """Recent admin changes to user accounts (super user only)."""
+    from app.admin import recent_actions
+
+    await verify_super_user(request)
+    async with db_manager.session() as session:
+        return {"actions": await recent_actions(session, max(1, min(limit, 500)))}
 
 
 @app.post("/api/admin/resource-monitor/snapshot")

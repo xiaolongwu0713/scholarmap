@@ -701,6 +701,7 @@ export type BusinessMetrics = {
   pro_monthly: number;
   pro_quarterly: number;
   pro_canceling: number;
+  pro_comp: number;
   mrr_usd: number;
   churned: number;
   ai_cost_searches_usd: number;
@@ -715,4 +716,114 @@ export async function getBusinessMetrics(days: number): Promise<BusinessMetrics>
   });
   await throwIfNotOk(res, "getBusinessMetrics");
   return await res.json();
+}
+
+// ============================================================
+// Admin console (super user only), see backend app/admin.py
+// ============================================================
+
+export type AdminUser = {
+  user_id: string;
+  email: string;
+  created_at: string | null;
+  email_verified: boolean;
+  tier: "free_user" | "pro_user" | "super_user";
+  plan: "free" | "pro";
+  pro_until: string | null;
+  subscription_status: string | null;
+  has_subscription: boolean;
+  subscription_amount_cents: number | null;
+  subscription_interval_months: number | null;
+  disabled: boolean;
+  disabled_at: string | null;
+  search_limit: number; // -1 = unlimited
+  search_limit_override: number | null;
+  quota_reset_at: string | null;
+  searches_in_window: number;
+  // Only in the user list
+  searches_total?: number;
+  runs_total?: number;
+  runs_completed?: number;
+  ai_cost_usd?: number;
+  last_active_at?: string | null;
+};
+
+export type AdminRun = {
+  run_id: string;
+  project_id: string;
+  user_id: string | null;
+  email: string | null;
+  description: string;
+  created_at: string | null;
+  papers: number;
+  completed: boolean;
+  ai_cost_usd: number;
+};
+
+export type AdminActionLog = {
+  id: number;
+  action: string;
+  target_user_id: string | null;
+  target_email: string | null;
+  detail: Record<string, unknown> | null;
+  created_at: string | null;
+};
+
+export type AdminUserDetail = { user: AdminUser; runs: AdminRun[]; actions: AdminActionLog[] };
+
+export type AdminUserAction =
+  | { action: "grant_pro"; days: number; note?: string }
+  | { action: "set_search_limit"; limit: number | null; note?: string }
+  | { action: "revoke_pro" | "reset_quota" | "disable" | "enable" | "verify_email"; note?: string };
+
+export async function adminListUsers(params: {
+  q?: string;
+  plan?: "all" | "pro" | "free" | "disabled";
+  limit?: number;
+  offset?: number;
+}): Promise<{ total: number; users: AdminUser[] }> {
+  const qs = new URLSearchParams({
+    q: params.q ?? "",
+    plan: params.plan ?? "all",
+    limit: String(params.limit ?? 50),
+    offset: String(params.offset ?? 0),
+  });
+  const res = await fetch(`${baseUrl}/api/admin/users?${qs}`, { cache: "no-store", headers: getDefaultHeaders() });
+  await throwIfNotOk(res, "adminListUsers");
+  return await res.json();
+}
+
+export async function adminGetUser(userId: string): Promise<AdminUserDetail> {
+  const res = await fetch(`${baseUrl}/api/admin/users/${encodeURIComponent(userId)}`, {
+    cache: "no-store",
+    headers: getDefaultHeaders(),
+  });
+  await throwIfNotOk(res, "adminGetUser");
+  return await res.json();
+}
+
+/** Apply an account change; resolves to the user's refreshed detail, or throws with the server's reason. */
+export async function adminUserAction(userId: string, body: AdminUserAction): Promise<AdminUserDetail> {
+  const res = await fetch(`${baseUrl}/api/admin/users/${encodeURIComponent(userId)}/actions`, {
+    method: "POST",
+    headers: getDefaultHeaders(),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(await readErrorDetail(res));
+  return await res.json();
+}
+
+export async function adminRecentSearches(limit = 50, includeAdmin = false): Promise<AdminRun[]> {
+  const res = await fetch(`${baseUrl}/api/admin/searches?limit=${limit}&include_admin=${includeAdmin}`, {
+    cache: "no-store",
+    headers: getDefaultHeaders(),
+  });
+  await throwIfNotOk(res, "adminRecentSearches");
+  return (await res.json()).runs;
+}
+
+export async function adminAuditLog(limit = 100): Promise<AdminActionLog[]> {
+  const res = await fetch(`${baseUrl}/api/admin/actions?limit=${limit}`, { cache: "no-store", headers: getDefaultHeaders() });
+  await throwIfNotOk(res, "adminAuditLog");
+  return (await res.json()).actions;
 }

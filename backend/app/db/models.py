@@ -39,6 +39,12 @@ class User(Base):
     subscription_interval_months: Mapped[int | None] = mapped_column(Integer, nullable=True)
     subscription_amount_cents: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
+    # Admin controls: a custom weekly search limit (-1 = unlimited), a quota reset
+    # (searches before it don't count), and a disabled account that can't sign in.
+    search_limit_override: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    quota_reset_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    disabled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
 
 class SearchUsage(Base):
     """One row per custom search a user starts. Kept when runs are deleted so quotas can't be reset."""
@@ -69,6 +75,23 @@ class LLMUsage(Base):
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False
+    )
+
+
+class AdminAction(Base):
+    """Audit log of changes an admin made to a user account."""
+    __tablename__ = "admin_actions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    admin_user_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    target_user_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    action: Mapped[str] = mapped_column(String(40), nullable=False)
+    detail: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+        index=True,
     )
 
 
