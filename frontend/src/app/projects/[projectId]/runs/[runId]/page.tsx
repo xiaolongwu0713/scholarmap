@@ -20,6 +20,7 @@ import {
   runIngest,
   getAuthorshipStats,
   getWorldMap,
+  getUserQuota,
   type WorldMapData,
   type IngestStats
 } from "@/lib/api";
@@ -1003,13 +1004,31 @@ function RunPageContent() {
   }, [isExportMode, exportLoading, exportMapImage, exportMapLoaded, exportWorldData, ingestStats]);
 
 
+  // Advanced (step-by-step) mode is a Pro feature; null while the plan is still loading
+  const [canUseAdvanced, setCanUseAdvanced] = useState<boolean | null>(null);
+
   useEffect(() => {
-    try {
-      if (localStorage.getItem(MANUAL_STEPS_KEY) === "1") setAutoMode(false);
-    } catch {
-      // storage unavailable: keep one-click mode
-    }
-  }, []);
+    if (isDemoRun) return;
+    let cancelled = false;
+    getUserQuota()
+      .then((q) => {
+        if (cancelled) return;
+        const pro = q.plan === "pro" || q.tier === "super_user";
+        setCanUseAdvanced(pro);
+        if (!pro) return;
+        try {
+          if (localStorage.getItem(MANUAL_STEPS_KEY) === "1") setAutoMode(false);
+        } catch {
+          // storage unavailable: keep one-click mode
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setCanUseAdvanced(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isDemoRun]);
 
   function setManualSteps(manual: boolean) {
     setAutoMode(!manual);
@@ -1852,15 +1871,32 @@ function RunPageContent() {
             <div className="muted">Scholar paper retrieval and analysis pipeline</div>
           </div>
           {!isDemoRun && (
-            <label className="muted" style={{ fontSize: 14, display: "flex", gap: 6, alignItems: "center", whiteSpace: "nowrap" }}>
+            <label
+              className="muted"
+              title={canUseAdvanced === false ? "Advanced mode is a Pro feature. Upgrade to Pro to review and edit each step." : undefined}
+              style={{
+                fontSize: 14,
+                display: "flex",
+                gap: 6,
+                alignItems: "center",
+                whiteSpace: "nowrap",
+                color: canUseAdvanced ? undefined : "#9ca3af",
+                cursor: canUseAdvanced ? "pointer" : "not-allowed",
+              }}
+            >
               <input
                 type="checkbox"
                 checked={!autoMode}
                 onChange={(e) => setManualSteps(e.target.checked)}
-                disabled={autoStage !== null}
-                style={{ width: "auto" }}
+                disabled={!canUseAdvanced || autoStage !== null}
+                style={{ width: "auto", cursor: "inherit" }}
               />
               Advanced: review each step
+              {canUseAdvanced === false && (
+                <span style={{ fontSize: 11, fontWeight: 600, color: "#fff", background: "#9ca3af", borderRadius: 999, padding: "1px 7px" }}>
+                  PRO
+                </span>
+              )}
             </label>
           )}
         </div>
