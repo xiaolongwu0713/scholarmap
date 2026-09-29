@@ -1832,48 +1832,37 @@ function RunPageContent() {
       <div className="screen-only" style={{ display: isExportMode ? "none" : "block" }}>
       <UnifiedNavbar variant="app" />
       <div className="container stack" style={{ paddingTop: "80px" }}>
-        {/* Header */}
-        <div
-          className="row"
-          style={{
-            justifyContent: "space-between",
-            marginBottom: "8px",
-            display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
-            alignItems: "center"
-          }}
-        >
-        <div>
-          <h1 style={{ margin: 0, marginBottom: "4px" }} className="text-gradient">
-            Run {runId}
-          </h1>
-          <div className="muted">Scholar paper retrieval and analysis pipeline</div>
+        {/* Header: back link, title, actions (stack on phones) */}
+        {!isDemoRun && (
+          <Link href={`/projects/${projectId}`} className="text-sm text-blue-600 hover:underline" style={{ alignSelf: "flex-start" }}>
+            ← Back to project
+          </Link>
+        )}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between" style={{ marginBottom: 8 }}>
+          <div style={{ minWidth: 0 }}>
+            <h1 style={{ margin: 0, marginBottom: 4 }} className="text-gradient text-2xl sm:text-3xl">
+              Run {runId}
+            </h1>
+            <div className="muted">Scholar paper retrieval and analysis pipeline</div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="secondary"
+              onClick={handleShare}
+              style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
+            >
+              {shareCopied ? "Copied!" : "Share"}
+            </button>
+            <button
+              className="secondary"
+              onClick={handleExport}
+              disabled={exportLoading}
+              style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
+            >
+              {exportLoading ? "Exporting..." : "Export"}
+            </button>
+          </div>
         </div>
-        <div style={{ display: "flex", justifyContent: "center", gap: "60px" }}>
-          <button
-            className="secondary"
-            onClick={handleShare}
-            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
-          >
-            {shareCopied ? "Copied!" : "Share"}
-          </button>
-          <button
-            className="secondary"
-            onClick={handleExport}
-            disabled={exportLoading}
-            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
-          >
-            {exportLoading ? "Exporting..." : "Export"}
-          </button>
-        </div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          {!isDemoRun && (
-            <Link href={`/projects/${projectId}`}>
-              <button className="secondary">← Back to Project</button>
-            </Link>
-          )}
-        </div>
-      </div>
 
       {/* Stages: progress at a glance, and the way to switch between them */}
       <StageNav
