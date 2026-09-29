@@ -949,15 +949,15 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
           alignItems: "center",
           justifyContent: "center",
           zIndex: 1000,
-          padding: 20
         }}
+        className="p-2 sm:p-5"
         onClick={onClose}
       >
       <div
         style={{
           backgroundColor: "white",
           borderRadius: 8,
-          width: "90%",
+          width: "100%",
           maxWidth: 1200,
           height: "90%",
           display: "flex",
@@ -966,18 +966,15 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Header: title | actions | close on wide screens; on phones the actions wrap onto their own row */}
         <div
+          className="flex flex-wrap items-center gap-3 px-3 py-3 sm:px-6 sm:py-5"
           style={{
-            padding: "20px 24px",
             borderBottom: "2px solid #e5e7eb",
             background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
-            display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
-            alignItems: "center"
           }}
         >
-          <div>
+          <div className="order-1 flex-1" style={{ minWidth: 0 }}>
             <h2 style={{ margin: 0, marginBottom: "8px" }}>
               <span style={{ 
                 background: "linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)",
@@ -990,7 +987,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
             </h2>
             {renderBreadcrumbs()}
           </div>
-          <div style={{ display: "flex", justifyContent: "center", gap: 12 }}>
+          <div className="order-3 w-full flex flex-wrap justify-center gap-2 sm:order-2 sm:w-auto sm:gap-3">
             <button
               className="secondary"
               onClick={handleShare}
@@ -1028,9 +1025,9 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
               {exportLoading ? "Exporting..." : "Export"}
             </button>
           </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button className="secondary" onClick={onClose} style={{ fontSize: "15px" }}>
-              ✕ Close
+          <div className="order-2 flex justify-end sm:order-3 sm:flex-1">
+            <button className="secondary" onClick={onClose} aria-label="Close map" style={{ fontSize: "15px", whiteSpace: "nowrap" }}>
+              ✕<span className="hidden sm:inline"> Close</span>
             </button>
           </div>
         </div>

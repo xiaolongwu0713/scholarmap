@@ -1901,27 +1901,6 @@ function RunPageContent() {
           )}
         </div>
 
-      {/* Only a finished run has a map worth sharing or exporting */}
-      {allStagesDone && (
-      <div className="flex gap-2 justify-center">
-          <button
-            className="secondary"
-            onClick={handleShare}
-            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
-          >
-            {shareCopied ? "Copied!" : "Share"}
-          </button>
-          <button
-            className="secondary"
-            onClick={handleExport}
-            disabled={exportLoading}
-            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
-          >
-            {exportLoading ? "Exporting..." : "Export"}
-          </button>
-      </div>
-      )}
-
       {/* Stages: progress at a glance, and the way to switch between them */}
       <StageNav
         states={stageStates}
@@ -1931,6 +1910,28 @@ function RunPageContent() {
         onJumpToCurrent={!allStagesDone && activeStage !== currentStage ? () => selectStage(currentStage) : undefined}
         note={stageNote}
         action={stageAction}
+        extra={
+          // Only a finished run has a map worth sharing or exporting
+          allStagesDone ? (
+            <>
+              <button
+                className="secondary"
+                onClick={handleShare}
+                style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760", padding: "6px 14px" }}
+              >
+                {shareCopied ? "Copied!" : "Share"}
+              </button>
+              <button
+                className="secondary"
+                onClick={handleExport}
+                disabled={exportLoading}
+                style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760", padding: "6px 14px" }}
+              >
+                {exportLoading ? "Exporting..." : "Export"}
+              </button>
+            </>
+          ) : null
+        }
       />
 
       {error ? (

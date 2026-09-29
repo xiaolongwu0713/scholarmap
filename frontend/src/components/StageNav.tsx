@@ -41,10 +41,12 @@ interface StageNavProps {
   /** Explains a stage that needs attention (failed, waiting for an answer, no results). */
   note?: string | null;
   action?: { label: string; onClick: () => void } | null;
+  /** Extra controls on the right of the action row (e.g. Share/Export on a finished run). */
+  extra?: React.ReactNode;
 }
 
 /** The run's four stages as buttons: progress at a glance, and the way to switch views. */
-export function StageNav({ states, details, active, onSelect, onJumpToCurrent, note, action }: StageNavProps) {
+export function StageNav({ states, details, active, onSelect, onJumpToCurrent, note, action, extra }: StageNavProps) {
   return (
     <div className="card stack" style={{ gap: 12 }}>
       <nav aria-label="Search stages" className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -89,7 +91,20 @@ export function StageNav({ states, details, active, onSelect, onJumpToCurrent, n
           );
         })}
       </nav>
-      {(note || action || onJumpToCurrent) && (
+      {extra && !note && !onJumpToCurrent ? (
+        // Action centered, extra controls on the right; stacked and centered on phones
+        <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-[1fr_auto_1fr]">
+          <div className="hidden sm:block" />
+          {action ? (
+            <button onClick={action.onClick} className="gradient-blue justify-self-center" style={{ padding: "6px 14px" }}>
+              {action.label}
+            </button>
+          ) : (
+            <div />
+          )}
+          <div className="flex gap-2 justify-center sm:justify-end">{extra}</div>
+        </div>
+      ) : (note || action || onJumpToCurrent) && (
         <div className="row" style={{ gap: 12, alignItems: "center", flexWrap: "wrap", justifyContent: note ? "flex-start" : "center" }}>
           {note && <span style={{ fontSize: 14, color: "var(--text)" }}>{note}</span>}
           {action && (
