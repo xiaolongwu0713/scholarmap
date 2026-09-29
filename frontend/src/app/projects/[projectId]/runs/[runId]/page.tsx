@@ -26,12 +26,11 @@ import {
 import { getConfig, type FrontendConfig } from "@/lib/parseConfig";
 import dynamic from "next/dynamic";
 import MetricCard from "@/components/MetricCard";
-import ProgressSteps from "@/components/ProgressSteps";
 import AuthGuard from "@/components/AuthGuard";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 import Map, { Layer, Source, type MapRef } from "react-map-gl";
 import { trackConversion } from "@/lib/analytics";
-import { AutoProgress, AUTO_STAGES, type AutoStage, type StageStatus } from "@/components/AutoProgress";
+import { StageNav, StagePlaceholder, STAGES, type Stage, type StageState } from "@/components/StageNav";
 
 const MapModal = dynamic(() => import("@/components/MapModal"), { ssr: false });
 
@@ -237,7 +236,7 @@ function charLimitHint(text: string, minWords = 5, maxWords = 30): string {
 }
 
 /** Steps the one-click flow runs after the description is understood. */
-type AutoStep = Exclude<AutoStage, "understand">;
+type AutoStep = "framework" | "query" | "search" | "map";
 const AUTO_STEPS: AutoStep[] = ["framework", "query", "search", "map"];
 const MANUAL_STEPS_KEY = "labscout_manual_steps";
 
@@ -476,6 +475,9 @@ function RunPageContent() {
   const [autoMode, setAutoMode] = useState(true);
   const [autoStage, setAutoStage] = useState<AutoStep | null>(null);
   const [autoFailed, setAutoFailed] = useState<AutoStep | null>(null);
+  // Stage shown below the stage buttons; follows the stage in progress until the user picks one
+  const [activeStage, setActiveStage] = useState<Stage>("topic");
+  const [followProgress, setFollowProgress] = useState(true);
   const [validationErrorModal, setValidationErrorModal] = useState<{ show: boolean; rules: string; failed: string }>({
     show: false,
     rules: "",
@@ -1718,63 +1720,111 @@ function RunPageContent() {
   }
 
   // Determine pipeline progress
-  const hasFramework = !!frameworkText;
-  const hasQuery = !!pubmedQueryText;
   const hasResults = (pubmed?.length || 0) > 0 || (s2?.length || 0) > 0 || (oa?.length || 0) > 0;
-  const hasAuthorship = !!ingestStats;
   const exportMaxCount = exportWorldData.reduce((max, item) => Math.max(max, item.scholar_count), 1);
 
-  // One-click progress card
+  // Stage navigator: the run's four stages, their state, and which one is shown
   const searched = agg !== null || pubmed !== null;
   const noResults = searched && !(agg?.length);
-  const understandStatus: StageStatus =
+  const topicState: StageState =
     busy === "textValidate" || busy === "parse" ? "running"
     : frameworkText || autoStage ? "done"
     : parseResult?.plausibility_level === "A_impossible" ? "failed"
-    : parseResult && !parseResult.is_clear_for_search ? "waiting"
-    : parseResult ? "done"
+    : parseResult && !parseResult.is_clear_for_search ? "input"
+    // Step-by-step mode: stay here until the user builds the framework (its button is in step 1)
+    : parseResult ? (autoMode ? "done" : "input")
     : "pending";
-  const stepDone: Record<AutoStep, boolean> = {
-    framework: !!frameworkText,
-    query: !!pubmedQueryText,
-    search: searched,
-    map: ingestionCompleted,
+  const strategyState: StageState =
+    autoStage === "framework" || autoStage === "query" ||
+    busy === "buildFramework" || busy === "adjustFramework" || busy === "queryBuild" ? "running"
+    : autoFailed === "framework" || autoFailed === "query" ? "failed"
+    : pubmedQueryText ? "done"
+    : frameworkText ? "input" // step-by-step mode: review the framework, then use it
+    : "pending";
+  const papersState: StageState =
+    autoStage === "search" || busy === "query" ? "running"
+    : autoFailed === "search" || noResults ? "failed"
+    : searched ? "done"
+    : "pending";
+  const mapState: StageState =
+    autoStage === "map" || busy === "ingest" ? "running"
+    : autoFailed === "map" ? "failed"
+    : ingestionCompleted ? "done"
+    : "pending";
+  const stageStates: Record<Stage, StageState> = {
+    topic: topicState, strategy: strategyState, papers: papersState, map: mapState,
   };
-  const autoStatuses = Object.fromEntries(
-    AUTO_STAGES.map(({ key }) => [
-      key,
-      key === "understand" ? understandStatus
-        : autoStage === key ? "running"
-        : autoFailed === key ? "failed"
-        : stepDone[key] ? "done"
-        : "pending",
-    ])
-  ) as Record<AutoStage, StageStatus>;
-  const failedStage = autoFailed && AUTO_STAGES.find((s) => s.key === autoFailed)?.label;
-  // "Writing the PubMed query" -> "writing the PubMed query" (keep proper nouns)
-  const failedLabel = failedStage && failedStage.charAt(0).toLowerCase() + failedStage.slice(1);
-  const autoNote =
-    understandStatus === "failed"
-      ? "This doesn't read like a searchable research topic yet. Rewrite your description above and click Generate my map again."
-    : understandStatus === "waiting"
-      ? "Answer the question above so LabScout can narrow the search. It continues automatically once your topic is clear."
-    : failedLabel
-      ? `Something went wrong while ${failedLabel}. The earlier steps are saved, so retrying continues from here.`
+  const currentStage: Stage = STAGES.find((st) => stageStates[st.key] !== "done")?.key ?? "map";
+  const allStagesDone = STAGES.every((st) => stageStates[st.key] === "done");
+  const stageIndex = (stage: Stage) => STAGES.findIndex((st) => st.key === stage);
+  // A stage can be shown once every earlier stage is done (or it has started); otherwise a placeholder
+  const stageReached = (stage: Stage) =>
+    stageStates[stage] !== "pending" ||
+    STAGES.slice(0, stageIndex(stage)).every((st) => stageStates[st.key] === "done");
+
+  const RUNNING_DETAIL: Record<Stage, string> = {
+    topic: "Understanding… ~20 s",
+    strategy: "Designing… about 1 min",
+    papers: "Searching PubMed… ~30 s",
+    map: "Mapping… usually 1–5 min",
+  };
+  const paperCount = agg?.length ?? pubmed?.length ?? 0;
+  const stageDetails: Partial<Record<Stage, string>> = {};
+  for (const { key } of STAGES) {
+    const state = stageStates[key];
+    if (state === "running") stageDetails[key] = RUNNING_DETAIL[key];
+    else if (state === "input") {
+      stageDetails[key] = key === "topic" && parseResult && !parseResult.is_clear_for_search
+        ? "Needs your answer"
+        : "Review, then continue";
+    }
+    else if (state === "failed") {
+      stageDetails[key] = key === "topic" ? "Rewrite your topic" : key === "papers" && noResults ? "No papers found" : "Failed, retry below";
+    } else if (state === "done") {
+      stageDetails[key] = {
+        topic: "Understood",
+        strategy: "PubMed query ready",
+        papers: `${paperCount.toLocaleString()} papers`,
+        map: ingestStats
+          ? `${ingestStats.unique_authors.toLocaleString()} researchers · ${ingestStats.unique_countries} ${ingestStats.unique_countries === 1 ? "country" : "countries"}`
+          : "Mapped",
+      }[key];
+    }
+  }
+
+  const failedStageLabel = autoFailed && {
+    framework: "designing the search strategy",
+    query: "writing the PubMed query",
+    search: "searching PubMed",
+    map: "mapping labs and researchers",
+  }[autoFailed];
+  const stageNote =
+    topicState === "failed"
+      ? "This doesn't read like a searchable research topic yet. Rewrite your description and click Generate my map again."
+    : topicState === "input" && parseResult && !parseResult.is_clear_for_search
+      ? "Answer the question in step 1 so LabScout can narrow the search. It continues automatically once your topic is clear."
+    : failedStageLabel
+      ? `Something went wrong while ${failedStageLabel}. The earlier steps are saved, so retrying continues from there.`
     : noResults
       ? "No PubMed papers matched this topic. Try a new search with a broader description (fewer specific terms)."
     : null;
   const autoCanContinue =
-    autoStage === null && understandStatus === "done" && !noResults && nextAutoStep() !== null;
-  const showAutoProgress =
-    autoMode && !isDemoRun && (understandStatus !== "pending" || autoStage !== null || ingestionCompleted);
+    autoMode && autoStage === null && topicState === "done" && !noResults && nextAutoStep() !== null;
+  const stageAction = autoCanContinue
+    ? { label: autoFailed ? "Retry from this step" : "Continue generating my map", onClick: () => runAutoPipeline(nextAutoStep()!) }
+    : allStagesDone
+      ? { label: "🌍 Open Interactive Map", onClick: () => setShowMap(true) }
+      : null;
 
-  const pipelineSteps = [
-    { label: "Parse", status: hasFramework ? ("completed" as const) : ("pending" as const) },
-    { label: "Framework", status: hasFramework ? ("completed" as const) : ("pending" as const) },
-    { label: "Query", status: hasQuery ? ("completed" as const) : hasFramework ? ("in_progress" as const) : ("pending" as const) },
-    { label: "Results", status: hasResults ? ("completed" as const) : hasQuery ? ("in_progress" as const) : ("pending" as const) },
-    { label: "Map", status: hasAuthorship ? ("completed" as const) : hasResults ? ("in_progress" as const) : ("pending" as const) }
-  ];
+  function selectStage(stage: Stage) {
+    setActiveStage(stage);
+    setFollowProgress(stage === currentStage);
+  }
+
+  useEffect(() => {
+    if (followProgress) setActiveStage(currentStage);
+  }, [currentStage, followProgress]);
+
 
   return (
     <>
@@ -1824,8 +1874,16 @@ function RunPageContent() {
         </div>
       </div>
 
-      {/* Progress Steps */}
-      <ProgressSteps steps={pipelineSteps} />
+      {/* Stages: progress at a glance, and the way to switch between them */}
+      <StageNav
+        states={stageStates}
+        details={stageDetails}
+        active={activeStage}
+        onSelect={selectStage}
+        onJumpToCurrent={!allStagesDone && activeStage !== currentStage ? () => selectStage(currentStage) : undefined}
+        note={stageNote}
+        action={stageAction}
+      />
 
       {error ? (
         <div
@@ -2071,6 +2129,7 @@ function RunPageContent() {
         </div>
       )}
 
+      {activeStage === "topic" && (
       <div className="card stack accent-blue">
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "8px" }}>
           <div>
@@ -2450,17 +2509,10 @@ function RunPageContent() {
         ) : null}
       </div>
 
-      {showAutoProgress && (
-        <AutoProgress
-          statuses={autoStatuses}
-          note={autoNote}
-          title={noResults ? "No papers found for this topic" : undefined}
-          onContinue={autoCanContinue ? () => runAutoPipeline(nextAutoStep()!) : undefined}
-          onOpenMap={() => setShowMap(true)}
-          busy={busy !== null}
-        />
       )}
 
+      {activeStage === "strategy" && (stageReached("strategy") ? (
+      <>
       {/* Retrieval Framework area - always shown to indicate next step */}
       {showFrameworkAdjustUI ? (
       <div className="card stack accent-green">
@@ -2688,7 +2740,18 @@ function RunPageContent() {
         )}
       </div>
       )}
+      </>
+      ) : <StagePlaceholder text={STAGES[stageIndex("strategy")].placeholder} />)}
 
+      {activeStage === "papers" && (stageReached("papers") ? (
+      <>
+      {!autoMode && !searched && pubmedQueryText && (
+        <div className="card row" style={{ justifyContent: "center" }}>
+          <button onClick={onQuery} disabled={busy !== null}>
+            {busy === "query" ? "🔄 Searching…" : "🚀 Search PubMed with this query"}
+          </button>
+        </div>
+      )}
       <div className="card stack accent-orange">
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "12px" }}>
           <div>
@@ -2738,7 +2801,11 @@ function RunPageContent() {
 
         {renderResults()}
       </div>
+      </>
+      ) : <StagePlaceholder text={STAGES[stageIndex("papers")].placeholder} />)}
 
+      {activeStage === "map" && (stageReached("map") ? (
+      <>
       {/* Phase 2: Authorship */}
       <div className="card stack accent-red">
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "12px" }}>
@@ -2844,6 +2911,8 @@ function RunPageContent() {
           </div>
         </div>
       )}
+      </>
+      ) : <StagePlaceholder text={STAGES[stageIndex("map")].placeholder} />)}
 
       {showMap && (
         <MapModal
