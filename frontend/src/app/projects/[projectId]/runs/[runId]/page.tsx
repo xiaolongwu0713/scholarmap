@@ -241,6 +241,22 @@ type AutoStep = Exclude<AutoStage, "understand">;
 const AUTO_STEPS: AutoStep[] = ["framework", "query", "search", "map"];
 const MANUAL_STEPS_KEY = "labscout_manual_steps";
 
+/** Server errors and dropped connections are usually one-off; quota or validation errors aren't. */
+function isTransientError(e: unknown): boolean {
+  return /failed: 5\d\d|Failed to fetch|NetworkError|Load failed|network/i.test(String(e));
+}
+
+/** Run a step; on a transient failure wait a moment and try once more before giving up. */
+async function withOneRetry<T>(step: () => Promise<T>): Promise<T> {
+  try {
+    return await step();
+  } catch (e) {
+    if (!isTransientError(e)) throw e;
+    await new Promise((resolve) => setTimeout(resolve, 4000));
+    return await step();
+  }
+}
+
 /** Starting points for people unsure what to write (5–30 English words each). */
 const EXAMPLE_DESCRIPTIONS = [
   "CRISPR base editing to correct inherited retinal disease mutations in human retinal organoids",
@@ -1028,6 +1044,8 @@ function RunPageContent() {
     for (const step of AUTO_STEPS.slice(AUTO_STEPS.indexOf(from))) {
       setAutoStage(step);
       try {
+        // Each step is safe to repeat (it overwrites its own output), so a blip is retried once
+        await withOneRetry(async () => {
         if (step === "framework") {
           setBusy("buildFramework");
           const input = (understanding ?? latestUnderstanding()).trim();
@@ -1066,11 +1084,6 @@ function RunPageContent() {
           await updateQueries(projectId, runId, next);
           setQueriesObj(next);
           await runQuery(projectId, runId);
-          const found = await loadResults();
-          if (!found.agg?.length) {
-            trackConversion("search_failed", { step: "no_results" });
-            return; // nothing to map; the progress card explains
-          }
         } else {
           setBusy("ingest");
           const stats = await runIngest(projectId, runId, false);
@@ -1084,6 +1097,14 @@ function RunPageContent() {
           setIngestionCompleted(true);
           trackConversion("search_completed");
           setShowMap(true);
+        }
+        });
+        if (step === "search") {
+          const found = await loadResults();
+          if (!found.agg?.length) {
+            trackConversion("search_failed", { step: "no_results" });
+            return; // nothing to map; the progress card explains
+          }
         }
       } catch (e) {
         setAutoFailed(step);
