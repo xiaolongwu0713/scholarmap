@@ -90,7 +90,7 @@ export function StageNav({ states, details, active, onSelect, onJumpToCurrent, n
         })}
       </nav>
       {(note || action || onJumpToCurrent) && (
-        <div className="row" style={{ gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+        <div className="row" style={{ gap: 12, alignItems: "center", flexWrap: "wrap", justifyContent: note ? "flex-start" : "center" }}>
           {note && <span style={{ fontSize: 14, color: "var(--text)" }}>{note}</span>}
           {action && (
             <button onClick={action.onClick} className="gradient-blue" style={{ padding: "6px 14px" }}>
