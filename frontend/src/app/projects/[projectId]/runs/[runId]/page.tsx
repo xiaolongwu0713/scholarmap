@@ -478,6 +478,9 @@ function RunPageContent() {
   // Stage shown below the stage buttons; follows the stage in progress until the user picks one
   const [activeStage, setActiveStage] = useState<Stage>("topic");
   const [followProgress, setFollowProgress] = useState(true);
+  // Set when a search actually ran and found nothing. The backend returns empty result lists
+  // for runs that never searched, so an empty list alone doesn't mean "searched".
+  const [emptySearch, setEmptySearch] = useState(false);
   const [validationErrorModal, setValidationErrorModal] = useState<{ show: boolean; rules: string; failed: string }>({
     show: false,
     rules: "",
@@ -1027,8 +1030,8 @@ function RunPageContent() {
   function nextAutoStep(): AutoStep | null {
     if (!frameworkText.trim()) return "framework";
     if (!pubmedQueryText.trim()) return "query";
-    if (agg === null && pubmed === null) return "search";
-    if (!ingestionCompleted && (agg?.length ?? 0) > 0) return "map";
+    if (!(agg?.length || pubmed?.length)) return emptySearch ? null : "search";
+    if (!ingestionCompleted) return "map";
     return null;
   }
 
@@ -1103,6 +1106,7 @@ function RunPageContent() {
         });
         if (step === "search") {
           const found = await loadResults();
+          setEmptySearch(!found.agg?.length);
           if (!found.agg?.length) {
             trackConversion("search_failed", { step: "no_results" });
             return; // nothing to map; the progress card explains
@@ -1554,7 +1558,8 @@ function RunPageContent() {
 
       await runQuery(projectId, runId);
       await refreshFiles();
-      await loadResults();
+      const found = await loadResults();
+      setEmptySearch(!found.agg?.length);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -1724,12 +1729,13 @@ function RunPageContent() {
   const exportMaxCount = exportWorldData.reduce((max, item) => Math.max(max, item.scholar_count), 1);
 
   // Stage navigator: the run's four stages, their state, and which one is shown
-  const searched = agg !== null || pubmed !== null;
-  const noResults = searched && !(agg?.length);
+  const hasPapers = Boolean(agg?.length || pubmed?.length);
+  const searched = hasPapers || emptySearch;
+  const noResults = emptySearch && !hasPapers;
   const topicState: StageState =
     busy === "textValidate" || busy === "parse" ? "running"
     // Later progress means the topic is settled (SEO field runs start from a PubMed query, with no parse)
-    : frameworkText || pubmedQueryText || searched || ingestionCompleted || autoStage ? "done"
+    : frameworkText || pubmedQueryText || hasPapers || ingestionCompleted || autoStage ? "done"
     : parseResult?.plausibility_level === "A_impossible" ? "failed"
     : parseResult && !parseResult.is_clear_for_search ? "input"
     // Step-by-step mode: stay here until the user builds the framework (its button is in step 1)
@@ -1845,23 +1851,18 @@ function RunPageContent() {
             </h1>
             <div className="muted">Scholar paper retrieval and analysis pipeline</div>
           </div>
-          <div className="flex gap-2">
-            <button
-              className="secondary"
-              onClick={handleShare}
-              style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
-            >
-              {shareCopied ? "Copied!" : "Share"}
-            </button>
-            <button
-              className="secondary"
-              onClick={handleExport}
-              disabled={exportLoading}
-              style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
-            >
-              {exportLoading ? "Exporting..." : "Export"}
-            </button>
-          </div>
+          {!isDemoRun && (
+            <label className="muted" style={{ fontSize: 14, display: "flex", gap: 6, alignItems: "center", whiteSpace: "nowrap" }}>
+              <input
+                type="checkbox"
+                checked={!autoMode}
+                onChange={(e) => setManualSteps(e.target.checked)}
+                disabled={autoStage !== null}
+                style={{ width: "auto" }}
+              />
+              Advanced: review each step
+            </label>
+          )}
         </div>
 
       {/* Stages: progress at a glance, and the way to switch between them */}
@@ -2130,18 +2131,6 @@ function RunPageContent() {
               <div className="muted">Instructions: Describe your research and submit to the system. → System will try to understand it and ask questions if necessary. → You answer the questions and the system generates new understanding. → Finish this step by clicking 'Use the current understanding'.</div>
             )}
           </div>
-          {!isDemoRun && (
-            <label className="muted" style={{ fontSize: 13, display: "flex", gap: 6, alignItems: "center", whiteSpace: "nowrap" }}>
-              <input
-                type="checkbox"
-                checked={!autoMode}
-                onChange={(e) => setManualSteps(e.target.checked)}
-                disabled={autoStage !== null}
-                style={{ width: "auto" }}
-              />
-              Advanced: review each step
-            </label>
-          )}
         </div>
         {!textValidateMode ? (
           <>
@@ -2903,6 +2892,24 @@ function RunPageContent() {
       )}
       </>
       ) : <StagePlaceholder text={STAGES[stageIndex("map")].placeholder} />)}
+
+      <div className="flex gap-2 justify-end" style={{ marginTop: 8 }}>
+          <button
+            className="secondary"
+            onClick={handleShare}
+            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
+          >
+            {shareCopied ? "Copied!" : "Share"}
+          </button>
+          <button
+            className="secondary"
+            onClick={handleExport}
+            disabled={exportLoading}
+            style={{ background: "#5a0760", color: "#fff", borderColor: "#5a0760" }}
+          >
+            {exportLoading ? "Exporting..." : "Export"}
+          </button>
+      </div>
 
       {showMap && (
         <MapModal
