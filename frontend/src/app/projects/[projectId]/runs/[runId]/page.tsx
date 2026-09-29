@@ -2138,10 +2138,9 @@ function RunPageContent() {
               {researchClientIssues.length && !parseCompleted ? (
                 <div
                   style={{
-                    position: "absolute",
-                    top: 8,
-                    right: 10,
-                    zIndex: 1,
+                    width: "fit-content",
+                    marginLeft: "auto",
+                    marginBottom: 6,
                     fontSize: 12,
                     color: "#b91c1c",
                     background: "#fee2e2",
@@ -2158,7 +2157,7 @@ function RunPageContent() {
                 value={researchDescription}
                 onChange={(e) => setResearchDescription(e.target.value)}
                 placeholder="Enter your research description here. Please provide details about your research question, methods, and objectives."
-                style={{ fontSize: "15px" }}
+                style={{ fontSize: "15px", paddingBottom: 34 }}
                 maxLength={300}
               />
               <div
@@ -2298,10 +2297,9 @@ function RunPageContent() {
                       {parseAdditionalClientIssues.length && !parseCompleted ? (
                         <div
                           style={{
-                            position: "absolute",
-                            right: 10,
-                            bottom: 8,
-                            zIndex: 1,
+                            width: "fit-content",
+                            marginLeft: "auto",
+                            marginBottom: 6,
                             fontSize: 12,
                             color: "#b91c1c",
                             background: "#fee2e2",
@@ -2364,10 +2362,9 @@ function RunPageContent() {
                       {textValidateDraftClientIssues.length && !parseCompleted ? (
                         <div
                           style={{
-                            position: "absolute",
-                            top: 8,
-                            right: 10,
-                            zIndex: 1,
+                            width: "fit-content",
+                            marginLeft: "auto",
+                            marginBottom: 6,
                             fontSize: 12,
                             color: "#b91c1c",
                             background: "#fee2e2",
@@ -2391,7 +2388,7 @@ function RunPageContent() {
                               ? `Parse stage1 locked after ${config.parse_stage1_max_attempts} failed attempts.`
                               : "Revise and click parse again..."
                         }
-                        style={{ fontSize: "14px" }}
+                        style={{ fontSize: "14px", paddingBottom: 34 }}
                         maxLength={300}
                       />
                       <div
@@ -2579,10 +2576,9 @@ function RunPageContent() {
                   {frameworkAdjustClientIssues.length && !frameworkCompleted ? (
                     <div
                       style={{
-                        position: "absolute",
-                        right: 10,
-                        bottom: 8,
-                        zIndex: 1,
+                        width: "fit-content",
+                        marginLeft: "auto",
+                        marginBottom: 6,
                         fontSize: 12,
                         color: "#b91c1c",
                         background: "#fee2e2",
@@ -2893,7 +2889,7 @@ function RunPageContent() {
       </>
       ) : <StagePlaceholder text={STAGES[stageIndex("map")].placeholder} />)}
 
-      <div className="flex gap-2 justify-end" style={{ marginTop: 8 }}>
+      <div className="flex gap-2 justify-center" style={{ marginTop: 8 }}>
           <button
             className="secondary"
             onClick={handleShare}
