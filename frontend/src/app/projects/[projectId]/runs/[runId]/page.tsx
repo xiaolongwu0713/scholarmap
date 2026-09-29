@@ -1728,7 +1728,8 @@ function RunPageContent() {
   const noResults = searched && !(agg?.length);
   const topicState: StageState =
     busy === "textValidate" || busy === "parse" ? "running"
-    : frameworkText || autoStage ? "done"
+    // Later progress means the topic is settled (SEO field runs start from a PubMed query, with no parse)
+    : frameworkText || pubmedQueryText || searched || ingestionCompleted || autoStage ? "done"
     : parseResult?.plausibility_level === "A_impossible" ? "failed"
     : parseResult && !parseResult.is_clear_for_search ? "input"
     // Step-by-step mode: stay here until the user builds the framework (its button is in step 1)
