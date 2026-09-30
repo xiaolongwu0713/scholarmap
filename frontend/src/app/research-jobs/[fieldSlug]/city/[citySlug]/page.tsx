@@ -1,7 +1,7 @@
 import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 import { getReadyFieldConfig } from '@/lib/seoFieldConfig';
 import { fetchFieldWorldData, fetchFieldCountryData, fetchFieldCityData, getFieldDemoRunUrl, fetchFieldSitemapData } from '@/lib/seoFieldApi';
 import { countryToSlug, slugToCityName, cityToSlug } from '@/lib/geoSlugs';
@@ -36,13 +36,17 @@ interface PageProps {
   }>;
 }
 
-// Find which country a field city is in. Top cities come from the (cached) sitemap data;
-// others are searched country by country. Errors propagate so an outage isn't cached as a 404.
-async function findCityCountry(fieldSlug: string, cityName: string): Promise<string | null> {
-  const target = cityName.toLowerCase();
+// Find a field city by URL slug, returning its name as stored in the data (slugs drop
+// diacritics and punctuation, so the name can't be rebuilt from the slug). Top cities come
+// from the (cached) sitemap data; others are searched country by country. Errors propagate
+// so an outage isn't cached as a 404.
+async function findFieldCity(
+  fieldSlug: string,
+  citySlug: string
+): Promise<{ city: string; country: string } | null> {
   const field = (await fetchFieldSitemapData()).find((f) => f.slug === fieldSlug);
-  const top = field?.cities.find((c) => c.city.toLowerCase() === target);
-  if (top) return top.country;
+  const top = field?.cities.find((c) => cityToSlug(c.city) === citySlug);
+  if (top) return { city: top.city, country: top.country };
 
   const worldData = await fetchFieldWorldData(fieldSlug);
   const topCountries = worldData
@@ -50,9 +54,8 @@ async function findCityCountry(fieldSlug: string, cityName: string): Promise<str
     .slice(0, 20);
   for (const countryData of topCountries) {
     const cities = await fetchFieldCountryData(fieldSlug, countryData.country);
-    if (cities.some((c: any) => c.city.toLowerCase() === target)) {
-      return countryData.country;
-    }
+    const match = cities.find((c: any) => cityToSlug(c.city) === citySlug);
+    if (match) return { city: match.city, country: countryData.country };
   }
   return null;
 }
@@ -68,17 +71,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const cityName = slugToCityName(citySlug);
+  let cityName = slugToCityName(citySlug);
   
   try {
-    const country = await findCityCountry(fieldSlug, cityName);
-    if (!country) {
+    const found = await findFieldCity(fieldSlug, citySlug);
+    if (!found) {
       return {
         title: `${fieldConfig.name} Research in ${cityName}`,
         description: `Explore ${fieldConfig.name} research opportunities in ${cityName}.`,
       };
     }
 
+    cityName = found.city;
+    const { country } = found;
     const cityData = await fetchFieldCityData(fieldSlug, country, cityName);
     const scholarCount = cityData.length;
     
@@ -146,14 +151,11 @@ export default async function FieldCityPage({ params }: PageProps) {
     notFound();
   }
 
-  const cityName = slugToCityName(citySlug);
-  
-  // Find which country this city belongs to
-  const country = await findCityCountry(fieldSlug, cityName);
-  
-  if (!country) {
+  const found = await findFieldCity(fieldSlug, citySlug);
+  if (!found) {
     notFound();
   }
+  const { city: cityName, country } = found;
 
   let cityData, scholarCount, institutionCount, institutions, content, faqs;
   
@@ -194,6 +196,7 @@ export default async function FieldCityPage({ params }: PageProps) {
     faqs = generateFieldCityFAQs(fieldConfig, cityName, country, scholarCount, institutionCount);
   } catch (error) {
     // Rethrows notFound() from above as-is; a backend outage must not be cached as a 404
+    unstable_rethrow(error);
     console.error('Error fetching field-city data:', error);
     throw error;
   }

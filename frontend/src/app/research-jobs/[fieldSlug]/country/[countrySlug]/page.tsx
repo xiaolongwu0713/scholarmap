@@ -1,10 +1,10 @@
 import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, unstable_rethrow } from 'next/navigation';
 import { getReadyFieldConfig } from '@/lib/seoFieldConfig';
-import { fetchFieldCountryData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
-import { countryToSlug, slugToCountryName, cityToSlug } from '@/lib/geoSlugs';
+import { fetchFieldWorldData, fetchFieldCountryData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
+import { countryToSlug, slugToCountryName, cityToSlug, isInvalidCityName } from '@/lib/geoSlugs';
 import {
   generateFieldCountryContent,
   generateFieldCountryMetaDescription,
@@ -29,6 +29,14 @@ export async function generateStaticParams() {
   return [];
 }
 
+// Resolve a country slug to its name as stored in the field's data (slugs drop diacritics
+// and punctuation, so the name can't always be rebuilt from the slug).
+async function resolveCountryName(fieldSlug: string, countrySlug: string): Promise<string> {
+  const worldData = await fetchFieldWorldData(fieldSlug);
+  const match = worldData.find((c: any) => countryToSlug(c.country) === countrySlug);
+  return match?.country ?? slugToCountryName(countrySlug);
+}
+
 interface PageProps {
   params: Promise<{
     fieldSlug: string;
@@ -47,9 +55,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const countryName = slugToCountryName(countrySlug);
+  let countryName = slugToCountryName(countrySlug);
   
   try {
+    countryName = await resolveCountryName(fieldSlug, countrySlug);
     const countryData = await fetchFieldCountryData(fieldSlug, countryName);
     const scholarCount = countryData.reduce((sum: number, c: any) => sum + c.scholar_count, 0);
     const institutionCount = countryData.reduce((sum: number, c: any) => sum + c.institution_count, 0);
@@ -117,7 +126,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
     notFound();
   }
 
-  const countryName = slugToCountryName(countrySlug);
+  const countryName = await resolveCountryName(fieldSlug, countrySlug);
   
   let countryData, scholarCount, cityCount, institutionCount, topCities, content, faqs;
   
@@ -132,7 +141,9 @@ export default async function FieldCountryPage({ params }: PageProps) {
     cityCount = countryData.length;
     institutionCount = countryData.reduce((sum: number, c: any) => sum + c.institution_count, 0);
     
+    // Link only cities whose page has data: skip parsing junk and cities with no institutions
     topCities = countryData
+      .filter((c: any) => c.institution_count > 0 && !isInvalidCityName(c.city))
       .sort((a: any, b: any) => b.scholar_count - a.scholar_count)
       .slice(0, 10)
       .map((c: any) => ({
@@ -157,6 +168,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
     faqs = generateFieldCountryFAQs(fieldConfig, countryName, scholarCount, institutionCount);
   } catch (error) {
     // Rethrows notFound() from above as-is; a backend outage must not be cached as a 404
+    unstable_rethrow(error);
     console.error('Error fetching field-country data:', error);
     throw error;
   }

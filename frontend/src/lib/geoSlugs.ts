@@ -153,7 +153,7 @@ export function isInvalidCityName(cityName: string): boolean {
     'universit', 'university', 'institut', 'college', 'school',
     'hospital', 'ospedaliero', 'azienda', 'medical center',
     'research center', 'laboratory', 'cnrs', 'umr', 'inra',
-    'federico ii', 'ludwig-maximilians', 'complutense',
+    'federico ii', 'ludwig-maximilians', 'complutense', 'technology',
   ];
   
   // State/region codes (mainly Australia, Brazil, USA)
@@ -176,8 +176,14 @@ export function isInvalidCityName(cityName: string): boolean {
     }
   }
   
-  // Check for exact state code matches
-  if (stateCodes.includes(lowerCity)) {
+  // Check for exact state code matches, or a leading one ("SA Italy")
+  const words = lowerCity.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+  if (stateCodes.includes(lowerCity) || stateCodes.includes(words[0])) {
+    return true;
+  }
+
+  // Stray initials from address parsing ("F Grenoble", "P.R. China")
+  if (words.some((word) => word.length === 1)) {
     return true;
   }
   
