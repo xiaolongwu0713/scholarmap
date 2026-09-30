@@ -5,7 +5,7 @@ import { notFound, unstable_rethrow } from 'next/navigation';
 import { getReadyFieldConfig } from '@/lib/seoFieldConfig';
 import { fetchCountryMap } from '@/lib/seoApi';
 import { fetchFieldWorldData, fetchFieldCountryData, fetchFieldCityData, getFieldDemoRunUrl, fetchFieldSitemapData } from '@/lib/seoFieldApi';
-import { countryToSlug, slugToCityName, cityToSlug } from '@/lib/geoSlugs';
+import { countryToSlug, slugToCityName, cityToSlug, isInvalidCityName } from '@/lib/geoSlugs';
 import {
   generateFieldCityContent,
   generateFieldCityMetaDescription,
@@ -46,7 +46,9 @@ async function findFieldCity(
   citySlug: string
 ): Promise<{ city: string; country: string } | null> {
   const field = (await fetchFieldSitemapData()).find((f) => f.slug === fieldSlug);
-  const top = field?.cities.find((c) => cityToSlug(c.city) === citySlug);
+  // Invalid names ("Dresden/Leipzig") have no working page; 404 instead of a backend error
+  const matches = (city: string) => !isInvalidCityName(city) && cityToSlug(city) === citySlug;
+  const top = field?.cities.find((c) => matches(c.city));
   if (top) return { city: top.city, country: top.country };
 
   const worldData = await fetchFieldWorldData(fieldSlug);
@@ -55,7 +57,7 @@ async function findFieldCity(
     .slice(0, 20);
   for (const countryData of topCountries) {
     const cities = await fetchFieldCountryData(fieldSlug, countryData.country);
-    const match = cities.find((c: any) => cityToSlug(c.city) === citySlug);
+    const match = cities.find((c: any) => matches(c.city));
     if (match) return { city: match.city, country: countryData.country };
   }
   return null;
