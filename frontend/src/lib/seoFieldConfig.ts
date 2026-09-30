@@ -16,12 +16,27 @@ export interface FieldConfig {
   projectId: string;
   description: string;
   keywords: string[];
+  category: FieldCategory;
   priority: number; // 1 = highest priority (order in seo-fields.json)
 }
+
+/** Field groups for list pages, in display order. */
+export const FIELD_CATEGORIES = {
+  neuroscience: 'Neuroscience',
+  cancer: 'Cancer Research',
+  immunology: 'Immunology & Infectious Disease',
+  cardiometabolic: 'Cardiovascular & Metabolic Disease',
+  genomics: 'Genomics & Molecular Biology',
+  'cell-biology': 'Cell Biology & Regenerative Medicine',
+  bioengineering: 'Therapeutics & Bioengineering',
+} as const;
+
+export type FieldCategory = keyof typeof FIELD_CATEGORIES;
 
 interface FieldDefinition {
   slug: string;
   name: string;
+  category: FieldCategory;
   description: string;
   keywords: string[];
   runId?: string;
@@ -30,7 +45,7 @@ interface FieldDefinition {
 /** SEO project (owned by the admin account). Must match backend SEO_PROJECT_ID. */
 export const SEO_PROJECT_ID = '3b9280a68d3d';
 
-const DEFINITIONS: FieldDefinition[] = fieldsFile.fields;
+const DEFINITIONS = fieldsFile.fields as FieldDefinition[];
 
 function toConfig(def: FieldDefinition, index: number, runId: string, projectId = SEO_PROJECT_ID): FieldConfig {
   return {
@@ -38,6 +53,7 @@ function toConfig(def: FieldDefinition, index: number, runId: string, projectId 
     name: def.name,
     description: def.description,
     keywords: def.keywords,
+    category: def.category,
     runId,
     projectId,
     priority: index + 1,
@@ -88,4 +104,17 @@ export async function getReadyFieldConfig(slug: string): Promise<FieldConfig | u
     throw new Error(`SEO field list unavailable; cannot resolve ${slug}`);
   }
   return config;
+}
+
+/** Fields grouped by category, in category display order; empty groups are left out. */
+export function groupFieldsByCategory(
+  fields: FieldConfig[]
+): { category: FieldCategory; label: string; fields: FieldConfig[] }[] {
+  return (Object.keys(FIELD_CATEGORIES) as FieldCategory[])
+    .map((category) => ({
+      category,
+      label: FIELD_CATEGORIES[category],
+      fields: fields.filter((f) => f.category === category),
+    }))
+    .filter((group) => group.fields.length > 0);
 }

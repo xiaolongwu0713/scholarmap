@@ -1,9 +1,10 @@
 {
-  "_comment": "Programmatic SEO research fields. Fields with runId use an existing run; others are built by the backend (app/seo_fields.py) from pubmedQuery.",
+  "_comment": "Programmatic SEO research fields. Fields with runId use an existing run; others are built by the backend (app/seo_fields.py) from pubmedQuery. `category` groups fields on list pages (labels in src/lib/seoFieldConfig.ts).",
   "fields": [
     {
       "slug": "brain-computer-interface",
       "name": "Brain-Computer Interface (BCI)",
+      "category": "neuroscience",
       "runId": "b6b977aeeed1",
       "description": "Brain-computer interfaces, neural interfaces, and direct brain communication systems",
       "keywords": [
@@ -17,6 +18,7 @@
     {
       "slug": "neural-modulation",
       "name": "Neural Modulation (tDCS/TMS)",
+      "category": "neuroscience",
       "runId": "19d981d1d732",
       "description": "Non-invasive brain stimulation including tDCS, TMS, and other neuromodulation techniques",
       "keywords": [
@@ -30,6 +32,7 @@
     {
       "slug": "crispr-gene-editing",
       "name": "CRISPR Gene Editing",
+      "category": "genomics",
       "runId": "16d4c49fc4f6",
       "description": "CRISPR-Cas9 and other gene editing technologies for therapeutic and research applications",
       "keywords": [
@@ -43,6 +46,7 @@
     {
       "slug": "cancer-immunotherapy",
       "name": "Cancer Immunotherapy",
+      "category": "cancer",
       "runId": "1893fb47f453",
       "description": "Cancer immunotherapy including CAR-T, checkpoint inhibitors, and immune-based cancer treatments",
       "keywords": [
@@ -56,6 +60,7 @@
     {
       "slug": "ai-drug-discovery",
       "name": "AI in Drug Discovery",
+      "category": "bioengineering",
       "runId": "597675a5f9fb",
       "description": "Artificial intelligence and machine learning applications in drug discovery and development",
       "keywords": [
@@ -68,6 +73,7 @@
     {
       "slug": "alzheimers-disease",
       "name": "Alzheimer's Disease",
+      "category": "neuroscience",
       "description": "Alzheimer's disease mechanisms, biomarkers, and therapeutics",
       "keywords": [
         "Alzheimer's disease",
@@ -81,6 +87,7 @@
     {
       "slug": "parkinsons-disease",
       "name": "Parkinson's Disease",
+      "category": "neuroscience",
       "description": "Parkinson's disease biology, alpha-synuclein, and treatment research",
       "keywords": [
         "Parkinson's disease",
@@ -94,6 +101,7 @@
     {
       "slug": "single-cell-sequencing",
       "name": "Single-Cell Sequencing",
+      "category": "genomics",
       "description": "Single-cell RNA sequencing and single-cell genomics",
       "keywords": [
         "single-cell RNA-seq",
@@ -107,6 +115,7 @@
     {
       "slug": "spatial-transcriptomics",
       "name": "Spatial Transcriptomics",
+      "category": "genomics",
       "description": "Spatially resolved transcriptomics and tissue omics",
       "keywords": [
         "spatial transcriptomics",
@@ -120,6 +129,7 @@
     {
       "slug": "organoids",
       "name": "Organoid Research",
+      "category": "cell-biology",
       "description": "Organoids and 3D stem cell-derived tissue models",
       "keywords": [
         "organoids",
@@ -133,6 +143,7 @@
     {
       "slug": "stem-cell-research",
       "name": "Stem Cell Research",
+      "category": "cell-biology",
       "description": "Stem cell biology, iPSCs, and stem cell therapies",
       "keywords": [
         "stem cells",
@@ -146,6 +157,7 @@
     {
       "slug": "gene-therapy",
       "name": "Gene Therapy",
+      "category": "bioengineering",
       "description": "Viral and non-viral gene therapy and AAV vectors",
       "keywords": [
         "gene therapy",
@@ -159,6 +171,7 @@
     {
       "slug": "mrna-therapeutics",
       "name": "mRNA Vaccines & Therapeutics",
+      "category": "bioengineering",
       "description": "mRNA vaccines, mRNA therapeutics, and lipid nanoparticle delivery",
       "keywords": [
         "mRNA vaccine",
@@ -172,6 +185,7 @@
     {
       "slug": "gut-microbiome",
       "name": "Gut Microbiome",
+      "category": "immunology",
       "description": "Gut microbiota and its role in health and disease",
       "keywords": [
         "gut microbiome",
@@ -185,6 +199,7 @@
     {
       "slug": "antimicrobial-resistance",
       "name": "Antimicrobial Resistance",
+      "category": "immunology",
       "description": "Antibiotic resistance, resistant pathogens, and new antimicrobials",
       "keywords": [
         "antimicrobial resistance",
@@ -198,6 +213,7 @@
     {
       "slug": "car-t-cell-therapy",
       "name": "CAR-T Cell Therapy",
+      "category": "cancer",
       "description": "Chimeric antigen receptor T-cell therapy for cancer and beyond",
       "keywords": [
         "CAR-T",
@@ -211,6 +227,7 @@
     {
       "slug": "tumor-microenvironment",
       "name": "Tumor Microenvironment",
+      "category": "cancer",
       "description": "Tumor microenvironment, stroma, and tumor immunology",
       "keywords": [
         "tumor microenvironment",
@@ -224,6 +241,7 @@
     {
       "slug": "liquid-biopsy",
       "name": "Liquid Biopsy",
+      "category": "cancer",
       "description": "Liquid biopsy, circulating tumor DNA, and cell-free DNA diagnostics",
       "keywords": [
         "liquid biopsy",
@@ -237,6 +255,7 @@
     {
       "slug": "ai-medical-imaging",
       "name": "AI in Medical Imaging",
+      "category": "bioengineering",
       "description": "Deep learning and AI for radiology and medical image analysis",
       "keywords": [
         "AI radiology",
@@ -250,6 +269,7 @@
     {
       "slug": "protein-design",
       "name": "Protein Design & Structure Prediction",
+      "category": "bioengineering",
       "description": "Computational protein design and structure prediction",
       "keywords": [
         "protein design",
@@ -263,6 +283,7 @@
     {
       "slug": "functional-mri",
       "name": "Functional MRI (fMRI)",
+      "category": "neuroscience",
       "description": "Functional neuroimaging and brain connectivity research",
       "keywords": [
         "fMRI",
@@ -276,6 +297,7 @@
     {
       "slug": "epigenetics",
       "name": "Epigenetics",
+      "category": "genomics",
       "description": "DNA methylation, chromatin, and epigenetic regulation",
       "keywords": [
         "epigenetics",
@@ -289,6 +311,7 @@
     {
       "slug": "synthetic-biology",
       "name": "Synthetic Biology",
+      "category": "bioengineering",
       "description": "Engineering biological systems, genetic circuits, and biofoundries",
       "keywords": [
         "synthetic biology",
@@ -302,6 +325,7 @@
     {
       "slug": "aging-senescence",
       "name": "Aging & Cellular Senescence",
+      "category": "cell-biology",
       "description": "Biology of aging, cellular senescence, and senolytics",
       "keywords": [
         "aging research",
@@ -315,6 +339,7 @@
     {
       "slug": "nanomedicine",
       "name": "Nanomedicine & Drug Delivery",
+      "category": "bioengineering",
       "description": "Nanoparticle drug delivery and nanomedicine",
       "keywords": [
         "nanomedicine",
@@ -324,6 +349,286 @@
         "nanotechnology"
       ],
       "pubmedQuery": "(\"Nanomedicine\"[MeSH] OR nanomedicine[tiab] OR (nanoparticle*[tiab] AND \"drug delivery\"[tiab])) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "neuroinflammation",
+      "name": "Neuroinflammation",
+      "category": "neuroscience",
+      "description": "Microglia, astrocytes, and immune signaling in the brain and nervous system",
+      "keywords": [
+        "neuroinflammation",
+        "microglia",
+        "astrocytes",
+        "glial cells",
+        "neuroimmunology"
+      ],
+      "pubmedQuery": "(\"Neuroinflammatory Diseases\"[MeSH] OR neuroinflammat*[tiab] OR (microglia*[tiab] AND inflammat*[tiab])) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "autism-spectrum-disorder",
+      "name": "Autism Spectrum Disorder",
+      "category": "neuroscience",
+      "description": "Genetics, neurobiology, and interventions for autism spectrum disorder",
+      "keywords": [
+        "autism",
+        "autism spectrum disorder",
+        "ASD",
+        "neurodevelopment",
+        "developmental disorders"
+      ],
+      "pubmedQuery": "(\"Autism Spectrum Disorder\"[MeSH] OR autism[tiab] OR autistic[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "schizophrenia",
+      "name": "Schizophrenia & Psychosis",
+      "category": "neuroscience",
+      "description": "Biology, genetics, and treatment of schizophrenia and psychotic disorders",
+      "keywords": [
+        "schizophrenia",
+        "psychosis",
+        "antipsychotics",
+        "psychiatric genetics",
+        "psychiatry"
+      ],
+      "pubmedQuery": "(\"Schizophrenia\"[MeSH] OR \"Psychotic Disorders\"[MeSH] OR schizophreni*[tiab] OR psychosis[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "stroke",
+      "name": "Stroke Research",
+      "category": "neuroscience",
+      "description": "Ischemic and hemorrhagic stroke, neuroprotection, and stroke recovery",
+      "keywords": [
+        "stroke",
+        "ischemic stroke",
+        "cerebrovascular disease",
+        "neuroprotection",
+        "stroke rehabilitation"
+      ],
+      "pubmedQuery": "(\"Stroke\"[MeSH] OR stroke[ti] OR \"cerebral ischemia\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "breast-cancer",
+      "name": "Breast Cancer",
+      "category": "cancer",
+      "description": "Breast cancer biology, subtypes, and therapies",
+      "keywords": [
+        "breast cancer",
+        "triple-negative breast cancer",
+        "HER2",
+        "breast oncology",
+        "tumor biology"
+      ],
+      "pubmedQuery": "(\"Breast Neoplasms\"[Majr] OR \"breast cancer\"[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "lung-cancer",
+      "name": "Lung Cancer",
+      "category": "cancer",
+      "description": "Non-small cell and small cell lung cancer research and targeted therapy",
+      "keywords": [
+        "lung cancer",
+        "NSCLC",
+        "EGFR",
+        "targeted therapy",
+        "thoracic oncology"
+      ],
+      "pubmedQuery": "(\"Lung Neoplasms\"[Majr] OR \"lung cancer\"[ti] OR NSCLC[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "colorectal-cancer",
+      "name": "Colorectal Cancer",
+      "category": "cancer",
+      "description": "Colorectal cancer biology, screening, and treatment",
+      "keywords": [
+        "colorectal cancer",
+        "colon cancer",
+        "gastrointestinal oncology",
+        "tumor biology",
+        "cancer screening"
+      ],
+      "pubmedQuery": "(\"Colorectal Neoplasms\"[Majr] OR \"colorectal cancer\"[ti] OR \"colon cancer\"[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "pancreatic-cancer",
+      "name": "Pancreatic Cancer",
+      "category": "cancer",
+      "description": "Pancreatic ductal adenocarcinoma biology and therapy",
+      "keywords": [
+        "pancreatic cancer",
+        "PDAC",
+        "pancreatic adenocarcinoma",
+        "KRAS",
+        "tumor stroma"
+      ],
+      "pubmedQuery": "(\"Pancreatic Neoplasms\"[MeSH] OR \"pancreatic cancer\"[tiab] OR \"pancreatic ductal adenocarcinoma\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "glioblastoma",
+      "name": "Glioblastoma & Brain Tumors",
+      "category": "cancer",
+      "description": "Glioblastoma, gliomas, and other brain tumors",
+      "keywords": [
+        "glioblastoma",
+        "glioma",
+        "brain tumors",
+        "neuro-oncology",
+        "GBM"
+      ],
+      "pubmedQuery": "(\"Glioblastoma\"[MeSH] OR \"Glioma\"[MeSH] OR glioblastoma[tiab] OR glioma*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "autoimmune-disease",
+      "name": "Autoimmune Disease",
+      "category": "immunology",
+      "description": "Mechanisms and treatment of lupus, rheumatoid arthritis, and other autoimmune diseases",
+      "keywords": [
+        "autoimmunity",
+        "lupus",
+        "rheumatoid arthritis",
+        "autoimmune disease",
+        "immune tolerance"
+      ],
+      "pubmedQuery": "(\"Autoimmune Diseases\"[Majr] OR autoimmun*[ti] OR lupus[ti] OR \"rheumatoid arthritis\"[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "t-cell-biology",
+      "name": "T Cell Biology",
+      "category": "immunology",
+      "description": "T cell development, activation, exhaustion, and memory",
+      "keywords": [
+        "T cells",
+        "T cell exhaustion",
+        "regulatory T cells",
+        "adaptive immunity",
+        "immunology"
+      ],
+      "pubmedQuery": "(\"T-Lymphocytes\"[Majr] OR \"T cell\"[ti] OR \"T cells\"[ti] OR \"T-cell\"[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "vaccine-development",
+      "name": "Vaccine Development",
+      "category": "immunology",
+      "description": "Vaccine design, adjuvants, and immune responses to vaccination",
+      "keywords": [
+        "vaccines",
+        "vaccine design",
+        "adjuvants",
+        "immunogenicity",
+        "vaccinology"
+      ],
+      "pubmedQuery": "(\"Vaccines\"[Majr] OR \"Vaccine Development\"[MeSH] OR vaccine*[ti]) AND (immunogenicity[tiab] OR adjuvant*[tiab] OR \"vaccine design\"[tiab] OR antigen*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "heart-failure",
+      "name": "Heart Failure",
+      "category": "cardiometabolic",
+      "description": "Mechanisms, therapies, and outcomes in heart failure and cardiomyopathy",
+      "keywords": [
+        "heart failure",
+        "cardiomyopathy",
+        "cardiac remodeling",
+        "cardiology",
+        "cardiovascular disease"
+      ],
+      "pubmedQuery": "(\"Heart Failure\"[Majr] OR \"heart failure\"[ti] OR cardiomyopath*[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "type-2-diabetes",
+      "name": "Type 2 Diabetes",
+      "category": "cardiometabolic",
+      "description": "Insulin resistance, beta-cell function, and treatment of type 2 diabetes",
+      "keywords": [
+        "type 2 diabetes",
+        "insulin resistance",
+        "beta cells",
+        "GLP-1",
+        "metabolic disease"
+      ],
+      "pubmedQuery": "(\"Diabetes Mellitus, Type 2\"[Majr] OR \"type 2 diabetes\"[ti] OR \"insulin resistance\"[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "obesity",
+      "name": "Obesity & Metabolism",
+      "category": "cardiometabolic",
+      "description": "Obesity, adipose tissue biology, and energy metabolism",
+      "keywords": [
+        "obesity",
+        "adipose tissue",
+        "energy metabolism",
+        "GLP-1",
+        "metabolic disease"
+      ],
+      "pubmedQuery": "(\"Obesity\"[Majr] OR \"Adipose Tissue\"[Majr] OR obesity[ti] OR adipocyte*[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "human-genetics-gwas",
+      "name": "Human Genetics & GWAS",
+      "category": "genomics",
+      "description": "Genome-wide association studies, polygenic risk, and statistical genetics",
+      "keywords": [
+        "GWAS",
+        "human genetics",
+        "polygenic risk score",
+        "statistical genetics",
+        "genetic epidemiology"
+      ],
+      "pubmedQuery": "(\"Genome-Wide Association Study\"[MeSH] OR \"genome-wide association\"[tiab] OR GWAS[tiab] OR \"polygenic risk\"[tiab] OR \"Mendelian randomization\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "cryo-em",
+      "name": "Cryo-EM & Structural Biology",
+      "category": "genomics",
+      "description": "Cryo-electron microscopy and structural biology of macromolecules",
+      "keywords": [
+        "cryo-EM",
+        "structural biology",
+        "cryo-electron tomography",
+        "protein structure",
+        "macromolecular complexes"
+      ],
+      "pubmedQuery": "(\"Cryoelectron Microscopy\"[MeSH] OR cryo-EM[tiab] OR \"cryo-electron\"[tiab] OR cryoEM[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "mitochondrial-biology",
+      "name": "Mitochondrial Biology",
+      "category": "cell-biology",
+      "description": "Mitochondrial function, dynamics, and disease",
+      "keywords": [
+        "mitochondria",
+        "mitophagy",
+        "oxidative phosphorylation",
+        "mitochondrial disease",
+        "metabolism"
+      ],
+      "pubmedQuery": "(\"Mitochondria\"[Majr] OR \"Mitochondrial Diseases\"[Majr] OR mitochondri*[ti] OR mitophagy[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "extracellular-vesicles",
+      "name": "Extracellular Vesicles & Exosomes",
+      "category": "cell-biology",
+      "description": "Exosomes and extracellular vesicles in signaling, diagnostics, and therapy",
+      "keywords": [
+        "extracellular vesicles",
+        "exosomes",
+        "EVs",
+        "intercellular communication",
+        "liquid biopsy"
+      ],
+      "pubmedQuery": "(\"Extracellular Vesicles\"[MeSH] OR \"Exosomes\"[MeSH] OR \"extracellular vesicle\"[tiab] OR \"extracellular vesicles\"[tiab] OR exosom*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "llms-in-medicine",
+      "name": "Large Language Models in Medicine",
+      "category": "bioengineering",
+      "description": "Large language models and generative AI in clinical care and biomedical research",
+      "keywords": [
+        "large language models",
+        "ChatGPT",
+        "generative AI",
+        "clinical NLP",
+        "medical AI"
+      ],
+      "pubmedQuery": "(\"large language model\"[tiab] OR \"large language models\"[tiab] OR ChatGPT[tiab] OR GPT-4[tiab] OR \"generative artificial intelligence\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
     }
   ]
 }

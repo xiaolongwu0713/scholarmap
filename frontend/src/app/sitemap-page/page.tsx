@@ -9,7 +9,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
-import { getReadyFieldConfigs } from '@/lib/seoFieldConfig';
+import { getReadyFieldConfigs, groupFieldsByCategory } from '@/lib/seoFieldConfig';
+import { fetchFieldSitemapData, topFieldCitySlugs, type FieldSitemapEntry } from '@/lib/seoFieldApi';
+import { cityToSlug, countryToSlug } from '@/lib/geoSlugs';
 
 export const metadata: Metadata = {
   title: 'Sitemap',
@@ -17,7 +19,14 @@ export const metadata: Metadata = {
 };
 
 export default async function SitemapPage() {
-  const fields = await getReadyFieldConfigs();
+  const fieldGroups = groupFieldsByCategory(await getReadyFieldConfigs());
+  // Link each field's own top places (a fixed city list would link pages that 404)
+  const places = new Map<string, FieldSitemapEntry>();
+  try {
+    for (const entry of await fetchFieldSitemapData()) places.set(entry.slug, entry);
+  } catch (error) {
+    console.error('Could not load field places for the sitemap page:', error);
+  }
 
   return (
     <>
@@ -61,45 +70,52 @@ export default async function SitemapPage() {
           {/* Research Fields */}
           <section className="mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Research Fields</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {fields.map((field) => (
-                <div key={field.slug} className="bg-white p-4 rounded-lg border border-gray-200">
-                  <Link
-                    href={`/research-jobs/${field.slug}`}
-                    className="text-lg font-semibold text-blue-600 hover:underline mb-2 block"
-                  >
-                    {field.name}
-                  </Link>
-                  <p className="text-sm text-gray-600 mb-3">{field.description}</p>
-                  <div className="space-y-1 text-sm">
-                    <div>
-                      <Link
-                        href={`/research-jobs/${field.slug}/country/united-states`}
-                        className="text-blue-500 hover:underline"
-                      >
-                        {field.name} in United States
-                      </Link>
-                    </div>
-                    <div>
-                      <Link
-                        href={`/research-jobs/${field.slug}/country/china`}
-                        className="text-blue-500 hover:underline"
-                      >
-                        {field.name} in China
-                      </Link>
-                    </div>
-                    <div>
-                      <Link
-                        href={`/research-jobs/${field.slug}/city/boston`}
-                        className="text-blue-500 hover:underline"
-                      >
-                        {field.name} in Boston
-                      </Link>
-                    </div>
-                  </div>
+            {fieldGroups.map((group) => (
+              <div key={group.category} className="mb-8">
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">{group.label}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {group.fields.map((field) => {
+                    const entry = places.get(field.slug);
+                    const countries = entry?.countries.slice(0, 2) ?? [];
+                    const citySlugs = entry ? topFieldCitySlugs(entry, 1) : [];
+                    const city = entry?.cities.find((c) => citySlugs.includes(cityToSlug(c.city)));
+                    return (
+                      <div key={field.slug} className="bg-white p-4 rounded-lg border border-gray-200">
+                        <Link
+                          href={`/research-jobs/${field.slug}`}
+                          className="text-lg font-semibold text-blue-600 hover:underline mb-2 block"
+                        >
+                          {field.name}
+                        </Link>
+                        <p className="text-sm text-gray-600 mb-3">{field.description}</p>
+                        <div className="space-y-1 text-sm">
+                          {countries.map((c) => (
+                            <div key={c.country}>
+                              <Link
+                                href={`/research-jobs/${field.slug}/country/${countryToSlug(c.country)}`}
+                                className="text-blue-500 hover:underline"
+                              >
+                                {field.name} in {c.country}
+                              </Link>
+                            </div>
+                          ))}
+                          {city && (
+                            <div>
+                              <Link
+                                href={`/research-jobs/${field.slug}/city/${citySlugs[0]}`}
+                                className="text-blue-500 hover:underline"
+                              >
+                                {field.name} in {city.city}
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </section>
 
           {/* Top Countries */}

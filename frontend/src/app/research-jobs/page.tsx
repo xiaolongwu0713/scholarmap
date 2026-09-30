@@ -8,6 +8,7 @@ import { CountryCardsGrid } from '@/components/CountryCardsGrid';
 import { SEOPageTracker } from '@/components/SEOPageTracker';
 import { TrackedLink } from '@/components/TrackedLink';
 import { DataSourceCitation } from '@/components/DataSourceCitation';
+import { getReadyFieldConfigs, groupFieldsByCategory } from '@/lib/seoFieldConfig';
 
 export const metadata: Metadata = {
   title: 'Global Biomedical Research Opportunities by Country',
@@ -58,6 +59,7 @@ export default async function ResearchJobsLanding() {
     countries.map((country) => fetchCountryMap(country.country).then((cities) => cities.length))
   );
   const totalCities = cityCounts.reduce((sum, count) => sum + count, 0);
+  const fieldGroups = groupFieldsByCategory(await getReadyFieldConfigs());
 
   return (
     <>
@@ -154,6 +156,34 @@ export default async function ResearchJobsLanding() {
               </ul>
             </div>
           </div>
+
+          {/* Research Fields by Category */}
+          {fieldGroups.length > 0 && (
+            <div className="max-w-6xl mx-auto mb-16">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">
+                Explore by Research Field
+              </h2>
+              <p className="text-gray-600 text-center mb-8">
+                Where researchers in each field work, by country and city.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {fieldGroups.map((group) => (
+                  <section key={group.category} className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">{group.label}</h3>
+                    <ul className="space-y-2">
+                      {group.fields.map((field) => (
+                        <li key={field.slug}>
+                          <Link href={`/research-jobs/${field.slug}`} className="text-blue-600 hover:underline">
+                            {field.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Countries Grid - Card Layout with Expand/Collapse */}
           <CountryCardsGrid countries={sortedCountries} />

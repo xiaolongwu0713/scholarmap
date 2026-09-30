@@ -2,7 +2,7 @@ import { SITE_URL } from '@/lib/site';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getReadyFieldConfig, getReadyFieldConfigs } from '@/lib/seoFieldConfig';
+import { FIELD_CATEGORIES, getReadyFieldConfig, getReadyFieldConfigs } from '@/lib/seoFieldConfig';
 import { fetchFieldWorldData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
 import { countryToSlug } from '@/lib/geoSlugs';
 import {
@@ -23,9 +23,12 @@ import { DataSourceCitation } from '@/components/DataSourceCitation';
 // Enable ISR with 24 hour revalidation
 export const revalidate = 86400;
 
-// Generate static params for all configured fields
+// Prerender the highest-priority fields; the rest render on first request (ISR), which
+// keeps build-time load on the small backend flat as fields are added.
+const PRERENDERED_FIELDS = 30;
+
 export async function generateStaticParams() {
-  const fields = await getReadyFieldConfigs();
+  const fields = (await getReadyFieldConfigs()).slice(0, PRERENDERED_FIELDS);
   return fields.map((field) => ({
     fieldSlug: field.slug,
   }));
@@ -158,6 +161,9 @@ export default async function FieldOverviewPage({ params }: PageProps) {
   }
 
   const demoRunUrl = getFieldDemoRunUrl(fieldConfig);
+  const relatedFields = (await getReadyFieldConfigs())
+    .filter((f) => f.category === fieldConfig.category && f.slug !== fieldConfig.slug)
+    .slice(0, 6);
 
   // Structured data
   const breadcrumbList = {
@@ -367,6 +373,27 @@ export default async function FieldOverviewPage({ params }: PageProps) {
                 ))}
               </div>
             </section>
+
+            {/* Related Fields (same category) */}
+            {relatedFields.length > 0 && (
+              <section className="mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                  Related {FIELD_CATEGORIES[fieldConfig.category]} Fields
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {relatedFields.map((field) => (
+                    <Link
+                      key={field.slug}
+                      href={`/research-jobs/${field.slug}`}
+                      className="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
+                    >
+                      <h3 className="font-semibold text-gray-900 mb-1">{field.name}</h3>
+                      <p className="text-sm text-gray-600">{field.description}</p>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Final CTA */}
             <MapYourFieldCTA
