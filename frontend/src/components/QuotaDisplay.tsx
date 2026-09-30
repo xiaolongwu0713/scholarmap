@@ -35,9 +35,11 @@ export default function QuotaDisplay() {
         const data = await getUserQuota();
         if (cancelled) return;
         setQuota(data);
-        const waiting = justPaid && data.tier === "free_user" && attempt < 20;
+        // Cards confirm in seconds; WeChat Pay can take several minutes. Poll every 3 s for the
+        // first minute, then every 10 s, for up to ~15 minutes.
+        const waiting = justPaid && data.tier === "free_user" && attempt < 105;
         setActivating(waiting);
-        if (waiting) setTimeout(() => load(attempt + 1), 3000);
+        if (waiting) setTimeout(() => load(attempt + 1), attempt < 20 ? 3000 : 10000);
       } catch (e) {
         if (!cancelled) setError(String(e));
       } finally {
@@ -129,7 +131,9 @@ export default function QuotaDisplay() {
 
       {activating && (
         <div style={{ color: "#2563eb", fontSize: "0.85rem" }}>
-          Payment received — activating Pro, this usually takes a few seconds...
+          <strong>Thanks — payment received.</strong> Activating Pro: card payments take a few seconds, WeChat Pay can
+          take a few minutes to confirm. This page updates by itself, your receipt is on its way by email, and you can
+          keep using LabScout meanwhile. Still Free after 15 minutes? Email contact@labscout.io.
         </div>
       )}
       {error && <div style={{ color: "#dc2626", fontSize: "0.8rem" }}>{error}</div>}

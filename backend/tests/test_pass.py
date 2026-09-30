@@ -185,3 +185,17 @@ def test_metrics_count_pass_holders_and_sales():
     assert m["pro_active"] == 2 and m["pro_monthly"] == 1 and m["pro_pass"] == 1 and m["pro_comp"] == 0
     assert m["pass_sales"] == 2 and m["pass_earnings_usd"] == 84.2
     assert m["mrr_usd"] == 20.0
+
+
+def test_paid_grants_access_and_completed_only_fills_in_earnings():
+    async def fn(s):
+        paid = txn(earnings=None)
+        paid["details"]["payout_totals"] = None  # not known yet when the payment is captured
+        first = await handle_event(s, {"event_type": "transaction.paid", "data": paid})
+        second = await handle_event(s, {"event_type": "transaction.completed", "data": txn()})
+        user = await s.get(User, "u1")
+        return first, second, aware(user.pass_until), (await s.get(PassPurchase, "txn_1")).earnings_usd_cents
+
+    first, second, until, earnings = with_db([new_user()], fn)
+    assert (first, second) == ("pass applied", "duplicate")
+    assert until is not None and earnings == 4210

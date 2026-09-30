@@ -156,7 +156,14 @@ async def apply_pass_purchase(session: AsyncSession, data: dict[str, Any], now: 
     transaction_id = data.get("id")
     if not transaction_id:
         return "no transaction id"
-    if await session.get(PassPurchase, transaction_id):
+    details = data.get("details") or {}
+    payout = details.get("payout_totals") or {}
+    earnings = _cents(payout.get("earnings")) if payout.get("currency_code") == "USD" else None
+    existing = await session.get(PassPurchase, transaction_id)
+    if existing is not None:
+        # transaction.paid grants access first; transaction.completed later brings the final payout figures
+        if existing.earnings_usd_cents is None and earnings is not None:
+            existing.earnings_usd_cents = earnings
         return "duplicate"
     user = await _find_user(session, {"custom_data": data.get("custom_data"), "customer_id": data.get("customer_id")})
     if user is None:
@@ -167,16 +174,14 @@ async def apply_pass_purchase(session: AsyncSession, data: dict[str, Any], now: 
     start = user.pass_until if user.pass_until and user.pass_until > now else now
     user.pass_until = start + timedelta(days=days)
     user.paddle_customer_id = user.paddle_customer_id or data.get("customer_id")
-    details = data.get("details") or {}
     totals = details.get("totals") or {}
-    payout = details.get("payout_totals") or {}
     session.add(PassPurchase(
         transaction_id=transaction_id,
         user_id=user.user_id,
         days=days,
         currency=data.get("currency_code"),
         amount_cents=_cents(totals.get("total")),
-        earnings_usd_cents=_cents(payout.get("earnings")) if payout.get("currency_code") == "USD" else None,
+        earnings_usd_cents=earnings,
         created_at=now,
     ))
     logger.info("Paddle pass %s: +%d days for user %s (pass_until=%s)", transaction_id, days, user.user_id, user.pass_until)
@@ -209,7 +214,8 @@ async def handle_event(session: AsyncSession, event: dict[str, Any]) -> str:
     """Apply a verified webhook event. Returns a short outcome string for logging."""
     event_type = event.get("event_type", "")
     data = event.get("data") or {}
-    if event_type == "transaction.completed":
+    # "paid" arrives as soon as the payment is captured (WeChat Pay: minutes before "completed")
+    if event_type in ("transaction.paid", "transaction.completed"):
         outcome = await apply_pass_purchase(session, data)
         await session.commit()
         return outcome

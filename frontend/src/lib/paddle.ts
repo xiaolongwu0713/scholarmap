@@ -3,11 +3,13 @@
  * All values here are public by design (client-side token, price IDs).
  */
 
+import { getUserQuota } from '@/lib/api';
+
 type PaddleEnvironment = 'sandbox' | 'production';
 
 interface PaddleJs {
   Environment: { set(env: PaddleEnvironment): void };
-  Initialize(options: { token: string }): void;
+  Initialize(options: { token: string; eventCallback?: (event: { name?: string }) => void }): void;
   Checkout: {
     open(options: {
       items: { priceId: string; quantity: number }[];
@@ -15,6 +17,7 @@ interface PaddleJs {
       customData?: Record<string, string>;
       settings?: { successUrl?: string; displayMode?: 'overlay' };
     }): void;
+    close(): void;
   };
 }
 
@@ -43,13 +46,103 @@ export const checkoutEnabled = Boolean(
 
 let loading: Promise<PaddleJs> | null = null;
 
+/**
+ * What the buyer sees after paying, like a WeChat Pay merchant page: while the Paddle overlay
+ * is open we poll the account; once the webhook has made it Pro we close the overlay and show
+ * our own success screen. QR payments confirm after the scan, so the overlay itself may never
+ * change on its own.
+ */
+export type CheckoutPhase = 'idle' | 'open' | 'confirming' | 'success' | 'slow';
+export interface CheckoutStatus {
+  phase: CheckoutPhase;
+  proUntil: string | null;
+}
+
+let status: CheckoutStatus = { phase: 'idle', proUntil: null };
+const listeners = new Set<(s: CheckoutStatus) => void>();
+
+function setStatus(next: CheckoutStatus) {
+  status = next;
+  listeners.forEach((l) => l(status));
+}
+
+export function subscribeCheckoutStatus(listener: (s: CheckoutStatus) => void): () => void {
+  listeners.add(listener);
+  listener(status);
+  return () => listeners.delete(listener);
+}
+
+export function dismissCheckoutStatus() {
+  stopPolling();
+  setStatus({ phase: 'idle', proUntil: null });
+}
+
+const POLL_MS = 3000;
+const GIVE_UP_MS = 15 * 60 * 1000; // after this, tell the buyer to email us (payment is safe either way)
+
+let paymentStarted = false;
+let baselineProUntil: string | null = null;
+let pollTimer: ReturnType<typeof setTimeout> | null = null;
+let pollStarted = 0;
+
+function stopPolling() {
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = null;
+}
+
+async function poll() {
+  pollTimer = null;
+  try {
+    const q = await getUserQuota();
+    const extended = !baselineProUntil || (q.pro_until !== null && q.pro_until > baselineProUntil);
+    if (q.tier !== 'free_user' && extended) {
+      window.Paddle?.Checkout.close();
+      paymentStarted = false;
+      setStatus({ phase: 'success', proUntil: q.pro_until });
+      return;
+    }
+  } catch {
+    // network blip: try again on the next tick
+  }
+  if (status.phase === 'confirming' && Date.now() - pollStarted > GIVE_UP_MS) {
+    setStatus({ ...status, phase: 'slow' });
+    return;
+  }
+  if (status.phase === 'open' || status.phase === 'confirming') pollTimer = setTimeout(poll, POLL_MS);
+}
+
+function startPolling() {
+  stopPolling();
+  pollStarted = Date.now();
+  pollTimer = setTimeout(poll, POLL_MS);
+}
+
+function onCheckoutEvent(event: { name?: string }) {
+  if (status.phase === 'success') return;
+  if (event.name === 'checkout.payment.initiated') paymentStarted = true;
+  if (event.name === 'checkout.completed') {
+    // Paid (cards: instantly). Swap Paddle's screen for ours and wait for the webhook.
+    window.Paddle?.Checkout.close();
+    setStatus({ phase: 'confirming', proUntil: null });
+    startPolling();
+  } else if (event.name === 'checkout.closed' && status.phase === 'open') {
+    if (paymentStarted) {
+      // Closed after paying but before confirmation: keep checking and say so
+      setStatus({ phase: 'confirming', proUntil: null });
+    } else {
+      stopPolling();
+      setStatus({ phase: 'idle', proUntil: null });
+    }
+  }
+}
+
 function loadPaddle(): Promise<PaddleJs> {
   if (loading) return loading;
   loading = new Promise((resolve, reject) => {
     const init = () => {
       const paddle = window.Paddle!;
       if (PADDLE_CONFIG.environment === 'sandbox') paddle.Environment.set('sandbox');
-      paddle.Initialize({ token: PADDLE_CONFIG.clientToken });
+      paddle.Initialize({ token: PADDLE_CONFIG.clientToken, eventCallback: onCheckoutEvent });
       resolve(paddle);
     };
     if (window.Paddle) return init();
@@ -79,10 +172,18 @@ export function openPaymentLinkFromUrl(): void {
 
 export async function openCheckout(period: BillingPeriod, user: { user_id: string; email: string }): Promise<void> {
   const paddle = await loadPaddle();
+  paymentStarted = false;
+  try {
+    baselineProUntil = (await getUserQuota()).pro_until;
+  } catch {
+    baselineProUntil = null;
+  }
+  setStatus({ phase: 'open', proUntil: null });
+  startPolling();
   paddle.Checkout.open({
     items: [{ priceId: PADDLE_CONFIG.priceIds[period], quantity: 1 }],
     customer: { email: user.email },
     customData: { user_id: user.user_id }, // the webhook uses this to find the account
-    settings: { displayMode: 'overlay', successUrl: `${window.location.origin}/projects?upgraded=1` },
+    settings: { displayMode: 'overlay' },
   });
 }
