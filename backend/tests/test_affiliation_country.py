@@ -84,3 +84,11 @@ def test_complete_parse_is_left_alone():
     parsed = GeoData(country="Germany", city="Berlin", institution="Charite", confidence="high")
     changed, geo = fill(parsed, GeoData(country="Germany", city="Heidelberg", institution="EMBL", confidence="high"))
     assert not changed and geo == parsed
+
+
+def test_overlong_institution_is_capped_to_the_column_length():
+    # Real affiliation shape (PMID 42464194): one comma-free token chaining institutions with "&"
+    chained = " & ".join(["National Clinical Research Centre for Oral Diseases"] * 12)
+    parsed = _parse_affiliation(f"Department of Oral Pathology, Peking University {chained}, Beijing, China")
+    assert parsed["institution"] and len(parsed["institution"]) <= 500
+    assert parsed["country"] == "China"

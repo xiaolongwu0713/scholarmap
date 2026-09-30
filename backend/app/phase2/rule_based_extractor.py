@@ -298,6 +298,8 @@ def _infer_country(country, region_norm, region_raw, tokens):
 # --------------------
 # Department / institution
 # --------------------
+MAX_INSTITUTION_LEN = 500  # authorship.institution / affiliation_cache.institution are VARCHAR(500)
+
 def _choose_institution(tokens):
     """Choose institution from tokens, recognizing both academic and company names."""
     best = None
@@ -608,6 +610,10 @@ def _parse_affiliation(affiliation_raw: str) -> dict:
         country_token = None
 
     institution = _choose_institution(tokens)
+    if institution:
+        # Affiliations that chain institutions with "&" can exceed the DB column
+        # and fail the whole ingest; a name that long is noise past this point anyway
+        institution = institution[:MAX_INSTITUTION_LEN].rstrip()
     department = _choose_department(tokens)
     # Pass institution to _detect_city to avoid using institution name as city
     city = _detect_city(
