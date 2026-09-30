@@ -9,13 +9,13 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import and_, distinct, exists, func, select
+from sqlalchemy import and_, distinct, exists, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import config
-from app.db.models import LLMUsage, Project, Run, RunPaper, SearchUsage, User
+from app.db.models import LLMUsage, PassPurchase, Project, Run, RunPaper, SearchUsage, User
 from app.quota import SEARCH_WINDOW, get_limit
 
 
@@ -71,7 +71,9 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
     )
 
     # Paywall: free users who used their whole weekly allowance
-    pro_now = and_(User.pro_until.is_not(None), User.pro_until > now)
+    subscribed_now = and_(User.pro_until.is_not(None), User.pro_until > now)
+    pass_now = and_(User.pass_until.is_not(None), User.pass_until > now)
+    pro_now = or_(subscribed_now, pass_now)
     free_limit = get_limit("free_user", "searches_per_week")
     recent = (
         select(SearchUsage.user_id)
@@ -83,10 +85,20 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         select(func.count()).select_from(User).where(customer, ~pro_now, User.user_id.in_(recent))
     )
 
+    # Subscribers and admin-granted Pro both run on pro_until; passes on pass_until
     pro_users = (await session.execute(
         select(User.subscription_status, User.subscription_interval_months, User.subscription_amount_cents,
                User.paddle_subscription_id)
-        .where(customer, pro_now)
+        .where(customer, subscribed_now)
+    )).all()
+    pass_only = await scalar(
+        select(func.count()).select_from(User)
+        .where(customer, pass_now, or_(User.pro_until.is_(None), User.pro_until <= now))
+    )
+    pass_rows = (await session.execute(
+        select(PassPurchase.earnings_usd_cents)
+        .join(User, User.user_id == PassPurchase.user_id)
+        .where(customer, PassPurchase.created_at >= since, PassPurchase.refunded_at.is_(None))
     )).all()
     mrr_cents = sum(
         cents / months for _, months, cents, _ in pro_users if months and cents is not None
@@ -138,12 +150,16 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         "runs_failed": runs_failed,
         "run_completion_rate": rate(runs_completed, runs_started),
         "free_users_at_limit": at_limit,
-        "pro_active": len(pro_users),
+        "pro_active": len(pro_users) + pass_only,
         "pro_monthly": sum(1 for _, m, _, _ in pro_users if m == 1),
         "pro_quarterly": sum(1 for _, m, _, _ in pro_users if m == 3),
         "pro_canceling": sum(1 for s, _, _, _ in pro_users if s == "canceled"),
         # Pro granted by the admin, without a paid subscription
         "pro_comp": sum(1 for *_, sub in pro_users if not sub),
+        # One-time 3-month passes: holders without a subscription, and sales in the window
+        "pro_pass": pass_only,
+        "pass_sales": len(pass_rows),
+        "pass_earnings_usd": round(sum(c or 0 for (c,) in pass_rows) / 100, 2),
         "mrr_usd": round(mrr_cents / 100, 2),
         "churned": churned,
         "ai_cost_searches_usd": round(ai_cost_searches, 4),

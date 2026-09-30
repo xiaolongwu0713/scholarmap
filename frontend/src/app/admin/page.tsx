@@ -57,12 +57,14 @@ function ago(iso: string | null | undefined): string {
   return `${Math.round(mins / 1440)} days ago`;
 }
 
+const hasPass = (u: AdminUser) => !!u.pass_until && new Date(u.pass_until).getTime() > Date.now();
+
 function PlanBadge({ u }: { u: AdminUser }) {
   const [text, bg, fg] =
     u.tier === "super_user"
       ? ["Admin", "#dcfce7", "#15803d"]
       : u.plan === "pro"
-        ? [u.has_subscription ? "Pro" : "Pro (comp)", "#ede9fe", "#6d28d9"]
+        ? [u.has_subscription ? "Pro" : hasPass(u) ? "Pro (pass)" : "Pro (comp)", "#ede9fe", "#6d28d9"]
         : ["Free", "#f3f4f6", "#4b5563"];
   return (
     <span style={{ display: "inline-flex", gap: 4 }}>
@@ -284,6 +286,7 @@ function UserPanel({ userId, onClose, onChanged }: { userId: string; onClose: ()
               <div>Signed up: {dateTime(u.created_at)}</div>
               <div>
                 Pro until: {u.tier === "super_user" ? "always" : dateTime(u.pro_until)}
+                {hasPass(u) && <span className="muted"> · 3-month pass until {dateTime(u.pass_until)}</span>}
                 {u.has_subscription && (
                   <span className="muted">
                     {" "}

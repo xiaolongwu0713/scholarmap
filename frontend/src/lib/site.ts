@@ -21,7 +21,17 @@ export const REFUND_DAYS = 7;
 /** Plans — keep in sync with backend USER_QUOTAS. */
 export const PLANS = {
   free: { name: 'Free', searchesPerWeek: 2 },
-  pro: { name: 'Pro', searchesPerWeek: 30, monthlyPrice: 20, quarterlyPrice: 50 },
+  pro: {
+    name: 'Pro',
+    searchesPerWeek: 30,
+    monthlyPrice: 20,
+    // One-time pass (no auto-renew), for an application season
+    passPrice: 50,
+    passMonths: 3,
+    // Fixed prices for buyers in China (set as Paddle country overrides)
+    monthlyPriceCny: 139,
+    passPriceCny: 349,
+  },
 } as const;
 
 /** Done-for-you field report for companies (sold by email, delivered manually). */

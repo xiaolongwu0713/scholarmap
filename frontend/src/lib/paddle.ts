@@ -24,20 +24,21 @@ declare global {
   }
 }
 
-export type BillingPeriod = 'monthly' | 'quarterly';
+/** monthly = $20 subscription; pass = one-time 3-month pass (no auto-renew). */
+export type BillingPeriod = 'monthly' | 'pass';
 
 export const PADDLE_CONFIG = {
   environment: (process.env.NEXT_PUBLIC_PADDLE_ENV || 'sandbox') as PaddleEnvironment,
   clientToken: process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN || '',
   priceIds: {
     monthly: process.env.NEXT_PUBLIC_PADDLE_PRICE_MONTHLY || '',
-    quarterly: process.env.NEXT_PUBLIC_PADDLE_PRICE_QUARTERLY || '',
+    pass: process.env.NEXT_PUBLIC_PADDLE_PRICE_PASS || '',
   } as Record<BillingPeriod, string>,
 };
 
 /** True once the Paddle env vars are set; until then the pricing page shows "launching soon". */
 export const checkoutEnabled = Boolean(
-  PADDLE_CONFIG.clientToken && PADDLE_CONFIG.priceIds.monthly && PADDLE_CONFIG.priceIds.quarterly
+  PADDLE_CONFIG.clientToken && PADDLE_CONFIG.priceIds.monthly && PADDLE_CONFIG.priceIds.pass
 );
 
 let loading: Promise<PaddleJs> | null = null;

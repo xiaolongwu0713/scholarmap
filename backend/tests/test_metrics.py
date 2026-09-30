@@ -13,7 +13,7 @@ import pytest
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 import config
-from app.db.models import Base, LLMUsage, Project, Run, RunPaper, SearchUsage, User
+from app.db.models import Base, LLMUsage, PassPurchase, Project, Run, RunPaper, SearchUsage, User
 from app.metrics import business_metrics
 
 NOW = datetime(2026, 9, 29, 12, 0, tzinfo=timezone.utc)
@@ -39,7 +39,7 @@ def searches(uid, n, days_ago=1):
 
 async def compute(rows):
     engine = create_async_engine("sqlite+aiosqlite://")
-    tables = [t.__table__ for t in (User, SearchUsage, Project, Run, RunPaper, LLMUsage)]
+    tables = [t.__table__ for t in (User, SearchUsage, Project, Run, RunPaper, LLMUsage, PassPurchase)]
     async with engine.begin() as conn:
         await conn.run_sync(lambda c: Base.metadata.create_all(c, tables=tables))
     async with async_sessionmaker(engine)() as session:

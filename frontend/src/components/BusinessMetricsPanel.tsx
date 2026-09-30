@@ -19,7 +19,8 @@ export default function BusinessMetricsPanel() {
   const rows: Array<[string, string | number]> = m
     ? [
         ["MRR", `$${m.mrr_usd.toFixed(2)}`],
-        ["Active Pro", `${m.pro_active} (${m.pro_monthly} monthly · ${m.pro_quarterly} quarterly · ${m.pro_canceling} canceling · ${m.pro_comp ?? 0} comp)`],
+        ["Active Pro", `${m.pro_active} (${m.pro_monthly} monthly · ${m.pro_quarterly} quarterly · ${m.pro_pass ?? 0} pass · ${m.pro_canceling} canceling · ${m.pro_comp ?? 0} comp)`],
+        ["3-month passes sold (our earnings)", `${m.pass_sales ?? 0} ($${(m.pass_earnings_usd ?? 0).toFixed(2)})`],
         ["Signups", m.signups],
         ["Activated signups (got a map)", `${m.activated_signups} (${pct(m.activation_rate)})`],
         ["Searches / searchers", `${m.searches} / ${m.searchers}`],

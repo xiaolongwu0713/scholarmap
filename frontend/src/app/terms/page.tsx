@@ -62,9 +62,13 @@ export default function TermsPage() {
           . We do not receive or store your full payment card details.
         </p>
         <ul>
-          <li>Subscriptions renew automatically at the end of each billing period until cancelled.</li>
+          <li>Monthly subscriptions renew automatically at the end of each billing period until cancelled.</li>
+          <li>The 3-month pass is a one-time payment: it does not renew, and Pro ends when the 3 months are over.</li>
           <li>You can cancel at any time from your account; access continues until the end of the paid period.</li>
-          <li>Prices are shown in US dollars and may be subject to applicable taxes collected by Paddle.</li>
+          <li>
+            Prices are shown in US dollars (buyers in China are charged in yuan) and may be subject to applicable taxes
+            collected by Paddle.
+          </li>
           <li>Refunds are handled under our <Link href="/refund">Refund Policy</Link>.</li>
         </ul>
       </section>

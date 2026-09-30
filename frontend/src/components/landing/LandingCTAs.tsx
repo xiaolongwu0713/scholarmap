@@ -75,7 +75,7 @@ export function LandingCTAs() {
       <p style={{ textAlign: "center", marginTop: "1rem", color: "#64748b", fontSize: "0.95rem", padding: "0 1rem" }}>
         Free to start with {PLANS.free.searchesPerWeek} searches a week. Applying this season?{" "}
         <Link href="/pricing" style={{ color: "#2563eb", fontWeight: 600 }}>
-          Pro is ${PLANS.pro.quarterlyPrice} for 3 months
+          Pro is ${PLANS.pro.passPrice} for {PLANS.pro.passMonths} months, no auto-renew
         </Link>
         .
       </p>

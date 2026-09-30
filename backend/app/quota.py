@@ -27,9 +27,15 @@ def get_user_tier(user: User, now: datetime | None = None) -> str:
     settings = config.settings
     if user.email.lower().strip() == settings.super_user_email.lower().strip():
         return "super_user"
-    if user.pro_until is not None and user.pro_until > (now or _now()):
+    now = now or _now()
+    if any(until is not None and until > now for until in (user.pro_until, user.pass_until)):
         return "pro_user"
     return settings.default_user_tier
+
+
+def _latest(*dates: datetime | None) -> str | None:
+    present = [d for d in dates if d is not None]
+    return max(present).isoformat() if present else None
 
 
 def get_limit(tier: str, name: str) -> int:
@@ -99,7 +105,10 @@ async def get_usage_summary(session: AsyncSession, user: User) -> dict:
     return {
         "tier": tier,
         "plan": "pro" if tier in ("pro_user", "super_user") else "free",
-        "pro_until": user.pro_until.isoformat() if user.pro_until else None,
+        # When Pro ends: the later of the subscription period and any one-time pass
+        "pro_until": _latest(user.pro_until, user.pass_until),
+        "pass_until": user.pass_until.isoformat() if user.pass_until and user.pass_until > now else None,
+        "has_subscription": bool(user.paddle_subscription_id) and user.subscription_status in ("active", "trialing", "past_due"),
         "subscription_status": user.subscription_status,
         "searches": {
             "limit": limit,

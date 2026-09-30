@@ -121,8 +121,9 @@ export default function QuotaDisplay() {
 
       {quota.tier === "pro_user" && quota.pro_until && (
         <div className="muted" style={{ fontSize: "0.8rem" }}>
-          {quota.subscription_status === "canceled" ? "Pro access ends" : "Renews"}{" "}
-          {new Date(quota.pro_until).toLocaleDateString()}
+          {quota.has_subscription && !quota.pass_until
+            ? `Renews ${new Date(quota.pro_until).toLocaleDateString()}`
+            : `Pro until ${new Date(quota.pro_until).toLocaleDateString()}${quota.pass_until ? " · pass, no auto-renew" : ""}`}
         </div>
       )}
 
@@ -148,10 +149,15 @@ export default function QuotaDisplay() {
           </ul>
         </>
       )}
-      {quota.tier === "pro_user" && (
+      {quota.tier === "pro_user" && quota.has_subscription && (
         <button className="secondary" onClick={openPortal} disabled={portalBusy} style={{ width: "100%", marginTop: "0.5rem" }}>
           {portalBusy ? "Opening..." : "Manage subscription"}
         </button>
+      )}
+      {quota.tier === "pro_user" && !quota.has_subscription && quota.pass_until && (
+        <Link href="/pricing" className="muted" style={{ fontSize: "0.8rem", textAlign: "center" }}>
+          Need more time? Extend with another pass
+        </Link>
       )}
     </div>
   );

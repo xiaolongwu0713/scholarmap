@@ -149,7 +149,9 @@ export async function login(email: string, password: string): Promise<LoginRespo
 export type UserQuotaInfo = {
   tier: "free_user" | "pro_user" | "super_user";
   plan: "free" | "pro";
-  pro_until: string | null;
+  pro_until: string | null; // when Pro ends: the later of the subscription period and any pass
+  pass_until: string | null; // active one-time pass, if any
+  has_subscription: boolean; // a live Paddle subscription (manage it in the billing portal)
   subscription_status: string | null;
   searches: {
     limit: number; // -1 = unlimited
@@ -702,6 +704,9 @@ export type BusinessMetrics = {
   pro_quarterly: number;
   pro_canceling: number;
   pro_comp: number;
+  pro_pass: number;
+  pass_sales: number;
+  pass_earnings_usd: number;
   mrr_usd: number;
   churned: number;
   ai_cost_searches_usd: number;
@@ -730,6 +735,7 @@ export type AdminUser = {
   tier: "free_user" | "pro_user" | "super_user";
   plan: "free" | "pro";
   pro_until: string | null;
+  pass_until: string | null;
   subscription_status: string | null;
   has_subscription: boolean;
   subscription_amount_cents: number | null;

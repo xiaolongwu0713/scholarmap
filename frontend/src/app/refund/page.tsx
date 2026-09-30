@@ -16,8 +16,7 @@ export default function RefundPage() {
         <h2>{REFUND_DAYS}-day money-back guarantee</h2>
         <p>
           If LabScout Pro is not right for you, you can request a full refund within <strong>{REFUND_DAYS} days</strong> of your
-          first payment for a new subscription — no questions asked. This applies to both the monthly and the 3-month
-          plan.
+          first payment for a new subscription or of a 3-month pass — no questions asked.
         </p>
       </section>
 

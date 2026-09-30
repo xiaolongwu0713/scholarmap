@@ -39,6 +39,10 @@ class User(Base):
     subscription_interval_months: Mapped[int | None] = mapped_column(Integer, nullable=True)
     subscription_amount_cents: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
+    # One-time Pro passes (no subscription) run until pass_until; kept apart from pro_until,
+    # which subscription webhooks overwrite
+    pass_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
     # Admin controls: a custom weekly search limit (-1 = unlimited), a quota reset
     # (searches before it don't count), and a disabled account that can't sign in.
     search_limit_override: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -76,6 +80,25 @@ class LLMUsage(Base):
         server_default=func.now(),
         nullable=False
     )
+
+
+class PassPurchase(Base):
+    """A one-time Pro pass bought through Paddle (one row per transaction, so webhook retries apply once)."""
+    __tablename__ = "pass_purchases"
+
+    transaction_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    days: Mapped[int] = mapped_column(Integer, nullable=False)
+    currency: Mapped[str | None] = mapped_column(String(3), nullable=True)
+    amount_cents: Mapped[int | None] = mapped_column(Integer, nullable=True)  # what the buyer paid, in `currency`
+    earnings_usd_cents: Mapped[int | None] = mapped_column(Integer, nullable=True)  # our payout after tax and fees
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+        index=True,
+    )
+    refunded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class AdminAction(Base):

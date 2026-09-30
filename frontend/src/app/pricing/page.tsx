@@ -9,12 +9,12 @@ import { PaymentLinkHandler } from '@/components/PaymentLinkHandler';
 
 export const metadata: Metadata = {
   title: 'Pricing - Free and Pro Plans',
-  description: `Explore biomedical research maps for free. Upgrade to LabScout Pro for ${PLANS.pro.searchesPerWeek} custom searches per week, full researcher and institution lists, and CSV export — $${PLANS.pro.monthlyPrice}/month or $${PLANS.pro.quarterlyPrice} for 3 months.`,
+  description: `Explore biomedical research maps for free. Upgrade to LabScout Pro for ${PLANS.pro.searchesPerWeek} custom searches per week, full researcher and institution lists, and CSV export — $${PLANS.pro.monthlyPrice}/month or a one-time $${PLANS.pro.passPrice} pass for ${PLANS.pro.passMonths} months.`,
   alternates: { canonical: '/pricing' },
 };
 
-const quarterlyMonthly = (PLANS.pro.quarterlyPrice / 3).toFixed(2);
-const quarterlySavings = Math.round((1 - PLANS.pro.quarterlyPrice / (PLANS.pro.monthlyPrice * 3)) * 100);
+const passMonthly = (PLANS.pro.passPrice / PLANS.pro.passMonths).toFixed(2);
+const passSavings = Math.round((1 - PLANS.pro.passPrice / (PLANS.pro.monthlyPrice * PLANS.pro.passMonths)) * 100);
 
 const freeFeatures = [
   'Browse all public research maps by field, country and city',
@@ -42,11 +42,15 @@ const faqs = [
   },
   {
     q: 'Which plan should I choose?',
-    a: `The 3-month plan suits a single application season (PhD, postdoc or lab search) and saves ${quarterlySavings}% versus paying monthly. The monthly plan is best if you need LabScout on an ongoing basis.`,
+    a: `The ${PLANS.pro.passMonths}-month pass suits a single application season (PhD, postdoc or lab search): you pay once, save ${passSavings}% versus paying monthly, and it simply ends after ${PLANS.pro.passMonths} months — nothing renews. The monthly plan is best if you need LabScout on an ongoing basis.`,
+  },
+  {
+    q: 'Can I pay in Chinese yuan, with WeChat Pay or Alipay?',
+    a: `Yes. Buyers in China are charged in yuan: ¥${PLANS.pro.monthlyPriceCny}/month or ¥${PLANS.pro.passPriceCny} for the ${PLANS.pro.passMonths}-month pass. WeChat Pay is available for the pass on desktop (scan the QR code with your phone); cards and PayPal work for both plans.`,
   },
   {
     q: 'Can I cancel or get a refund?',
-    a: `Yes. Cancel anytime and keep access until the end of your paid period. New subscriptions have a ${REFUND_DAYS}-day money-back guarantee — see our Refund Policy.`,
+    a: `Yes. The monthly plan can be cancelled anytime and you keep access until the end of the paid month; the pass never renews, so there is nothing to cancel. New subscriptions and passes have a ${REFUND_DAYS}-day money-back guarantee — see our Refund Policy.`,
   },
   {
     q: 'How is payment handled?',
@@ -122,18 +126,18 @@ export default function PricingPage() {
               </CheckoutButton>
             </section>
 
-            {/* Pro quarterly */}
+            {/* Pro pass: one-time, no auto-renew */}
             <section className="relative bg-white rounded-2xl border-2 border-blue-600 p-6 flex flex-col shadow-lg">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-blue-600 px-3 py-1 text-xs font-semibold text-white">
                 Best for application season
               </span>
-              <h2 className="text-xl font-semibold text-gray-900">{PLANS.pro.name} · 3 months</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{PLANS.pro.name} · {PLANS.pro.passMonths}-month pass</h2>
               <p className="mt-4">
-                <span className="text-4xl font-bold text-gray-900">${PLANS.pro.quarterlyPrice}</span>
-                <span className="text-gray-500"> / 3 months</span>
+                <span className="text-4xl font-bold text-gray-900">${PLANS.pro.passPrice}</span>
+                <span className="text-gray-500"> once</span>
               </p>
               <p className="text-sm text-gray-500 mt-1">
-                ${quarterlyMonthly}/month · save {quarterlySavings}%
+                ${passMonthly}/month · save {passSavings}% · no auto-renew
               </p>
               <ul className="mt-6 space-y-3 text-sm text-gray-700 flex-1">
                 {proFeatures.map((f) => (
@@ -141,20 +145,20 @@ export default function PricingPage() {
                 ))}
               </ul>
               <CheckoutButton
-                period="quarterly"
+                period="pass"
                 className="mt-8 block w-full text-center rounded-lg bg-blue-600 px-4 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
               >
-                Choose 3 months
+                Get the {PLANS.pro.passMonths}-month pass
               </CheckoutButton>
             </section>
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            Prices in USD. Taxes may apply.{' '}
+            Prices in USD; in China ¥{PLANS.pro.monthlyPriceCny}/month or ¥{PLANS.pro.passPriceCny} for the pass. Taxes may apply.{' '}
             {checkoutEnabled
               ? 'Secure checkout by Paddle.'
               : 'Pro checkout is launching soon — create a free account now and upgrade when it opens.'}{' '}
-            {REFUND_DAYS}-day money-back guarantee on new subscriptions.
+            {REFUND_DAYS}-day money-back guarantee on new subscriptions and passes.
           </p>
 
           <p className="text-center text-gray-700 mt-4">
@@ -178,7 +182,7 @@ export default function PricingPage() {
               ))}
             </div>
             <p className="text-center text-sm text-gray-500 mt-8">
-              By subscribing you agree to our <Link href="/terms" className="text-blue-600 hover:underline">Terms of Service</Link>,{' '}
+              By purchasing you agree to our <Link href="/terms" className="text-blue-600 hover:underline">Terms of Service</Link>,{' '}
               <Link href="/privacy" className="text-blue-600 hover:underline">Privacy Policy</Link> and{' '}
               <Link href="/refund" className="text-blue-600 hover:underline">Refund Policy</Link>.
             </p>

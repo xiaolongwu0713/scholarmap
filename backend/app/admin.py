@@ -50,7 +50,7 @@ def _llm_cost(prompt: int, completion: int) -> float:
 
 def _normalize(user: User) -> None:
     """Give datetimes loaded from SQLite back their UTC timezone so comparisons work."""
-    for name in ("pro_until", "quota_reset_at", "disabled_at", "created_at"):
+    for name in ("pro_until", "pass_until", "quota_reset_at", "disabled_at", "created_at"):
         setattr(user, name, _aware(getattr(user, name)))
 
 
@@ -65,6 +65,7 @@ def _user_row(user: User, now: datetime, window: list[datetime]) -> dict[str, An
         "tier": tier,
         "plan": "pro" if tier in ("pro_user", "super_user") else "free",
         "pro_until": _iso(user.pro_until),
+        "pass_until": _iso(user.pass_until),
         "subscription_status": user.subscription_status,
         "has_subscription": bool(user.paddle_subscription_id),
         "subscription_amount_cents": user.subscription_amount_cents,
@@ -111,10 +112,14 @@ async def list_users(
     if q.strip():
         where.append(User.email.ilike(f"%{q.strip()}%"))
     if plan == "pro":
-        where.append(or_(User.email == admin, User.pro_until > now))
+        where.append(or_(User.email == admin, User.pro_until > now, User.pass_until > now))
     elif plan == "free":
-        # Spelled out rather than negated: NOT on a NULL pro_until would drop never-paid users
-        where.append((User.email != admin) & or_(User.pro_until.is_(None), User.pro_until <= now))
+        # Spelled out rather than negated: NOT on a NULL date would drop never-paid users
+        where.append(
+            (User.email != admin)
+            & or_(User.pro_until.is_(None), User.pro_until <= now)
+            & or_(User.pass_until.is_(None), User.pass_until <= now)
+        )
     elif plan == "disabled":
         where.append(User.disabled_at.is_not(None))
 
@@ -280,10 +285,15 @@ async def apply_action(
                 "This user has a live Paddle subscription, which would restore Pro at the next renewal. "
                 "Cancel the subscription in Paddle instead."
             )
-        if not user.pro_until or user.pro_until <= now:
+        active = [d for d in (user.pro_until, user.pass_until) if d and d > now]
+        if not active:
             raise AdminActionError("This user doesn't have Pro")
-        detail = {"before": _iso(user.pro_until)}
-        user.pro_until = now
+        # Ends admin-granted Pro and any one-time pass (refund the pass in Paddle separately)
+        detail = {"before": _iso(user.pro_until), "pass_before": _iso(user.pass_until)}
+        if user.pro_until and user.pro_until > now:
+            user.pro_until = now
+        if user.pass_until and user.pass_until > now:
+            user.pass_until = now
     elif action == "set_search_limit":
         if limit is not None and not -1 <= limit <= 10000:
             raise AdminActionError("Limit must be -1 (unlimited), 0 or a positive number up to 10000")

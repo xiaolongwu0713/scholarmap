@@ -6,7 +6,7 @@ import hmac
 import logging
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -18,7 +18,7 @@ repo_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
 import config
-from app.db.models import User
+from app.db.models import PassPurchase, User
 
 logger = logging.getLogger(__name__)
 
@@ -124,10 +124,99 @@ def apply_subscription(user: User, data: dict[str, Any], occurred_at: datetime |
     return True
 
 
+def pass_days(data: dict[str, Any]) -> int:
+    """Days of Pro a one-time transaction buys: prices carry custom_data.pass_days (0 = not a pass)."""
+    if data.get("subscription_id"):
+        return 0
+    days = 0
+    for item in data.get("items") or []:
+        price = item.get("price") or {}
+        if price.get("billing_cycle"):
+            continue
+        try:
+            per_unit = int((price.get("custom_data") or {}).get("pass_days") or 0)
+        except (TypeError, ValueError):
+            per_unit = 0
+        days += per_unit * int(item.get("quantity") or 1)
+    return days
+
+
+def _cents(value: Any) -> int | None:
+    try:
+        return int(value) if value is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+async def apply_pass_purchase(session: AsyncSession, data: dict[str, Any], now: datetime | None = None) -> str:
+    """Extend a user's Pro pass for a completed one-time transaction (once per transaction)."""
+    days = pass_days(data)
+    if not days:
+        return "not a pass"
+    transaction_id = data.get("id")
+    if not transaction_id:
+        return "no transaction id"
+    if await session.get(PassPurchase, transaction_id):
+        return "duplicate"
+    user = await _find_user(session, {"custom_data": data.get("custom_data"), "customer_id": data.get("customer_id")})
+    if user is None:
+        logger.warning("Paddle pass %s: no matching user", transaction_id)
+        return "no user"
+
+    now = now or datetime.now(timezone.utc)
+    start = user.pass_until if user.pass_until and user.pass_until > now else now
+    user.pass_until = start + timedelta(days=days)
+    user.paddle_customer_id = user.paddle_customer_id or data.get("customer_id")
+    details = data.get("details") or {}
+    totals = details.get("totals") or {}
+    payout = details.get("payout_totals") or {}
+    session.add(PassPurchase(
+        transaction_id=transaction_id,
+        user_id=user.user_id,
+        days=days,
+        currency=data.get("currency_code"),
+        amount_cents=_cents(totals.get("total")),
+        earnings_usd_cents=_cents(payout.get("earnings")) if payout.get("currency_code") == "USD" else None,
+        created_at=now,
+    ))
+    logger.info("Paddle pass %s: +%d days for user %s (pass_until=%s)", transaction_id, days, user.user_id, user.pass_until)
+    return "pass applied"
+
+
+async def apply_pass_refund(session: AsyncSession, data: dict[str, Any], now: datetime | None = None) -> str:
+    """Take back a pass's days when its payment is fully refunded."""
+    if data.get("action") != "refund" or data.get("status") != "approved":
+        return "not an approved refund"
+    purchase = await session.get(PassPurchase, data.get("transaction_id") or "")
+    if purchase is None:
+        return "not a pass"
+    if purchase.refunded_at is not None:
+        return "duplicate"
+    if data.get("type") != "full":
+        logger.warning("Paddle partial refund on pass %s: access left unchanged", purchase.transaction_id)
+        return "partial refund"
+    now = now or datetime.now(timezone.utc)
+    purchase.refunded_at = now
+    user = await session.get(User, purchase.user_id)
+    if user is not None and user.pass_until is not None:
+        remaining = user.pass_until - timedelta(days=purchase.days)
+        user.pass_until = remaining if remaining > now else now
+    logger.info("Paddle pass %s refunded: -%d days for user %s", purchase.transaction_id, purchase.days, purchase.user_id)
+    return "pass refunded"
+
+
 async def handle_event(session: AsyncSession, event: dict[str, Any]) -> str:
     """Apply a verified webhook event. Returns a short outcome string for logging."""
     event_type = event.get("event_type", "")
     data = event.get("data") or {}
+    if event_type == "transaction.completed":
+        outcome = await apply_pass_purchase(session, data)
+        await session.commit()
+        return outcome
+    if event_type in ("adjustment.created", "adjustment.updated"):
+        outcome = await apply_pass_refund(session, data)
+        await session.commit()
+        return outcome
     if not event_type.startswith("subscription."):
         return f"ignored {event_type}"
 
