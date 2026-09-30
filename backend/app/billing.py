@@ -189,18 +189,27 @@ async def apply_pass_purchase(session: AsyncSession, data: dict[str, Any], now: 
 
 
 async def apply_pass_refund(session: AsyncSession, data: dict[str, Any], now: datetime | None = None) -> str:
-    """Take back a pass's days when its payment is fully refunded."""
-    if data.get("action") != "refund" or data.get("status") != "approved":
-        return "not an approved refund"
+    """Track a pass refund through Paddle's review; take the days back once a full refund is approved."""
+    if data.get("action") != "refund":
+        return "not a refund"
     purchase = await session.get(PassPurchase, data.get("transaction_id") or "")
     if purchase is None:
         return "not a pass"
     if purchase.refunded_at is not None:
         return "duplicate"
+    now = now or datetime.now(timezone.utc)
+    status = data.get("status")
+    if status != "approved":
+        # pending_approval (access kept while Paddle reviews), rejected or reversed
+        purchase.refund_status = status
+        if status == "pending_approval" and purchase.refund_requested_at is None:
+            purchase.refund_requested_at = _parse_time(data.get("created_at")) or now
+        return f"refund {status}"
     if data.get("type") != "full":
+        purchase.refund_status = "approved_partial"
         logger.warning("Paddle partial refund on pass %s: access left unchanged", purchase.transaction_id)
         return "partial refund"
-    now = now or datetime.now(timezone.utc)
+    purchase.refund_status = "approved"
     purchase.refunded_at = now
     user = await session.get(User, purchase.user_id)
     if user is not None and user.pass_until is not None:

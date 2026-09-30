@@ -160,6 +160,16 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         "pro_pass": pass_only,
         "pass_sales": len(pass_rows),
         "pass_earnings_usd": round(sum(c or 0 for (c,) in pass_rows) / 100, 2),
+        # Refunds Paddle has not decided yet; flag the ones waiting over a day
+        "pass_refunds_pending": await scalar(
+            select(func.count()).select_from(PassPurchase).where(PassPurchase.refund_status == "pending_approval")
+        ),
+        "pass_refunds_pending_over_24h": await scalar(
+            select(func.count()).select_from(PassPurchase).where(
+                PassPurchase.refund_status == "pending_approval",
+                PassPurchase.refund_requested_at < now - timedelta(hours=24),
+            )
+        ),
         "mrr_usd": round(mrr_cents / 100, 2),
         "churned": churned,
         "ai_cost_searches_usd": round(ai_cost_searches, 4),

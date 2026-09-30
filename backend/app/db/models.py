@@ -99,6 +99,9 @@ class PassPurchase(Base):
         index=True,
     )
     refunded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Paddle refund review: pending_approval -> approved (days taken back) or rejected
+    refund_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    refund_requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class AdminAction(Base):

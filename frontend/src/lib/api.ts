@@ -707,6 +707,8 @@ export type BusinessMetrics = {
   pro_pass: number;
   pass_sales: number;
   pass_earnings_usd: number;
+  pass_refunds_pending: number;
+  pass_refunds_pending_over_24h: number;
   mrr_usd: number;
   churned: number;
   ai_cost_searches_usd: number;
@@ -775,7 +777,18 @@ export type AdminActionLog = {
   created_at: string | null;
 };
 
-export type AdminUserDetail = { user: AdminUser; runs: AdminRun[]; actions: AdminActionLog[] };
+export type AdminPass = {
+  transaction_id: string;
+  created_at: string | null;
+  days: number;
+  currency: string | null;
+  amount_cents: number | null;
+  refund_status: string | null; // pending_approval | approved | approved_partial | rejected | reversed
+  refund_requested_at: string | null;
+  refunded_at: string | null;
+};
+
+export type AdminUserDetail = { user: AdminUser; passes: AdminPass[]; runs: AdminRun[]; actions: AdminActionLog[] };
 
 export type AdminUserAction =
   | { action: "grant_pro"; days: number; note?: string }

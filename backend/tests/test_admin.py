@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 import config
 from app import quota
 from app.admin import AdminActionError, apply_action, list_users, recent_actions, recent_searches, user_detail
-from app.db.models import AdminAction, Base, LLMUsage, Project, Run, RunPaper, SearchUsage, User, UserActivity
+from app.db.models import AdminAction, Base, LLMUsage, PassPurchase, Project, Run, RunPaper, SearchUsage, User, UserActivity
 
 NOW = datetime(2026, 9, 29, 12, 0, tzinfo=timezone.utc)
 ADMIN = "admin@example.com"
@@ -50,7 +50,7 @@ def run(rid, owner, days_ago=1, papers=0):
 def with_db(rows, fn):
     async def go():
         engine = create_async_engine("sqlite+aiosqlite://")
-        tables = [t.__table__ for t in (User, SearchUsage, Project, Run, RunPaper, LLMUsage, UserActivity, AdminAction)]
+        tables = [t.__table__ for t in (User, SearchUsage, Project, Run, RunPaper, LLMUsage, UserActivity, AdminAction, PassPurchase)]
         async with engine.begin() as conn:
             await conn.run_sync(lambda c: Base.metadata.create_all(c, tables=tables))
         async with async_sessionmaker(engine, expire_on_commit=False)() as session:

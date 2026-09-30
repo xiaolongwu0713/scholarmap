@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import config
-from app.db.models import AdminAction, LLMUsage, Project, Run, RunPaper, SearchUsage, User, UserActivity
+from app.db.models import AdminAction, LLMUsage, PassPurchase, Project, Run, RunPaper, SearchUsage, User, UserActivity
 from app.quota import SEARCH_WINDOW, get_search_limit, get_user_tier
 
 ACTIONS = ("grant_pro", "revoke_pro", "set_search_limit", "reset_quota", "disable", "enable", "verify_email")
@@ -244,8 +244,24 @@ async def user_detail(session: AsyncSession, user_id: str, now: datetime | None 
         return None
     _normalize(user)
     window = await _window_searches(session, [user], now)
+    passes = (await session.execute(
+        select(PassPurchase).where(PassPurchase.user_id == user_id).order_by(PassPurchase.created_at.desc())
+    )).scalars()
     return {
         "user": _user_row(user, now, window[user_id]),
+        "passes": [
+            {
+                "transaction_id": p.transaction_id,
+                "created_at": _iso(p.created_at),
+                "days": p.days,
+                "currency": p.currency,
+                "amount_cents": p.amount_cents,
+                "refund_status": p.refund_status,
+                "refund_requested_at": _iso(p.refund_requested_at),
+                "refunded_at": _iso(p.refunded_at),
+            }
+            for p in passes
+        ],
         "runs": await _runs(session, [Project.user_id == user_id], 50),
         "actions": await recent_actions(session, 30, target_user_id=user_id),
     }

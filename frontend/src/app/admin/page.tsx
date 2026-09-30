@@ -12,6 +12,7 @@ import {
   getResourceStats,
   takeResourceSnapshot,
   type AdminActionLog,
+  type AdminPass,
   type AdminRun,
   type AdminUser,
   type AdminUserAction,
@@ -287,6 +288,9 @@ function UserPanel({ userId, onClose, onChanged }: { userId: string; onClose: ()
               <div>
                 Pro until: {u.tier === "super_user" ? "always" : dateTime(u.pro_until)}
                 {hasPass(u) && <span className="muted"> · 3-month pass until {dateTime(u.pass_until)}</span>}
+                {detail.passes.some((p) => p.refund_status === "pending_approval") && (
+                  <span style={{ color: "#b45309", fontWeight: 600 }}> · refund pending Paddle approval</span>
+                )}
                 {u.has_subscription && (
                   <span className="muted">
                     {" "}
@@ -400,6 +404,15 @@ function UserPanel({ userId, onClose, onChanged }: { userId: string; onClose: ()
               </section>
             )}
 
+            {detail.passes.length > 0 && (
+              <section className="stack" style={{ gap: 8 }}>
+                <h3 style={{ margin: 0, fontSize: 16 }}>3-month passes ({detail.passes.length})</h3>
+                {detail.passes.map((p) => (
+                  <PassRow key={p.transaction_id} p={p} />
+                ))}
+              </section>
+            )}
+
             <section className="stack" style={{ gap: 8 }}>
               <h3 style={{ margin: 0, fontSize: 16 }}>Searches ({detail.runs.length})</h3>
               {detail.runs.length === 0 && <div className="muted">No searches yet.</div>}
@@ -415,6 +428,36 @@ function UserPanel({ userId, onClose, onChanged }: { userId: string; onClose: ()
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+const REFUND_LABELS: Record<string, [string, string]> = {
+  pending_approval: ["Refund pending Paddle approval — access kept until approved", "#b45309"],
+  approved: ["Refunded — pass days taken back", "#15803d"],
+  approved_partial: ["Partly refunded — access unchanged", "#b45309"],
+  rejected: ["Refund rejected by Paddle — pass still active", "#b91c1c"],
+  reversed: ["Refund reversed", "#b91c1c"],
+};
+
+function PassRow({ p }: { p: AdminPass }) {
+  const amount = p.amount_cents !== null && p.currency ? `${(p.amount_cents / 100).toFixed(2)} ${p.currency}` : "";
+  const refund = p.refund_status ? REFUND_LABELS[p.refund_status] ?? [p.refund_status, "#6b7280"] : null;
+  return (
+    <div className="card" style={{ padding: "10px 12px", fontSize: 14 }}>
+      <div className="flex flex-wrap justify-between gap-2">
+        <span>
+          {dateTime(p.created_at)} · {p.days} days {amount && `· ${amount}`}
+        </span>
+        <span className="muted" style={{ fontSize: 12 }}>{p.transaction_id}</span>
+      </div>
+      {refund && (
+        <div style={{ fontSize: 13, color: refund[1], marginTop: 4, fontWeight: 600 }}>
+          {refund[0]}
+          {p.refund_status === "pending_approval" && p.refund_requested_at && ` (requested ${ago(p.refund_requested_at)})`}
+          {p.refunded_at && ` · ${dateTime(p.refunded_at)}`}
+        </div>
+      )}
     </div>
   );
 }

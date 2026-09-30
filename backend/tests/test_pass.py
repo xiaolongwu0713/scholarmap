@@ -15,7 +15,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 import config
 from app import quota
 from app.billing import apply_pass_purchase, apply_pass_refund, apply_subscription, handle_event, pass_days
-from app.db.models import Base, LLMUsage, PassPurchase, Project, Run, RunPaper, SearchUsage, User
+from app.db.models import AdminAction, Base, LLMUsage, PassPurchase, Project, Run, RunPaper, SearchUsage, User
 from app.metrics import business_metrics
 
 NOW = datetime(2026, 9, 30, 12, 0, tzinfo=timezone.utc)
@@ -50,7 +50,7 @@ def aware(dt):
 def with_db(rows, fn):
     async def go():
         engine = create_async_engine("sqlite+aiosqlite://")
-        tables = [t.__table__ for t in (User, PassPurchase, SearchUsage, Project, Run, RunPaper, LLMUsage)]
+        tables = [t.__table__ for t in (User, PassPurchase, SearchUsage, Project, Run, RunPaper, LLMUsage, AdminAction)]
         async with engine.begin() as conn:
             await conn.run_sync(lambda c: Base.metadata.create_all(c, tables=tables))
         async with async_sessionmaker(engine, expire_on_commit=False)() as session:
@@ -138,7 +138,7 @@ def test_full_refund_takes_the_days_back_once():
         return pending, done, again, aware((await s.get(User, "u1")).pass_until)
 
     pending, done, again, until = with_db([new_user()], fn)
-    assert (pending, done, again) == ("not an approved refund", "pass refunded", "duplicate")
+    assert (pending, done, again) == ("refund pending_approval", "pass refunded", "duplicate")
     assert until == NOW + timedelta(days=90)  # the other pass remains
 
 
@@ -199,3 +199,41 @@ def test_paid_grants_access_and_completed_only_fills_in_earnings():
     first, second, until, earnings = with_db([new_user()], fn)
     assert (first, second) == ("pass applied", "duplicate")
     assert until is not None and earnings == 4210
+
+
+def test_refund_review_is_tracked_and_reported():
+    async def fn(s):
+        await apply_pass_purchase(s, txn("txn_1"), NOW - timedelta(days=3))
+        await apply_pass_purchase(s, txn("txn_2"), NOW - timedelta(days=3))
+        await apply_pass_purchase(s, txn("txn_3"), NOW - timedelta(days=3))
+        await apply_pass_refund(s, refund("txn_1", status="pending_approval") | {"created_at": (NOW - timedelta(hours=30)).isoformat()}, NOW)
+        await apply_pass_refund(s, refund("txn_2", status="pending_approval") | {"created_at": (NOW - timedelta(hours=2)).isoformat()}, NOW)
+        await apply_pass_refund(s, refund("txn_3", status="pending_approval"), NOW)
+        rejected = await apply_pass_refund(s, refund("txn_3", status="rejected"), NOW)
+        await s.commit()
+        m = await business_metrics(s, days=7, now=NOW)
+        statuses = {p.transaction_id: p.refund_status for p in [await s.get(PassPurchase, t) for t in ("txn_1", "txn_2", "txn_3")]}
+        user = await s.get(User, "u1")
+        return rejected, statuses, m, quota.get_user_tier(user, NOW)
+
+    rejected, statuses, m, tier = with_db([new_user()], fn)
+    assert rejected == "refund rejected"
+    assert statuses == {"txn_1": "pending_approval", "txn_2": "pending_approval", "txn_3": "rejected"}
+    assert m["pass_refunds_pending"] == 2 and m["pass_refunds_pending_over_24h"] == 1
+    assert tier == "pro_user"  # access kept while Paddle reviews
+
+
+def test_admin_detail_lists_passes_with_refund_state():
+    from app.admin import user_detail
+
+    async def fn(s):
+        await apply_pass_purchase(s, txn(), NOW)
+        await apply_pass_refund(s, refund(status="pending_approval"), NOW)
+        await s.commit()
+        return await user_detail(s, "u1", NOW)
+
+    d = with_db([new_user()], fn)
+    assert [(p["transaction_id"], p["refund_status"], p["amount_cents"], p["currency"]) for p in d["passes"]] == [
+        ("txn_1", "pending_approval", 34900, "CNY")
+    ]
+    assert d["user"]["pass_until"] is not None
