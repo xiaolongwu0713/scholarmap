@@ -629,6 +629,286 @@
         "medical AI"
       ],
       "pubmedQuery": "(\"large language model\"[tiab] OR \"large language models\"[tiab] OR ChatGPT[tiab] OR GPT-4[tiab] OR \"generative artificial intelligence\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "optogenetics",
+      "name": "Optogenetics",
+      "category": "neuroscience",
+      "description": "Optogenetic and chemogenetic tools for controlling and recording neural circuits",
+      "keywords": [
+        "optogenetics",
+        "chemogenetics",
+        "channelrhodopsin",
+        "DREADDs",
+        "neural circuits"
+      ],
+      "pubmedQuery": "(\"Optogenetics\"[MeSH] OR optogenetic*[tiab] OR chemogenetic*[tiab] OR DREADD*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "pain-research",
+      "name": "Pain Research",
+      "category": "neuroscience",
+      "description": "Mechanisms and treatment of chronic and neuropathic pain",
+      "keywords": [
+        "chronic pain",
+        "neuropathic pain",
+        "nociception",
+        "analgesia",
+        "pain mechanisms"
+      ],
+      "pubmedQuery": "(\"Chronic Pain\"[MeSH] OR \"Neuralgia\"[MeSH] OR \"Nociception\"[MeSH] OR \"chronic pain\"[tiab] OR \"neuropathic pain\"[tiab] OR nocicept*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "sleep-research",
+      "name": "Sleep Research",
+      "category": "neuroscience",
+      "description": "Sleep physiology, circadian regulation, and sleep disorders",
+      "keywords": [
+        "sleep",
+        "circadian rhythm",
+        "insomnia",
+        "sleep disorders",
+        "sleep neuroscience"
+      ],
+      "pubmedQuery": "(\"Sleep\"[MeSH] OR \"Sleep Wake Disorders\"[MeSH] OR \"Circadian Rhythm\"[MeSH]) AND (sleep*[ti] OR circadian[ti] OR insomnia[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "computational-neuroscience",
+      "name": "Computational Neuroscience",
+      "category": "neuroscience",
+      "description": "Computational models of neural systems, neural coding, and brain dynamics",
+      "keywords": [
+        "computational neuroscience",
+        "neural coding",
+        "neural networks",
+        "brain modeling",
+        "neural dynamics"
+      ],
+      "pubmedQuery": "(\"computational neuroscience\"[tiab] OR \"neural coding\"[tiab] OR \"spiking neural network\"[tiab] OR \"neural population dynamics\"[tiab] OR (\"Models, Neurological\"[MeSH] AND \"Computer Simulation\"[MeSH])) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "leukemia",
+      "name": "Leukemia",
+      "category": "cancer",
+      "description": "Acute and chronic leukemias and blood cancer biology",
+      "keywords": [
+        "leukemia",
+        "AML",
+        "ALL",
+        "hematologic malignancies",
+        "blood cancer"
+      ],
+      "pubmedQuery": "(\"Leukemia\"[Majr] OR leukemia[ti] OR leukaemia[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "cancer-metabolism",
+      "name": "Cancer Metabolism",
+      "category": "cancer",
+      "description": "Metabolic reprogramming in cancer cells and the tumor microenvironment",
+      "keywords": [
+        "cancer metabolism",
+        "Warburg effect",
+        "metabolic reprogramming",
+        "glycolysis",
+        "tumor metabolism"
+      ],
+      "pubmedQuery": "((\"Neoplasms\"[MeSH] OR cancer[tiab] OR tumor*[tiab]) AND (\"metabolic reprogramming\"[tiab] OR \"Warburg effect\"[tiab] OR \"tumor metabolism\"[tiab] OR \"cancer metabolism\"[tiab])) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "antibody-drug-conjugates",
+      "name": "Antibody-Drug Conjugates",
+      "category": "cancer",
+      "description": "Design and clinical development of antibody-drug conjugates",
+      "keywords": [
+        "antibody-drug conjugates",
+        "ADC",
+        "targeted payload",
+        "bioconjugation",
+        "oncology drugs"
+      ],
+      "pubmedQuery": "(\"Immunoconjugates\"[MeSH] OR \"antibody-drug conjugate\"[tiab] OR \"antibody-drug conjugates\"[tiab] OR \"antibody drug conjugate\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "hiv-research",
+      "name": "HIV Research",
+      "category": "immunology",
+      "description": "HIV biology, prevention, cure strategies, and antiretroviral therapy",
+      "keywords": [
+        "HIV",
+        "AIDS",
+        "antiretroviral therapy",
+        "HIV cure",
+        "HIV reservoir"
+      ],
+      "pubmedQuery": "(\"HIV Infections\"[Majr] OR HIV[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "tuberculosis",
+      "name": "Tuberculosis",
+      "category": "immunology",
+      "description": "Mycobacterium tuberculosis biology, diagnosis, and treatment",
+      "keywords": [
+        "tuberculosis",
+        "Mycobacterium tuberculosis",
+        "TB",
+        "infectious disease",
+        "global health"
+      ],
+      "pubmedQuery": "(\"Tuberculosis\"[MeSH] OR \"Mycobacterium tuberculosis\"[MeSH] OR tuberculosis[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "malaria",
+      "name": "Malaria",
+      "category": "immunology",
+      "description": "Plasmodium biology, malaria vaccines, and antimalarial drugs",
+      "keywords": [
+        "malaria",
+        "Plasmodium",
+        "antimalarial drugs",
+        "vector control",
+        "global health"
+      ],
+      "pubmedQuery": "(\"Malaria\"[MeSH] OR \"Plasmodium\"[MeSH] OR malaria[tiab] OR plasmodium[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "phage-therapy",
+      "name": "Bacteriophage Therapy",
+      "category": "immunology",
+      "description": "Bacteriophages as therapeutics and tools against bacterial infection",
+      "keywords": [
+        "phage therapy",
+        "bacteriophage",
+        "antibacterial",
+        "phage biology",
+        "antimicrobial resistance"
+      ],
+      "pubmedQuery": "(\"Phage Therapy\"[MeSH] OR \"Bacteriophages\"[Majr] OR \"phage therapy\"[tiab] OR bacteriophage*[ti] OR phage*[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "atherosclerosis",
+      "name": "Atherosclerosis",
+      "category": "cardiometabolic",
+      "description": "Atherosclerosis, vascular inflammation, and lipid metabolism",
+      "keywords": [
+        "atherosclerosis",
+        "vascular biology",
+        "lipids",
+        "coronary artery disease",
+        "cardiovascular disease"
+      ],
+      "pubmedQuery": "(\"Atherosclerosis\"[MeSH] OR atherosclero*[tiab] OR \"atherosclerotic plaque\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "chronic-kidney-disease",
+      "name": "Kidney Disease",
+      "category": "cardiometabolic",
+      "description": "Chronic kidney disease, acute kidney injury, and renal biology",
+      "keywords": [
+        "kidney disease",
+        "chronic kidney disease",
+        "acute kidney injury",
+        "nephrology",
+        "renal fibrosis"
+      ],
+      "pubmedQuery": "(\"Renal Insufficiency, Chronic\"[Majr] OR \"Acute Kidney Injury\"[Majr] OR \"kidney disease\"[ti] OR \"kidney injury\"[ti]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "proteomics",
+      "name": "Proteomics & Mass Spectrometry",
+      "category": "genomics",
+      "description": "Mass spectrometry-based proteomics and protein profiling",
+      "keywords": [
+        "proteomics",
+        "mass spectrometry",
+        "protein profiling",
+        "phosphoproteomics",
+        "biomarkers"
+      ],
+      "pubmedQuery": "(\"Proteomics\"[MeSH] OR proteomic*[ti] OR phosphoproteom*[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "base-and-prime-editing",
+      "name": "Base & Prime Editing",
+      "category": "genomics",
+      "description": "Base editors, prime editors, and precise genome editing technologies",
+      "keywords": [
+        "base editing",
+        "prime editing",
+        "genome editing",
+        "precision gene editing",
+        "CRISPR"
+      ],
+      "pubmedQuery": "(\"base editing\"[tiab] OR \"base editor\"[tiab] OR \"base editors\"[tiab] OR \"prime editing\"[tiab] OR \"prime editor\"[tiab] OR \"prime editors\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "non-coding-rna",
+      "name": "Non-Coding RNA",
+      "category": "genomics",
+      "description": "lncRNAs, microRNAs, circRNAs, and RNA regulation",
+      "keywords": [
+        "non-coding RNA",
+        "lncRNA",
+        "microRNA",
+        "circRNA",
+        "RNA biology"
+      ],
+      "pubmedQuery": "(\"RNA, Untranslated\"[Majr] OR \"RNA, Long Noncoding\"[Majr] OR \"MicroRNAs\"[Majr] OR \"RNA, Circular\"[Majr]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "tissue-engineering",
+      "name": "Tissue Engineering & Biomaterials",
+      "category": "cell-biology",
+      "description": "Scaffolds, biomaterials, and engineered tissues for regenerative medicine",
+      "keywords": [
+        "tissue engineering",
+        "biomaterials",
+        "scaffolds",
+        "hydrogels",
+        "regenerative medicine"
+      ],
+      "pubmedQuery": "(\"Tissue Engineering\"[MeSH] OR \"Tissue Scaffolds\"[MeSH] OR \"tissue engineering\"[tiab] OR \"tissue-engineered\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "3d-bioprinting",
+      "name": "3D Bioprinting",
+      "category": "cell-biology",
+      "description": "3D bioprinting of cells, bioinks, and printed tissues",
+      "keywords": [
+        "3D bioprinting",
+        "bioinks",
+        "biofabrication",
+        "tissue engineering",
+        "additive manufacturing"
+      ],
+      "pubmedQuery": "(\"Bioprinting\"[MeSH] OR bioprint*[tiab] OR bioink*[tiab] OR biofabrication[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "organ-on-a-chip",
+      "name": "Organ-on-a-Chip & Microfluidics",
+      "category": "bioengineering",
+      "description": "Microfluidic organ-on-chip models for biology and drug testing",
+      "keywords": [
+        "organ-on-a-chip",
+        "microfluidics",
+        "microphysiological systems",
+        "lab-on-a-chip",
+        "in vitro models"
+      ],
+      "pubmedQuery": "(\"Microphysiological Systems\"[MeSH] OR \"organ-on-a-chip\"[tiab] OR \"organ-on-chip\"[tiab] OR \"organs-on-chips\"[tiab] OR \"microphysiological system\"[tiab] OR \"lab-on-a-chip\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
+    },
+    {
+      "slug": "wearable-biosensors",
+      "name": "Wearable Biosensors",
+      "category": "bioengineering",
+      "description": "Wearable and implantable sensors for health monitoring",
+      "keywords": [
+        "wearable sensors",
+        "biosensors",
+        "digital health",
+        "health monitoring",
+        "flexible electronics"
+      ],
+      "pubmedQuery": "(\"Wearable Electronic Devices\"[MeSH] OR \"wearable sensor\"[tiab] OR \"wearable sensors\"[tiab] OR \"wearable biosensor\"[tiab] OR \"wearable device\"[tiab] OR \"wearable devices\"[tiab]) AND (\"2023/01/01\"[dp] : \"3000\"[dp]) AND hasabstract NOT review[pt]"
     }
   ]
 }
