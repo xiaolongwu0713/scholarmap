@@ -65,6 +65,17 @@ function loadPaddle(): Promise<PaddleJs> {
   return loading;
 }
 
+/**
+ * Paddle payment links (e.g. "update your payment method" emails) point at our default
+ * payment link page with ?_ptxn=<transaction>; Paddle.js opens that checkout on init.
+ */
+export function openPaymentLinkFromUrl(): void {
+  if (!checkoutEnabled || !new URLSearchParams(window.location.search).has('_ptxn')) return;
+  loadPaddle().catch(() => {
+    // Paddle.js failed to load; the page still works, the customer can retry the link
+  });
+}
+
 export async function openCheckout(period: BillingPeriod, user: { user_id: string; email: string }): Promise<void> {
   const paddle = await loadPaddle();
   paddle.Checkout.open({

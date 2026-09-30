@@ -5,6 +5,7 @@ import { Footer } from '@/components/landing/Footer';
 import { CONTACT_EMAIL, PLANS, REFUND_DAYS } from '@/lib/site';
 import { checkoutEnabled } from '@/lib/paddle';
 import { CheckoutButton } from '@/components/CheckoutButton';
+import { PaymentLinkHandler } from '@/components/PaymentLinkHandler';
 
 export const metadata: Metadata = {
   title: 'Pricing - Free and Pro Plans',
@@ -69,6 +70,7 @@ export default function PricingPage() {
   return (
     <>
       <UnifiedNavbar variant="landing" />
+      <PaymentLinkHandler />
       <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-5xl">
           <header className="text-center mb-12">
