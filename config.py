@@ -122,6 +122,9 @@ class Settings(BaseSettings):
     paddle_api_key: str = ""              # PADDLE_API_KEY, server-side only
     paddle_webhook_secret: str = ""       # PADDLE_WEBHOOK_SECRET, from the notification destination
 
+    # Error reporting (SENTRY_DSN); empty = disabled (local dev)
+    sentry_dsn: str = ""
+
     # Read-only access to /api/admin/metrics for the weekly check (METRICS_TOKEN); empty = admin login only
     metrics_token: str = ""
 

@@ -20,6 +20,11 @@ settings = config.settings
 from app.core.logging_config import setup_logging
 setup_logging(level=logging.INFO)
 
+# Error reporting: must run before the FastAPI app is created. Errors only, no tracing.
+import sentry_sdk
+if settings.sentry_dsn:
+    sentry_sdk.init(dsn=settings.sentry_dsn, environment=settings.paddle_environment)
+
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field

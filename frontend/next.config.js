@@ -1,4 +1,5 @@
 const path = require('path');
+const { withSentryConfig } = require('@sentry/nextjs/config');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -75,4 +76,22 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  // Source maps upload only when the token is set (Vercel); local builds skip it
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  // Route browser events through our domain so ad blockers don't drop them
+  tunnelRoute: '/monitoring',
+  // Errors only: drop tracing and replay code from the client bundle
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+      removeTracing: true,
+      excludeReplayIframe: true,
+      excludeReplayShadowDOM: true,
+      excludeReplayCompressionWorker: true,
+    },
+  },
+});
