@@ -11,7 +11,7 @@ import {
   generateCityKeywords,
   CityStats,
 } from '@/lib/seoCityContent';
-import { getReadyFieldConfigs } from '@/lib/seoFieldConfig';
+import { fieldsWithPlace } from '@/lib/seoFieldApi';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
@@ -149,8 +149,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CityPage({ params }: PageProps) {
-  const relatedFields = (await getReadyFieldConfigs()).slice(0, 6);
   const { citySlug } = await params;
+  const relatedFields = await fieldsWithPlace({ citySlug });
   
   // Fetch city data
   let cityData: CityStats | null = null;
@@ -560,6 +560,7 @@ export default async function CityPage({ params }: PageProps) {
           </div>
 
           {/* Field-Specific Pages */}
+          {relatedFields.length > 0 && (
           <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Explore {cityData.city} by Research Field
@@ -590,6 +591,7 @@ export default async function CityPage({ params }: PageProps) {
               ))}
             </div>
           </div>
+          )}
 
           {/* Related Links */}
           <div className="bg-white rounded-xl shadow-lg p-8 mb-12">

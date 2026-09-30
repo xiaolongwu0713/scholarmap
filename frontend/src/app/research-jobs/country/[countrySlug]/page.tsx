@@ -10,7 +10,7 @@ import {
   generateCountryMetaDescription,
   generateCountryKeywords,
 } from '@/lib/seoContent';
-import { getReadyFieldConfigs } from '@/lib/seoFieldConfig';
+import { fieldsWithPlace } from '@/lib/seoFieldApi';
 import { UnifiedNavbar } from '@/components/UnifiedNavbar';
 import { Footer } from '@/components/landing/Footer';
 import { StructuredData } from '@/components/StructuredData';
@@ -108,8 +108,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function CountryPage({ params }: PageProps) {
-  const relatedFields = (await getReadyFieldConfigs()).slice(0, 6);
   const { countrySlug } = await params;
+  const relatedFields = await fieldsWithPlace({ countrySlug });
   const countryName = slugToCountryName(countrySlug);
   const stats = await fetchCountryStats(countryName);
 
@@ -440,6 +440,7 @@ export default async function CountryPage({ params }: PageProps) {
           </div>
 
           {/* Field-Specific Pages */}
+          {relatedFields.length > 0 && (
           <div className="bg-white rounded-xl shadow-lg p-8 mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Explore {countryName} by Research Field
@@ -470,6 +471,7 @@ export default async function CountryPage({ params }: PageProps) {
               ))}
             </div>
           </div>
+          )}
 
           {/* Related Links */}
           <div className="bg-white rounded-xl shadow-lg p-8 mb-12">

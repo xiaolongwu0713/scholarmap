@@ -5,9 +5,9 @@
  * using the field configurations from seoFieldConfig.ts
  */
 
-import { getReadyFieldConfig, type FieldConfig } from './seoFieldConfig';
+import { getReadyFieldConfig, getReadyFieldConfigs, type FieldConfig } from './seoFieldConfig';
 import { API_URL } from './site';
-import { cityToSlug, isInvalidCityName } from './geoSlugs';
+import { cityToSlug, countryToSlug, isInvalidCityName } from './geoSlugs';
 
 const API_BASE_URL = API_URL;
 
@@ -30,6 +30,29 @@ export async function fetchFieldSitemapData(): Promise<FieldSitemapEntry[]> {
   }
   const json = await response.json();
   return json.fields || [];
+}
+
+/**
+ * Fields whose page for this city or country exists (it's among the field's top places),
+ * for cross-links from the general city/country pages. Empty if the backend is unreachable.
+ */
+export async function fieldsWithPlace(
+  place: { citySlug: string } | { countrySlug: string },
+  limit: number = 6
+): Promise<FieldConfig[]> {
+  try {
+    const [configs, entries] = await Promise.all([getReadyFieldConfigs(), fetchFieldSitemapData()]);
+    const hasPlace = (entry: FieldSitemapEntry) =>
+      'citySlug' in place
+        ? entry.cities.some((c) => !isInvalidCityName(c.city) && cityToSlug(c.city) === place.citySlug)
+        : entry.countries.some((c) => countryToSlug(c.country) === place.countrySlug);
+    return configs
+      .filter((config) => entries.some((entry) => entry.slug === config.slug && hasPlace(entry)))
+      .slice(0, limit);
+  } catch (error) {
+    console.error('Could not load field cross-links:', error);
+    return [];
+  }
 }
 
 /** A field's top cities that have a valid name, one per URL slug. */

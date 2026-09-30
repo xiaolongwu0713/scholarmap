@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import { getReadyFieldConfig } from '@/lib/seoFieldConfig';
+import { fetchCountryStats } from '@/lib/seoApi';
 import { fetchFieldWorldData, fetchFieldCountryData, getFieldDemoRunUrl } from '@/lib/seoFieldApi';
 import { countryToSlug, slugToCountryName, cityToSlug, isInvalidCityName } from '@/lib/geoSlugs';
 import {
@@ -174,6 +175,9 @@ export default async function FieldCountryPage({ params }: PageProps) {
   }
 
   const demoRunUrl = getFieldDemoRunUrl(fieldConfig);
+
+  // Link the general country page only if it exists (it resolves the name the same way)
+  const hasGeneralCountryPage = (await fetchCountryStats(slugToCountryName(countrySlug))) !== null;
 
   // Structured data
   const breadcrumbList = {
@@ -401,6 +405,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
                     Explore {fieldConfig.keywords[0]} research worldwide →
                   </p>
                 </Link>
+                {hasGeneralCountryPage && (
                 <Link
                   href={`/research-jobs/country/${countrySlug}`}
                   className="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
@@ -412,6 +417,7 @@ export default async function FieldCountryPage({ params }: PageProps) {
                     Explore all biomedical research in {countryName} →
                   </p>
                 </Link>
+                )}
               </div>
             </section>
 

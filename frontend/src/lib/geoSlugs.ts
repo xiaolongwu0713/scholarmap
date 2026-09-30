@@ -194,6 +194,11 @@ export function isInvalidCityName(cityName: string): boolean {
     }
   }
   
+  // Merged names ("Dresden/Leipzig") don't resolve to a single city
+  if (cityName.includes('/')) {
+    return true;
+  }
+
   // City names that are too short (likely acronyms or codes)
   if (cityName.length <= 2) {
     return true;

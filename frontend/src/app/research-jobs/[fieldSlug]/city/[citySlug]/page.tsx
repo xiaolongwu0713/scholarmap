@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, unstable_rethrow } from 'next/navigation';
 import { getReadyFieldConfig } from '@/lib/seoFieldConfig';
+import { fetchCountryMap } from '@/lib/seoApi';
 import { fetchFieldWorldData, fetchFieldCountryData, fetchFieldCityData, getFieldDemoRunUrl, fetchFieldSitemapData } from '@/lib/seoFieldApi';
 import { countryToSlug, slugToCityName, cityToSlug } from '@/lib/geoSlugs';
 import {
@@ -202,6 +203,11 @@ export default async function FieldCityPage({ params }: PageProps) {
   }
 
   const demoRunUrl = getFieldDemoRunUrl(fieldConfig);
+
+  // Link the general city page only if it exists (the general map has this city)
+  const hasGeneralCityPage = await fetchCountryMap(country)
+    .then((cities) => cities.some((c) => cityToSlug(c.city) === citySlug))
+    .catch(() => false);
 
   // Structured data
   const breadcrumbList = {
@@ -441,6 +447,7 @@ export default async function FieldCityPage({ params }: PageProps) {
                     Explore country →
                   </p>
                 </Link>
+                {hasGeneralCityPage && (
                 <Link
                   href={`/research-jobs/city/${citySlug}`}
                   className="border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all"
@@ -452,6 +459,7 @@ export default async function FieldCityPage({ params }: PageProps) {
                     Explore all fields →
                   </p>
                 </Link>
+                )}
               </div>
             </section>
 
