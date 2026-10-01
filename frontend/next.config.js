@@ -84,11 +84,10 @@ module.exports = withSentryConfig(nextConfig, {
   silent: !process.env.CI,
   // Route browser events through our domain so ad blockers don't drop them
   tunnelRoute: '/monitoring',
-  // Errors only: drop tracing and replay code from the client bundle
+  // Keep tracing (sampled in instrumentation-client.ts); drop replay code from the client bundle
   webpack: {
     treeshake: {
       removeDebugLogging: true,
-      removeTracing: true,
       excludeReplayIframe: true,
       excludeReplayShadowDOM: true,
       excludeReplayCompressionWorker: true,
