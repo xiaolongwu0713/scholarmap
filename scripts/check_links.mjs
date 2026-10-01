@@ -9,7 +9,7 @@
 
 const SITE = (process.argv[2] || 'https://labscout.io').replace(/\/$/, '');
 const API = (process.argv[3] || 'https://scholarmap-q1k1.onrender.com').replace(/\/$/, '');
-const CONCURRENCY = 4;
+const CONCURRENCY = 1;
 const TIMEOUT_MS = 60_000;
 // Not public pages: API routes, the Sentry tunnel, static assets
 const SKIP = [/^\/api\//, /^\/monitoring/, /^\/_next\//, /\.(png|jpe?g|svg|webp|ico|css|js|xml|txt|pdf)$/];
