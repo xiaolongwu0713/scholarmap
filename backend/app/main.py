@@ -216,11 +216,21 @@ class SendVerificationCodeRequest(BaseModel):
     purpose: Literal["register", "reset"] = "register"
 
 
+class SignupAttribution(BaseModel):
+    """Where the user first came from, recorded by the browser (see frontend lib/attribution)."""
+    source: str | None = None
+    medium: str | None = None
+    campaign: str | None = None
+    referrer: str | None = None
+    landing_path: str | None = None
+
+
 class RegisterRequest(BaseModel):
     email: str = Field(min_length=1, max_length=255)
     verification_code: str = Field(min_length=6, max_length=6)
     password: str = Field(min_length=PASSWORD_MIN_LENGTH, max_length=PASSWORD_MAX_LENGTH)
     password_retype: str | None = None  # Optional, validated on frontend
+    attribution: SignupAttribution | None = None
 
 
 class ResetPasswordRequest(BaseModel):
@@ -363,6 +373,14 @@ async def register_user(req: RegisterRequest) -> dict:
         user_id = uuid.uuid4().hex[:16]
         password_hash = get_password_hash(req.password)
         user = await user_repo.create_user(user_id, email, password_hash)
+        if req.attribution:
+            # Client-supplied and only used for reporting: trim to the column sizes
+            a = req.attribution
+            user.signup_source = (a.source or "direct").strip().lower()[:100] or "direct"
+            user.signup_medium = (a.medium or "").strip().lower()[:100] or None
+            user.signup_campaign = (a.campaign or "").strip()[:100] or None
+            user.signup_referrer = (a.referrer or "").strip().lower()[:255] or None
+            user.signup_landing_path = (a.landing_path or "").strip()[:255] or None
         
         await session.commit()
         

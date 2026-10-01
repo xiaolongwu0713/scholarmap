@@ -1,9 +1,8 @@
 import { SITE_URL } from '@/lib/site';
 import "./globals.css";
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Suspense } from "react";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { FirstTouchTracker } from "@/components/FirstTouchTracker";
 import { Analytics } from "@vercel/analytics/next";
 import { CanonicalURL } from "@/components/CanonicalURL";
 
@@ -80,34 +79,20 @@ export const metadata: Metadata = {
   },
 };
 
-const GA_MEASUREMENT_ID = "G-2123ZJ1Y7B";
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563eb" />
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `}
-        </Script>
       </head>
       <body suppressHydrationWarning>
         <Suspense fallback={null}>
-          <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} />
           <CanonicalURL />
         </Suspense>
         {children}
         <Analytics />
+        <FirstTouchTracker />
       </body>
     </html>
   );

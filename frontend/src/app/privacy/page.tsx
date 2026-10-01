@@ -25,7 +25,8 @@ export default function PrivacyPage() {
           <li><strong>Account data:</strong> email address and a hashed password (we never store your password in plain text).</li>
           <li><strong>Content you submit:</strong> research descriptions and the searches, keywords and results generated for them.</li>
           <li><strong>Usage data:</strong> when you were last active, how many searches you have run, and basic technical logs (such as request timestamps and errors).</li>
-          <li><strong>Analytics:</strong> we use Google Analytics to understand aggregate traffic (pages visited, referrers, approximate location, device type).</li>
+          <li><strong>Analytics:</strong> we use Vercel Web Analytics to understand aggregate traffic (pages visited, referrers, approximate location, device type, and steps such as signing up or starting a search). It does not use cookies.</li>
+          <li><strong>Where you came from:</strong> when you sign up we store how you first found LabScout (the referring website, campaign tags in the link, and the first page you opened), to learn which channels work.</li>
           <li><strong>Billing:</strong> if you subscribe, Paddle (our Merchant of Record) collects your payment details and billing address. We receive only your subscription status, plan, and a customer identifier — never your full card number.</li>
         </ul>
       </section>
@@ -47,9 +48,9 @@ export default function PrivacyPage() {
         <ul>
           <li>Vercel (website hosting), Render (application servers and database), Cloudflare (DNS and email forwarding);</li>
           <li>OpenAI (processes the research descriptions you submit to interpret your search);</li>
-          <li>SendGrid (sends verification emails);</li>
+          <li>Resend (sends verification and account emails);</li>
           <li>Paddle (payments, tax and invoicing);</li>
-          <li>Google Analytics (traffic analytics); Mapbox (map display).</li>
+          <li>Vercel Web Analytics (traffic analytics); Mapbox (map display).</li>
         </ul>
         <p>These providers may process data in the United States and other countries.</p>
       </section>
@@ -72,8 +73,9 @@ export default function PrivacyPage() {
       <section>
         <h2>5. Cookies and local storage</h2>
         <p>
-          We store your login token in your browser&apos;s local storage so you stay signed in. Google Analytics sets
-          cookies to measure traffic. You can clear these at any time in your browser settings.
+          We store your login token in your browser&apos;s local storage so you stay signed in, and where your first
+          visit came from (see above). We do not use analytics or advertising cookies. You can clear
+          local storage at any time in your browser settings.
         </p>
       </section>
 

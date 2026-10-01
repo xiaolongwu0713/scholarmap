@@ -106,3 +106,24 @@ def test_funnel_counts():
 def test_empty_database_has_no_rates():
     m = asyncio.run(compute([]))
     assert m["signups"] == 0 and m["activation_rate"] is None and m["mrr_usd"] == 0
+
+
+def test_breaks_signups_activation_and_paying_down_by_source():
+    paid_until = NOW + timedelta(days=20)
+    rows = [
+        user("x1", created_days_ago=2, signup_source="xiaohongshu"),
+        user("x2", created_days_ago=3, signup_source="xiaohongshu"),
+        user("g1", created_days_ago=1, signup_source="google.com"),
+        # Signed up before the window but paying now
+        user("old", created_days_ago=60, signup_source="reddit", pro_until=paid_until,
+             paddle_subscription_id="sub_1", subscription_status="active"),
+        # Before attribution existed
+        user("legacy", created_days_ago=4),
+        *run("r1", "x1"),
+        RunPaper(run_id="r1", pmid="1"),
+    ]
+    by_source = {row["source"]: row for row in asyncio.run(compute(rows))["by_source"]}
+    assert by_source["xiaohongshu"] == {"source": "xiaohongshu", "signups": 2, "activated": 1, "paying": 0}
+    assert by_source["google.com"]["signups"] == 1
+    assert by_source["reddit"] == {"source": "reddit", "signups": 0, "activated": 0, "paying": 1}
+    assert by_source["unknown"]["signups"] == 1

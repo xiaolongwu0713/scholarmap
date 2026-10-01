@@ -49,6 +49,14 @@ class User(Base):
     quota_reset_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     disabled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
+    # First-touch attribution sent by the browser at signup (UTM tags, else the external
+    # referrer's host, else "direct"), for revenue by channel. NULL for older accounts.
+    signup_source: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    signup_medium: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    signup_campaign: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    signup_referrer: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    signup_landing_path: Mapped[str | None] = mapped_column(String(255), nullable=True)
+
 
 class SearchUsage(Base):
     """One row per custom search a user starts. Kept when runs are deleted so quotas can't be reset."""

@@ -2,6 +2,7 @@ export type Project = { project_id: string; name: string; created_at: string };
 export type Run = { run_id: string; created_at: string; description: string };
 
 import { getAuthHeaders } from "./auth";
+import { getFirstTouch } from "./attribution";
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
@@ -126,7 +127,7 @@ export async function register(
   const res = await fetch(`${baseUrl}/api/auth/register`, {
     method: "POST",
     headers: getDefaultHeaders(),
-    body: JSON.stringify({ email, verification_code, password, password_retype }),
+    body: JSON.stringify({ email, verification_code, password, password_retype, attribution: getFirstTouch() }),
   });
   await throwIfNotOk(res, "register");
   return await res.json();

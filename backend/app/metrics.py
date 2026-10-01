@@ -133,6 +133,31 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         LLMUsage.run_id.is_(None) | LLMUsage.run_id.in_(admin_runs),
     )
 
+    # Channels: signups and activations in the window, and everyone paying now, by the
+    # first-touch source recorded at signup ("unknown" for accounts made before tracking)
+    source = func.coalesce(User.signup_source, "unknown")
+    by_source: dict[str, dict[str, int]] = {}
+
+    def add(rows, key: str) -> None:
+        for name, count in rows:
+            by_source.setdefault(name, {"signups": 0, "activated": 0, "paying": 0})[key] = count
+
+    add((await session.execute(
+        select(source, func.count()).where(customer, User.created_at >= since).group_by(source)
+    )).all(), "signups")
+    add((await session.execute(
+        select(source, func.count(distinct(User.user_id)))
+        .join(Project, Project.user_id == User.user_id)
+        .join(Run, Run.project_id == Project.project_id)
+        .where(User.user_id.in_(new_user_ids), _completed(Run.run_id))
+        .group_by(source)
+    )).all(), "activated")
+    add((await session.execute(
+        select(source, func.count())
+        .where(customer, or_(and_(subscribed_now, User.paddle_subscription_id.is_not(None)), pass_now))
+        .group_by(source)
+    )).all(), "paying")
+
     def rate(part: int, whole: int) -> float | None:
         return round(part / whole, 3) if whole else None
 
@@ -175,4 +200,8 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
         "ai_cost_searches_usd": round(ai_cost_searches, 4),
         "ai_cost_per_completed_search_usd": round(ai_cost_completed / runs_completed, 4) if runs_completed else None,
         "ai_cost_other_usd": round(ai_cost_other, 4),
+        "by_source": [
+            {"source": name, **counts}
+            for name, counts in sorted(by_source.items(), key=lambda kv: (-kv[1]["signups"], -kv[1]["paying"], kv[0]))
+        ],
     }

@@ -15,7 +15,9 @@ export type ConversionEvent =
   | 'search_started'
   | 'search_completed'
   | 'search_failed'
-  | 'search_limit_hit';
+  | 'search_limit_hit'
+  | 'seo_demo_click'
+  | 'seo_signup_click';
 
 /**
  * Revenue-funnel step, sent to Vercel Web Analytics (custom events need the Vercel Pro
@@ -51,6 +53,7 @@ export function trackDemoMapClick(
   country?: string, 
   city?: string
 ) {
+  trackConversion('seo_demo_click', { source });
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'seo_to_demo_click', {
       source: source, // 'country_page', 'city_page', 'landing_page'
@@ -66,6 +69,7 @@ export function trackDemoMapClick(
  * Track signup button clicks from SEO pages
  */
 export function trackSignupStart(source: string, location?: string) {
+  trackConversion('seo_signup_click', { source });
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', 'seo_to_signup_start', {
       source: source,
