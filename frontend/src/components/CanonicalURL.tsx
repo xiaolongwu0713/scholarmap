@@ -4,33 +4,22 @@ import { SITE_URL } from '@/lib/site';
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
+// Fallback canonical for pages whose metadata doesn't set one.
+// Never touch a canonical rendered by Next metadata: React owns that node, and
+// removing it makes React crash (removeChild on null) on the next navigation.
 export function CanonicalURL() {
   const pathname = usePathname();
-  
+
   useEffect(() => {
-    const baseUrl = SITE_URL;
-    const canonicalUrl = `${baseUrl}${pathname}`;
-    
-    // Remove existing canonical link if any
-    const existingLink = document.querySelector('link[rel="canonical"]');
-    if (existingLink) {
-      existingLink.remove();
-    }
-    
-    // Add new canonical link
+    if (document.querySelector('link[rel="canonical"]')) return;
+
     const link = document.createElement('link');
     link.rel = 'canonical';
-    link.href = canonicalUrl;
+    link.href = `${SITE_URL}${pathname}`;
     document.head.appendChild(link);
-    
-    return () => {
-      const linkToRemove = document.querySelector('link[rel="canonical"]');
-      if (linkToRemove) {
-        linkToRemove.remove();
-      }
-    };
+
+    return () => link.remove();
   }, [pathname]);
-  
+
   return null;
 }
-
