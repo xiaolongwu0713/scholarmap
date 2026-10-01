@@ -587,7 +587,7 @@ async def list_runs(request: Request, project_id: str) -> dict:
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/files/{filename}")
-async def get_run_file(request: Request, project_id: str, run_id: str, filename: str) -> dict:
+async def get_run_file(request: Request, project_id: str, run_id: str, filename: str) -> Response:
     user_id = request.state.user_id
     # Verify project belongs to user
     project = await store.get_project(project_id, user_id)
@@ -595,12 +595,13 @@ async def get_run_file(request: Request, project_id: str, run_id: str, filename:
         raise HTTPException(status_code=404, detail="Project not found")
     await require_run_in_project(project_id, run_id)
     try:
-        data = await store.read_run_file(project_id, run_id, filename)
+        data = await store.read_run_file_json(project_id, run_id, filename)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="File not found")
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    return {"data": data}
+    # Stored JSON goes out as-is: re-serializing MB-sized results would block the event loop
+    return Response(content=f'{{"data":{data}}}', media_type="application/json")
 
 
 @app.get("/api/projects/{project_id}/runs/{run_id}/files")

@@ -5,7 +5,9 @@ from dataclasses import dataclass
 from typing import Any
 
 from app.db.connection import db_manager
-from sqlalchemy import select
+import json
+
+from sqlalchemy import Text, cast, select
 
 from app.db.models import Run
 from app.db.repository import ProjectRepository, RunRepository
@@ -149,6 +151,30 @@ class DatabaseStore:
             run = await repo.get_run(run_id)
             return run is not None and run.project_id == project_id
 
+    @staticmethod
+    def _run_file_source(filename: str):
+        """(column, key inside it or None, default when empty) for a run "file"."""
+        if filename == "understanding.json":
+            return Run.understanding, None, {}
+        if filename == "keywords.json":
+            return Run.keywords, None, {}
+        if filename == "queries.json":
+            return Run.queries, None, {}
+        if filename == "results.json":
+            return Run.results, None, {}
+        if filename in ("parse_stage1.json", "parse_stage2.json"):
+            return Run.understanding, filename.removesuffix(".json"), {}
+        if filename in _RESULT_FILES:
+            return Run.results, _RESULT_FILES[filename], {"items": [], "count": 0}
+        raise FileNotFoundError(f"File {filename} not found")
+
+    async def _select_run_value(self, run_id: str, expr) -> Any:
+        async with db_manager.session() as session:
+            row = (await session.execute(select(expr).where(Run.run_id == run_id))).first()
+        if row is None:
+            raise FileNotFoundError(f"Run {run_id} not found")
+        return row[0]
+
     async def read_run_file(
         self,
         project_id: str,
@@ -157,38 +183,32 @@ class DatabaseStore:
     ) -> dict[str, Any]:
         """Read run data file (emulates file-based storage).
 
-        Selects only the column (or results key) the file maps to: results holds
-        every paper and is MBs, so loading the whole run made small files slow.
+        Selects only the column (or key) the file maps to: results holds every
+        paper and is MBs, so loading the whole run made small files slow.
         """
-        if filename == "understanding.json":
-            expr, wrap = Run.understanding, None
-        elif filename == "keywords.json":
-            expr, wrap = Run.keywords, None
-        elif filename == "queries.json":
-            expr, wrap = Run.queries, None
-        elif filename == "results.json":
-            expr, wrap = Run.results, None
-        elif filename == "retrieval_framework.json":
-            expr, wrap = Run.retrieval_framework, "retrieval_framework"
-        elif filename in ("parse_stage1.json", "parse_stage2.json"):
-            expr, wrap = Run.understanding[filename.removesuffix(".json")], None
-        elif filename in _RESULT_FILES:
-            expr, wrap = Run.results[_RESULT_FILES[filename]], None
-        else:
-            raise FileNotFoundError(f"File {filename} not found")
+        if filename == "retrieval_framework.json":
+            value = await self._select_run_value(run_id, Run.retrieval_framework)
+            return {"retrieval_framework": value or ""}
+        column, key, default = self._run_file_source(filename)
+        value = await self._select_run_value(run_id, column[key] if key else column)
+        return value or default
 
-        async with db_manager.session() as session:
-            row = (await session.execute(
-                select(expr).where(Run.run_id == run_id)
-            )).first()
-        if row is None:
-            raise FileNotFoundError(f"Run {run_id} not found")
-        value = row[0]
-        if wrap:
-            return {wrap: value or ""}
-        if filename in _RESULT_FILES:
-            return value or {"items": [], "count": 0}
-        return value or {}
+    async def read_run_file_json(self, project_id: str, run_id: str, filename: str) -> str:
+        """read_run_file, but as the stored JSON text.
+
+        Decoding and re-encoding a MB-sized results file in Python blocks the
+        event loop and stalls every other request on the worker, so the API
+        passes this text straight through.
+        """
+        if filename == "retrieval_framework.json":
+            return json.dumps(await self.read_run_file(project_id, run_id, filename))
+        column, key, default = self._run_file_source(filename)
+        text = await self._select_run_value(
+            run_id, column[key].as_string() if key else cast(column, Text)
+        )
+        if text is None or text.strip() in ("", "null", "{}"):
+            return json.dumps(default)
+        return text
     
     async def write_run_file(
         self,
