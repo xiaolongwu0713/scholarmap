@@ -497,7 +497,12 @@ function RunPageContent() {
   const [ingestStats, setIngestStats] = useState<IngestStats | null>(null);
   const [ingestionCompleted, setIngestionCompleted] = useState(false);
   const [showMap, setShowMap] = useState(false);
-  const showDemoLoading = isDemoRun && !ingestStats;
+  // Opening a run: the demo waits for its map data; other runs (which may be new or
+  // unfinished, with no map yet) wait for the initial load. The popup only appears if
+  // that load takes long enough to notice, so fast opens don't flash it.
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [slowInitialLoad, setSlowInitialLoad] = useState(false);
+  const showDemoLoading = isDemoRun ? !ingestStats : initialLoading && slowInitialLoad;
   const [showDemoReadyModal, setShowDemoReadyModal] = useState(false);
   const [showMappingNotice, setShowMappingNotice] = useState(false);
   const hasShownDemoReady = useRef(false);
@@ -920,6 +925,7 @@ function RunPageContent() {
     }
 
     await Promise.all([resultsDone, filesDone]);
+    return Boolean(u?.research_description);
   }
 
   // Load configuration from backend on mount
@@ -931,7 +937,24 @@ function RunPageContent() {
   }, []);
   
   useEffect(() => {
-    loadInitial().catch((e) => setError(String(e)));
+    setInitialLoading(true);
+    setSlowInitialLoad(false);
+    let slow = false;
+    const timer = window.setTimeout(() => {
+      slow = true;
+      setSlowInitialLoad(true);
+    }, 400);
+    loadInitial()
+      .then((hasContent) => {
+        // Tell the user the run is ready, but only if they saw it loading and it isn't a blank new run
+        if (!isDemoRun && slow && hasContent) setShowDemoReadyModal(true);
+      })
+      .catch((e) => setError(String(e)))
+      .finally(() => {
+        window.clearTimeout(timer);
+        setInitialLoading(false);
+      });
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, runId]);
 
@@ -2127,10 +2150,12 @@ function RunPageContent() {
               }}
             />
             <h3 style={{ margin: 0, marginBottom: "8px", color: "#111827", fontSize: "20px" }}>
-              Loading demo data…
+              {isDemoRun ? "Loading demo data…" : "Loading your run…"}
             </h3>
             <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.5" }}>
-              Please wait while we prepare the run. This will complete when the “Open Interactive Map” button becomes available.
+              {isDemoRun
+                ? "Please wait while we prepare the run. This will complete when the “Open Interactive Map” button becomes available."
+                : "Fetching this run's topic, papers and results. This usually takes a few seconds."}
             </div>
           </div>
         </div>
@@ -2165,10 +2190,12 @@ function RunPageContent() {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 style={{ margin: 0, marginBottom: "8px", color: "#111827", fontSize: "20px", textAlign: "center" }}>
-              Demo ready
+              {isDemoRun ? "Demo ready" : "Run ready"}
             </h3>
             <div style={{ color: "#6b7280", fontSize: "14px", lineHeight: "1.6" }}>
-              You can scroll down to the bottom and click “Open Interactive Map” to explore the global distribution of scholars.
+              {isDemoRun || ingestStats
+                ? "You can scroll down to the bottom and click “Open Interactive Map” to explore the global distribution of scholars."
+                : "Your run is loaded. Continue from the highlighted step above."}
             </div>
             <div style={{ display: "flex", justifyContent: "center", marginTop: "16px" }}>
               <button
