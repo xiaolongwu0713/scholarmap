@@ -1,6 +1,7 @@
 """Business metrics for the revenue funnel: signups -> searches -> paywall -> paid.
 
-Everything excludes the admin account (it owns the SEO field and demo runs).
+Everything excludes the admin account (it owns the SEO field and demo runs) and accounts
+marked as test accounts in the admin console.
 """
 from __future__ import annotations
 
@@ -28,7 +29,7 @@ async def business_metrics(session: AsyncSession, days: int = 7, now: datetime |
     now = now or datetime.now(timezone.utc)
     since = now - timedelta(days=days)
     admin = config.settings.super_user_email
-    customer = User.email != admin
+    customer = and_(User.email != admin, User.is_test.is_(False))
 
     async def scalar(query) -> int:
         return int((await session.execute(query)).scalar() or 0)

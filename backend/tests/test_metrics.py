@@ -127,3 +127,20 @@ def test_breaks_signups_activation_and_paying_down_by_source():
     assert by_source["google.com"]["signups"] == 1
     assert by_source["reddit"] == {"source": "reddit", "signups": 0, "activated": 0, "paying": 1}
     assert by_source["unknown"]["signups"] == 1
+
+
+def test_test_accounts_are_left_out():
+    paid_until = NOW + timedelta(days=20)
+    rows = [
+        user("real", created_days_ago=2), *run("r1", "real"), RunPaper(run_id="r1", pmid="1"),
+        user("tester", created_days_ago=1, is_test=True, pro_until=paid_until, paddle_subscription_id="sub_t",
+             subscription_status="active", subscription_interval_months=1, subscription_amount_cents=2000),
+        *run("r2", "tester"), *searches("tester", 3),
+        PassPurchase(transaction_id="txn_t", user_id="tester", days=90, earnings_usd_cents=4749,
+                     created_at=NOW - timedelta(days=1)),
+    ]
+    m = asyncio.run(compute(rows))
+    assert m["users_total"] == 1 and m["signups"] == 1
+    assert m["runs_started"] == 1 and m["searches"] == 0
+    assert m["pro_active"] == 0 and m["mrr_usd"] == 0
+    assert m["pass_sales"] == 0

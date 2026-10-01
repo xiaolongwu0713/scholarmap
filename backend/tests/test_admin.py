@@ -206,3 +206,17 @@ def test_user_detail_and_recent_searches():
     assert detail["runs"][1]["papers"] == 2 and detail["runs"][1]["completed"]
     assert detail["runs"][0]["ai_cost_usd"] == pytest.approx(1.0)
     assert {r["run_id"] for r in searches} == {"r1", "r2"}  # admin/SEO runs left out
+
+
+def test_mark_and_unmark_test_account():
+    async def fn(s):
+        marked = await apply_action(s, "root", "alice", "mark_test", now=NOW)
+        with pytest.raises(AdminActionError):
+            await apply_action(s, "root", "alice", "mark_test", now=NOW)
+        unmarked = await apply_action(s, "root", "alice", "unmark_test", now=NOW)
+        return marked, unmarked, await recent_actions(s)
+
+    marked, unmarked, log = with_db([user("alice")], fn)
+    assert marked["user"]["is_test"] is True
+    assert unmarked["user"]["is_test"] is False
+    assert [a["action"] for a in log] == ["unmark_test", "mark_test"]

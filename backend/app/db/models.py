@@ -48,6 +48,8 @@ class User(Base):
     search_limit_override: Mapped[int | None] = mapped_column(Integer, nullable=True)
     quota_reset_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     disabled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Owner/test accounts, left out of business metrics (set from the admin console)
+    is_test: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false", nullable=False)
 
     # First-touch attribution sent by the browser at signup (UTM tags, else the external
     # referrer's host, else "direct"), for revenue by channel. NULL for older accounts.

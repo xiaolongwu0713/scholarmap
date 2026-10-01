@@ -18,7 +18,8 @@ import config
 from app.db.models import AdminAction, LLMUsage, PassPurchase, Project, Run, RunPaper, SearchUsage, User, UserActivity
 from app.quota import SEARCH_WINDOW, get_search_limit, get_user_tier
 
-ACTIONS = ("grant_pro", "revoke_pro", "set_search_limit", "reset_quota", "disable", "enable", "verify_email")
+ACTIONS = ("grant_pro", "revoke_pro", "set_search_limit", "reset_quota", "disable", "enable", "verify_email",
+           "mark_test", "unmark_test")
 # Paddle states in which the subscription will keep extending pro_until
 LIVE_SUBSCRIPTION = ("active", "trialing", "past_due")
 
@@ -72,6 +73,7 @@ def _user_row(user: User, now: datetime, window: list[datetime]) -> dict[str, An
         "subscription_interval_months": user.subscription_interval_months,
         "disabled": user.disabled_at is not None,
         "disabled_at": _iso(user.disabled_at),
+        "is_test": bool(user.is_test),
         "search_limit": limit,
         "search_limit_override": user.search_limit_override,
         "quota_reset_at": _iso(user.quota_reset_at),
@@ -332,6 +334,14 @@ async def apply_action(
         if user.email_verified:
             raise AdminActionError("Email is already verified")
         user.email_verified = True
+    elif action == "mark_test":
+        if user.is_test:
+            raise AdminActionError("Already marked as a test account")
+        user.is_test = True
+    elif action == "unmark_test":
+        if not user.is_test:
+            raise AdminActionError("This isn't marked as a test account")
+        user.is_test = False
 
     if note:
         detail["note"] = note[:500]

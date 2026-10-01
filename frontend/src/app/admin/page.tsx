@@ -43,6 +43,8 @@ const ACTION_LABELS: Record<string, string> = {
   disable: "Disabled account",
   enable: "Enabled account",
   verify_email: "Verified email",
+  mark_test: "Marked as test account",
+  unmark_test: "Unmarked test account",
 };
 
 const date = (iso: string | null | undefined) => (iso ? new Date(iso).toLocaleDateString() : "–");
@@ -73,6 +75,11 @@ function PlanBadge({ u }: { u: AdminUser }) {
       {u.disabled && (
         <span style={{ fontSize: 12, fontWeight: 600, padding: "1px 8px", borderRadius: 999, background: "#fee2e2", color: "#b91c1c" }}>
           Disabled
+        </span>
+      )}
+      {u.is_test && (
+        <span style={{ fontSize: 12, fontWeight: 600, padding: "1px 8px", borderRadius: 999, background: "#fef3c7", color: "#92400e" }}>
+          Test
         </span>
       )}
     </span>
@@ -382,6 +389,19 @@ function UserPanel({ userId, onClose, onChanged }: { userId: string; onClose: ()
                     {!u.email_verified && (
                       <button className="secondary" disabled={busy} onClick={() => act({ action: "verify_email" })}>
                         Mark email verified
+                      </button>
+                    )}
+                    {u.is_test ? (
+                      <button className="secondary" disabled={busy} onClick={() => act({ action: "unmark_test" })}>
+                        Count in metrics again
+                      </button>
+                    ) : (
+                      <button
+                        className="secondary"
+                        disabled={busy}
+                        onClick={() => act({ action: "mark_test" }, `Mark ${u.email} as a test account? Its signups, searches and payments are left out of the business metrics.`)}
+                      >
+                        Mark as test account
                       </button>
                     )}
                     {u.disabled ? (
