@@ -5,6 +5,9 @@ from dataclasses import dataclass
 from typing import Any
 
 from app.db.connection import db_manager
+from sqlalchemy import select
+
+from app.db.models import Run
 from app.db.repository import ProjectRepository, RunRepository
 from app.auth.repository import UserRepository
 
@@ -14,6 +17,15 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 import config
 settings = config.settings
+
+
+# Per-source result "files" stored as keys of Run.results
+_RESULT_FILES = {
+    "results_pubmed.json": "pubmed",
+    "results_semantic_scholar.json": "semantic_scholar",
+    "results_openalex.json": "openalex",
+    "results_aggregated.json": "aggregated",
+}
 
 
 @dataclass(frozen=True)
@@ -143,45 +155,40 @@ class DatabaseStore:
         run_id: str,
         filename: str
     ) -> dict[str, Any]:
-        """Read run data file (emulates file-based storage)."""
+        """Read run data file (emulates file-based storage).
+
+        Selects only the column (or results key) the file maps to: results holds
+        every paper and is MBs, so loading the whole run made small files slow.
+        """
+        if filename == "understanding.json":
+            expr, wrap = Run.understanding, None
+        elif filename == "keywords.json":
+            expr, wrap = Run.keywords, None
+        elif filename == "queries.json":
+            expr, wrap = Run.queries, None
+        elif filename == "results.json":
+            expr, wrap = Run.results, None
+        elif filename == "retrieval_framework.json":
+            expr, wrap = Run.retrieval_framework, "retrieval_framework"
+        elif filename in ("parse_stage1.json", "parse_stage2.json"):
+            expr, wrap = Run.understanding[filename.removesuffix(".json")], None
+        elif filename in _RESULT_FILES:
+            expr, wrap = Run.results[_RESULT_FILES[filename]], None
+        else:
+            raise FileNotFoundError(f"File {filename} not found")
+
         async with db_manager.session() as session:
-            repo = RunRepository(session)
-            run = await repo.get_run(run_id)
-            if not run:
-                raise FileNotFoundError(f"Run {run_id} not found")
-            
-            # Map filenames to run attributes
-            if filename == "understanding.json":
-                return run.understanding or {}
-            elif filename == "keywords.json":
-                return run.keywords or {}
-            elif filename == "queries.json":
-                return run.queries or {}
-            elif filename == "results.json":
-                return run.results or {}
-            elif filename == "retrieval_framework.json":
-                return {"retrieval_framework": run.retrieval_framework or ""}
-            elif filename == "parse_stage1.json":
-                understanding = run.understanding or {}
-                return understanding.get("parse_stage1") or {}
-            elif filename == "parse_stage2.json":
-                understanding = run.understanding or {}
-                return understanding.get("parse_stage2") or {}
-            # Support result files stored in results JSON
-            elif filename == "results_pubmed.json":
-                results = run.results or {}
-                return results.get("pubmed", {"items": [], "count": 0})
-            elif filename == "results_semantic_scholar.json":
-                results = run.results or {}
-                return results.get("semantic_scholar", {"items": [], "count": 0})
-            elif filename == "results_openalex.json":
-                results = run.results or {}
-                return results.get("openalex", {"items": [], "count": 0})
-            elif filename == "results_aggregated.json":
-                results = run.results or {}
-                return results.get("aggregated", {"items": [], "count": 0})
-            else:
-                raise FileNotFoundError(f"File {filename} not found")
+            row = (await session.execute(
+                select(expr).where(Run.run_id == run_id)
+            )).first()
+        if row is None:
+            raise FileNotFoundError(f"Run {run_id} not found")
+        value = row[0]
+        if wrap:
+            return {wrap: value or ""}
+        if filename in _RESULT_FILES:
+            return value or {"items": [], "count": 0}
+        return value or {}
     
     async def write_run_file(
         self,
@@ -264,42 +271,27 @@ class DatabaseStore:
                 raise ValueError(f"Invalid filename: {filename}")
     
     async def list_run_files(self, project_id: str, run_id: str) -> list[str]:
-        """List all data files for a run."""
+        """List all data files for a run (without loading the large results column)."""
+        def present(expr):
+            return expr.isnot(None)
+
+        checks = {
+            "understanding.json": present(Run.understanding),
+            "parse_stage1.json": present(Run.understanding["parse_stage1"]),
+            "parse_stage2.json": present(Run.understanding["parse_stage2"]),
+            "keywords.json": present(Run.keywords),
+            "queries.json": present(Run.queries),
+            "results.json": present(Run.results),
+            "retrieval_framework.json": present(Run.retrieval_framework),
+            **{name: present(Run.results[key]) for name, key in _RESULT_FILES.items()},
+        }
         async with db_manager.session() as session:
-            repo = RunRepository(session)
-            run = await repo.get_run(run_id)
-            if not run:
-                raise FileNotFoundError(f"Run {run_id} not found")
-            
-            # Return available file names
-            files = []
-            if run.understanding:
-                files.append("understanding.json")
-                understanding = run.understanding or {}
-                if understanding.get("parse_stage1"):
-                    files.append("parse_stage1.json")
-                if understanding.get("parse_stage2"):
-                    files.append("parse_stage2.json")
-            if run.keywords:
-                files.append("keywords.json")
-            if run.queries:
-                files.append("queries.json")
-            if run.results:
-                files.append("results.json")
-                # Add individual result files if they exist
-                results = run.results or {}
-                if "pubmed" in results:
-                    files.append("results_pubmed.json")
-                if "semantic_scholar" in results:
-                    files.append("results_semantic_scholar.json")
-                if "openalex" in results:
-                    files.append("results_openalex.json")
-                if "aggregated" in results:
-                    files.append("results_aggregated.json")
-            if run.retrieval_framework:
-                files.append("retrieval_framework.json")
-            
-            return sorted(files)
+            row = (await session.execute(
+                select(*checks.values()).where(Run.run_id == run_id)
+            )).first()
+        if row is None:
+            raise FileNotFoundError(f"Run {run_id} not found")
+        return sorted(name for name, exists in zip(checks, row) if exists)
     
     async def delete_run(self, project_id: str, run_id: str) -> None:
         """Delete a run and all its data."""
