@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { getUser, removeToken, isAuthenticated, isSuperUser } from "@/lib/auth";
 
@@ -16,6 +16,25 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
   const [user, setUser] = useState<{ user_id: string; email: string } | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close the user menu on a click/tap anywhere outside it, or on Escape.
+  // (A full-screen overlay doesn't work here: the navbar's styling confines it to the bar.)
+  useEffect(() => {
+    if (!showUserMenu) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!userMenuRef.current?.contains(e.target as Node)) setShowUserMenu(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setShowUserMenu(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [showUserMenu]);
 
   useEffect(() => {
     const currentUser = getUser();
@@ -135,7 +154,7 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                 </button>
               </Link>
             ) : (
-              <div style={{ position: "relative" }}>
+              <div ref={userMenuRef} style={{ position: "relative" }}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   style={{
@@ -204,17 +223,6 @@ export function UnifiedNavbar({ variant = "app" }: UnifiedNavbarProps) {
                 {/* Dropdown Menu */}
                 {showUserMenu && (
                   <>
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        zIndex: 40
-                      }}
-                      onClick={() => setShowUserMenu(false)}
-                    />
                     <div
                       style={{
                         position: "absolute",

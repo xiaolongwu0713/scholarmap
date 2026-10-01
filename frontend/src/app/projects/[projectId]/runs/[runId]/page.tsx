@@ -1,6 +1,7 @@
 "use client";
 
 import { SITE_URL, DEMO_PROJECT_ID, DEMO_RUN_ID } from '@/lib/site';
+import { isSuperUser } from '@/lib/auth';
 import { SEO_PROJECT_ID } from '@/lib/seoFieldConfig';
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
@@ -456,6 +457,10 @@ function RunPageContent() {
   // Original demo run or any run in the SEO project
   const isDemoRun = (projectId === DEMO_PROJECT_ID && runId === DEMO_RUN_ID) ||
                      projectId === SEO_PROJECT_ID;
+  // Demo/SEO runs belong to the super user: they still get the link back to their project.
+  // Read after mount, since login lives in localStorage.
+  const [ownsDemoRun, setOwnsDemoRun] = useState(false);
+  useEffect(() => setOwnsDemoRun(isDemoRun && isSuperUser()), [isDemoRun]);
 
   // Load configuration from backend (with fallback defaults)
   const [config, setConfig] = useState<FrontendConfig>({
@@ -1858,7 +1863,7 @@ function RunPageContent() {
       <UnifiedNavbar variant="app" />
       <div className="container stack" style={{ paddingTop: "80px" }}>
         {/* Header: back link, title, actions (stack on phones) */}
-        {!isDemoRun && (
+        {(!isDemoRun || ownsDemoRun) && (
           <Link href={`/projects/${projectId}`} className="text-sm text-blue-600 hover:underline" style={{ alignSelf: "flex-start" }}>
             ← Back to project
           </Link>
