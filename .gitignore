@@ -40,3 +40,6 @@ backend/app/render_config.txt
 
 # Local Python env
 backend/.venv/
+
+# Private business notes and reports (repo is public)
+private/
