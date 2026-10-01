@@ -5,15 +5,23 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { getProject, createRun, deleteRun, searchLimitMessage, type Run } from "@/lib/api";
 import AuthGuard from "@/components/AuthGuard";
+import { getToken } from "@/lib/auth";
 import { UnifiedNavbar } from "@/components/UnifiedNavbar";
 import { trackConversion } from "@/lib/analytics";
+
+// Last loaded project + runs, kept in memory across client-side navigation so coming back from
+// a run shows the list at once while it refreshes. Keyed by token so another login never sees it.
+const projectCache = new Map<string, { name: string; runs: Run[] }>();
+const cacheKey = (projectId: string) => `${getToken() ?? ""}:${projectId}`;
 
 function ProjectPageContent() {
   const params = useParams();
   const projectId = params.projectId as string;
   const router = useRouter();
-  const [runs, setRuns] = useState<Run[]>([]);
-  const [projectName, setProjectName] = useState<string>("");
+  const cached = projectCache.get(cacheKey(projectId));
+  // null = not loaded yet (show "Loading runs…", not "No runs yet")
+  const [runs, setRuns] = useState<Run[] | null>(cached?.runs ?? null);
+  const [projectName, setProjectName] = useState<string>(cached?.name ?? "");
   const [error, setError] = useState<string | null>(null);
   const [creatingRun, setCreatingRun] = useState(false);
   const [deletingRunId, setDeletingRunId] = useState<string | null>(null);
@@ -21,11 +29,12 @@ function ProjectPageContent() {
   // Quota error modal
   const [quotaErrorModal, setQuotaErrorModal] = useState<{ show: boolean; message: string }>({ show: false, message: "" });
 
-  const sortedRuns = useMemo(() => runs, [runs]);
+  const sortedRuns = useMemo(() => runs ?? [], [runs]);
 
   async function refresh() {
     setError(null);
     const data = await getProject(projectId);
+    projectCache.set(cacheKey(projectId), { name: data.project.name, runs: data.runs });
     setProjectName(data.project.name);
     setRuns(data.runs);
   }
@@ -136,7 +145,11 @@ function ProjectPageContent() {
       {error ? <div className="muted">Error: {error}</div> : null}
 
       <div className="card stack">
-        {sortedRuns.length === 0 ? <div className="muted">No runs yet.</div> : null}
+        {runs === null ? (
+          <div className="muted">{error ? "Couldn't load runs." : "Loading runs…"}</div>
+        ) : runs.length === 0 ? (
+          <div className="muted">No runs yet.</div>
+        ) : null}
         {sortedRuns.map((r) => (
           <div key={r.run_id} className="stack" style={{ gap: 8 }}>
             <div className="row" style={{ justifyContent: "space-between" }}>
