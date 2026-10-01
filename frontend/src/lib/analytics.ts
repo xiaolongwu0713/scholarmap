@@ -12,6 +12,7 @@ export type ConversionEvent =
   | 'upgrade_click'
   | 'checkout_open'
   | 'industry_contact_click'
+  | 'industry_contact_submit'
   | 'search_started'
   | 'search_completed'
   | 'search_failed'

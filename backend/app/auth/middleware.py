@@ -59,6 +59,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         "/api/auth/reset-password",
         "/api/auth/password-requirements",
         "/api/billing/webhook",  # authenticated by Paddle signature instead
+        "/api/contact",  # team contact form; rate limited per IP
         "/api/seo/fields",
         "/api/seo/sitemap",
         "/api/admin/metrics",  # checks the metrics token or an admin login itself

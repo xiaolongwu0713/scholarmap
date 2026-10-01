@@ -47,6 +47,7 @@ from app.auth.auth import (
     send_verification_email,
 )
 from app.auth.repository import UserRepository, EmailVerificationCodeRepository
+from app.contact import ContactRequest
 from app.db.connection import db_manager
 from app.frontend_only_middleware import FrontendOnlyMiddleware
 from app.input_text_validate import analyze_english_text, input_text_validate
@@ -1636,6 +1637,30 @@ async def paddle_webhook(request: Request) -> dict:
     async with db_manager.session() as session:
         outcome = await handle_event(session, event)
     return {"ok": True, "result": outcome}
+
+
+@app.post("/api/contact")
+async def contact_team(request: Request, req: ContactRequest) -> dict:
+    """Industry/team contact form. Public; emails the lead to the team inbox."""
+    from email_validator import validate_email, EmailNotValidError
+    from app.contact import allow, send_lead
+
+    if req.website:
+        return {"ok": True}  # honeypot filled: a bot; pretend it worked
+    try:
+        email = validate_email(req.email, check_deliverability=False).email.lower().strip()
+    except EmailNotValidError:
+        raise HTTPException(status_code=400, detail="Please enter a valid email address")
+    forwarded = request.headers.get("x-forwarded-for", "")
+    ip = forwarded.split(",")[0].strip() or (request.client.host if request.client else "unknown")
+    if not allow(ip):
+        raise HTTPException(status_code=429, detail=f"Too many messages. Please email {settings.contact_email} instead.")
+    try:
+        await send_lead(req, email)
+    except Exception as e:
+        logging.getLogger(__name__).error("Contact form email failed: %s", e)
+        raise HTTPException(status_code=502, detail=f"Could not send your message. Please email {settings.contact_email}.")
+    return {"ok": True}
 
 
 @app.post("/api/billing/portal")

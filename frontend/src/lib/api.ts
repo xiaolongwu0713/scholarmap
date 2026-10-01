@@ -133,6 +133,27 @@ export async function register(
   return await res.json();
 }
 
+export interface ContactForm {
+  name: string;
+  email: string;
+  company: string;
+  message: string;
+  source: string;
+  website: string; // honeypot, left empty by people
+}
+
+/** Team/industry contact form; the backend emails it to the team inbox. Throws with a user-facing message. */
+export async function sendContact(form: ContactForm): Promise<void> {
+  const touch = getFirstTouch();
+  const firstTouch = touch ? [touch.source, touch.medium, touch.campaign, touch.landing_path].filter(Boolean).join(" / ") : "";
+  const res = await fetch(`${baseUrl}/api/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...form, first_touch: firstTouch }),
+  });
+  if (!res.ok) throw new Error(await readErrorDetail(res));
+}
+
 export async function login(email: string, password: string): Promise<LoginResponse> {
   const res = await fetch(`${baseUrl}/api/auth/login`, {
     method: "POST",
@@ -745,6 +766,7 @@ export type AdminUser = {
   subscription_interval_months: number | null;
   disabled: boolean;
   disabled_at: string | null;
+  is_test: boolean;
   search_limit: number; // -1 = unlimited
   search_limit_override: number | null;
   quota_reset_at: string | null;
@@ -794,7 +816,7 @@ export type AdminUserDetail = { user: AdminUser; passes: AdminPass[]; runs: Admi
 export type AdminUserAction =
   | { action: "grant_pro"; days: number; note?: string }
   | { action: "set_search_limit"; limit: number | null; note?: string }
-  | { action: "revoke_pro" | "reset_quota" | "disable" | "enable" | "verify_email"; note?: string };
+  | { action: "revoke_pro" | "reset_quota" | "disable" | "enable" | "verify_email" | "mark_test" | "unmark_test"; note?: string };
 
 export async function adminListUsers(params: {
   q?: string;
