@@ -10,7 +10,7 @@
 - 项目：
   - `labscout-frontend`：Next.js 前端（Vercel），DSN 在 Vercel 环境变量 `NEXT_PUBLIC_SENTRY_DSN`，浏览器事件经 `/monitoring` 转发
   - `labscout-backend`：FastAPI 后端（Render），DSN 在 Render 环境变量 `SENTRY_DSN`
-- 采集错误，并开启性能追踪（2026-10-01 起）：前端抽样 20% 的页面加载/跳转及其中的 API 请求，后端抽样 20% 的请求（排除 `/healthz` 和 CORS 预检），前后端请求串成同一条 trace。不开会话回放
+- 采集错误，并开启性能追踪（2026-10-01 起）：前端抽样 20% 的页面加载/跳转及其中的 API 请求，后端：由已抽样页面发起的请求跟随前端（20%），其余请求（主要是爬虫访问公开地图接口）抽样 5%，排除 `/healthz` 和 CORS 预检，前后端请求串成同一条 trace。不开会话回放
 - 未配置 `SENTRY_AUTH_TOKEN`（Vercel），生产报错堆栈是压缩后的代码，需要时再补
 
 ### 2. Sentry 实时邮件告警（只保留紧急情况）

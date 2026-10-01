@@ -121,9 +121,14 @@ class DatabaseStore:
     
     async def list_runs(self, project_id: str) -> list[RunDTO]:
         """List all runs for a project."""
+        # Only the listed columns: each run's results JSON is MBs
+        query = (
+            select(Run.run_id, Run.created_at, Run.description)
+            .where(Run.project_id == project_id)
+            .order_by(Run.created_at.desc())
+        )
         async with db_manager.session() as session:
-            repo = RunRepository(session)
-            runs = await repo.list_runs(project_id)
+            runs = (await session.execute(query)).all()
             return [
                 RunDTO(
                     run_id=r.run_id,
@@ -146,10 +151,10 @@ class DatabaseStore:
     
     async def run_belongs_to_project(self, project_id: str, run_id: str) -> bool:
         """Check that a run exists and belongs to the given project."""
+        # Runs on every run-scoped request: read project_id only, not the MB-sized run row
         async with db_manager.session() as session:
-            repo = RunRepository(session)
-            run = await repo.get_run(run_id)
-            return run is not None and run.project_id == project_id
+            owner = await session.scalar(select(Run.project_id).where(Run.run_id == run_id))
+        return owner == project_id
 
     @staticmethod
     def _run_file_source(filename: str):

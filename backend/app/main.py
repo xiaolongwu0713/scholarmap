@@ -23,7 +23,10 @@ setup_logging(level=logging.INFO)
 # Error reporting + light performance tracing: must run before the FastAPI app is created.
 import sentry_sdk
 
-TRACES_SAMPLE_RATE = 0.2  # enough to see slow endpoints at this traffic, well inside the free quota
+# Requests not started by a traced browser page (mostly bots and crawlers on the public map
+# endpoints, ~1.5K spans per 10 min at 20%): 5% keeps this under the free plan's span quota.
+# Requests from traced page loads follow the browser's 20% (see _traces_sampler).
+TRACES_SAMPLE_RATE = 0.05
 
 
 def _traces_sampler(ctx: dict) -> float:
