@@ -626,32 +626,32 @@ function RunPageContent() {
         return null;
       }
     };
-    const rp = await load("results_pubmed.json");
-    const rs2 = await load("results_semantic_scholar.json");
-    const roa = await load("results_openalex.json");
-    const ra = await load("results_aggregated.json");
+    // Search only uses PubMed now, so the Semantic Scholar/OpenAlex files are always empty
+    const [rp, ra] = await Promise.all([load("results_pubmed.json"), load("results_aggregated.json")]);
     const loaded = {
       pubmed: (rp?.items as Paper[]) || null,
       agg: (ra?.items as AggregatedItem[]) || null,
     };
     setPubmed(loaded.pubmed);
-    setS2((rs2?.items as Paper[]) || null);
-    setOa((roa?.items as Paper[]) || null);
+    setS2(null);
+    setOa(null);
     setAgg(loaded.agg);
     return loaded;
   }
 
   async function loadInitial() {
-    await refreshFiles();
+    // Fire every request at once; each one is a full round trip to the backend
+    const filesDone = refreshFiles();
+    const resultsDone = loadResults();
+    const queriesReq = getRunFile(projectId, runId, "queries.json");
+    const statsReq = getAuthorshipStats(projectId, runId);
+    // Handled where awaited below; avoid unhandled-rejection noise until then
+    queriesReq.catch(() => {});
+    statsReq.catch(() => {});
+
     const u = await getRunFile(projectId, runId, "understanding.json");
-    let stage1Snapshot: { result?: ParseResult } | null = null;
-    let stage1Result: ParseResult | null = null;
-    try {
-      stage1Snapshot = await getRunFile(projectId, runId, "parse_stage1.json");
-    } catch {
-      stage1Snapshot = null;
-    }
-    stage1Result = stage1Snapshot?.result || u?.parse_stage1?.result || null;
+    // parse_stage1.json is just understanding.parse_stage1
+    const stage1Result: ParseResult | null = u?.parse_stage1?.result || null;
     // Load description (empty string will show placeholder)
     setResearchDescription(u?.research_description || "");
     setQuestions((u?.clarification_questions as string[]) || []);
@@ -882,7 +882,7 @@ function RunPageContent() {
     }
 
     try {
-      const q = await getRunFile(projectId, runId, "queries.json");
+      const q = await queriesReq;
       if (q) {
         const obj = {
           pubmed: String(q.pubmed || ""),
@@ -905,7 +905,7 @@ function RunPageContent() {
 
     // Check if ingestion has been completed by loading authorship stats
     try {
-      const stats = await getAuthorshipStats(projectId, runId);
+      const stats = await statsReq;
       if (stats) {
         setIngestStats(stats);
         setIngestionCompleted(true);
@@ -914,7 +914,7 @@ function RunPageContent() {
       // No authorship data yet, ingestion not completed
     }
 
-    await loadResults();
+    await Promise.all([resultsDone, filesDone]);
   }
 
   // Load configuration from backend on mount
