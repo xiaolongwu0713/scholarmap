@@ -1,8 +1,9 @@
-"""In-memory cache of map data for the SEO field runs.
+"""In-memory cache of map data for the public (SEO field and demo) projects.
 
-Field pages are rendered on demand (crawlers, ISR), and each render asks the backend for
-map aggregations. A published field run never changes (a rebuild gets a new run id), so
-its answers are kept here instead of being recomputed on the small database.
+Their pages are rendered on demand (crawlers, ISR), and each render asks the backend for
+map aggregations. A published field run never changes (a rebuild gets a new run id), and
+demo runs change only when re-ingested by hand, so their answers are kept here instead of
+being recomputed on the small database.
 """
 from __future__ import annotations
 
@@ -20,8 +21,8 @@ _entries: dict[tuple, tuple[float, Any]] = {}
 
 
 def _cacheable(project_id: str) -> bool:
-    seo_project_id = config.settings.seo_project_id
-    return bool(seo_project_id) and project_id == seo_project_id
+    public = {config.settings.seo_project_id, config.settings.demo_project_id}
+    return bool(project_id) and project_id in public
 
 
 def get(project_id: str, key: tuple) -> Any | None:

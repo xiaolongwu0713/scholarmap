@@ -1,4 +1,4 @@
-"""Map data for the SEO field runs is cached; other projects' data is not."""
+"""Map data for the public (SEO and demo) projects is cached; other projects' data is not."""
 from __future__ import annotations
 
 import sys
@@ -15,16 +15,20 @@ def setup_function():
     map_cache.clear()
 
 
-def test_caches_only_the_seo_project(monkeypatch):
+def test_caches_only_the_public_projects(monkeypatch):
     monkeypatch.setattr(config.settings, "seo_project_id", "seo")
+    monkeypatch.setattr(config.settings, "demo_project_id", "demo")
     map_cache.put("seo", ("world", "r1"), [1])
+    map_cache.put("demo", ("world", "r3"), [3])
     map_cache.put("user", ("world", "r2"), [2])
     assert map_cache.get("seo", ("world", "r1")) == [1]
+    assert map_cache.get("demo", ("world", "r3")) == [3]
     assert map_cache.get("user", ("world", "r2")) is None
 
 
-def test_nothing_cached_without_an_seo_project(monkeypatch):
+def test_nothing_cached_for_an_empty_project_id(monkeypatch):
     monkeypatch.setattr(config.settings, "seo_project_id", "")
+    monkeypatch.setattr(config.settings, "demo_project_id", "")
     map_cache.put("", ("world", "r1"), [1])
     assert map_cache.get("", ("world", "r1")) is None
 
