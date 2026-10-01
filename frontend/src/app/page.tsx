@@ -15,6 +15,11 @@ import {
   howToSchema,
   breadcrumbSchema
 } from "@/components/StructuredData";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/", languages: { en: "/", "zh-CN": "/zh" } },
+};
 
 export default function LandingPage() {
   return (

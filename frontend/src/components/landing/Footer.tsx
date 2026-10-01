@@ -50,6 +50,11 @@ export function Footer() {
                   Create Account
                 </Link>
               </li>
+              <li>
+                <Link href="/zh" lang="zh-CN" className="hover:text-blue-400 transition-colors">
+                  中文
+                </Link>
+              </li>
             </ul>
           </div>
 
