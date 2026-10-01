@@ -626,13 +626,13 @@ function RunPageContent() {
         return null;
       }
     };
-    // Search only uses PubMed now, so the Semantic Scholar/OpenAlex files are always empty
-    const [rp, ra] = await Promise.all([load("results_pubmed.json"), load("results_aggregated.json")]);
+    // Search only uses PubMed, and the aggregated file holds the same papers deduplicated,
+    // so skip the ~1 MB PubMed copy and the always-empty Semantic Scholar/OpenAlex files
+    const ra = await load("results_aggregated.json");
     const loaded = {
-      pubmed: (rp?.items as Paper[]) || null,
       agg: (ra?.items as AggregatedItem[]) || null,
     };
-    setPubmed(loaded.pubmed);
+    setPubmed(null);
     setS2(null);
     setOa(null);
     setAgg(loaded.agg);
@@ -1744,7 +1744,7 @@ function RunPageContent() {
   }
 
   // Determine pipeline progress
-  const hasResults = (pubmed?.length || 0) > 0 || (s2?.length || 0) > 0 || (oa?.length || 0) > 0;
+  const hasResults = (agg?.length || 0) > 0;
   const exportMaxCount = exportWorldData.reduce((max, item) => Math.max(max, item.scholar_count), 1);
 
   // Stage navigator: the run's four stages, their state, and which one is shown
@@ -2992,12 +2992,9 @@ function RunPageContent() {
 
           <div className="card stack">
             <h2 style={{ margin: 0 }}>📊 Paper Statistics</h2>
-            <div className="muted">Counts by data source</div>
+            <div className="muted">Papers retrieved from PubMed</div>
             <div className="row">
-              <MetricCard icon="📄" label="PubMed" value={pubmed?.length ?? 0} color="blue" />
-              <MetricCard icon="📚" label="Semantic Scholar" value={s2?.length ?? 0} color="green" />
-              <MetricCard icon="🌐" label="OpenAlex" value={oa?.length ?? 0} color="purple" />
-              <MetricCard icon="✨" label="Aggregated" value={agg?.length ?? 0} color="orange" subtitle="Deduped by DOI" />
+              <MetricCard icon="📄" label="PubMed" value={agg?.length ?? 0} color="blue" />
             </div>
           </div>
 
