@@ -1,6 +1,7 @@
 """PostgreSQL aggregation queries for geographic drill-down."""
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from sqlalchemy import and_, func, or_, select, text
@@ -40,6 +41,25 @@ def normalize_country(country: str | None) -> str | None:
 # Uncached cities geocoded per map request (~1s each under Nominatim's rate limit)
 MAX_GEOCODE_PER_REQUEST = 25
 
+# Each aggregation sorts a run's authorships several times. Bursts of page renders running
+# them in parallel ran the 256 MB database out of memory (2026-10-01), so they queue instead.
+MAX_CONCURRENT_AGGREGATIONS = 2
+_aggregation_slots = asyncio.Semaphore(MAX_CONCURRENT_AGGREGATIONS)
+
+
+def _run_pmids(run_id: str):
+    """A run's papers as a subquery.
+
+    Passing the PMIDs as a 500-item parameter list made each list length a new statement,
+    which every database connection prepared and kept in memory.
+    """
+    return select(RunPaper.pmid).where(RunPaper.run_id == run_id)
+
+
+async def _fetch_all(session: AsyncSession, query) -> list:
+    async with _aggregation_slots:
+        return (await session.execute(query)).all()
+
 
 class PostgresMapAggregator:
     """Async aggregator for PostgreSQL."""
@@ -71,13 +91,6 @@ class PostgresMapAggregator:
         
         confidence_levels = self._get_confidence_levels(min_confidence)
         
-        logger.info(f"   Getting PMIDs for run {run_id}...")
-        # Get PMIDs for this run
-        pmids = await self._get_run_pmids(session, run_id)
-        if not pmids:
-            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-            return []
-        logger.info(f"   Found {len(pmids)} PMIDs")
         
         # Aggregate by country
         query = select(
@@ -98,7 +111,7 @@ class PostgresMapAggregator:
             ).where(
                 and_(
                     Authorship.country.isnot(None),
-                    Authorship.pmid.in_(pmids),
+                    Authorship.pmid.in_(_run_pmids(run_id)),
                     Authorship.affiliation_confidence.in_(confidence_levels)
                 )
             ).group_by(
@@ -107,8 +120,7 @@ class PostgresMapAggregator:
                 text('scholar_count DESC')
             )
         
-        result = await session.execute(query)
-        rows = result.all()
+        rows = await _fetch_all(session, query)
         
         # Merge countries with same normalized name first
         country_map: dict[str, dict[str, Any]] = {}
@@ -189,21 +201,18 @@ class PostgresMapAggregator:
 
         They count on the world map but have no city row, so the country view reports them.
         """
-        pmids = await self._get_run_pmids(session, run_id)
-        if not pmids:
-            return 0
         scholars = func.count(func.distinct(func.concat(
             Authorship.author_name_raw, '|', func.coalesce(Authorship.institution, ''), '|', Authorship.country
         )))
-        result = await session.execute(
+        rows = await _fetch_all(session,
             select(scholars).where(
                 Authorship.country == normalize_country(country),
                 Authorship.city.is_(None),
-                Authorship.pmid.in_(pmids),
+                Authorship.pmid.in_(_run_pmids(run_id)),
                 Authorship.affiliation_confidence.in_(self._get_confidence_levels(min_confidence)),
             )
         )
-        return int(result.scalar() or 0)
+        return int(rows[0][0] or 0)
 
     async def get_country_map(
         self,
@@ -227,11 +236,6 @@ class PostgresMapAggregator:
         country_normalized = normalize_country(country)
         
         logger.info(f"   Getting country map for {country} (normalized: {country_normalized})...")
-        pmids = await self._get_run_pmids(session, run_id)
-        if not pmids:
-            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-            return []
-        logger.info(f"   Found {len(pmids)} PMIDs")
         
         query = select(
             Authorship.city,
@@ -252,7 +256,7 @@ class PostgresMapAggregator:
             and_(
                 Authorship.country == country_normalized,
                 Authorship.city.isnot(None),
-                Authorship.pmid.in_(pmids),
+                Authorship.pmid.in_(_run_pmids(run_id)),
                 Authorship.affiliation_confidence.in_(confidence_levels)
             )
         ).group_by(
@@ -261,8 +265,7 @@ class PostgresMapAggregator:
             text('scholar_count DESC')
         )
         
-        result = await session.execute(query)
-        rows = result.all()
+        rows = await _fetch_all(session, query)
         
         # Build city map with data (without coordinates yet)
         city_map: dict[str, dict[str, Any]] = {}
@@ -374,11 +377,6 @@ class PostgresMapAggregator:
         country_normalized = normalize_country(country)
         
         logger.info(f"   Getting city map for {city}, {country}...")
-        pmids = await self._get_run_pmids(session, run_id)
-        if not pmids:
-            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-            return []
-        logger.info(f"   Found {len(pmids)} PMIDs")
         
         query = select(
             Authorship.institution,
@@ -398,7 +396,7 @@ class PostgresMapAggregator:
                     Authorship.country == country_normalized,
                     Authorship.city == city,
                     Authorship.institution.isnot(None),
-                    Authorship.pmid.in_(pmids),
+                    Authorship.pmid.in_(_run_pmids(run_id)),
                     Authorship.affiliation_confidence.in_(confidence_levels)
                 )
             ).group_by(
@@ -407,8 +405,7 @@ class PostgresMapAggregator:
                 text('scholar_count DESC')
             )
         
-        result = await session.execute(query)
-        rows = result.all()
+        rows = await _fetch_all(session, query)
         
         items = [
             {
@@ -449,11 +446,6 @@ class PostgresMapAggregator:
         country_normalized = normalize_country(country)
         
         logger.info(f"   Getting scholars for {institution}, {city}, {country}...")
-        pmids = await self._get_run_pmids(session, run_id)
-        if not pmids:
-            logger.warning(f"   ⚠️  No PMIDs found for run {run_id}")
-            return []
-        logger.info(f"   Found {len(pmids)} PMIDs")
         
         # Get distinct authors
         author_query = select(
@@ -464,7 +456,7 @@ class PostgresMapAggregator:
                     Authorship.country == country_normalized,
                     Authorship.city == city,
                     Authorship.institution == institution,
-                    Authorship.pmid.in_(pmids),
+                    Authorship.pmid.in_(_run_pmids(run_id)),
                     Authorship.affiliation_confidence.in_(confidence_levels)
                 )
             ).group_by(
@@ -473,8 +465,7 @@ class PostgresMapAggregator:
                 text('paper_count DESC')
             )
         
-        result = await session.execute(author_query)
-        author_rows = result.all()
+        author_rows = await _fetch_all(session, author_query)
         
         # For each author, get their papers with details
         from app.db.models import Paper
@@ -489,16 +480,13 @@ class PostgresMapAggregator:
                         Authorship.country == country_normalized,
                         Authorship.city == city,
                         Authorship.institution == institution,
-                        Authorship.pmid.in_(pmids),
+                        Authorship.pmid.in_(_run_pmids(run_id)),
                         Authorship.affiliation_confidence.in_(confidence_levels)
                     )
-                ).distinct()
-            
-            pmids_result = await session.execute(pmids_query)
-            author_pmids = [row[0] for row in pmids_result.all()]
+                )
             
             # Get paper details
-            papers_query = select(Paper).where(Paper.pmid.in_(author_pmids))
+            papers_query = select(Paper).where(Paper.pmid.in_(pmids_query))
             papers_result = await session.execute(papers_query)
             papers = papers_result.scalars().all()
             
@@ -530,9 +518,6 @@ class PostgresMapAggregator:
         Only names and locations are returned — raw affiliation text is left out
         because it can contain email addresses.
         """
-        pmids = await self._get_run_pmids(session, run_id)
-        if not pmids:
-            return []
 
         query = select(
             Authorship.country,
@@ -543,7 +528,7 @@ class PostgresMapAggregator:
         ).where(
             and_(
                 Authorship.country.isnot(None),
-                Authorship.pmid.in_(pmids),
+                Authorship.pmid.in_(_run_pmids(run_id)),
                 Authorship.affiliation_confidence.in_(self._get_confidence_levels(min_confidence))
             )
         ).group_by(
@@ -552,7 +537,7 @@ class PostgresMapAggregator:
             Authorship.country, Authorship.city, Authorship.institution, text('paper_count DESC')
         )
 
-        result = await session.execute(query)
+        rows = await _fetch_all(session, query)
         return [
             {
                 "country": row.country,
@@ -561,19 +546,9 @@ class PostgresMapAggregator:
                 "researcher": row.author_name_raw,
                 "paper_count": row.paper_count,
             }
-            for row in result.all()
+            for row in rows
         ]
 
-    async def _get_run_pmids(
-        self,
-        session: AsyncSession,
-        run_id: str
-    ) -> list[str]:
-        """Get all PMIDs for a run."""
-        query = select(RunPaper.pmid).where(RunPaper.run_id == run_id)
-        result = await session.execute(query)
-        return [row[0] for row in result.all()]
-    
     def _get_confidence_levels(self, min_confidence: str) -> list[str]:
         """Get confidence levels to include based on minimum."""
         levels_map = {

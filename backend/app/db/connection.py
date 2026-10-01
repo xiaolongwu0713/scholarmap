@@ -37,14 +37,21 @@ class DatabaseManager:
         if url.startswith("postgresql://"):
             url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
         
+        # The database has 256 MB of RAM, and each Postgres connection keeps the memory its
+        # queries and prepared statements used. Up to 50 connections ran it out of memory
+        # (2026-10-01), so keep few connections, few cached statements, and small sorts.
         self._engine = create_async_engine(
             url,
             echo=False,
             pool_pre_ping=True,
-            pool_size=20,          # Increased from 10 to handle concurrent requests
-            max_overflow=30,       # Increased from 20 (total max: 50 connections)
+            pool_size=5,
+            max_overflow=5,
             pool_timeout=60,       # Wait up to 60s for a connection (increased from default 30s)
-            pool_recycle=3600,     # Recycle connections after 1 hour
+            pool_recycle=600,      # Fresh connections every 10 minutes hand memory back
+            connect_args={
+                "prepared_statement_cache_size": 20,
+                "server_settings": {"work_mem": "2MB"},
+            },
         )
         
         self._session_factory = async_sessionmaker(

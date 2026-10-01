@@ -70,6 +70,7 @@ from app.parse_protection import (
 from app.phase1.models import Slots
 from app.phase1.parse import parse_stage1, parse_stage2
 from app.phase1.steps import step_parse, step_query_build, step_retrieve, step_synonyms, adjust_retrieval_framework
+from app.phase2 import map_cache
 from app.phase2.pg_aggregations import PostgresMapAggregator
 from app.phase2.pg_ingest import PostgresIngestionPipeline
 
@@ -1338,10 +1339,12 @@ async def phase2_map_world(
         logger.info(f"   Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        # Create single session for entire request
-        async with db_manager.session() as session:
-            aggregator = PostgresMapAggregator()
-            data = await aggregator.get_world_map(session, run_id, min_confidence)
+        cache_key = ("world", run_id, min_confidence)
+        data = map_cache.get(project_id, cache_key)
+        if data is None:
+            async with db_manager.session() as session:
+                data = await PostgresMapAggregator().get_world_map(session, run_id, min_confidence)
+            map_cache.put(project_id, cache_key, data, complete=map_cache.has_coordinates(data))
         
         logger.info(f"✅ MAP OPERATION COMPLETED - World Map")
         logger.info(f"   Countries returned: {len(data)}")
@@ -1396,11 +1399,16 @@ async def phase2_map_country(request: Request,
         logger.info(f"   Country: {country}, Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        # Create single session for entire request
-        async with db_manager.session() as session:
-            aggregator = PostgresMapAggregator()
-            data = await aggregator.get_country_map(session, run_id, country, min_confidence)
-            without_city = await aggregator.count_without_city(session, run_id, country, min_confidence)
+        cache_key = ("country", run_id, country, min_confidence)
+        cached = map_cache.get(project_id, cache_key)
+        if cached is None:
+            async with db_manager.session() as session:
+                aggregator = PostgresMapAggregator()
+                data = await aggregator.get_country_map(session, run_id, country, min_confidence)
+                without_city = await aggregator.count_without_city(session, run_id, country, min_confidence)
+            map_cache.put(project_id, cache_key, (data, without_city), complete=map_cache.has_coordinates(data))
+        else:
+            data, without_city = cached
         
         logger.info(f"✅ MAP OPERATION COMPLETED - Country Map: {country}")
         logger.info(f"   Cities returned: {len(data)}")
@@ -1454,10 +1462,12 @@ async def phase2_map_city(request: Request,
         logger.info(f"   Country: {country}, City: {city}, Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        # Create single session for entire request
-        async with db_manager.session() as session:
-            aggregator = PostgresMapAggregator()
-            data = await aggregator.get_city_map(session, run_id, country, city, min_confidence)
+        cache_key = ("city", run_id, country, city, min_confidence)
+        data = map_cache.get(project_id, cache_key)
+        if data is None:
+            async with db_manager.session() as session:
+                data = await PostgresMapAggregator().get_city_map(session, run_id, country, city, min_confidence)
+            map_cache.put(project_id, cache_key, data)
         
         logger.info(f"✅ MAP OPERATION COMPLETED - City Map: {city}, {country}")
         logger.info(f"   Institutions returned: {len(data)}")
@@ -1518,17 +1528,19 @@ async def phase2_map_institution(request: Request,
         logger.info(f"   Min confidence: {min_confidence}")
         logger.info("=" * 80)
         
-        # Create single session for entire request
-        async with db_manager.session() as session:
-            aggregator = PostgresMapAggregator()
-            data = await aggregator.get_institution_scholars(
-                session=session,
-                run_id=run_id,
-                country=country,
-                city=city,
-                institution=institution,
-                min_confidence=min_confidence
-            )
+        cache_key = ("institution", run_id, country, city, institution, min_confidence)
+        data = map_cache.get(project_id, cache_key)
+        if data is None:
+            async with db_manager.session() as session:
+                data = await PostgresMapAggregator().get_institution_scholars(
+                    session=session,
+                    run_id=run_id,
+                    country=country,
+                    city=city,
+                    institution=institution,
+                    min_confidence=min_confidence
+                )
+            map_cache.put(project_id, cache_key, data)
         
         logger.info(f"✅ MAP OPERATION COMPLETED - Institution Scholars: {institution}")
         logger.info(f"   Scholars returned: {len(data)}")

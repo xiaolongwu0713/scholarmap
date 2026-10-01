@@ -44,3 +44,32 @@ def test_counts_only_this_runs_scholars_without_a_city():
         return n
 
     assert asyncio.run(go()) == 2
+
+
+def test_maps_use_only_this_runs_papers():
+    async def go():
+        engine = create_async_engine("sqlite+aiosqlite://")
+        async with engine.begin() as conn:
+            await conn.run_sync(lambda c: Base.metadata.create_all(
+                c, tables=[Authorship.__table__, RunPaper.__table__]))
+        async with async_sessionmaker(engine)() as session:
+            session.add_all([
+                RunPaper(run_id="r1", pmid="1"), RunPaper(run_id="r1", pmid="2"),
+                RunPaper(run_id="r2", pmid="9"),
+                author("1", "Kim", "United States", "Boston"),
+                author("2", "Lee", "United States", "Boston"),
+                author("2", "Lee", "United States", "Boston"),  # same scholar twice: counted once
+                author("9", "Other", "United States", "Boston"),  # other run's paper
+            ])
+            await session.commit()
+            aggregator = PostgresMapAggregator()
+            city = await aggregator.get_city_map(session, "r1", "United States", "Boston")
+            export = await aggregator.get_run_export_rows(session, "r1")
+            empty = await aggregator.get_city_map(session, "no-such-run", "United States", "Boston")
+        await engine.dispose()
+        return city, export, empty
+
+    city, export, empty = asyncio.run(go())
+    assert [(r["institution"], r["scholar_count"]) for r in city] == [("X", 2)]
+    assert sorted(r["researcher"] for r in export) == ["Kim", "Lee"]
+    assert empty == []
