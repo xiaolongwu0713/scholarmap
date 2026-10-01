@@ -1604,7 +1604,12 @@ async def paddle_webhook(request: Request) -> dict:
     if not settings.paddle_webhook_secret:
         raise HTTPException(status_code=503, detail="Billing not configured")
     raw = await request.body()
-    if not verify_signature(raw, request.headers.get("Paddle-Signature"), settings.paddle_webhook_secret):
+    signature = request.headers.get("Paddle-Signature")
+    if not verify_signature(raw, signature, settings.paddle_webhook_secret):
+        if signature:
+            # A signed request failing verification usually means a wrong PADDLE_WEBHOOK_SECRET,
+            # so paid users don't get Pro. Logged as an error so Sentry alerts on it.
+            logging.getLogger(__name__).error("Paddle webhook signature verification failed")
         raise HTTPException(status_code=401, detail="Invalid signature")
     try:
         event = json.loads(raw)
