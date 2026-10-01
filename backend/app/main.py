@@ -20,10 +20,29 @@ settings = config.settings
 from app.core.logging_config import setup_logging
 setup_logging(level=logging.INFO)
 
-# Error reporting: must run before the FastAPI app is created. Errors only, no tracing.
+# Error reporting + light performance tracing: must run before the FastAPI app is created.
 import sentry_sdk
+
+TRACES_SAMPLE_RATE = 0.2  # enough to see slow endpoints at this traffic, well inside the free quota
+
+
+def _traces_sampler(ctx: dict) -> float:
+    scope = ctx.get("asgi_scope") or {}
+    # Uptime pings (every minute) and CORS preflights would only drown out real requests
+    if scope.get("path") == "/healthz" or scope.get("method") == "OPTIONS":
+        return 0.0
+    # Follow the browser's decision so frontend and backend spans form one trace
+    if ctx.get("parent_sampled") is not None:
+        return float(ctx["parent_sampled"])
+    return TRACES_SAMPLE_RATE
+
+
 if settings.sentry_dsn:
-    sentry_sdk.init(dsn=settings.sentry_dsn, environment=settings.paddle_environment)
+    sentry_sdk.init(
+        dsn=settings.sentry_dsn,
+        environment=settings.paddle_environment,
+        traces_sampler=_traces_sampler,
+    )
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
