@@ -2789,48 +2789,9 @@ function RunPageContent() {
         <div className="row" style={{ justifyContent: "space-between", marginBottom: "12px" }}>
           <div>
             <h2 style={{ margin: 0 }}>📊 Paper Results</h2>
-            <div className="muted">Retrieved papers from academic databases</div>
+            <div className="muted">Retrieved papers from PubMed databases</div>
           </div>
         </div>
-
-        {/* Metric Cards */}
-        {(pubmed || s2 || oa || agg) && (
-          <div className="row" style={{ marginBottom: "16px" }}>
-            <MetricCard
-              icon="📄"
-              label="PubMed"
-              value={pubmed?.length ?? 0}
-              color="blue"
-              onClick={() => setActiveResultTab("PubMed")}
-              isActive={activeResultTab === "PubMed"}
-            />
-            <MetricCard
-              icon="📚"
-              label="Semantic Scholar"
-              value={s2?.length ?? 0}
-              color="green"
-              onClick={() => setActiveResultTab("Semantic Scholar")}
-              isActive={activeResultTab === "Semantic Scholar"}
-            />
-            <MetricCard
-              icon="🌐"
-              label="OpenAlex"
-              value={oa?.length ?? 0}
-              color="purple"
-              onClick={() => setActiveResultTab("OpenAlex")}
-              isActive={activeResultTab === "OpenAlex"}
-            />
-            <MetricCard
-              icon="✨"
-              label="Aggregated"
-              value={agg?.length ?? 0}
-              subtitle="Deduplicated by DOI"
-              color="orange"
-              onClick={() => setActiveResultTab("Aggregated")}
-              isActive={activeResultTab === "Aggregated"}
-            />
-          </div>
-        )}
 
         {renderResults()}
       </div>
