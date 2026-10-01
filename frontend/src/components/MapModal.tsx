@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import Map, { Marker, Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { isAuthenticated } from "@/lib/auth";
@@ -550,6 +550,22 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
     );
   }
 
+  // Lets a list row act like its map marker: click or Enter drills into it
+  function clickableRow(onActivate: () => void) {
+    return {
+      onClick: onActivate,
+      onKeyDown: (e: KeyboardEvent) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onActivate();
+        }
+      },
+      tabIndex: 0,
+      role: "button",
+      style: { cursor: "pointer" },
+    };
+  }
+
   function renderWorldList() {
     if (!worldData.length) return <div className="muted">No data</div>;
 
@@ -566,7 +582,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
           </thead>
           <tbody>
             {worldData.slice(0, 20).map((c, index) => (
-              <tr key={`${c.country}-${index}`}>
+              <tr key={`${c.country}-${index}`} {...clickableRow(() => drillToCountry(c.country))}>
                 <td>{c.country}</td>
                 <td>{c.scholar_count}</td>
                 <td>{c.paper_count}</td>
@@ -601,7 +617,7 @@ export default function MapModal({ projectId, runId, onClose, onExport, exportLo
           </thead>
           <tbody>
             {countryData.slice(0, 20).map((c, index) => (
-              <tr key={`${c.city}-${index}`}>
+              <tr key={`${c.city}-${index}`} {...clickableRow(() => drillToCity(selectedCountry!, c.city))}>
                 <td>{c.city}</td>
                 <td>{c.scholar_count}</td>
                 <td>{c.institution_count}</td>
