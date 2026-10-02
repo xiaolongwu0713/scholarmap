@@ -1,14 +1,18 @@
 #!/usr/bin/env node
-// Daily broken-link check: fetches every sitemap URL plus every internal link found on
-// those pages, and exits 1 if any returns 4xx/5xx. Also pings the backend health check.
+// Broken-link check: fetches every sitemap URL plus every internal link found on those
+// pages, and exits 1 if any returns 4xx/5xx. Also pings the backend health check.
+// --sitemap-only skips the internal links (the daily check; the weekly check runs the full crawl).
 //
-//   node scripts/check_links.mjs [siteUrl] [apiUrl]
+//   node scripts/check_links.mjs [--sitemap-only] [siteUrl] [apiUrl]
 //
 // Node 20+, no dependencies. Concurrency stays low: uncached ISR pages render on demand
 // against the small backend.
 
-const SITE = (process.argv[2] || 'https://labscout.io').replace(/\/$/, '');
-const API = (process.argv[3] || 'https://scholarmap-q1k1.onrender.com').replace(/\/$/, '');
+const args = process.argv.slice(2);
+const SITEMAP_ONLY = args.includes('--sitemap-only');
+const [siteArg, apiArg] = args.filter((a) => !a.startsWith('--'));
+const SITE = (siteArg || 'https://labscout.io').replace(/\/$/, '');
+const API = (apiArg || 'https://scholarmap-q1k1.onrender.com').replace(/\/$/, '');
 const CONCURRENCY = 1;
 const TIMEOUT_MS = 60_000;
 // Not public pages: API routes, the Sentry tunnel, static assets
@@ -74,6 +78,7 @@ const discovered = [];
 await runPool(sitemapPaths, async (path) => {
   const { status, body, error } = await get(SITE + path);
   if (status >= 400 || status === 0) broken.push({ url: path, status, error, from: 'sitemap.xml' });
+  if (SITEMAP_ONLY) return;
   for (const link of internalLinks(body)) {
     if (!seen.has(link)) {
       seen.set(link, path);
