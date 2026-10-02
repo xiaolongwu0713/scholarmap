@@ -27,7 +27,7 @@
 - 任务：LabScout daily health check（https://claude.ai/code/routines/trig_01CmYJY9yx3E71ipucEZ2Dqp）
 - 运行环境：claude.ai 云端 Default 环境（完全网络访问，环境变量 `SENTRY_AUTH_TOKEN` 为只读令牌），模型 Sonnet 5.5，只连接 Gmail
 - 每次运行：
-  1. 用 `scripts/check_links.mjs` 逐页爬取全站（sitemap + 页面内所有站内链接），找 4xx/5xx 死链。并发为 1，约 1–2 小时，避免压垮 256 MB 数据库
+  1. 用 `scripts/check_links.mjs --sitemap-only` 只检查 sitemap 里的约 1,300 个网址，找 4xx/5xx 死链。并发为 1，约 30–60 分钟，避免压垮 256 MB 数据库。页面内站内链接的全量爬取放在每周检查里（见下）
   2. 通过 Sentry API 读取过去 24 小时未解决的报错，以及性能数据（按页面/接口统计 p50、p95）。慢的标准：后端接口 p95 > 1 秒、页面加载/跳转 p95 > 3 秒、浏览器 API 请求 p95 > 2 秒（至少 3 次）。性能问题只报告、给出可能原因，不自动改代码
   3. 分类：
      - 代码问题 → 在 `auto-fix/日期` 分支修复，构建/测试通过后开 **一个** PR
@@ -66,4 +66,5 @@
 
 - 不要提高 `scripts/check_links.mjs` 的并发（`CONCURRENCY = 1`）。2026-10-01 曾因 4 并发全站爬取导致数据库连接池耗尽和多次重启
 - 原 GitHub Actions 的每日 Link check 已删除，避免与巡检重复爬取
-- 手动跑全站检查：`node scripts/check_links.mjs`（默认检查 https://labscout.io）
+- 手动跑全站检查：`node scripts/check_links.mjs`（sitemap + 所有站内链接，1–3 小时）；只查 sitemap：加 `--sitemap-only`。默认检查 https://labscout.io
+- 全量爬取每周一由本机的定时任务「LabScout 每周网站检查」（Claude 桌面端，09:00 上海时间）执行，结果写进每周报告的「死链检查」部分，只报告不改代码
