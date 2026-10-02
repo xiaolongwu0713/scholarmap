@@ -57,7 +57,9 @@ async function findFieldCity(
     .slice(0, 20);
   for (const countryData of topCountries) {
     const cities = await fetchFieldCountryData(fieldSlug, countryData.country);
-    const match = cities.find((c: any) => matches(c.city));
+    // Variants of one city ("Gif sur Yvette" / "Gif-sur-Yvette") share a slug; pick the one with data,
+    // as the country page only links cities that have institutions
+    const match = cities.find((c: any) => c.institution_count > 0 && matches(c.city));
     if (match) return { city: match.city, country: countryData.country };
   }
   return null;
