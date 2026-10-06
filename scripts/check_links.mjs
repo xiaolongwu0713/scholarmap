@@ -5,8 +5,8 @@
 //
 //   node scripts/check_links.mjs [--sitemap-only] [siteUrl] [apiUrl]
 //
-// Node 20+, no dependencies. Concurrency stays low: uncached ISR pages render on demand
-// against the small backend.
+// Node 20+, no dependencies. Concurrency stays low and the full crawl waits 2 s between
+// requests: uncached ISR pages render on demand against the small backend.
 
 const args = process.argv.slice(2);
 const SITEMAP_ONLY = args.includes('--sitemap-only');
@@ -14,6 +14,8 @@ const [siteArg, apiArg] = args.filter((a) => !a.startsWith('--'));
 const SITE = (siteArg || 'https://labscout.io').replace(/\/$/, '');
 const API = (apiArg || 'https://scholarmap-q1k1.onrender.com').replace(/\/$/, '');
 const CONCURRENCY = 1;
+// Pause between requests in the full crawl to spare the small database
+const DELAY_MS = SITEMAP_ONLY ? 0 : 2_000;
 const TIMEOUT_MS = 60_000;
 // Not public pages: API routes, the Sentry tunnel, static assets
 const SKIP = [/^\/api\//, /^\/monitoring/, /^\/_next\//, /\.(png|jpe?g|svg|webp|ico|css|js|xml|txt|pdf)$/];
@@ -54,7 +56,10 @@ async function runPool(items, worker) {
   let next = 0;
   await Promise.all(
     Array.from({ length: CONCURRENCY }, async () => {
-      while (next < items.length) await worker(items[next++]);
+      while (next < items.length) {
+        await worker(items[next++]);
+        if (DELAY_MS) await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
+      }
     }),
   );
 }
