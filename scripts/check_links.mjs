@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 // Broken-link check: fetches every sitemap URL plus every internal link found on those
 // pages, and exits 1 if any returns 4xx/5xx. Also pings the backend health check.
-// --sitemap-only skips the internal links (the daily check; the weekly check runs the full crawl).
+// --sitemap-only skips the internal links (the daily check). --sample=N checks only N random
+// internal links (the weekly check); without it every internal link is checked (monthly).
 //
-//   node scripts/check_links.mjs [--sitemap-only] [siteUrl] [apiUrl]
+//   node scripts/check_links.mjs [--sitemap-only | --sample=N] [siteUrl] [apiUrl]
 //
 // Node 20+, no dependencies. Concurrency stays low and the full crawl waits 2 s between
 // requests: uncached ISR pages render on demand against the small backend.
 
 const args = process.argv.slice(2);
 const SITEMAP_ONLY = args.includes('--sitemap-only');
+const SAMPLE = Number(args.find((a) => a.startsWith('--sample='))?.split('=')[1]) || 0;
 const [siteArg, apiArg] = args.filter((a) => !a.startsWith('--'));
 const SITE = (siteArg || 'https://labscout.io').replace(/\/$/, '');
 const API = (apiArg || 'https://scholarmap-q1k1.onrender.com').replace(/\/$/, '');
@@ -92,12 +94,24 @@ await runPool(sitemapPaths, async (path) => {
   }
 });
 
-await runPool(discovered, async (path) => {
+// Linked pages come from a few shared templates, so a random sample catches a broken pattern
+let linked = discovered;
+if (SAMPLE && SAMPLE < discovered.length) {
+  linked = [...discovered];
+  for (let i = linked.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [linked[i], linked[j]] = [linked[j], linked[i]];
+  }
+  linked = linked.slice(0, SAMPLE);
+}
+
+await runPool(linked, async (path) => {
   const { status, error } = await get(SITE + path);
   if (status >= 400 || status === 0) broken.push({ url: path, status, error, from: seen.get(path) });
 });
 
-console.log(`Checked ${sitemapPaths.length} sitemap URLs + ${discovered.length} linked URLs on ${SITE}`);
+const linkedNote = linked.length < discovered.length ? ` (random sample of ${discovered.length})` : '';
+console.log(`Checked ${sitemapPaths.length} sitemap URLs + ${linked.length} linked URLs${linkedNote} on ${SITE}`);
 if (broken.length === 0) {
   console.log('No broken links.');
   process.exit(0);
