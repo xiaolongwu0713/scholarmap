@@ -101,58 +101,80 @@ async def ready_fields() -> list[dict[str, Any]]:
     return ready
 
 
-SITEMAP_TTL_SECONDS = 3600
+SITEMAP_TTL_SECONDS = 6 * 3600
 _sitemap_cache: tuple[float, list[dict[str, Any]]] | None = None
 _sitemap_lock = asyncio.Lock()
+_sitemap_refresh_task: asyncio.Task | None = None
+
+
+async def _compute_sitemap_data(top_countries: int, top_cities: int) -> list[dict[str, Any]]:
+    from sqlalchemy import func, select
+    from app.db.models import Authorship, RunPaper
+    from app.phase2.pg_aggregations import normalize_country
+
+    scholar = func.count(func.distinct(func.concat(
+        Authorship.author_name_raw, "|", func.coalesce(Authorship.institution, ""), "|", Authorship.country,
+    )))
+    data = []
+    for field in await ready_fields():
+        query = (
+            select(Authorship.country, Authorship.city, scholar.label("n"))
+            .join(RunPaper, RunPaper.pmid == Authorship.pmid)
+            .where(RunPaper.run_id == field["run_id"], Authorship.country.isnot(None))
+            .group_by(Authorship.country, Authorship.city)
+        )
+        async with db_manager.session() as session:
+            rows = (await session.execute(query)).all()
+        countries: dict[str, int] = {}
+        cities = []
+        for row in rows:
+            country = normalize_country(row.country)
+            if not country:
+                continue
+            countries[country] = countries.get(country, 0) + row.n
+            if row.city:
+                cities.append({"country": country, "city": row.city, "scholar_count": row.n})
+        data.append({
+            "slug": field["slug"],
+            "countries": [
+                {"country": c, "scholar_count": n}
+                for c, n in sorted(countries.items(), key=lambda kv: -kv[1])[:top_countries]
+            ],
+            "cities": sorted(cities, key=lambda c: -c["scholar_count"])[:top_cities],
+        })
+    return data
+
+
+async def _refresh_sitemap_cache(top_countries: int, top_cities: int) -> list[dict[str, Any]]:
+    global _sitemap_cache
+    async with _sitemap_lock:
+        data = await _compute_sitemap_data(top_countries, top_cities)
+        _sitemap_cache = (time.monotonic(), data)
+        return data
 
 
 async def sitemap_data(top_countries: int = 10, top_cities: int = 20) -> list[dict[str, Any]]:
     """Top countries and cities of each ready field, for sitemap and static-page URLs.
 
     One SQL query per field and no geocoding, so it stays fast as fields are added.
-    Cities are over-supplied: the frontend drops invalid city names before picking its top 5.
-    Cached for an hour.
+    Cached in memory; once older than the TTL the stale copy is returned immediately
+    and refreshed in the background, so only the first request after a restart waits.
     """
-    global _sitemap_cache
-    async with _sitemap_lock:
-        if _sitemap_cache and time.monotonic() - _sitemap_cache[0] < SITEMAP_TTL_SECONDS:
-            return _sitemap_cache[1]
-        from sqlalchemy import func, select
-        from app.db.models import Authorship, RunPaper
-        from app.phase2.pg_aggregations import normalize_country
+    global _sitemap_refresh_task
+    if _sitemap_cache is None:
+        return await _refresh_sitemap_cache(top_countries, top_cities)
+    cached_at, data = _sitemap_cache
+    if time.monotonic() - cached_at >= SITEMAP_TTL_SECONDS and (
+        _sitemap_refresh_task is None or _sitemap_refresh_task.done()
+    ):
+        _sitemap_refresh_task = asyncio.create_task(_refresh_sitemap_cache(top_countries, top_cities))
+        _sitemap_refresh_task.add_done_callback(_log_sitemap_refresh_failure)
+    return data
 
-        scholar = func.count(func.distinct(func.concat(
-            Authorship.author_name_raw, "|", func.coalesce(Authorship.institution, ""), "|", Authorship.country,
-        )))
-        data = []
-        for field in await ready_fields():
-            query = (
-                select(Authorship.country, Authorship.city, scholar.label("n"))
-                .join(RunPaper, RunPaper.pmid == Authorship.pmid)
-                .where(RunPaper.run_id == field["run_id"], Authorship.country.isnot(None))
-                .group_by(Authorship.country, Authorship.city)
-            )
-            async with db_manager.session() as session:
-                rows = (await session.execute(query)).all()
-            countries: dict[str, int] = {}
-            cities = []
-            for row in rows:
-                country = normalize_country(row.country)
-                if not country:
-                    continue
-                countries[country] = countries.get(country, 0) + row.n
-                if row.city:
-                    cities.append({"country": country, "city": row.city, "scholar_count": row.n})
-            data.append({
-                "slug": field["slug"],
-                "countries": [
-                    {"country": c, "scholar_count": n}
-                    for c, n in sorted(countries.items(), key=lambda kv: -kv[1])[:top_countries]
-                ],
-                "cities": sorted(cities, key=lambda c: -c["scholar_count"])[:top_cities],
-            })
-        _sitemap_cache = (time.monotonic(), data)
-        return data
+
+def _log_sitemap_refresh_failure(task: asyncio.Task) -> None:
+    if not task.cancelled() and task.exception():
+        logger.warning("Sitemap cache refresh failed; serving stale data: %s", task.exception())
 
 
 async def build_field(field: dict[str, Any], run_id: str | None = None) -> str:
